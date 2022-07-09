@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.central-x</groupId>
+    <artifactId>central-studio</artifactId>
+    <version>1.0.x-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>central-provider</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <!-- 本 pom 文件用于管理 Maven 项目，不需要上传到 Maven 仓库 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- 不需要编译成 Docker -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- 镜像仓库 -->
+    <repositories>
+        <repository>
+            <id>mirror</id>
+            <name>Mirror Repository</name>
+            <url>https://mirror.yeh.cn/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
+    <!-- 插件仓库 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mirror</id>
+            <name>Mirror Repository</name>
+            <url>https://mirror.yeh.cn/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- 发布仓库 -->
+    <distributionManagement>
+        <repository>
+            <id>centralx-releases</id>
+            <name>CentralX Release Repository</name>
+            <url>https://deploy.yeh.cn/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>centralx-snapshots</id>
+            <name>CentralX Snapshot Repository</name>
+            <url>https://deploy.yeh.cn/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
