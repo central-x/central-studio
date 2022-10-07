@@ -53,7 +53,7 @@ import java.io.Serial;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "X_AUTH_MENU")
+@Table(name = "X_SEC_MENU")
 @EqualsAndHashCode(callSuper = true)
 @Relation(alias = "permission", target = PermissionEntity.class, referencedProperty = "menuId")
 public class MenuEntity extends ModifiableEntity implements Tenantable {

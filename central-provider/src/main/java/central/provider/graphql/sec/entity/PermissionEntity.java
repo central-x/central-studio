@@ -52,7 +52,7 @@ import java.io.Serial;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "X_AUTH_PERMISSION")
+@Table(name = "X_SEC_PERMISSION")
 @EqualsAndHashCode(callSuper = true)
 @Relation(alias = "menu", target = MenuEntity.class, property = "menuId")
 @TableRelation(alias = "role", table = RolePermissionEntity.class, target = RoleEntity.class, relationProperty = "permissionId", targetRelationProperty = "roleId")

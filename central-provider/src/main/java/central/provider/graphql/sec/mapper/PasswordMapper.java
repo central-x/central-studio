@@ -22,51 +22,18 @@
  * SOFTWARE.
  */
 
-package central.provider.graphql.sec;
+package central.provider.graphql.sec.mapper;
 
-import central.provider.graphql.sec.query.MenuQuery;
-import central.provider.graphql.sec.query.PasswordQuery;
-import central.provider.graphql.sec.query.RoleQuery;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import central.provider.graphql.sec.entity.PasswordEntity;
+import central.sql.proxy.Mapper;
+import org.springframework.stereotype.Repository;
 
 /**
- * Authority Query
- * 安全相关查询
+ * 密码
  *
  * @author Alan Yeh
- * @since 2022/10/02
+ * @since 2022/10/07
  */
-@Component
-@GraphQLSchema(path = "sec", types = {MenuQuery.class, RoleQuery.class, PasswordQuery.class})
-public class SecQuery {
-
-    /**
-     * Menu Query
-     * 菜单查询
-     */
-    @GraphQLGetter
-    public MenuQuery getMenus(@Autowired MenuQuery query) {
-        return query;
-    }
-
-    /**
-     * Role Query
-     * 角色查询
-     */
-    @GraphQLGetter
-    public RoleQuery getRoles(@Autowired RoleQuery query) {
-        return query;
-    }
-
-    /**
-     * Password Query
-     * 密码查询
-     */
-    @GraphQLGetter
-    public PasswordQuery getPasswords(@Autowired PasswordQuery query) {
-        return query;
-    }
+@Repository
+public interface PasswordMapper extends Mapper<PasswordEntity> {
 }

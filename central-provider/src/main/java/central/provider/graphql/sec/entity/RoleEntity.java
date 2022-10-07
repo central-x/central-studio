@@ -51,7 +51,7 @@ import java.io.Serial;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "X_AUTH_ROLE")
+@Table(name = "X_SEC_ROLE")
 @EqualsAndHashCode(callSuper = true)
 @TableRelation(alias = "permission", table = RolePermissionEntity.class, target = PermissionEntity.class, relationProperty = "roleId", targetRelationProperty = "permissionId")
 public class RoleEntity extends ModifiableEntity implements Tenantable {

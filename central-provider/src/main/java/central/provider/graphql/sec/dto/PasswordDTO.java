@@ -22,60 +22,44 @@
  * SOFTWARE.
  */
 
-package central.provider.graphql;
+package central.provider.graphql.sec.dto;
 
-import central.provider.graphql.sec.SecMutation;
-import central.provider.graphql.org.OrgMutation;
-import central.provider.graphql.sys.SysMutation;
-import central.provider.graphql.ten.TenMutation;
+import central.api.DTO;
+import central.provider.graphql.org.dto.AccountDTO;
+import central.provider.graphql.sec.entity.PasswordEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import central.starter.graphql.annotation.GraphQLType;
+import lombok.EqualsAndHashCode;
+import org.dataloader.DataLoader;
+
+import java.io.Serial;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * GraphQL Mutation
+ * 密码
  *
  * @author Alan Yeh
- * @since 2022/10/02
+ * @since 2022/10/07
  */
-@Component
-@GraphQLSchema(types = {SecMutation.class, OrgMutation.class, SysMutation.class, TenMutation.class})
-public class Mutation {
+@GraphQLType("Password")
+@EqualsAndHashCode(callSuper = true)
+public class PasswordDTO extends PasswordEntity implements DTO {
+    @Serial
+    private static final long serialVersionUID = -1742123355949152024L;
 
     /**
-     * Authority Mutation
-     * 权限相关修改
+     * 帐户
      */
     @GraphQLGetter
-    public SecMutation getSec(@Autowired SecMutation mutation) {
-        return mutation;
+    public CompletableFuture<AccountDTO> getAccount(DataLoader<String, AccountDTO> loader) {
+        return loader.load(this.getAccountId());
     }
 
     /**
-     * Organization Mutation
-     * 组织架构相关修改
+     * 创建人信息
      */
     @GraphQLGetter
-    public OrgMutation getOrg(@Autowired OrgMutation mutation) {
-        return mutation;
-    }
-
-    /**
-     * System Mutation
-     * 系统配置相关修改
-     */
-    @GraphQLGetter
-    public SysMutation getSys(@Autowired SysMutation mutation) {
-        return mutation;
-    }
-
-    /**
-     * Tenant Mutation
-     * 租户相关修改
-     */
-    @GraphQLGetter
-    public TenMutation getTen(@Autowired TenMutation mutation) {
-        return mutation;
+    public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
+        return loader.load(this.getCreatorId());
     }
 }

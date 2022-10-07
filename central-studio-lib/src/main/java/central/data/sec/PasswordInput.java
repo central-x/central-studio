@@ -22,66 +22,38 @@
  * SOFTWARE.
  */
 
-package central.provider.graphql.sec.entity;
+package central.data.sec;
 
-import central.bean.Tenantable;
-import central.data.sec.option.PrincipalType;
-import central.sql.data.Entity;
-import central.validation.Enums;
 import central.validation.Label;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
- * 角色与主体关联关系
+ * 密码输入
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2022/10/07
  */
 @Data
+@Builder(toBuilder = true)
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "X_SEC_ROLE_PRINCIPAL")
-@EqualsAndHashCode(callSuper = true)
-public class RolePrincipalEntity extends Entity implements Tenantable {
+public class PasswordInput implements Serializable {
     @Serial
-    private static final long serialVersionUID = 5133609577351106865L;
+    private static final long serialVersionUID = 3757147748065456405L;
 
-    @Id
-    @Label("主键")
-    @Size(max = 32)
-    private String id;
-
-    @Label("应用主键")
+    @Label("帐户主键")
     @NotBlank
     @Size(min = 1, max = 32)
-    private String applicationId;
+    private String accountId;
 
-    @Label("角色")
+    @Label("密码")
     @NotBlank
     @Size(min = 1, max = 32)
-    private String roleId;
-
-    @Label("授权主体主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String principalId;
-
-    @Label("主体类型")
-    @NotBlank
-    @Enums(PrincipalType.class)
-    private String type;
-
-    @Label("租户标识")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String tenantCode;
+    private String value;
 }

@@ -22,50 +22,55 @@
  * SOFTWARE.
  */
 
-package central.provider.graphql.sec;
+package central.data.sec;
 
-import central.provider.graphql.sec.mutation.MenuMutation;
-import central.provider.graphql.sec.mutation.PasswordMutation;
-import central.provider.graphql.sec.mutation.RoleMutation;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import central.data.org.Account;
+import central.sql.data.Entity;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import javax.annotation.Nonnull;
+import java.io.Serial;
 
 /**
- * Security Mutation
- * 安全相关修改
+ * 密码
  *
  * @author Alan Yeh
- * @since 2022/10/02
+ * @since 2022/10/07
  */
-@Component
-@GraphQLSchema(path = "sec", types = {MenuMutation.class, RoleMutation.class, PasswordMutation.class})
-public class SecMutation {
-    /**
-     * Menu Mutation
-     * 菜单修改
-     */
-    @GraphQLGetter
-    public MenuMutation getMenus(@Autowired MenuMutation mutation) {
-        return mutation;
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class Password extends Entity {
+    @Serial
+    private static final long serialVersionUID = -5570891457253320202L;
 
     /**
-     * Role Mutation
-     * 角色修改
+     * 帐户主键
      */
-    @GraphQLGetter
-    public RoleMutation getRoles(@Autowired RoleMutation mutation) {
-        return mutation;
-    }
+    @Nonnull
+    private String accountId;
 
     /**
-     * Password Mutation
-     * 密码修改
+     * 帐户
      */
-    @GraphQLGetter
-    public PasswordMutation getPasswords(@Autowired PasswordMutation mutation) {
-        return mutation;
-    }
+    @Nonnull
+    public Account account;
+
+    /**
+     * 密码值
+     */
+    @Nonnull
+    private String value;
+
+    /**
+     * 创建人信息
+     */
+    @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Account creator;
 }

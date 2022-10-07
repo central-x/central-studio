@@ -25,9 +25,12 @@
 package central.provider.graphql.sec.entity;
 
 import central.bean.Tenantable;
-import central.data.sec.option.PrincipalType;
+import central.data.sec.PasswordInput;
+import central.provider.graphql.org.entity.AccountEntity;
+import central.security.Passwordx;
 import central.sql.data.Entity;
-import central.validation.Enums;
+import central.sql.data.ModifiableEntity;
+import central.sql.meta.annotation.Relation;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -41,47 +44,44 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 
 /**
- * 角色与主体关联关系
+ * 密码
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2022/10/07
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "X_SEC_ROLE_PRINCIPAL")
+@Table(name = "X_SEC_PASSWORD")
 @EqualsAndHashCode(callSuper = true)
-public class RolePrincipalEntity extends Entity implements Tenantable {
+@Relation(alias = "account", target = AccountEntity.class, property = "accountId")
+public class PasswordEntity extends Entity implements Tenantable {
+
     @Serial
-    private static final long serialVersionUID = 5133609577351106865L;
+    private static final long serialVersionUID = -6297265992467556542L;
 
     @Id
     @Label("主键")
     @Size(max = 32)
     private String id;
 
-    @Label("应用主键")
+    @Label("帐户主键")
     @NotBlank
     @Size(min = 1, max = 32)
-    private String applicationId;
+    private String accountId;
 
-    @Label("角色")
+    @Label("密码")
     @NotBlank
-    @Size(min = 1, max = 32)
-    private String roleId;
-
-    @Label("授权主体主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String principalId;
-
-    @Label("主体类型")
-    @NotBlank
-    @Enums(PrincipalType.class)
-    private String type;
+    @Size(min = 1, max = 256)
+    private String value;
 
     @Label("租户标识")
     @NotBlank
     @Size(min = 1, max = 32)
     private String tenantCode;
+
+    public void fromInput(PasswordInput input) {
+        this.setAccountId(input.getAccountId());
+        this.setValue(Passwordx.encrypt(input.getValue()));
+    }
 }

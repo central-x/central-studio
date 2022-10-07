@@ -44,7 +44,25 @@ public class v1_0_0 extends Migration {
 
     @Override
     public void upgrade(Database database) throws SQLException {
-        // auth
+        // sec
+        {
+            // 密码
+            var columns = List.of(
+                    Column.of("ID", true, SqlType.STRING, 32, "主键"),
+                    Column.of("ACCOUNT_ID", SqlType.STRING, 36, "帐户主键"),
+                    Column.of("VALUE", SqlType.STRING, 256, "密码"),
+                    Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
+                    Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
+                    Column.of("TENANT_CODE", SqlType.STRING, 32, "租户编码")
+            );
+
+            var indies = List.of(
+                    Index.of("X_SPAS_AI", false, "ACCOUNT_ID")
+            );
+
+            var table = Table.of("X_SEC_PASSWORD", "密码", columns, indies);
+            database.addTable(table);
+        }
         {
             // 菜单
             var columns = List.of(
@@ -65,11 +83,11 @@ public class v1_0_0 extends Migration {
             );
 
             var indies = List.of(
-                    Index.of("X_AMEN_PI", false, "PARENT_ID"),
-                    Index.of("X_AMEN_CODE", false, "CODE")
+                    Index.of("X_SMEN_PI", false, "PARENT_ID"),
+                    Index.of("X_SMEN_CODE", false, "CODE")
             );
 
-            var table = Table.of("X_AUTH_MENU", "菜单", columns, indies);
+            var table = Table.of("X_SEC_MENU", "菜单", columns, indies);
 
             database.addTable(table);
         }
@@ -90,11 +108,11 @@ public class v1_0_0 extends Migration {
             );
 
             var indies = List.of(
-                    Index.of("X_APER_MI", false, "MENU_ID"),
-                    Index.of("X_APER_CODE", false, "CODE")
+                    Index.of("X_SPER_MI", false, "MENU_ID"),
+                    Index.of("X_SPER_CODE", false, "CODE")
             );
 
-            var table = Table.of("X_AUTH_PERMISSION", "功能", columns, indies);
+            var table = Table.of("X_SEC_PERMISSION", "功能", columns, indies);
 
             database.addTable(table);
         }
@@ -115,11 +133,11 @@ public class v1_0_0 extends Migration {
             );
 
             var indies = List.of(
-                    Index.of("X_AROL_CODE", false, "CODE"),
-                    Index.of("X_AROL_UI", false, "UNIT_ID")
+                    Index.of("X_SROL_CODE", false, "CODE"),
+                    Index.of("X_SROL_UI", false, "UNIT_ID")
             );
 
-            var table = Table.of("X_AUTH_ROLE", "角色", columns, indies);
+            var table = Table.of("X_SEC_ROLE", "角色", columns, indies);
 
             database.addTable(table);
         }
@@ -505,17 +523,17 @@ public class v1_0_0 extends Migration {
     public void downgrade(Database database) throws SQLException {
         // auth
         {
-            var menu = database.getTable("X_AUTH_MENU");
+            var menu = database.getTable("X_SEC_MENU");
             if (menu != null) {
                 menu.drop();
             }
 
-            var function = database.getTable("X_AUTH_PERMISSION");
+            var function = database.getTable("X_SEC_PERMISSION");
             if (function != null) {
                 function.drop();
             }
 
-            var role = database.getTable("X_AUTH_ROLE");
+            var role = database.getTable("X_SEC_ROLE");
             if (role != null) {
                 role.drop();
             }

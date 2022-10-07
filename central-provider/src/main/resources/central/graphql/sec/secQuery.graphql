@@ -7,4 +7,7 @@ type SecQuery {
 
     "菜单查询"
     menus: MenuQuery!
+
+    "密码查询"
+    passwords: PasswordQuery!
 }

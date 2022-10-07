@@ -49,7 +49,7 @@ import java.io.Serial;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "X_AUTH_ROLE_RANGE")
+@Table(name = "X_SEC_ROLE_RANGE")
 @EqualsAndHashCode(callSuper = true)
 public class RoleRangeEntity extends Entity implements Tenantable {
     @Serial

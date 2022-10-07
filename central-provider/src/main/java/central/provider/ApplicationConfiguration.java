@@ -1,20 +1,13 @@
 package central.provider;
 
-import central.provider.database.ApplicationSource;
-import central.sql.SqlDialect;
-import central.sql.SqlSource;
 import central.sql.datasource.dynamic.lookup.LookupKeyFilter;
-import central.sql.impl.standard.StandardDataSourceMigrator;
-import central.sql.impl.standard.StandardSource;
-import central.util.Version;
+import central.starter.webmvc.StarterConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.Environment;
-
-import javax.sql.DataSource;
 
 /**
  * 应用配置
@@ -24,6 +17,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableConfigurationProperties(ApplicationProperties.class)
+@Import(StarterConfiguration.class)
 public class ApplicationConfiguration {
 
     @Bean
