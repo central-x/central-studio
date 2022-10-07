@@ -1,0 +1,172 @@
+"""
+帐户输入
+"""
+input AccountInput {
+    "主键"
+    id:                     ID
+    "帐户名"
+    username:               String
+    "邮箱"
+    email:                  String
+    "手机号"
+    mobile:                 String
+    "姓名"
+    name:                   String
+    "头像"
+    avatar:                 String
+    "是否启用"
+    enabled:                Boolean
+    "是否已删除"
+    deleted:                Boolean
+    "单位输入"
+    units:                 [AccountUnitInput]
+}
+"""
+帐户与单位关联关系输入
+"""
+input AccountUnitInput {
+    "主键"
+    id:                     ID
+    "账户主键"
+    accountId:              String
+    "单位主键"
+    unitId:                 String
+    "职级主键"
+    rankId:                 String
+    "是否主单位"
+    primary:                Boolean
+    "排序号"
+    order:                  Int
+    "部门和职务列表"
+    departments:           [AccountDepartmentInput]
+}
+"""
+帐户与部门关联关系输入
+"""
+input AccountDepartmentInput {
+    "主键"
+    id:                     ID
+    "账户主键"
+    accountId:              String
+    "单位主键"
+    unitId:                 String
+    "部门主键"
+    departmentId:           String
+    "职务主键"
+    postId:                 String
+    "是否主部门"
+    primary:                Boolean
+    "排序号"
+    order:                  Int
+}
+
+"""
+帐户修改
+"""
+type AccountMutation {
+    """
+    帐户单位关联关系修改
+    """
+    units: AccountUnitMutation
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: AccountInput,
+        "操作人"
+        operator: String
+    ): Account
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [AccountInput],
+        "操作人"
+        operator: String
+    ): [Account]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: AccountInput,
+        "操作人"
+        operator: String
+    ): Account
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [AccountInput],
+        "操作人"
+        operator: String
+    ): [Account]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}
+
+type AccountUnitMutation {
+    departments: AccountDepartmentMutation
+
+    # 保存数据
+    # @param input    数据输入
+    # @param operator 操作人
+    # @return         保存后的实体数据
+    insert(input: AccountUnitInput, operator: String): Account
+
+    # 更新数据
+    # @param input    数据输入
+    # @param operator 操作人
+    # @return         更新后的实体数据
+    update(input: AccountUnitInput, operator: String): Account
+
+    # 删除数据
+    # @param ids 主键
+    # @return    己删除的数据量
+    deleteByIds(ids: [String]): Long
+}
+
+type AccountDepartmentMutation {
+
+    # 保存数据
+    # @param input    数据输入
+    # @param operator 操作人
+    # @return         保存后的实体数据
+    insert(input: AccountDepartmentInput, operator: String): Account
+
+    # 更新数据
+    # @param input    数据输入
+    # @param operator 操作人
+    # @return         更新后的实体数据
+    update(input: AccountDepartmentInput, operator: String): Account
+
+    # 删除数据
+    # @param ids 主键
+    # @return    己删除的数据量
+    deleteByIds(ids: [String]): Long
+}
+
+extend type Mutation {
+    accounts: AccountMutation
+}

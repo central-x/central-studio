@@ -1,0 +1,77 @@
+"""
+租户与应用关联关系输入
+"""
+input TenantApplicationInput {
+    "主键"
+    id:                     ID
+    "租户主键"
+    tenantId:               String
+    "应用主键"
+    applicationId:          String
+    "是否启用"
+    enabled:                String
+    "是否主要"
+    primary:                String
+}
+
+"""
+租户应用修改
+"""
+type TenantApplicationMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: TenantApplicationInput,
+        "操作人"
+        operator: String
+    ): TenantApplication
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [TenantApplicationInput],
+        "操作人"
+        operator: String
+    ): [TenantApplication]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: TenantApplicationInput,
+        "操作人"
+        operator: String
+    ): TenantApplication
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [TenantApplicationInput],
+        "操作人"
+        operator: String
+    ): [TenantApplication]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

@@ -1,0 +1,80 @@
+"""
+权限输入
+"""
+input PermissionInput {
+    "主键"
+    id:                     ID
+    "菜单主键"
+    menuId:                 String
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+}
+
+
+"""
+权限修改
+"""
+type PermissionMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: PermissionInput,
+        "操作人"
+        operator: String
+    ): Permission
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [PermissionInput],
+        "操作人"
+        operator: String
+    ): [Permission]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: PermissionInput,
+        "操作人"
+        operator: String
+    ): Permission
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [PermissionInput],
+        "操作人"
+        operator: String
+    ): [Permission]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

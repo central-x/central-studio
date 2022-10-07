@@ -1,0 +1,79 @@
+"""
+数据库输入
+"""
+input DatabaseInput {
+    "主键"
+    id:                     ID
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "类型"
+    type:                   String
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+}
+
+"""
+数据库修改
+"""
+type DatabaseMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: DatabaseInput,
+        "操作人"
+        operator: String
+    ): Database
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [DatabaseInput],
+        "操作人"
+        operator: String
+    ): [Database]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: DatabaseInput,
+        "操作人"
+        operator: String
+    ): Database
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [DatabaseInput],
+        "操作人"
+        operator: String
+    ): [Database]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

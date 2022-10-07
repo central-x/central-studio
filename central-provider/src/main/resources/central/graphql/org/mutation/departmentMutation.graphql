@@ -1,0 +1,78 @@
+"""
+部门输入
+"""
+input DepartmentInput {
+    "主键"
+    id:                     ID
+    "所属单位主键"
+    unitId:                 String
+    "父部门主键"
+    parentId:               String
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "排序号"
+    order:                  Int
+}
+
+"""
+部门修改
+"""
+type DepartmentMutation {
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: DepartmentInput,
+        "操作人"
+        operator: String
+    ): Department
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [DepartmentInput],
+        "操作人"
+        operator: String
+    ): [Department]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: DepartmentInput,
+        "操作人"
+        operator: String
+    ): Department
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [DepartmentInput],
+        "操作人"
+        operator: String
+    ): [Department]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

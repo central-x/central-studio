@@ -1,0 +1,10 @@
+"""
+系统数据查询
+"""
+type SysQuery {
+    "数据库查询"
+    databases: DatabaseQuery!
+
+    "字典查询"
+    dictionaries: DictionaryQuery!
+}

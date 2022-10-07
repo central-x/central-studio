@@ -1,0 +1,10 @@
+"""
+安全数据查询
+"""
+type SecQuery {
+    "角色查询"
+    roles: RoleQuery!
+
+    "菜单查询"
+    menus: MenuQuery!
+}

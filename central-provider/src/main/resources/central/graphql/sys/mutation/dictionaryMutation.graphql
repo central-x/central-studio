@@ -1,0 +1,81 @@
+"""
+字典输入
+"""
+input DictionaryInput {
+    "主键"
+    id:                     ID
+    "所属应用主键"
+    applicationId:          String
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+    "字典项"
+    items:                 [DictionaryItemInput]
+}
+
+"""
+字典修改
+"""
+type DictionaryMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: DictionaryInput,
+        "操作人"
+        operator: String
+    ): Dictionary
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [DictionaryInput],
+        "操作人"
+        operator: String
+    ): [Dictionary]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: DictionaryInput,
+        "操作人"
+        operator: String
+    ): Dictionary
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [DictionaryInput],
+        "操作人"
+        operator: String
+    ): [Dictionary]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

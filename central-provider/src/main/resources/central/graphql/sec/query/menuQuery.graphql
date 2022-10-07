@@ -1,0 +1,99 @@
+"""
+菜单
+"""
+type Menu implements Entity & Modifiable {
+    "主键"
+    id:                     ID!
+    "标识"
+    code:                   String!
+    "名称"
+    name:                   String!
+    "图标"
+    icon:                   String
+    "类型（业务菜单: business, 管理菜单: admin）"
+    type:                   String!
+    "是否启用"
+    enabled:                Boolean!
+    "排序号"
+    order:                  Int!
+    "备注"
+    remark:                 String
+    "父菜单主键（如果为空，则表示该菜单是根菜单）"
+    parentId:               String
+    "父菜单"
+    parent:                 Menu
+    "子菜单"
+    children:              [Menu]!
+    "权限列表"
+    permissions:           [Permission]!
+
+    "创建帐户信息"
+    creator:                Account!
+    "创建帐户主键"
+    creatorId:              String!
+    "创建时间"
+    createDate:             Timestamp!
+    "修改帐户信息"
+    modifier:               Account!
+    "修改帐户主键"
+    modifierId:             String!
+    "修改时间"
+    modifyDate:             Timestamp!
+}
+
+"""
+菜单查询
+"""
+type MenuQuery {
+    """
+    查询数据
+    """
+    findById(
+        "主键"
+        id: String
+    ): Menu
+
+    """
+    查询数据
+    """
+    findByIds(
+        "主键"
+        ids: [String]
+    ): [Menu]
+
+    """
+    查询数据
+    """
+    findBy(
+        "数据量（不传的话，就返回所有数据）"
+        limit: Long,
+        "偏移量（跳过前 N 条数据）"
+        offset: Long,
+        "筛选条件"
+        conditions: [ConditionInput] = [],
+        "数据列表"
+        orders: [OrderInput] = []
+    ): [Menu]
+
+    """
+    查询数据
+    """
+    pageBy(
+        "分页下标，从 1 开始"
+        pageIndex: Long,
+        "分页大小，最小值为 1，最大值为 100"
+        pageSize: Long,
+        "筛选条件"
+        conditions: [ConditionInput] = [],
+        "排序条件"
+        orders: [OrderInput] = []
+    ): Page
+
+    """
+    查询符合条件的数据数量
+    """
+    countBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}
