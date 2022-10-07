@@ -24,7 +24,6 @@
 
 package central.provider.graphql.org;
 
-import central.api.provider.org.AccountProvider;
 import central.api.provider.org.AreaProvider;
 import central.bean.Page;
 import central.data.org.Area;
@@ -77,7 +76,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#findById
+     * @see AreaProvider#findById
      */
     @Test
     public void case1() {
@@ -114,7 +113,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#findByIds
+     * @see AreaProvider#findByIds
      */
     @Test
     public void case2() {
@@ -147,7 +146,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#findBy
+     * @see AreaProvider#findBy
      */
     @Test
     public void case3() {
@@ -178,7 +177,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#pageBy
+     * @see AreaProvider#pageBy
      */
     @Test
     public void case4() {
@@ -220,7 +219,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#countBy
+     * @see AreaProvider#countBy
      */
     @Test
     public void case5() {
@@ -257,7 +256,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#insert
+     * @see AreaProvider#insert
      */
     @Test
     public void case6() {
@@ -310,7 +309,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#insertBatch
+     * @see AreaProvider#insertBatch
      */
     @Test
     public void case7() {
@@ -346,7 +345,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#update
+     * @see AreaProvider#update
      */
     @Test
     public void case8() {
@@ -386,7 +385,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#updateBatch
+     * @see AreaProvider#updateBatch
      */
     @Test
     public void case9() {
@@ -420,7 +419,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#deleteByIds
+     * @see AreaProvider#deleteByIds
      */
     @Test
     public void case10() {
@@ -459,7 +458,7 @@ public class TestAreaProvider extends TestProvider {
     }
 
     /**
-     * @see AccountProvider#deleteBy
+     * @see AreaProvider#deleteBy
      */
     @Test
     public void case11() {
