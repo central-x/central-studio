@@ -1,0 +1,79 @@
+"""
+租户输入
+"""
+input TenantInput {
+    "主键"
+    id:                     ID
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "数据库主键"
+    databaseId:             String
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+}
+
+"""
+租户修改
+"""
+type TenantMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: TenantInput,
+        "操作人"
+        operator: String
+    ): Tenant
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [TenantInput],
+        "操作人"
+        operator: String
+    ): [Tenant]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: TenantInput,
+        "操作人"
+        operator: String
+    ): Tenant
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [TenantInput],
+        "操作人"
+        operator: String
+    ): [Tenant]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

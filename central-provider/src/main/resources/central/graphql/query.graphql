@@ -1,0 +1,13 @@
+extend type Query {
+    "组织架构数据查询"
+    org: OrgQuery
+
+    "安全数据查询"
+    sec: SecQuery
+
+    "系统数据查询"
+    sys: SysQuery
+
+    "租户数据查询"
+    ten: TenQuery
+}

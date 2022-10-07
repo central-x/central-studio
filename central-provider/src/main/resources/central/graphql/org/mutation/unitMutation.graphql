@@ -1,0 +1,80 @@
+"""
+单位输入
+"""
+input UnitInput {
+    "主键"
+    id:                     ID
+    "所属行政区划主键"
+    areaId:                 String
+    "父单位主键"
+    parentId:               String
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "排序号"
+    order:                  Int
+}
+
+
+"""
+单位修改
+"""
+type UnitMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: UnitInput,
+        "操作人"
+        operator: String
+    ): Unit
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [UnitInput],
+        "操作人"
+        operator: String
+    ): [Unit]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: UnitInput,
+        "操作人"
+        operator: String
+    ): Unit
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [UnitInput],
+        "操作人"
+        operator: String
+    ): [Unit]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

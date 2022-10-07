@@ -1,0 +1,176 @@
+"""
+帐户
+"""
+type Account implements Entity & Modifiable & Available & Deletable {
+    "主键"
+    id:                     ID!
+    "帐户名"
+    username:               String!
+    "邮箱"
+    email:                  String
+    "手机号"
+    mobile:                 String
+    "姓名"
+    name:                   String!
+    "头像(Basic64)"
+    avatar:                 String
+    "是否管理员（系统管理员，安全管理员、安全保密员）"
+    admin:                  Boolean!
+    "是否超级管理员"
+    supervisor:             Boolean!
+    "是否启用"
+    enabled:                Boolean!
+    "是否已删除"
+    deleted:                Boolean!
+
+    "创建帐户信息"
+    creator:                Account!
+    "创建帐户主键"
+    creatorId:              String!
+    "创建时间"
+    createDate:             Timestamp!
+    "修改帐户信息"
+    modifier:               Account!
+    "修改帐户主键"
+    modifierId:             String!
+    "修改时间"
+    modifyDate:             Timestamp!
+
+    "获取所属单位信息"
+    units(
+        "数据量（不传的话，就返回所有数据）"
+        limit: Long,
+        "偏移量（跳过前 N 条数据）"
+        offset: Long,
+        "筛选条件"
+        conditions: [ConditionInput] = [],
+        "数据列表"
+        orders: [OrderInput] = []
+    ): [AccountUnit]
+}
+
+"""
+帐户与单位关系关系
+"""
+type AccountUnit implements Entity & Orderable {
+    "主键"
+    id:                     ID!
+    "帐户主键"
+    accountId:              String!
+    "帐户"
+    account:                Account!
+    "单位主键"
+    unitId:                 String!
+    "单位"
+    unit:                   Unit!
+    "职级主键"
+    rankId:                 String!
+    "职级"
+    rank:                   Rank!
+    "是否主单位"
+    primary:                Boolean!
+    "排序号"
+    order:                  Int!
+
+    "创建帐户信息"
+    creator:                Account!
+    "创建帐户主键"
+    creatorId:              String!
+    "创建时间"
+    createDate:             Timestamp!
+
+    "获取部门信息"
+    departments:            [AccountDepartment]
+}
+
+"""
+帐户与部门关联关系
+"""
+type AccountDepartment implements Entity & Orderable {
+    "主键"
+    id:                     ID!
+    "帐户主键"
+    accountId:              String!
+    "帐户"
+    account:                Account!
+    "单位主键"
+    unitId:                 String!
+    "单位"
+    unit:                   Unit!
+    "部门主键"
+    departmentId:           String!
+    "部门"
+    department:             Department!
+    "职务主键"
+    postId:                 String!
+    "职务"
+    post:                   Post!
+    "是否主部门"
+    primary:                Boolean!
+    "排序号"
+    order:                  Int!
+
+    "创建帐户信息"
+    creator:                Account!
+    "创建帐户主键"
+    creatorId:              String!
+    "创建时间"
+    createDate:             Timestamp!
+}
+
+"""
+帐户查询
+"""
+type AccountQuery {
+    """
+    查询数据
+    """
+    findById(
+        "主键"
+        id: String
+    ): Account
+
+    """
+    查询数据
+    """
+    findByIds(
+        "主键"
+        ids: [String]
+    ): [Account]
+
+    """
+    查询数据
+    """
+    findBy(
+        "数据量（不传的话，就返回所有数据）"
+        limit: Long,
+        "偏移量（跳过前 N 条数据）"
+        offset: Long,
+        "筛选条件"
+        conditions: [ConditionInput] = [],
+        "数据列表"
+        orders: [OrderInput] = []
+    ): [Account]
+
+    """
+    查询数据
+    """
+    pageBy(
+        "分页下标，从 1 开始"
+        pageIndex: Long,
+        "分页大小，最小值为 1，最大值为 100"
+        pageSize: Long,
+        "筛选条件"
+        conditions: [ConditionInput] = [],
+        "排序条件"
+        orders: [OrderInput] = []
+    ): Page
+
+    """
+    查询符合条件的数据数量
+    """
+    countBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

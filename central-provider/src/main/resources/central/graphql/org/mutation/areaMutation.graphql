@@ -1,0 +1,79 @@
+"""
+行政区划输入
+"""
+input AreaInput {
+    "主键"
+    id:                     ID
+    "父行政区划主键"
+    parentId:               String
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "类型"
+    type:                   String
+    "排序号"
+    order:                  String
+}
+
+"""
+行政区划修改
+"""
+type AreaMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: AreaInput,
+        "操作人"
+        operator: String
+    ): Area
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [AreaInput],
+        "操作人"
+        operator: String
+    ): [Area]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: AreaInput,
+        "操作人"
+        operator: String
+    ): Area
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [AreaInput],
+        "操作人"
+        operator: String
+    ): [Area]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

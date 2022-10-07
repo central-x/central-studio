@@ -1,0 +1,85 @@
+"""
+应用输入
+"""
+input ApplicationInput {
+    "主键"
+    id:                     ID
+    "标识"
+    code:                   String
+    "图标"
+    logo:                   String
+    "服务地址"
+    url:                    String
+    "上下文路径"
+    contextPath:            String
+    "密钥"
+    key:                    String
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+    "应用模块"
+    modules:               [ApplicationModuleInput]
+}
+
+"""
+应用修改
+"""
+type ApplicationMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: ApplicationInput,
+        "操作人"
+        operator: String
+    ): Application
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [ApplicationInput],
+        "操作人"
+        operator: String
+    ): [Application]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: ApplicationInput,
+        "操作人"
+        operator: String
+    ): Application
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [ApplicationInput],
+        "操作人"
+        operator: String
+    ): [Application]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}
