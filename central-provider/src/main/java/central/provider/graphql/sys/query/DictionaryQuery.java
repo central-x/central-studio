@@ -64,13 +64,13 @@ public class DictionaryQuery {
     /**
      * 批量数据加载器
      *
-     * @param ids        主键
-     * @param tenantCode 租户标识
+     * @param ids    主键
+     * @param tenant 租户标识
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, DictionaryDTO> batchLoader(@RequestParam List<String> ids,
-                                                           @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        return this.mapper.findBy(Conditions.of(DictionaryEntity.class).in(DictionaryEntity::getId, ids).eq(DictionaryEntity::getTenantCode, tenantCode))
+                                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.mapper.findBy(Conditions.of(DictionaryEntity.class).in(DictionaryEntity::getId, ids).eq(DictionaryEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, DictionaryDTO.class))
                 .collect(Collectors.toMap(DictionaryDTO::getId, it -> it));
@@ -79,13 +79,13 @@ public class DictionaryQuery {
     /**
      * 根据主键查询数据
      *
-     * @param id         主键
-     * @param tenantCode 租户标识
+     * @param id     主键
+     * @param tenant 租户标识
      */
     @GraphQLFetcher
     public @Nullable DictionaryDTO findById(@RequestParam String id,
-                                            @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        var entity = this.mapper.findFirstBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getId, id).eq(DictionaryEntity::getTenantCode, tenantCode));
+                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var entity = this.mapper.findFirstBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getId, id).eq(DictionaryEntity::getTenantCode, tenant));
         return DTO.wrap(entity, DictionaryDTO.class);
     }
 

@@ -30,6 +30,7 @@ import central.lang.Stringx;
 import central.provider.graphql.sys.dto.DictionaryDTO;
 import central.provider.graphql.sys.dto.DictionaryItemDTO;
 import central.provider.graphql.sys.entity.DictionaryEntity;
+import central.provider.graphql.sys.entity.DictionaryItemEntity;
 import central.provider.graphql.sys.mapper.DictionaryMapper;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
@@ -156,12 +157,18 @@ public class DictionaryMutation {
      */
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
-                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                            @RequestHeader(XForwardedHeaders.TENANT) String tenant,
+                            @Autowired DictionaryItemMutation mutation) {
         if (Listx.isNullOrEmpty(ids)) {
-            return 0;
+            return 0L;
         }
 
-        return this.mapper.deleteBy(Conditions.of(DictionaryEntity.class).in(DictionaryEntity::getId, ids).eq(DictionaryEntity::getTenantCode, tenant));
+        var effected = this.mapper.deleteBy(Conditions.of(DictionaryEntity.class).in(DictionaryEntity::getId, ids).eq(DictionaryEntity::getTenantCode, tenant));
+        if (effected > 0L) {
+            // 级联删除
+            mutation.deleteBy(Conditions.of(DictionaryItemEntity.class).in(DictionaryItemEntity::getDictionaryId, ids), tenant);
+        }
+        return effected;
     }
 
     /**
@@ -172,9 +179,19 @@ public class DictionaryMutation {
      */
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<DictionaryEntity> conditions,
-                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                         @RequestHeader(XForwardedHeaders.TENANT) String tenant,
+                         @Autowired DictionaryItemMutation mutation) {
         conditions = Conditions.group(conditions).eq(DictionaryEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+
+        var entities = this.mapper.findBy(conditions);
+        if (entities.isEmpty()) {
+            return 0L;
+        }
+        var effected = this.mapper.deleteBy(conditions);
+        // 级联删除
+        mutation.deleteBy(Conditions.of(DictionaryItemEntity.class).in(DictionaryItemEntity::getDictionaryId, entities.stream().map(DictionaryEntity::getId).toList()), tenant);
+
+        return effected;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

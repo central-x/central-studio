@@ -16,6 +16,8 @@ type Tenant implements Entity & Modifiable & Codeable & Available {
     enabled:                Boolean!
     "备注"
     remark:                 String
+    "关联应用"
+    applications:          [TenantApplication]!
 
     "创建帐户信息"
     creator:                Account!
@@ -35,6 +37,11 @@ type Tenant implements Entity & Modifiable & Codeable & Available {
 租户查询
 """
 type TenantQuery {
+    """
+    租户与应用关联关系查询
+    """
+    applications: TenantApplicationQuery
+
     """
     查询数据
     """

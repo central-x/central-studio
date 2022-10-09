@@ -42,6 +42,11 @@ type Application implements Entity & Modifiable & Codeable & Available {
 """
 type ApplicationQuery {
     """
+    模块查询
+    """
+    modules: ApplicationModuleQuery
+
+    """
     查询数据
     """
     findById(

@@ -74,6 +74,7 @@ public class ApplicationDTO extends ApplicationEntity implements DTO {
     /**
      * 获取模块
      */
+    @GraphQLGetter
     public List<ApplicationModuleDTO> getModules(@Autowired ApplicationModuleQuery query,
                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return query.findBy(null, null, Conditions.of(ApplicationModuleEntity.class).eq(ApplicationModuleEntity::getApplicationId, this.getId()), Orders.of(ApplicationModuleEntity.class).asc(ApplicationModuleEntity::getContextPath), tenant);

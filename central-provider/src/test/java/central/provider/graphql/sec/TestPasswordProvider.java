@@ -346,7 +346,7 @@ public class TestPasswordProvider extends TestProvider {
      * @see PasswordProvider#deleteByIds
      */
     @Test
-    public void case10() {
+    public void case8() {
         // 插入数据
         var zhangs = new AccountEntity();
         zhangs.setUsername("zhangs");
@@ -402,7 +402,7 @@ public class TestPasswordProvider extends TestProvider {
      * @see PasswordProvider#deleteBy
      */
     @Test
-    public void case11() {
+    public void case9() {
         // 插入数据
         var zhangs = new AccountEntity();
         zhangs.setUsername("zhangs");

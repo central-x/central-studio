@@ -64,13 +64,13 @@ public class AreaQuery {
     /**
      * 批量数据加载器
      *
-     * @param ids        主键
-     * @param tenantCode 租户标识
+     * @param ids    主键
+     * @param tenant 租户标识
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, AreaDTO> batchLoader(@RequestParam List<String> ids,
-                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        return this.mapper.findBy(Conditions.of(AreaEntity.class).in(AreaEntity::getId, ids).eq(AreaEntity::getTenantCode, tenantCode))
+                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.mapper.findBy(Conditions.of(AreaEntity.class).in(AreaEntity::getId, ids).eq(AreaEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, AreaDTO.class))
                 .collect(Collectors.toMap(AreaDTO::getId, it -> it));
@@ -79,13 +79,13 @@ public class AreaQuery {
     /**
      * 根据主键查询数据
      *
-     * @param id         主键
-     * @param tenantCode 租户标识
+     * @param id     主键
+     * @param tenant 租户标识
      */
     @GraphQLFetcher
     public @Nullable AreaDTO findById(@RequestParam String id,
-                                      @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        var entity = this.mapper.findFirstBy(Conditions.of(AreaEntity.class).eq(AreaEntity::getId, id).eq(AreaEntity::getTenantCode, tenantCode));
+                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var entity = this.mapper.findFirstBy(Conditions.of(AreaEntity.class).eq(AreaEntity::getId, id).eq(AreaEntity::getTenantCode, tenant));
         return DTO.wrap(entity, AreaDTO.class);
     }
 

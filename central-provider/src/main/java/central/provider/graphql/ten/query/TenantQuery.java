@@ -34,6 +34,7 @@ import central.sql.Conditions;
 import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
+import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.starter.web.http.XForwardedHeaders;
 import lombok.Setter;
@@ -56,7 +57,7 @@ import java.util.stream.Collectors;
  * @since 2022/10/03
  */
 @Component
-@GraphQLSchema(path = "ten/query", types = TenantDTO.class)
+@GraphQLSchema(path = "ten/query", types = {TenantDTO.class, TenantApplicationQuery.class})
 public class TenantQuery {
     @Setter(onMethod_ = @Autowired)
     private TenantMapper mapper;
@@ -158,5 +159,18 @@ public class TenantQuery {
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
         return this.mapper.countBy(conditions);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 关联查询
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Tenant Application Query
+     * 租户与应用关联关系查询
+     */
+    @GraphQLGetter
+    public TenantApplicationQuery getApplications(@Autowired TenantApplicationQuery query) {
+        return query;
     }
 }

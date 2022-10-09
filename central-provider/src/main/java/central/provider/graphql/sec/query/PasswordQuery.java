@@ -63,13 +63,13 @@ public class PasswordQuery {
     /**
      * 批量数据加载器
      *
-     * @param ids        主键
-     * @param tenantCode 租户标识
+     * @param ids    主键
+     * @param tenant 租户标识
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, PasswordDTO> batchLoader(@RequestParam List<String> ids,
-                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        return this.mapper.findBy(Conditions.of(PasswordEntity.class).in(PasswordEntity::getId, ids).eq(PasswordEntity::getTenantCode, tenantCode))
+                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.mapper.findBy(Conditions.of(PasswordEntity.class).in(PasswordEntity::getId, ids).eq(PasswordEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, PasswordDTO.class))
                 .collect(Collectors.toMap(PasswordDTO::getId, it -> it));
@@ -79,12 +79,12 @@ public class PasswordQuery {
      * 根据主键查询数据
      *
      * @param id         主键
-     * @param tenantCode 租户标识
+     * @param tenant 租户标识
      */
     @GraphQLFetcher
     public @Nullable PasswordDTO findById(@RequestParam String id,
-                                          @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        var entity = this.mapper.findFirstBy(Conditions.of(PasswordEntity.class).eq(PasswordEntity::getId, id).eq(PasswordEntity::getTenantCode, tenantCode));
+                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var entity = this.mapper.findFirstBy(Conditions.of(PasswordEntity.class).eq(PasswordEntity::getId, id).eq(PasswordEntity::getTenantCode, tenant));
         return DTO.wrap(entity, PasswordDTO.class);
     }
 

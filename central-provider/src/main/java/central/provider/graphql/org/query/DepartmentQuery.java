@@ -63,13 +63,13 @@ public class DepartmentQuery {
     /**
      * 批量数据加载器
      *
-     * @param ids        主键
-     * @param tenantCode 租户标识
+     * @param ids    主键
+     * @param tenant 租户标识
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, DepartmentDTO> batchLoader(@RequestParam List<String> ids,
-                                                           @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        return this.mapper.findBy(Conditions.of(DepartmentEntity.class).in(DepartmentEntity::getId, ids).eq(DepartmentEntity::getTenantCode, tenantCode))
+                                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.mapper.findBy(Conditions.of(DepartmentEntity.class).in(DepartmentEntity::getId, ids).eq(DepartmentEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, DepartmentDTO.class))
                 .collect(Collectors.toMap(DepartmentDTO::getId, it -> it));
@@ -78,13 +78,13 @@ public class DepartmentQuery {
     /**
      * 根据主键查询数据
      *
-     * @param id         主键
-     * @param tenantCode 租户标识
+     * @param id     主键
+     * @param tenant 租户标识
      */
     @GraphQLFetcher
     public @Nullable DepartmentDTO findById(@RequestParam String id,
-                                            @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        var entity = this.mapper.findFirstBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getId, id).eq(DepartmentEntity::getTenantCode, tenantCode));
+                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var entity = this.mapper.findFirstBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getId, id).eq(DepartmentEntity::getTenantCode, tenant));
         return DTO.wrap(entity, DepartmentDTO.class);
     }
 

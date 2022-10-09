@@ -26,7 +26,6 @@ package central.data.ten;
 
 import central.bean.Available;
 import central.bean.Codeable;
-import central.bean.Orderable;
 import central.bean.Remarkable;
 import central.data.org.Account;
 import central.sql.data.ModifiableEntity;

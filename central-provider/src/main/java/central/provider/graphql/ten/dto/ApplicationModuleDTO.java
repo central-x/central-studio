@@ -51,6 +51,7 @@ public class ApplicationModuleDTO extends ApplicationModuleEntity implements DTO
     /**
      * 获取应用
      */
+    @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
     }

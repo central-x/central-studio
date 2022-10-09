@@ -26,6 +26,7 @@ package central.provider.graphql.ten.entity;
 
 import central.data.ten.ApplicationModuleInput;
 import central.sql.data.ModifiableEntity;
+import central.sql.meta.annotation.Relation;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -50,6 +51,7 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_TEN_APPLICATION_MODULE")
 @EqualsAndHashCode(callSuper = true)
+@Relation(alias = "application", target = ApplicationEntity.class, property = "applicationId")
 public class ApplicationModuleEntity extends ModifiableEntity {
     @Serial
     private static final long serialVersionUID = 7015722509704015462L;

@@ -63,13 +63,13 @@ public class MenuQuery {
     /**
      * 批量数据加载器
      *
-     * @param ids        主键
-     * @param tenantCode 租户标识
+     * @param ids    主键
+     * @param tenant 租户标识
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, MenuDTO> batchLoader(@RequestParam List<String> ids,
-                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        return this.mapper.findBy(Conditions.of(MenuEntity.class).in(MenuEntity::getId, ids).eq(MenuEntity::getTenantCode, tenantCode))
+                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.mapper.findBy(Conditions.of(MenuEntity.class).in(MenuEntity::getId, ids).eq(MenuEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, MenuDTO.class))
                 .collect(Collectors.toMap(MenuDTO::getId, it -> it));
@@ -78,13 +78,13 @@ public class MenuQuery {
     /**
      * 根据主键查询数据
      *
-     * @param id         主键
-     * @param tenantCode 租户标识
+     * @param id     主键
+     * @param tenant 租户标识
      */
     @GraphQLFetcher
     public @Nullable MenuDTO findById(@RequestParam String id,
-                                      @RequestHeader(XForwardedHeaders.TENANT) String tenantCode) {
-        var entity = this.mapper.findFirstBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, id).eq(MenuEntity::getTenantCode, tenantCode));
+                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var entity = this.mapper.findFirstBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, id).eq(MenuEntity::getTenantCode, tenant));
         return DTO.wrap(entity, MenuDTO.class);
     }
 

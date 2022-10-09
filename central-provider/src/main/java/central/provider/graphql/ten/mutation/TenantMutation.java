@@ -29,10 +29,12 @@ import central.data.ten.TenantInput;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.provider.graphql.ten.dto.TenantDTO;
+import central.provider.graphql.ten.entity.TenantApplicationEntity;
 import central.provider.graphql.ten.entity.TenantEntity;
 import central.provider.graphql.ten.mapper.TenantMapper;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
+import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.starter.web.http.XForwardedHeaders;
 import central.util.Listx;
@@ -60,7 +62,7 @@ import java.util.Objects;
  * @since 2022/10/04
  */
 @Component
-@GraphQLSchema(path = "ten/mutation", types = TenantDTO.class)
+@GraphQLSchema(path = "ten/mutation", types = {TenantDTO.class, TenantApplicationMutation.class})
 public class TenantMutation {
     @Setter(onMethod_ = @Autowired)
     private TenantMapper mapper;
@@ -159,13 +161,19 @@ public class TenantMutation {
      */
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
-                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                            @RequestHeader(XForwardedHeaders.TENANT) String tenant,
+                            @Autowired TenantApplicationMutation mutation) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
         if (Listx.isNullOrEmpty(ids)) {
-            return 0;
+            return 0L;
         }
 
-        return this.mapper.deleteByIds(ids);
+        var effected = this.mapper.deleteByIds(ids);
+        if (effected > 0L) {
+            // 级联删除
+            mutation.deleteBy(Conditions.of(TenantApplicationEntity.class).in(TenantApplicationEntity::getTenantId, ids), tenant);
+        }
+        return effected;
     }
 
     /**
@@ -176,8 +184,29 @@ public class TenantMutation {
      */
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<TenantEntity> conditions,
-                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                         @RequestHeader(XForwardedHeaders.TENANT) String tenant,
+                         @Autowired TenantApplicationMutation mutation) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return this.mapper.deleteBy(conditions);
+        var entities = this.mapper.findBy(conditions);
+        if (entities.isEmpty()) {
+            return 0L;
+        }
+        var effected = this.mapper.deleteBy(conditions);
+        // 级联删除
+        mutation.deleteBy(Conditions.of(TenantApplicationEntity.class).in(TenantApplicationEntity::getTenantId, entities.stream().map(TenantEntity::getId).toList()), tenant);
+        return effected;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 关联查询
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Tenant Application Mutation
+     * 租户与应用关联关系修改
+     */
+    @GraphQLGetter
+    public TenantApplicationMutation getApplications(@Autowired TenantApplicationMutation mutation) {
+        return mutation;
     }
 }

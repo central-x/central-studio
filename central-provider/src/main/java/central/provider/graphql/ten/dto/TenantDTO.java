@@ -26,13 +26,21 @@ package central.provider.graphql.ten.dto;
 
 import central.api.DTO;
 import central.provider.graphql.org.dto.AccountDTO;
+import central.provider.graphql.sys.dto.DatabaseDTO;
+import central.provider.graphql.ten.entity.TenantApplicationEntity;
 import central.provider.graphql.ten.entity.TenantEntity;
+import central.provider.graphql.ten.query.TenantApplicationQuery;
+import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.starter.web.http.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.Serial;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -46,6 +54,23 @@ import java.util.concurrent.CompletableFuture;
 public class TenantDTO extends TenantEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 1074908736228849278L;
+
+    /**
+     * 数据库信息
+     */
+    @GraphQLGetter
+    public CompletableFuture<DatabaseDTO> getDatabase(DataLoader<String, DatabaseDTO> loader) {
+        return loader.load(this.getDatabaseId());
+    }
+
+    /**
+     * 获取应用信息
+     */
+    @GraphQLGetter
+    public List<TenantApplicationDTO> getApplications(@Autowired TenantApplicationQuery query,
+                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return query.findBy(null, null, Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getTenantId, this.getId()), null, tenant);
+    }
 
     /**
      * 创建人信息

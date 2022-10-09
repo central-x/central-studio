@@ -48,6 +48,22 @@ public class TenantApplicationDTO extends TenantApplicationEntity implements DTO
     private static final long serialVersionUID = -2683864669147904140L;
 
     /**
+     * 租户
+     */
+    @GraphQLGetter
+    public CompletableFuture<TenantDTO> getTenant(DataLoader<String, TenantDTO> loader) {
+        return loader.load(this.getTenantId());
+    }
+
+    /**
+     * 应用
+     */
+    @GraphQLGetter
+    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
+        return loader.load(this.getApplicationId());
+    }
+
+    /**
      * 创建人信息
      */
     @GraphQLGetter

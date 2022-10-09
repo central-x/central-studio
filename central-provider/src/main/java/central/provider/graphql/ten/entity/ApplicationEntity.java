@@ -101,10 +101,6 @@ public class ApplicationEntity extends ModifiableEntity {
     @NotNull
     private Boolean enabled;
 
-    @Label("排序号")
-    @NotNull
-    private Integer order;
-
     @Label("备注")
     @Size(max = 1024)
     private String remark;

@@ -20,6 +20,10 @@ input TenantInput {
 租户修改
 """
 type TenantMutation {
+    """
+    租户与应用关联关系修改
+    """
+    applications: TenantApplicationMutation
 
     """
     保存数据

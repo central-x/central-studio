@@ -432,7 +432,6 @@ public class v1_0_0 extends Migration {
                     Column.of("CONTEXT_PATH", SqlType.STRING, 64, "上下文地址"),
                     Column.of("KEY", SqlType.STRING, 128, "密钥"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
-                    Column.of("ORDER", SqlType.INTEGER, "排序号"),
                     Column.of("REMARK", SqlType.STRING, 1024, "备注"),
                     Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
                     Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),

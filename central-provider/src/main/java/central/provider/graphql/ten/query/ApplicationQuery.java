@@ -34,6 +34,7 @@ import central.sql.Conditions;
 import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
+import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.starter.web.http.XForwardedHeaders;
 import lombok.Setter;
@@ -158,5 +159,18 @@ public class ApplicationQuery {
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
         return this.mapper.countBy(conditions);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 关联查询
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Application Module Query
+     * 模块查询
+     */
+    @GraphQLGetter
+    public ApplicationModuleQuery getModules(@Autowired ApplicationModuleQuery query) {
+        return query;
     }
 }
