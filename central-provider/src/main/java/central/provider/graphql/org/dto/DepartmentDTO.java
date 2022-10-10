@@ -26,12 +26,19 @@ package central.provider.graphql.org.dto;
 
 import central.api.DTO;
 import central.provider.graphql.org.entity.DepartmentEntity;
+import central.provider.graphql.org.query.DepartmentQuery;
+import central.sql.Conditions;
+import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.starter.web.http.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.Serial;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -45,6 +52,31 @@ import java.util.concurrent.CompletableFuture;
 public class DepartmentDTO extends DepartmentEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -5935775736872065997L;
+
+    /**
+     * 单位
+     */
+    @GraphQLGetter
+    public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
+        return loader.load(this.getUnitId());
+    }
+
+    /**
+     * 父部门信息
+     */
+    @GraphQLGetter
+    public CompletableFuture<DepartmentDTO> getParent(DataLoader<String, DepartmentDTO> loader) {
+        return loader.load(this.getParentId());
+    }
+
+    /**
+     * 子部门
+     */
+    @GraphQLGetter
+    public List<DepartmentDTO> getChildren(@Autowired DepartmentQuery query,
+                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return query.findBy(null, null, Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getParentId, this.getId()), Orders.of(DepartmentEntity.class).asc(DepartmentEntity::getOrder).asc(DepartmentEntity::getCode), tenant);
+    }
 
     /**
      * 创建人信息

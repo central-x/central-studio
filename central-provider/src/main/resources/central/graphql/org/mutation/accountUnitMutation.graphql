@@ -1,0 +1,65 @@
+"""
+帐户与单位关联关系输入
+"""
+input AccountUnitInput {
+    "主键"
+    id:                     ID
+    "账户主键"
+    accountId:              String
+    "单位主键"
+    unitId:                 String
+    "职级主键"
+    rankId:                 String
+    "是否主单位"
+    primary:                Boolean
+    "排序号"
+    order:                  Int
+    "部门和职务列表"
+    departments:           [AccountDepartmentInput]
+}
+
+"""
+帐户与单位关联关系修改
+"""
+type AccountUnitMutation {
+    """
+    帐户部门关联关系修改
+    """
+    departments: AccountDepartmentMutation
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: AccountUnitInput,
+        "操作人"
+        operator: String
+    ): AccountUnit
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [AccountUnitInput],
+        "操作人"
+        operator: String
+    ): [AccountUnit]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

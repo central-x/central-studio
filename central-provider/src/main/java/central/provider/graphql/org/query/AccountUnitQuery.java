@@ -33,6 +33,7 @@ import central.sql.Conditions;
 import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
+import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.starter.web.http.XForwardedHeaders;
 import lombok.Setter;
@@ -55,7 +56,7 @@ import java.util.stream.Collectors;
  * @since 2022/10/03
  */
 @Component
-@GraphQLSchema(path = "org/query", types = AccountUnitDTO.class)
+@GraphQLSchema(path = "org/query", types = {AccountUnitDTO.class, AccountDepartmentQuery.class})
 public class AccountUnitQuery {
     @Setter(onMethod_ = @Autowired)
     private AccountUnitMapper mapper;
@@ -154,5 +155,18 @@ public class AccountUnitQuery {
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(AccountUnitEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 关联查询
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Account Department Query
+     * 帐户与部门关联关系查询
+     */
+    @GraphQLGetter
+    public AccountDepartmentQuery getDepartments(@Autowired AccountDepartmentQuery query) {
+        return query;
     }
 }

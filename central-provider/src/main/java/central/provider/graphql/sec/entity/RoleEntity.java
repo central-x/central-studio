@@ -103,6 +103,7 @@ public class RoleEntity extends ModifiableEntity implements Tenantable {
 
     public void fromInput(RoleInput input) {
         this.setId(input.getId());
+        this.setApplicationId(input.getApplicationId());
         this.setCode(input.getCode());
         this.setName(input.getName());
         this.setUnitId(input.getUnitId());

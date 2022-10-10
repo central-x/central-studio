@@ -25,13 +25,22 @@
 package central.provider.graphql.org.dto;
 
 import central.api.DTO;
+import central.provider.graphql.org.entity.DepartmentEntity;
 import central.provider.graphql.org.entity.UnitEntity;
+import central.provider.graphql.org.query.DepartmentQuery;
+import central.provider.graphql.org.query.UnitQuery;
+import central.sql.Conditions;
+import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.starter.web.http.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.Serial;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -45,6 +54,40 @@ import java.util.concurrent.CompletableFuture;
 public class UnitDTO extends UnitEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -7924414310018767718L;
+
+    /**
+     * 行政区划信息
+     */
+    @GraphQLGetter
+    public CompletableFuture<AreaDTO> getArea(DataLoader<String, AreaDTO> loader) {
+        return loader.load(this.getAreaId());
+    }
+
+    /**
+     * 父单位信息
+     */
+    @GraphQLGetter
+    public CompletableFuture<UnitDTO> getParent(DataLoader<String, UnitDTO> loader) {
+        return loader.load(this.getParentId());
+    }
+
+    /**
+     * 子单位信息
+     */
+    @GraphQLGetter
+    public List<UnitDTO> getChildren(@Autowired UnitQuery query,
+                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return query.findBy(null, null, Conditions.of(UnitEntity.class).eq(UnitEntity::getParentId, this.getId()), Orders.of(UnitEntity.class).asc(UnitEntity::getOrder).asc(UnitEntity::getCode), tenant);
+    }
+
+    /**
+     * 部门信息
+     */
+    @GraphQLGetter
+    public List<DepartmentDTO> getDepartments(@Autowired DepartmentQuery query,
+                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return query.findBy(null, null, Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getUnitId, this.getId()), Orders.of(DepartmentEntity.class).asc(DepartmentEntity::getOrder).asc(DepartmentEntity::getCode), tenant);
+    }
 
     /**
      * 创建人信息

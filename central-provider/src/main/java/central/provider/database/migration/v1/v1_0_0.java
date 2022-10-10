@@ -120,6 +120,7 @@ public class v1_0_0 extends Migration {
             // 角色
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
+                    Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
                     Column.of("CODE", SqlType.STRING, 32, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("UNIT_ID", SqlType.STRING, 32, "单位主键"),

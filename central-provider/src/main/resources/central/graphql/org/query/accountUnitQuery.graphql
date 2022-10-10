@@ -1,21 +1,25 @@
 """
-权限
+帐户与单位关联关系
 """
-type Permission implements Entity & Modifiable {
+type AccountUnit implements Entity & Orderable {
     "主键"
     id:                     ID!
-    "菜单主键"
-    menuId:                 String!
-    "菜单"
-    menu:                   Menu!
-    "标识（可用于 Shiro 等权限框架）"
-    code:                   String!
-    "权限名称"
-    name:                   String!
-    "是否启用"
-    enabled:                Boolean!
-    "备注"
-    remark:                 String
+    "帐户主键"
+    accountId:              String!
+    "帐户"
+    account:                Account!
+    "单位主键"
+    unitId:                 String!
+    "单位"
+    unit:                   Unit!
+    "职级主键"
+    rankId:                 String!
+    "职级"
+    rank:                   Rank!
+    "是否主单位"
+    primary:                Boolean!
+    "排序号"
+    order:                  Int!
 
     "创建帐户信息"
     creator:                Account!
@@ -23,25 +27,27 @@ type Permission implements Entity & Modifiable {
     creatorId:              String!
     "创建时间"
     createDate:             Timestamp!
-    "修改帐户信息"
-    modifier:               Account!
-    "修改帐户主键"
-    modifierId:             String!
-    "修改时间"
-    modifyDate:             Timestamp!
+
+    "获取部门信息"
+    departments:            [AccountDepartment]
 }
 
 """
-权限查询
+帐户与单位关联关系查询
 """
-type PermissionQuery {
+type AccountUnitQuery {
+    """
+    帐户与部门关联关系查询
+    """
+    departments: AccountDepartmentQuery
+
     """
     查询数据
     """
     findById(
         "主键"
         id: String
-    ): Permission
+    ): AccountUnit
 
     """
     查询数据
@@ -49,7 +55,7 @@ type PermissionQuery {
     findByIds(
         "主键"
         ids: [String]
-    ): [Permission]
+    ): [AccountUnit]
 
     """
     查询数据
@@ -63,7 +69,7 @@ type PermissionQuery {
         conditions: [ConditionInput] = [],
         "数据列表"
         orders: [OrderInput] = []
-    ): [Permission]
+    ): [AccountUnit]
 
     """
     查询数据

@@ -17,6 +17,8 @@ type Dictionary implements Entity & Modifiable {
     "备注"
     remark:                 String
 
+    items:                 [DictionaryItem]!
+
     "创建帐户信息"
     creator:                Account!
     "创建帐户主键"
@@ -32,9 +34,14 @@ type Dictionary implements Entity & Modifiable {
 }
 
 """
-行政区划查询
+字典查询
 """
 type DictionaryQuery {
+    """
+    字典项查询
+    """
+    items: DictionaryItemQuery
+
     """
     查询数据
     """

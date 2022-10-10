@@ -11,13 +11,17 @@ type Unit implements Entity & Modifiable {
     "父单位主键"
     parentId:               String
     "父单位信息"
-    parent:                 Department
+    parent:                 Unit
     "标识"
     code:                   String!
     "名称"
     name:                   String!
     "排序号"
     order:                  Int!
+    "子单位"
+    children:              [Unit]!
+    "部门信息"
+    departments:           [Department]!
 
     "创建帐户信息"
     creator:                Account!

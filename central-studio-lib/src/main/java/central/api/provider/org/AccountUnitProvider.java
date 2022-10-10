@@ -33,7 +33,6 @@ import central.starter.graphql.stub.Provider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import central.validation.group.Insert;
-import central.validation.group.Update;
 import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
@@ -113,24 +112,6 @@ public interface AccountUnitProvider extends Provider {
      * @return 保存后的实体数据
      */
     List<AccountUnit> insertBatch(@Validated({Insert.class, Default.class}) List<AccountUnitInput> inputs, String operator);
-
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    AccountUnit update(@Validated({Update.class, Default.class}) AccountUnitInput input, String operator);
-
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    List<AccountUnit> updateBatch(@Validated({Update.class, Default.class}) List<AccountUnitInput> inputs, String operator);
 
     /**
      * 删除数据

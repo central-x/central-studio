@@ -4,6 +4,8 @@
 input RoleInput {
     "主键"
     id:                     ID
+    "应用主键"
+    applicationId:          String
     "所属单位主键"
     unitId:                 String
     "标识"

@@ -24,8 +24,10 @@
 
 package central.provider.graphql.sec.dto;
 
+import central.provider.graphql.org.dto.UnitDTO;
 import central.provider.graphql.sec.entity.RoleEntity;
 import central.provider.graphql.org.dto.AccountDTO;
+import central.provider.graphql.ten.dto.ApplicationDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;
@@ -45,6 +47,22 @@ import java.util.concurrent.CompletableFuture;
 public class RoleDTO extends RoleEntity {
     @Serial
     private static final long serialVersionUID = -4526642857258078644L;
+
+    /**
+     * 应用信息
+     */
+    @GraphQLGetter
+    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
+        return loader.load(this.getApplicationId());
+    }
+
+    /**
+     * 单位信息
+     */
+    @GraphQLGetter
+    public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
+        return loader.load(this.getUnitId());
+    }
 
     /**
      * 创建人信息

@@ -1,0 +1,60 @@
+"""
+帐户与部门关联关系输入
+"""
+input AccountDepartmentInput {
+    "主键"
+    id:                     ID
+    "账户主键"
+    accountId:              String
+    "单位主键"
+    unitId:                 String
+    "部门主键"
+    departmentId:           String
+    "职务主键"
+    postId:                 String
+    "是否主部门"
+    primary:                Boolean
+    "排序号"
+    order:                  Int
+}
+
+"""
+帐户与部门关联关系修改
+"""
+type AccountDepartmentMutation {
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: AccountDepartmentInput,
+        "操作人"
+        operator: String
+    ): AccountDepartment
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [AccountDepartmentInput],
+        "操作人"
+        operator: String
+    ): [AccountDepartment]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

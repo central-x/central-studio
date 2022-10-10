@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * @since 2022/10/03
  */
 @Component
-@GraphQLSchema(path = "org/query", types = AccountDTO.class)
+@GraphQLSchema(path = "org/query", types = {AccountDTO.class, AccountUnitQuery.class})
 public class AccountQuery {
     @Setter(onMethod_ = @Autowired)
     private AccountMapper mapper;

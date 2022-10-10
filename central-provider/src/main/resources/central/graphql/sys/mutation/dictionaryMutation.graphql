@@ -22,6 +22,10 @@ input DictionaryInput {
 字典修改
 """
 type DictionaryMutation {
+    """
+    字典项修改
+    """
+    items: DictionaryItemMutation
 
     """
     保存数据

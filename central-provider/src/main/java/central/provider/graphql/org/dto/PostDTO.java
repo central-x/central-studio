@@ -47,6 +47,14 @@ public class PostDTO extends PostEntity implements DTO {
     private static final long serialVersionUID = -4629069395963904252L;
 
     /**
+     * 单位
+     */
+    @GraphQLGetter
+    public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
+        return loader.load(this.getUnitId());
+    }
+
+    /**
      * 创建人信息
      */
     @GraphQLGetter

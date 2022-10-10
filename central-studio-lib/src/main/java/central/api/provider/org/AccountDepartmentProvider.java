@@ -33,7 +33,6 @@ import central.starter.graphql.stub.Provider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import central.validation.group.Insert;
-import central.validation.group.Update;
 import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
@@ -47,7 +46,7 @@ import java.util.List;
  * @since 2022/10/06
  */
 @Repository
-@BodyPath("org.accounts.departments")
+@BodyPath("org.accounts.units.departments")
 @GraphQLStub(path = "org", client = "providerClient")
 public interface AccountDepartmentProvider extends Provider {
     /**
@@ -113,24 +112,6 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 保存后的实体数据
      */
     List<AccountDepartment> insertBatch(@Validated({Insert.class, Default.class}) List<AccountDepartmentInput> inputs, String operator);
-
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    AccountDepartment update(@Validated({Update.class, Default.class}) AccountDepartmentInput input, String operator);
-
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    List<AccountDepartment> updateBatch(@Validated({Update.class, Default.class}) List<AccountDepartmentInput> inputs, String operator);
 
     /**
      * 删除数据

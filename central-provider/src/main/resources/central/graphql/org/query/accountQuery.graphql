@@ -50,78 +50,14 @@ type Account implements Entity & Modifiable & Available & Deletable {
 }
 
 """
-帐户与单位关系关系
-"""
-type AccountUnit implements Entity & Orderable {
-    "主键"
-    id:                     ID!
-    "帐户主键"
-    accountId:              String!
-    "帐户"
-    account:                Account!
-    "单位主键"
-    unitId:                 String!
-    "单位"
-    unit:                   Unit!
-    "职级主键"
-    rankId:                 String!
-    "职级"
-    rank:                   Rank!
-    "是否主单位"
-    primary:                Boolean!
-    "排序号"
-    order:                  Int!
-
-    "创建帐户信息"
-    creator:                Account!
-    "创建帐户主键"
-    creatorId:              String!
-    "创建时间"
-    createDate:             Timestamp!
-
-    "获取部门信息"
-    departments:            [AccountDepartment]
-}
-
-"""
-帐户与部门关联关系
-"""
-type AccountDepartment implements Entity & Orderable {
-    "主键"
-    id:                     ID!
-    "帐户主键"
-    accountId:              String!
-    "帐户"
-    account:                Account!
-    "单位主键"
-    unitId:                 String!
-    "单位"
-    unit:                   Unit!
-    "部门主键"
-    departmentId:           String!
-    "部门"
-    department:             Department!
-    "职务主键"
-    postId:                 String!
-    "职务"
-    post:                   Post!
-    "是否主部门"
-    primary:                Boolean!
-    "排序号"
-    order:                  Int!
-
-    "创建帐户信息"
-    creator:                Account!
-    "创建帐户主键"
-    creatorId:              String!
-    "创建时间"
-    createDate:             Timestamp!
-}
-
-"""
 帐户查询
 """
 type AccountQuery {
+    """
+    帐户与单位关联查询
+    """
+    units: AccountUnitQuery
+
     """
     查询数据
     """

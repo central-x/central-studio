@@ -1,115 +1,58 @@
 findById
 ===
 
-* 查询数据
+* 根据主键查询数据
 
 ```graphql
 query MenuProvider($id: String) {
-    result: Menu_findById(id: $id) {
-        id
-        code
-        name
-        icon
-        type
-        enabled
-        order
-        remark
-        parentId
-        children {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        permissions {
-            id
-            menuId
-            code
-            name
-            enabled
-            remark
-
-            creatorId
-            createDate
-            creator {
+    sec {
+        menus {
+            findById(id: $id) {
                 id
-                username
+                code
                 name
+                icon
+                type
+                enabled
+                order
+                remark
+                parentId
+                parent {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                children {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                permissions {
+                    id
+                    menuId
+                    code
+                    name
+                    enabled
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
+                }
+
+                modifierId
+                modifyDate
+                modifier {
+                    id
+                    username
+                    name
+                }
             }
-
-            modifierId
-            modifyDate
-            modifier {
-                id
-                username
-                name
-            }
-        }
-
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
-        }
-    }
-}
-```
-
-findPermissionById
-===
-
-* 查询权限数据
-
-```graphql
-query MenuProvider($id: String) {
-    result: Menu_findPermissionById(id: $id) {
-        id
-        menuId
-        menu {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        code
-        name
-        enabled
-        remark
-
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
         }
     }
 }
@@ -118,115 +61,50 @@ query MenuProvider($id: String) {
 findByIds
 ===
 
-* 查询数据
+* 根据主键查询数据
 
 ```graphql
 query MenuProvider($ids: [String]) {
-    result: Menu_findByIds(ids: $ids) {
-        id
-        code
-        name
-        icon
-        type
-        enabled
-        order
-        remark
-        parentId
-        children {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        permissions {
-            id
-            menuId
-            code
-            name
-            enabled
-            remark
-
-            creatorId
-            createDate
-            creator {
+    sec {
+        menus {
+            findByIds(ids: $ids){
                 id
-                username
+                code
                 name
+                icon
+                type
+                enabled
+                order
+                remark
+                parentId
+                parent {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                children {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                permissions {
+                    id
+                    menuId
+                    code
+                    name
+                    enabled
+                }
+
+                modifierId
+                modifyDate
+                modifier {
+                    id
+                    username
+                    name
+                }
             }
-
-            modifierId
-            modifyDate
-            modifier {
-                id
-                username
-                name
-            }
-        }
-
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
-        }
-    }
-}
-```
-
-findPermissionByIds
-===
-
-* 查询权限数据
-
-```graphql
-query MenuProvider($ids: [String]) {
-    result: Menu_findPermissionByIds(ids: $ids) {
-        id
-        menuId
-        menu {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        code
-        name
-        enabled
-        remark
-
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
         }
     }
 }
@@ -235,115 +113,50 @@ query MenuProvider($ids: [String]) {
 findBy
 ===
 
-* 查询数据
+* 根据条件查询数据
 
 ```graphql
 query MenuProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
-    result: Menu_findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
-        id
-        code
-        name
-        icon
-        type
-        enabled
-        order
-        remark
-        parentId
-        children {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        permissions {
-            id
-            menuId
-            code
-            name
-            enabled
-            remark
-
-            creatorId
-            createDate
-            creator {
+    sec {
+        menus {
+            findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
                 id
-                username
+                code
                 name
+                icon
+                type
+                enabled
+                order
+                remark
+                parentId
+                parent {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                children {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                permissions {
+                    id
+                    menuId
+                    code
+                    name
+                    enabled
+                }
+
+                modifierId
+                modifyDate
+                modifier {
+                    id
+                    username
+                    name
+                }
             }
-
-            modifierId
-            modifyDate
-            modifier {
-                id
-                username
-                name
-            }
-        }
-
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
-        }
-    }
-}
-```
-
-findPermissionBy
-===
-
-* 查询权限数据
-
-```graphql
-query MenuProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
-    result: Menu_findPermissionBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
-        id
-        menuId
-        menu {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        code
-        name
-        enabled
-        remark
-
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
         }
     }
 }
@@ -356,129 +169,54 @@ pageBy
 
 ```graphql
 query MenuProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
-    result: Menu_pageBy(pageIndex: $pageIndex, pageSize: $pageSize, conditions: $conditions, orders: $orders) {
-        pager {
-            pageIndex
-            pageSize
-            pageCount
-            itemCount
-        }
-        data {
-            ... on Menu {
-                id
-                code
-                name
-                icon
-                type
-                enabled
-                order
-                remark
-                parentId
-                children {
-                    id
-                    code
-                    name
-                    icon
-                    type
-                    enabled
-                    order
-                    remark
-                    parentId
+    sec {
+        menus {
+            pageBy(pageIndex: $pageIndex, pageSize: $pageSize, conditions: $conditions, orders: $orders){
+                pager {
+                    pageIndex
+                    pageSize
+                    pageCount
+                    itemCount
                 }
-                permissions {
-                    id
-                    menuId
-                    code
-                    name
-                    enabled
-                    remark
-
-                    creatorId
-                    createDate
-                    creator {
+                data {
+                    ... on Menu {
                         id
-                        username
+                        code
                         name
+                        icon
+                        type
+                        enabled
+                        order
+                        remark
+                        parentId
+                        parent {
+                            id
+                            code
+                            name
+                            enabled
+                        }
+                        children {
+                            id
+                            code
+                            name
+                            enabled
+                        }
+                        permissions {
+                            id
+                            menuId
+                            code
+                            name
+                            enabled
+                        }
+
+                        modifierId
+                        modifyDate
+                        modifier {
+                            id
+                            username
+                            name
+                        }
                     }
-
-                    modifierId
-                    modifyDate
-                    modifier {
-                        id
-                        username
-                        name
-                    }
-                }
-
-                creatorId
-                createDate
-                creator {
-                    id
-                    username
-                    name
-                }
-
-                modifierId
-                modifyDate
-                modifier {
-                    id
-                    username
-                    name
-                }
-            }
-        }
-    }
-}
-```
-
-pagePermissionBy
-===
-
-* 分页查询权限数据
-
-```graphql
-query MenuProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
-    result: Menu_pagePermissionBy(pageIndex: $pageIndex, pageSize: $pageSize, conditions: $conditions, orders: $orders) {
-        pager {
-            pageIndex
-            pageSize
-            pageCount
-            itemCount
-        }
-        data {
-            ... on Permission {
-                id
-                menuId
-                menu {
-                    id
-                    code
-                    name
-                    icon
-                    type
-                    enabled
-                    order
-                    remark
-                    parentId
-                }
-                code
-                name
-                enabled
-                remark
-
-                creatorId
-                createDate
-                creator {
-                    id
-                    username
-                    name
-                }
-
-                modifierId
-                modifyDate
-                modifier {
-                    id
-                    username
-                    name
                 }
             }
         }
@@ -493,18 +231,11 @@ countBy
 
 ```graphql
 query MenuProvider($conditions: [ConditionInput]) {
-    result: Menu_countBy(conditions: $conditions)
-}
-```
-
-countPermissionBy
-===
-
-* 查询符合条件的数据数量
-
-```graphql
-query MenuProvider($conditions: [ConditionInput]) {
-    result: Menu_countPermissionBy(conditions: $conditions)
+    sec {
+        menus {
+            countBy(conditions: $conditions)
+        }
+    }
 }
 ```
 
@@ -515,111 +246,98 @@ insert
 
 ```graphql
 mutation MenuProvider($input: MenuInput, $operator: String) {
-    result: Menu_insert(input: $input, operator: $operator) {
-        id
-        code
-        name
-        icon
-        type
-        enabled
-        order
-        remark
-        parentId
-        children {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        permissions {
-            id
-            menuId
-            code
-            name
-            enabled
-            remark
-
-            creatorId
-            createDate
-            creator {
+    sec {
+        menus {
+            insert(input: $input, operator: $operator) {
                 id
-                username
+                code
                 name
+                icon
+                type
+                enabled
+                order
+                remark
+                parentId
+                parent {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                children {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                permissions {
+                    id
+                    menuId
+                    code
+                    name
+                    enabled
+                }
+
+                modifierId
+                modifyDate
+                modifier {
+                    id
+                    username
+                    name
+                }
             }
-
-            modifierId
-            modifyDate
-            modifier {
-                id
-                username
-                name
-            }
-        }
-
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
         }
     }
 }
 ```
 
-insertPermission
+insertBatch
 ===
 
-* 保存权限数据
+* 批量保存数据
 
 ```graphql
-mutation MenuProvider($input: PermissionInput, $operator: String) {
-    result: Menu_insertPermission(input: $input, operator: $operator) {
-        id
-        menuId
-        menu {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        code
-        name
-        enabled
-        remark
+mutation MenuProvider($inputs: [MenuInput], $operator: String) {
+    sec {
+        menus {
+            insertBatch(inputs: $inputs, operator: $operator) {
+                id
+                code
+                name
+                icon
+                type
+                enabled
+                order
+                remark
+                parentId
+                parent {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                children {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                permissions {
+                    id
+                    menuId
+                    code
+                    name
+                    enabled
+                }
 
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
+                modifierId
+                modifyDate
+                modifier {
+                    id
+                    username
+                    name
+                }
+            }
         }
     }
 }
@@ -632,111 +350,98 @@ update
 
 ```graphql
 mutation MenuProvider($input: MenuInput, $operator: String) {
-    result: Menu_update(input: $input, operator: $operator) {
-        id
-        code
-        name
-        icon
-        type
-        enabled
-        order
-        remark
-        parentId
-        children {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        permissions {
-            id
-            menuId
-            code
-            name
-            enabled
-            remark
-
-            creatorId
-            createDate
-            creator {
+    sec {
+        menus {
+            update(input: $input, operator: $operator) {
                 id
-                username
+                code
                 name
+                icon
+                type
+                enabled
+                order
+                remark
+                parentId
+                parent {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                children {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                permissions {
+                    id
+                    menuId
+                    code
+                    name
+                    enabled
+                }
+
+                modifierId
+                modifyDate
+                modifier {
+                    id
+                    username
+                    name
+                }
             }
-
-            modifierId
-            modifyDate
-            modifier {
-                id
-                username
-                name
-            }
-        }
-
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
         }
     }
 }
 ```
 
-updatePermission
+updateBatch
 ===
 
-* 更新数据
+* 批量更新数据
 
 ```graphql
-mutation MenuProvider($input: PermissionInput, $operator: String) {
-    result: Menu_updatePermission(input: $input, operator: $operator) {
-        id
-        menuId
-        menu {
-            id
-            code
-            name
-            icon
-            type
-            enabled
-            order
-            remark
-            parentId
-        }
-        code
-        name
-        enabled
-        remark
+mutation MenuProvider($inputs: [MenuInput], $operator: String) {
+    sec {
+        menus {
+            updateBatch(inputs: $inputs, operator: $operator) {
+                id
+                code
+                name
+                icon
+                type
+                enabled
+                order
+                remark
+                parentId
+                parent {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                children {
+                    id
+                    code
+                    name
+                    enabled
+                }
+                permissions {
+                    id
+                    menuId
+                    code
+                    name
+                    enabled
+                }
 
-        creatorId
-        createDate
-        creator {
-            id
-            username
-            name
-        }
-
-        modifierId
-        modifyDate
-        modifier {
-            id
-            username
-            name
+                modifierId
+                modifyDate
+                modifier {
+                    id
+                    username
+                    name
+                }
+            }
         }
     }
 }
@@ -749,17 +454,25 @@ deleteByIds
 
 ```graphql
 mutation MenuProvider($ids: [String]) {
-    result: Menu_deleteByIds(ids: $ids)
+    sec {
+        menus {
+            deleteByIds(ids: $ids)
+        }
+    }
 }
 ```
 
-deletePermissionByIds
+deleteBy
 ===
 
-* 删除权限数据
+* 删除数据
 
 ```graphql
-mutation MenuProvider($ids: [String]) {
-    result: Menu_deletePermissionByIds(ids: $ids)
+mutation MenuProvider($conditions: [ConditionInput]) {
+    sec {
+        menus {
+            deleteBy(conditions: $conditions)
+        }
+    }
 }
 ```

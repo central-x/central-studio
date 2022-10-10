@@ -32,6 +32,7 @@ import central.provider.graphql.org.entity.AccountEntity;
 import central.provider.graphql.org.mapper.AccountMapper;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
+import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.starter.web.http.XForwardedHeaders;
 import central.util.Listx;
@@ -59,7 +60,7 @@ import java.util.Objects;
  * @since 2022/10/03
  */
 @Component
-@GraphQLSchema(path = "org/mutation", types = AccountDTO.class)
+@GraphQLSchema(path = "org/mutation", types = {AccountDTO.class, AccountUnitMutation.class})
 public class AccountMutation {
     @Setter(onMethod_ = @Autowired)
     private AccountMapper mapper;
@@ -199,5 +200,18 @@ public class AccountMutation {
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 关联查询
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Account Unit Mutation
+     * 帐户与单位关联关系修改
+     */
+    @GraphQLGetter
+    public AccountUnitMutation getUnits(@Autowired AccountUnitMutation mutation) {
+        return mutation;
     }
 }

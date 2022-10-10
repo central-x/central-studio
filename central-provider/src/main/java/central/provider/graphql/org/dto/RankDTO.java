@@ -47,6 +47,14 @@ public class RankDTO extends RankEntity implements DTO {
     private static final long serialVersionUID = 3512477933648760947L;
 
     /**
+     * 单位
+     */
+    @GraphQLGetter
+    public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
+        return loader.load(this.getUnitId());
+    }
+
+    /**
      * 创建人信息
      */
     @GraphQLGetter

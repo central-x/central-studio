@@ -29,6 +29,7 @@ import central.bean.Codeable;
 import central.bean.Remarkable;
 import central.data.org.Account;
 import central.data.org.Unit;
+import central.data.ten.Application;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -53,6 +54,19 @@ import java.io.Serial;
 public class Role extends ModifiableEntity implements Codeable, Available, Remarkable {
     @Serial
     private static final long serialVersionUID = 4370958444526615039L;
+
+    /**
+     * 应用标识
+     */
+    @Nonnull
+    private String applicationId;
+
+    /**
+     * 应用
+     */
+    @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Application application;
 
     /**
      * 标识
@@ -109,6 +123,7 @@ public class Role extends ModifiableEntity implements Codeable, Available, Remar
     public RoleInput toInput() {
         return RoleInput.builder()
                 .id(this.getId())
+                .applicationId(this.getApplicationId())
                 .code(this.getCode())
                 .name(this.getName())
                 .unitId(this.getUnitId())

@@ -4,6 +4,10 @@
 type Role implements Entity & Modifiable {
     "主键"
     id:                     ID!
+    "应用主键"
+    applicationId:          String!
+    "应用信息"
+    application:            Application!
     "所属单位主键"
     unitId:                 String
     "所属单位信息"
