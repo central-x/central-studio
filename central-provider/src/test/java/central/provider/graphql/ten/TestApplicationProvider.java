@@ -177,7 +177,7 @@ public class TestApplicationProvider extends TestProvider {
 
         // 查询数据
         var applications = this.provider.findByIds(List.of(entity.getId()));
-        var application = Listx.getFirst(applications);
+        var application = Listx.getFirstOrNull(applications);
         assertNotNull(application);
         assertEquals(entity.getId(), application.getId());
         assertEquals(entity.getCode(), application.getCode());
@@ -233,7 +233,7 @@ public class TestApplicationProvider extends TestProvider {
 
         // 查询数据
         var applications = this.provider.findBy(1L, 0L, Conditions.of(Application.class).eq(Application::getCode, "central-security"), null);
-        var application = Listx.getFirst(applications);
+        var application = Listx.getFirstOrNull(applications);
         assertNotNull(application);
         assertEquals(entity.getId(), application.getId());
         assertEquals(entity.getCode(), application.getCode());
@@ -296,7 +296,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(1L, page.getPager().getPageCount());
         assertEquals(1L, page.getPager().getItemCount());
         assertNotNull(page.getData());
-        var application = Listx.getFirst(page.getData());
+        var application = Listx.getFirstOrNull(page.getData());
         assertNotNull(application);
         assertEquals(entity.getId(), application.getId());
         assertEquals(entity.getCode(), application.getCode());
@@ -412,7 +412,7 @@ public class TestApplicationProvider extends TestProvider {
         assertNotNull(applications);
         assertEquals(1, applications.size());
 
-        var application = Listx.getFirst(applications);
+        var application = Listx.getFirstOrNull(applications);
 
         assertNotNull(application);
         assertNotNull(application.getId());
@@ -540,7 +540,7 @@ public class TestApplicationProvider extends TestProvider {
                 .build();
 
         var updated = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername());
-        application = Listx.getFirst(updated);
+        application = Listx.getFirstOrNull(updated);
         assertNotNull(application);
         assertEquals(input.getId(), application.getId());
         assertEquals(input.getCode(), application.getCode());

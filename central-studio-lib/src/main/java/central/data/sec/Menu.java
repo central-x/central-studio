@@ -27,6 +27,7 @@ package central.data.sec;
 import central.bean.*;
 import central.data.sec.option.MenuType;
 import central.data.org.Account;
+import central.data.ten.Application;
 import central.sql.data.ModifiableEntity;
 import central.util.Listx;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,6 +54,18 @@ import java.util.List;
 public class Menu extends ModifiableEntity implements Codeable, Available, Remarkable, Orderable<Menu>, Treeable<Menu> {
     @Serial
     private static final long serialVersionUID = -6200313970489750035L;
+
+    /**
+     * 应用主键
+     */
+    @Nonnull
+    private String applicationId;
+
+    /**
+     * 应用
+     */
+    @Nonnull
+    private Application application;
 
     /**
      * 标识
@@ -147,6 +160,7 @@ public class Menu extends ModifiableEntity implements Codeable, Available, Remar
     public MenuInput toInput() {
         return MenuInput.builder()
                 .id(this.getId())
+                .applicationId(this.getApplicationId())
                 .parentId(this.getParentId())
                 .code(this.getCode())
                 .name(this.getName())

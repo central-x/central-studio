@@ -56,7 +56,7 @@ public class SysMutation {
      * 字典查询
      */
     @GraphQLGetter
-    public DictionaryMutation getDirectories(@Autowired DictionaryMutation mutation) {
+    public DictionaryMutation getDictionaries(@Autowired DictionaryMutation mutation) {
         return mutation;
     }
 }

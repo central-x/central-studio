@@ -176,7 +176,7 @@ public class TestApplicationModuleProvider extends TestProvider {
 
         // 查询数据
         var result = this.provider.findByIds(List.of(module1.getId()));
-        var module = Listx.getFirst(result);
+        var module = Listx.getFirstOrNull(result);
         assertNotNull(module);
         assertEquals(module1.getId(), module.getId());
         assertEquals(module1.getApplicationId(), module.getApplicationId());
@@ -431,7 +431,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         assertNotNull(inserted);
         assertEquals(1, inserted.size());
 
-        var module = Listx.getFirst(inserted);
+        var module = Listx.getFirstOrNull(inserted);
         assertNotNull(module);
 
         assertNotNull(module.getId());
@@ -554,7 +554,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         assertNotNull(updated);
         assertEquals(1, updated.size());
 
-        module = Listx.getFirst(updated);
+        module = Listx.getFirstOrNull(updated);
         assertNotNull(module);
         assertEquals(input.getId(), module.getId());
         assertEquals(input.getApplicationId(), module.getApplicationId());

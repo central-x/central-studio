@@ -58,6 +58,11 @@ public class MenuInput implements Serializable {
     @Size(min = 1, max = 32, groups = Insert.class)
     private String id;
 
+    @Label("应用主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String applicationId;
+
     @Label("父菜单主键")
     @Size(max = 32)
     private String parentId;

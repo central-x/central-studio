@@ -18,6 +18,8 @@ type Department implements Entity & Modifiable {
     name:                   String!
     "排序号"
     order:                  Int!
+    "子部门"
+    children:              [Department]!
 
     "创建帐户信息"
     creator:                Account!

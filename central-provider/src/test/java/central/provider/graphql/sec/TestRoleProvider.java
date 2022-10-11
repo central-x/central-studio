@@ -26,8 +26,6 @@ package central.provider.graphql.sec;
 
 import central.api.provider.org.PostProvider;
 import central.api.provider.sec.RoleProvider;
-import central.data.org.Post;
-import central.data.org.PostInput;
 import central.data.org.option.AreaType;
 import central.data.sec.Role;
 import central.data.sec.RoleInput;
@@ -35,10 +33,8 @@ import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.provider.graphql.org.entity.AreaEntity;
-import central.provider.graphql.org.entity.PostEntity;
 import central.provider.graphql.org.entity.UnitEntity;
 import central.provider.graphql.org.mapper.AreaMapper;
-import central.provider.graphql.org.mapper.PostMapper;
 import central.provider.graphql.org.mapper.UnitMapper;
 import central.provider.graphql.sec.entity.RoleEntity;
 import central.provider.graphql.sec.mapper.RoleMapper;
@@ -214,7 +210,7 @@ public class TestRoleProvider extends TestProvider {
         assertNotNull(roles);
         assertEquals(1, roles.size());
 
-        var role = Listx.getFirst(roles);
+        var role = Listx.getFirstOrNull(roles);
         assertNotNull(role);
         assertEquals(roleEntity.getId(), role.getId());
         // 关联查询
@@ -283,7 +279,7 @@ public class TestRoleProvider extends TestProvider {
         assertNotNull(roles);
         assertEquals(1, roles.size());
 
-        var role = Listx.getFirst(roles);
+        var role = Listx.getFirstOrNull(roles);
         assertNotNull(role);
         assertEquals(roleEntity.getId(), role.getId());
         // 关联查询
@@ -356,7 +352,7 @@ public class TestRoleProvider extends TestProvider {
         assertEquals(1, page.getPager().getPageCount());
         assertEquals(1, page.getPager().getItemCount());
 
-        var role = Listx.getFirst(page.getData());
+        var role = Listx.getFirstOrNull(page.getData());
         assertNotNull(role);
         assertEquals(roleEntity.getId(), role.getId());
         // 关联查询
@@ -542,7 +538,7 @@ public class TestRoleProvider extends TestProvider {
         var roles = this.provider.insertBatch(List.of(roleInput), properties.getSupervisor().getUsername());
         assertNotNull(roles);
         assertEquals(1, roles.size());
-        var role = Listx.getFirst(roles);
+        var role = Listx.getFirstOrNull(roles);
 
         assertNotNull(role);
         assertNotNull(role.getId());
@@ -700,7 +696,7 @@ public class TestRoleProvider extends TestProvider {
         assertNotNull(roles);
         assertEquals(1, roles.size());
 
-        role = Listx.getFirst(roles);
+        role = Listx.getFirstOrNull(roles);
         assertNotNull(role);
         // 关联查询
         assertNotNull(role.getApplication());

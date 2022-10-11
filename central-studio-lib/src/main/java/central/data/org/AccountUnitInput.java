@@ -27,7 +27,6 @@ package central.data.org;
 import central.validation.Label;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -72,6 +71,5 @@ public class AccountUnitInput implements Serializable {
 
     @Valid
     @Label("部门列表")
-    @NotEmpty
     private List<AccountDepartmentInput> departments;
 }

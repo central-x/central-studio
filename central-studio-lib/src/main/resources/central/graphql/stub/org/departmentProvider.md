@@ -26,6 +26,12 @@ query DepartmentInput($id: String) {
                 code
                 name
                 order
+                children {
+                    id
+                    code
+                    name
+                    order
+                }
 
                 creatorId
                 createDate
@@ -76,6 +82,20 @@ query DepartmentInput($ids: [String]) {
                 code
                 name
                 order
+                children {
+                    id
+                    code
+                    name
+                    order
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
+                }
 
                 modifierId
                 modifyDate
@@ -118,6 +138,20 @@ query DepartmentInput($limit: Long, $offset: Long, $conditions: [ConditionInput]
                 code
                 name
                 order
+                children {
+                    id
+                    code
+                    name
+                    order
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
+                }
 
                 modifierId
                 modifyDate
@@ -168,6 +202,20 @@ query DepartmentInput($pageIndex: Long, $pageSize: Long, $conditions: [Condition
                         code
                         name
                         order
+                        children {
+                            id
+                            code
+                            name
+                            order
+                        }
+
+                        creatorId
+                        createDate
+                        creator {
+                            id
+                            username
+                            name
+                        }
 
                         modifierId
                         modifyDate
@@ -227,6 +275,20 @@ mutation DepartmentInput($input: DepartmentInput, $operator: String) {
                 code
                 name
                 order
+                children {
+                    id
+                    code
+                    name
+                    order
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
+                }
 
                 modifierId
                 modifyDate
@@ -269,6 +331,20 @@ mutation DepartmentInput($inputs: [DepartmentInput], $operator: String) {
                 code
                 name
                 order
+                children {
+                    id
+                    code
+                    name
+                    order
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
+                }
 
                 modifierId
                 modifyDate
@@ -311,6 +387,20 @@ mutation DepartmentInput($input: DepartmentInput, $operator: String) {
                 code
                 name
                 order
+                children {
+                    id
+                    code
+                    name
+                    order
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
+                }
 
                 modifierId
                 modifyDate
@@ -353,6 +443,20 @@ mutation DepartmentInput($inputs: [DepartmentInput], $operator: String) {
                 code
                 name
                 order
+                children {
+                    id
+                    code
+                    name
+                    order
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
+                }
 
                 modifierId
                 modifyDate

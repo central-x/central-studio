@@ -29,6 +29,7 @@ import central.bean.Codeable;
 import central.bean.Remarkable;
 import central.data.org.Account;
 import central.data.sys.option.DatabaseType;
+import central.data.ten.Application;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -53,6 +54,18 @@ import java.io.Serial;
 public class Database extends ModifiableEntity implements Codeable, Available, Remarkable {
     @Serial
     private static final long serialVersionUID = -6675888705633426897L;
+
+    /**
+     * 应用主键
+     */
+    @Nonnull
+    private String applicationId;
+
+    /**
+     * 应用信息
+     */
+    @Nonnull
+    private Application application;
 
     /**
      * 标识
@@ -103,6 +116,7 @@ public class Database extends ModifiableEntity implements Codeable, Available, R
     public DatabaseInput toInput() {
         return DatabaseInput.builder()
                 .id(this.getId())
+                .applicationId(this.getApplicationId())
                 .code(this.getCode())
                 .name(this.getName())
                 .type(this.getType())

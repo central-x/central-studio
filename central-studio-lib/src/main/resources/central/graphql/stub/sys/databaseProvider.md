@@ -9,6 +9,12 @@ query DatabaseProvider($id: String) {
         databases {
             findById(id: $id) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 type
@@ -47,6 +53,12 @@ query DatabaseProvider($ids: [String]) {
         databases {
             findByIds(ids: $ids){
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 type
@@ -85,6 +97,12 @@ query DatabaseProvider($limit: Long, $offset: Long, $conditions: [ConditionInput
         databases {
             findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 type
@@ -131,6 +149,12 @@ query DatabaseProvider($pageIndex: Long, $pageSize: Long, $conditions: [Conditio
                 data {
                     ... on Database {
                         id
+                        applicationId
+                        application {
+                            id
+                            code
+                            name
+                        }
                         code
                         name
                         type
@@ -186,6 +210,12 @@ mutation DatabaseProvider($input: DatabaseInput, $operator: String) {
         databases {
             insert(input: $input, operator: $operator) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 type
@@ -224,6 +254,12 @@ mutation DatabaseProvider($inputs: [DatabaseInput], $operator: String) {
         databases {
             insertBatch(inputs: $inputs, operator: $operator) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 type
@@ -262,6 +298,12 @@ mutation DatabaseProvider($input: DatabaseInput, $operator: String) {
         databases {
             update(input: $input, operator: $operator) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 type
@@ -300,6 +342,12 @@ mutation DatabaseProvider($inputs: [DatabaseInput], $operator: String) {
         databases {
             updateBatch(inputs: $inputs, operator: $operator) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 type

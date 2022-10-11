@@ -26,7 +26,9 @@ package central.provider.graphql.sys.entity;
 
 import central.bean.Tenantable;
 import central.data.sys.DictionaryInput;
+import central.provider.graphql.ten.entity.ApplicationEntity;
 import central.sql.data.ModifiableEntity;
+import central.sql.meta.annotation.Relation;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -52,6 +54,7 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_SYS_DICTIONARY")
 @EqualsAndHashCode(callSuper = true)
+@Relation(alias = "application", target = ApplicationEntity.class, property = "applicationId")
 public class DictionaryEntity extends ModifiableEntity implements Tenantable {
     @Serial
     private static final long serialVersionUID = 4537003267285233414L;

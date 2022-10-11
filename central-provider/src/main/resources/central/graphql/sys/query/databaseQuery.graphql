@@ -4,6 +4,10 @@
 type Database implements Entity & Modifiable {
     "主键"
     id:                     ID!
+    "应用主键"
+    applicationId:          String!
+    "应用"
+    application:            Application!
     "标识"
     code:                   String!
     "名称"

@@ -26,7 +26,9 @@ package central.provider.graphql.sys.entity;
 
 import central.bean.Tenantable;
 import central.data.sys.DatabaseInput;
+import central.provider.graphql.ten.entity.ApplicationEntity;
 import central.sql.data.ModifiableEntity;
+import central.sql.meta.annotation.Relation;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -52,6 +54,7 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_SYS_DATABASE")
 @EqualsAndHashCode(callSuper = true)
+@Relation(alias = "application", target = ApplicationEntity.class, property = "applicationId")
 public class DatabaseEntity extends ModifiableEntity implements Tenantable {
     @Serial
     private static final long serialVersionUID = -8160417813264010949L;
@@ -60,6 +63,11 @@ public class DatabaseEntity extends ModifiableEntity implements Tenantable {
     @Label("主键")
     @Size(max = 32)
     private String id;
+
+    @Label("应用主键")
+    @NotNull
+    @Size(min = 1, max = 32)
+    private String applicationId;
 
     @Label("标识")
     @NotBlank
@@ -97,6 +105,7 @@ public class DatabaseEntity extends ModifiableEntity implements Tenantable {
 
     public void fromInput(DatabaseInput input) {
         this.setId(input.getId());
+        this.setApplicationId(input.getApplicationId());
         this.setCode(input.getCode());
         this.setName(input.getName());
         this.setType(input.getType());

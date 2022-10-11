@@ -27,6 +27,7 @@ package central.provider.graphql.sys.dto;
 import central.api.DTO;
 import central.provider.graphql.org.dto.AccountDTO;
 import central.provider.graphql.sys.entity.DatabaseEntity;
+import central.provider.graphql.ten.dto.ApplicationDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;
@@ -46,6 +47,14 @@ import java.util.concurrent.CompletableFuture;
 public class DatabaseDTO extends DatabaseEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -9060113532481068358L;
+
+    /**
+     * 应用
+     */
+    @GraphQLGetter
+    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
+        return loader.load(this.getApplicationId());
+    }
 
     /**
      * 创建人信息

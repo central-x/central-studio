@@ -14,8 +14,6 @@ input AccountDepartmentInput {
     postId:                 String
     "是否主部门"
     primary:                Boolean
-    "排序号"
-    order:                  Int
 }
 
 """

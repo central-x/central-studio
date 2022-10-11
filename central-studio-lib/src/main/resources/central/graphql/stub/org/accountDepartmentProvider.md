@@ -45,7 +45,6 @@ query AccountDepartmentProvider($id: String) {
                             order
                         }
                         primary
-                        order
 
                         creatorId
                         createDate
@@ -109,7 +108,6 @@ query AccountDepartmentProvider($ids: [String]) {
                             order
                         }
                         primary
-                        order
 
                         creatorId
                         createDate
@@ -173,7 +171,6 @@ query AccountDepartmentProvider($limit: Long, $offset: Long, $conditions: [Condi
                             order
                         }
                         primary
-                        order
 
                         creatorId
                         createDate
@@ -245,7 +242,6 @@ query AccountDepartmentProvider($pageIndex: Long, $pageSize: Long, $conditions: 
                                     order
                                 }
                                 primary
-                                order
 
                                 creatorId
                                 createDate
@@ -330,7 +326,6 @@ mutation AccountDepartmentProvider($input: AccountDepartmentInput, $operator: St
                             order
                         }
                         primary
-                        order
 
                         creatorId
                         createDate
@@ -394,7 +389,6 @@ mutation AccountDepartmentProvider($inputs: [AccountDepartmentInput], $operator:
                             order
                         }
                         primary
-                        order
 
                         creatorId
                         createDate

@@ -27,12 +27,21 @@ package central.provider.graphql.sys.dto;
 import central.api.DTO;
 import central.provider.graphql.org.dto.AccountDTO;
 import central.provider.graphql.sys.entity.DictionaryEntity;
+import central.provider.graphql.sys.entity.DictionaryItemEntity;
+import central.provider.graphql.sys.query.DictionaryItemQuery;
+import central.provider.graphql.ten.dto.ApplicationDTO;
+import central.sql.Conditions;
+import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.starter.web.http.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.Serial;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -46,6 +55,26 @@ import java.util.concurrent.CompletableFuture;
 public class DictionaryDTO extends DictionaryEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 7042129479380372585L;
+
+    /**
+     * 应用
+     */
+    @GraphQLGetter
+    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
+        return loader.load(this.getApplicationId());
+    }
+
+    /**
+     * 字典项
+     */
+    @GraphQLGetter
+    public List<DictionaryItemDTO> getItems(@Autowired DictionaryItemQuery query,
+                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return query.findBy(null, null,
+                Conditions.of(DictionaryItemEntity.class).eq(DictionaryItemEntity::getDictionaryId, this.getId()),
+                Orders.of(DictionaryItemEntity.class).asc(DictionaryItemEntity::getOrder).asc(DictionaryItemEntity::getCode),
+                tenant);
+    }
 
     /**
      * 创建人信息

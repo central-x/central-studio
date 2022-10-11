@@ -12,8 +12,6 @@ input AccountUnitInput {
     rankId:                 String
     "是否主单位"
     primary:                Boolean
-    "排序号"
-    order:                  Int
     "部门和职务列表"
     departments:           [AccountDepartmentInput]
 }

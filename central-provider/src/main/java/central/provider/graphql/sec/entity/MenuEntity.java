@@ -27,6 +27,7 @@ package central.provider.graphql.sec.entity;
 import central.bean.Tenantable;
 import central.data.sec.MenuInput;
 import central.data.sec.option.MenuType;
+import central.provider.graphql.ten.entity.ApplicationEntity;
 import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.Relation;
 import central.validation.Enums;
@@ -56,6 +57,7 @@ import java.io.Serial;
 @Table(name = "X_SEC_MENU")
 @EqualsAndHashCode(callSuper = true)
 @Relation(alias = "permission", target = PermissionEntity.class, referencedProperty = "menuId")
+@Relation(alias = "application", target = ApplicationEntity.class, property = "applicationId")
 public class MenuEntity extends ModifiableEntity implements Tenantable {
     @Serial
     private static final long serialVersionUID = 189600295668683220L;
@@ -118,6 +120,7 @@ public class MenuEntity extends ModifiableEntity implements Tenantable {
 
     public void fromInput(MenuInput input){
         this.setId(input.getId());
+        this.setApplicationId(input.getApplicationId());
         this.setParentId(input.getParentId());
         this.setCode(input.getCode());
         this.setName(input.getName());

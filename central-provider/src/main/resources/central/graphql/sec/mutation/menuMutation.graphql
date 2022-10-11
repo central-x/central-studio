@@ -4,6 +4,8 @@
 input MenuInput {
     "主键"
     id:                     ID
+    "应用主键"
+    applicationId:          String
     "父菜单主键"
     parentId:               String
     "标识"

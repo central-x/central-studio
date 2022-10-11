@@ -9,6 +9,12 @@ query MenuProvider($id: String) {
         menus {
             findById(id: $id) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 icon
@@ -69,6 +75,12 @@ query MenuProvider($ids: [String]) {
         menus {
             findByIds(ids: $ids){
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 icon
@@ -95,6 +107,14 @@ query MenuProvider($ids: [String]) {
                     code
                     name
                     enabled
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
                 }
 
                 modifierId
@@ -121,6 +141,12 @@ query MenuProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $
         menus {
             findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 icon
@@ -147,6 +173,14 @@ query MenuProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $
                     code
                     name
                     enabled
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
                 }
 
                 modifierId
@@ -181,6 +215,12 @@ query MenuProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInp
                 data {
                     ... on Menu {
                         id
+                        applicationId
+                        application {
+                            id
+                            code
+                            name
+                        }
                         code
                         name
                         icon
@@ -207,6 +247,14 @@ query MenuProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInp
                             code
                             name
                             enabled
+                        }
+
+                        creatorId
+                        createDate
+                        creator {
+                            id
+                            username
+                            name
                         }
 
                         modifierId
@@ -250,6 +298,12 @@ mutation MenuProvider($input: MenuInput, $operator: String) {
         menus {
             insert(input: $input, operator: $operator) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 icon
@@ -276,6 +330,14 @@ mutation MenuProvider($input: MenuInput, $operator: String) {
                     code
                     name
                     enabled
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
                 }
 
                 modifierId
@@ -302,6 +364,12 @@ mutation MenuProvider($inputs: [MenuInput], $operator: String) {
         menus {
             insertBatch(inputs: $inputs, operator: $operator) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 icon
@@ -328,6 +396,14 @@ mutation MenuProvider($inputs: [MenuInput], $operator: String) {
                     code
                     name
                     enabled
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
                 }
 
                 modifierId
@@ -354,6 +430,12 @@ mutation MenuProvider($input: MenuInput, $operator: String) {
         menus {
             update(input: $input, operator: $operator) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 icon
@@ -380,6 +462,14 @@ mutation MenuProvider($input: MenuInput, $operator: String) {
                     code
                     name
                     enabled
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
                 }
 
                 modifierId
@@ -406,6 +496,12 @@ mutation MenuProvider($inputs: [MenuInput], $operator: String) {
         menus {
             updateBatch(inputs: $inputs, operator: $operator) {
                 id
+                applicationId
+                application {
+                    id
+                    code
+                    name
+                }
                 code
                 name
                 icon
@@ -432,6 +528,14 @@ mutation MenuProvider($inputs: [MenuInput], $operator: String) {
                     code
                     name
                     enabled
+                }
+
+                creatorId
+                createDate
+                creator {
+                    id
+                    username
+                    name
                 }
 
                 modifierId

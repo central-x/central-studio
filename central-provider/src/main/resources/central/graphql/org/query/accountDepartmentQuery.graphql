@@ -1,7 +1,7 @@
 """
 帐户与部门关联关系
 """
-type AccountDepartment implements Entity & Orderable {
+type AccountDepartment implements Entity {
     "主键"
     id:                     ID!
     "帐户主键"
@@ -22,8 +22,6 @@ type AccountDepartment implements Entity & Orderable {
     post:                   Post!
     "是否主部门"
     primary:                Boolean!
-    "排序号"
-    order:                  Int!
 
     "创建帐户信息"
     creator:                Account!

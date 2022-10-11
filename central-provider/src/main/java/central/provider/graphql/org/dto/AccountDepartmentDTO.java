@@ -71,6 +71,14 @@ public class AccountDepartmentDTO extends AccountDepartmentEntity implements DTO
     }
 
     /**
+     * 职务
+     */
+    @GraphQLGetter
+    public CompletableFuture<PostDTO> getPost(DataLoader<String, PostDTO> loader) {
+        return loader.load(this.getPostId());
+    }
+
+    /**
      * 创建人信息
      */
     @GraphQLGetter

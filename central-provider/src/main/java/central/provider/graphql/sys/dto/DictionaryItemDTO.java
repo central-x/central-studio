@@ -27,6 +27,7 @@ package central.provider.graphql.sys.dto;
 import central.api.DTO;
 import central.provider.graphql.org.dto.AccountDTO;
 import central.provider.graphql.sys.entity.DictionaryEntity;
+import central.provider.graphql.sys.entity.DictionaryItemEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;
@@ -43,9 +44,17 @@ import java.util.concurrent.CompletableFuture;
  */
 @GraphQLType("DictionaryItem")
 @EqualsAndHashCode(callSuper = true)
-public class DictionaryItemDTO extends DictionaryEntity implements DTO {
+public class DictionaryItemDTO extends DictionaryItemEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 4146343738879195338L;
+
+    /**
+     * 字典
+     */
+    @GraphQLGetter
+    public CompletableFuture<DictionaryDTO> getDictionary(DataLoader<String, DictionaryDTO> loader){
+        return loader.load(this.getDictionaryId());
+    }
 
     /**
      * 创建人信息

@@ -168,7 +168,7 @@ public class TestRankProvider extends TestProvider {
         var posts = this.provider.findByIds(List.of(rankEntity.getId()));
         assertNotNull(posts);
         assertEquals(1, posts.size());
-        var post = Listx.getFirst(posts);
+        var post = Listx.getFirstOrNull(posts);
         assertNotNull(post);
         assertEquals(rankEntity.getId(), post.getId());
         assertNotNull(post.getUnit());
@@ -218,7 +218,7 @@ public class TestRankProvider extends TestProvider {
         var posts = this.provider.findBy(null, null, Conditions.of(Rank.class).eq(Rank::getCode, "10000"), null);
         assertNotNull(posts);
         assertEquals(1, posts.size());
-        var post = Listx.getFirst(posts);
+        var post = Listx.getFirstOrNull(posts);
         assertNotNull(post);
         assertEquals(rankEntity.getId(), post.getId());
         assertNotNull(post.getUnit());
@@ -273,7 +273,7 @@ public class TestRankProvider extends TestProvider {
         assertEquals(1L, page.getPager().getPageCount());
         assertEquals(1L, page.getPager().getItemCount());
         assertNotNull(page.getData());
-        var post = Listx.getFirst(page.getData());
+        var post = Listx.getFirstOrNull(page.getData());
         assertNotNull(post);
         assertEquals(rankEntity.getId(), post.getId());
         assertNotNull(post.getUnit());

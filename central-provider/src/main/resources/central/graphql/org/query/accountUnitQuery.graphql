@@ -1,7 +1,7 @@
 """
 帐户与单位关联关系
 """
-type AccountUnit implements Entity & Orderable {
+type AccountUnit implements Entity {
     "主键"
     id:                     ID!
     "帐户主键"
@@ -18,8 +18,6 @@ type AccountUnit implements Entity & Orderable {
     rank:                   Rank!
     "是否主单位"
     primary:                Boolean!
-    "排序号"
-    order:                  Int!
 
     "创建帐户信息"
     creator:                Account!

@@ -36,7 +36,6 @@ query AccountUnitProvider($id: String) {
                         order
                     }
                     primary
-                    order
 
                     creatorId
                     createDate
@@ -90,7 +89,6 @@ query AccountUnitProvider($ids: [String]) {
                         order
                     }
                     primary
-                    order
 
                     creatorId
                     createDate
@@ -144,7 +142,6 @@ query AccountUnitProvider($limit: Long, $offset: Long, $conditions: [ConditionIn
                         order
                     }
                     primary
-                    order
 
                     creatorId
                     createDate
@@ -206,7 +203,6 @@ query AccountUnitProvider($pageIndex: Long, $pageSize: Long, $conditions: [Condi
                                 order
                             }
                             primary
-                            order
 
                             creatorId
                             createDate
@@ -279,8 +275,7 @@ mutation AccountUnitProvider($input: AccountUnitInput, $operator: String) {
                         order
                     }
                     primary
-                    order
-
+                    
                     creatorId
                     createDate
                     creator {
@@ -333,7 +328,6 @@ mutation AccountUnitProvider($inputs: [AccountUnitInput], $operator: String) {
                         order
                     }
                     primary
-                    order
 
                     creatorId
                     createDate

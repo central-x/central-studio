@@ -54,6 +54,11 @@ public class DatabaseInput implements Serializable {
     @Size(min = 1, max = 32, groups = Insert.class)
     private String id;
 
+    @Label("应用主键")
+    @NotNull
+    @Size(min = 1, max = 32)
+    private String applicationId;
+
     @Label("标识")
     @NotBlank
     @Size(min = 1, max = 32)

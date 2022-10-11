@@ -26,10 +26,8 @@ package central.provider.graphql.ten;
 
 import central.api.provider.ten.TenantApplicationProvider;
 import central.api.provider.ten.TenantProvider;
-import central.data.ten.Tenant;
 import central.data.ten.TenantApplication;
 import central.data.ten.TenantApplicationInput;
-import central.data.ten.TenantInput;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
@@ -100,16 +98,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case1() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -121,6 +109,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -160,16 +159,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case2() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -181,6 +170,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -203,7 +203,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         // 查询数据
         var rels = this.provider.findByIds(List.of(entity.getId()));
         assertNotNull(rels);
-        var rel = Listx.getFirst(rels);
+        var rel = Listx.getFirstOrNull(rels);
         assertNotNull(rel);
         assertEquals(entity.getId(), rel.getId());
         // 关联查询
@@ -222,16 +222,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case3() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -243,6 +233,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -265,7 +266,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         // 查询数据
         var rels = this.provider.findBy(null, null, Conditions.of(TenantApplication.class).eq(TenantApplication::getId, entity.getId()), null);
         assertNotNull(rels);
-        var rel = Listx.getFirst(rels);
+        var rel = Listx.getFirstOrNull(rels);
         assertNotNull(rel);
         assertEquals(entity.getId(), rel.getId());
         // 关联查询
@@ -284,16 +285,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case4() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -305,6 +296,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -336,16 +338,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case5() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -357,6 +349,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -385,16 +388,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case6() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -406,6 +399,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -436,16 +440,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case7() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -457,6 +451,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -488,16 +493,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case8() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -509,6 +504,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -544,16 +550,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case9() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -565,6 +561,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -601,16 +608,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case10() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -622,6 +619,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");
@@ -651,16 +659,6 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case11() {
-        var database = new DatabaseEntity();
-        database.setCode("test");
-        database.setName("测试数据库");
-        database.setType("mysql");
-        database.setEnabled(Boolean.TRUE);
-        database.setRemark("测试用的数据库");
-        database.setTenantCode("master");
-        database.updateCreator(properties.getSupervisor().getUsername());
-        this.databaseMapper.insert(database);
-
         var application = new ApplicationEntity();
         application.setCode("central-security");
         application.setName("统一认证");
@@ -672,6 +670,17 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(application);
+
+        var database = new DatabaseEntity();
+        database.setApplicationId(application.getId());
+        database.setCode("test");
+        database.setName("测试数据库");
+        database.setType("mysql");
+        database.setEnabled(Boolean.TRUE);
+        database.setRemark("测试用的数据库");
+        database.setTenantCode("master");
+        database.updateCreator(properties.getSupervisor().getUsername());
+        this.databaseMapper.insert(database);
 
         var tenant = new TenantEntity();
         tenant.setCode("test");

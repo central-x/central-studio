@@ -4,6 +4,8 @@
 input DatabaseInput {
     "主键"
     id:                     ID
+    "应用主键"
+    applicationId:          String
     "标识"
     code:                   String
     "名称"

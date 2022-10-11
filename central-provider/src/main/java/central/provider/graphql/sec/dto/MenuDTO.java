@@ -27,9 +27,12 @@ package central.provider.graphql.sec.dto;
 import central.api.DTO;
 import central.provider.graphql.sec.entity.MenuEntity;
 import central.provider.graphql.sec.entity.PermissionEntity;
+import central.provider.graphql.sec.query.MenuQuery;
 import central.provider.graphql.sec.query.PermissionQuery;
 import central.provider.graphql.org.dto.AccountDTO;
+import central.provider.graphql.ten.dto.ApplicationDTO;
 import central.sql.Conditions;
+import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import central.starter.web.http.XForwardedHeaders;
@@ -56,11 +59,29 @@ public class MenuDTO extends MenuEntity implements DTO {
     private static final long serialVersionUID = 7340521210113303617L;
 
     /**
-     * 父菜单信息
+     * 应用
+     */
+    @GraphQLGetter
+    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
+        return loader.load(this.getApplicationId());
+    }
+
+
+    /**
+     * 父菜单
      */
     @GraphQLGetter
     public CompletableFuture<MenuDTO> getParent(DataLoader<String, MenuDTO> loader) {
         return loader.load(this.getParentId());
+    }
+
+    /**
+     * 子菜单
+     */
+    @GraphQLGetter
+    public List<MenuDTO> getChildren(@Autowired MenuQuery query,
+                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return query.findBy(null, null, Conditions.of(MenuEntity.class).eq(MenuEntity::getParentId, this.getId()), Orders.of(MenuEntity.class).asc(MenuEntity::getOrder).asc(MenuEntity::getCode), tenant);
     }
 
     /**

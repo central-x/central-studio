@@ -225,7 +225,7 @@ public class TestUnitProvider extends TestProvider {
         assertNotNull(units);
         assertEquals(1, units.size());
 
-        var unit = Listx.getFirst(units);
+        var unit = Listx.getFirstOrNull(units);
         assertNotNull(unit);
         assertEquals(unitEntity.getId(), unit.getId());
         // 关联查询
@@ -309,7 +309,7 @@ public class TestUnitProvider extends TestProvider {
         assertNotNull(units);
         assertEquals(1, units.size());
 
-        var unit = Listx.getFirst(units);
+        var unit = Listx.getFirstOrNull(units);
         assertNotNull(unit);
         assertEquals(unitEntity.getId(), unit.getId());
         // 关联查询
@@ -398,7 +398,7 @@ public class TestUnitProvider extends TestProvider {
         assertEquals(1L, page.getPager().getItemCount());
         assertNotNull(page.getData());
 
-        var unit = Listx.getFirst(page.getData());
+        var unit = Listx.getFirstOrNull(page.getData());
         assertNotNull(unit);
         assertEquals(unitEntity.getId(), unit.getId());
         // 关联查询
@@ -559,7 +559,7 @@ public class TestUnitProvider extends TestProvider {
         assertNotNull(units);
         assertEquals(1, units.size());
 
-        var unit = Listx.getFirst(units);
+        var unit = Listx.getFirstOrNull(units);
         assertNotNull(unit);
         assertNotNull(unit.getId());
 
@@ -663,7 +663,7 @@ public class TestUnitProvider extends TestProvider {
         assertNotNull(units);
         assertEquals(1, units.size());
 
-        unit = Listx.getFirst(units);
+        unit = Listx.getFirstOrNull(units);
         assertNotNull(unit);
         assertNotEquals(unit.getCreateDate(), unit.getModifyDate());
 

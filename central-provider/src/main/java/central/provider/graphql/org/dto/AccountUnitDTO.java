@@ -47,6 +47,30 @@ public class AccountUnitDTO extends AccountUnitEntity implements DTO {
     private static final long serialVersionUID = 4980776643576204883L;
 
     /**
+     * 帐户
+     */
+    @GraphQLGetter
+    public CompletableFuture<AccountDTO> getAccount(DataLoader<String, AccountDTO> loader) {
+        return loader.load(this.getAccountId());
+    }
+
+    /**
+     * 单位
+     */
+    @GraphQLGetter
+    public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
+        return loader.load(this.getUnitId());
+    }
+
+    /**
+     * 职级
+     */
+    @GraphQLGetter
+    public CompletableFuture<RankDTO> getRank(DataLoader<String, RankDTO> loader) {
+        return loader.load(this.getRankId());
+    }
+
+    /**
      * 创建人信息
      */
     @GraphQLGetter
