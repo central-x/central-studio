@@ -33,6 +33,7 @@ import central.sql.Conditions;
 import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
+import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.starter.web.http.XForwardedHeaders;
 import lombok.Setter;
@@ -154,5 +155,18 @@ public class MenuQuery {
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 关联查询
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Permission Query
+     * 权限查询
+     */
+    @GraphQLGetter
+    public PermissionQuery getPermissions(@Autowired PermissionQuery query) {
+        return query;
     }
 }

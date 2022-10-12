@@ -32,6 +32,7 @@ import central.provider.graphql.sec.entity.MenuEntity;
 import central.provider.graphql.sec.mapper.MenuMapper;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
+import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.starter.web.http.XForwardedHeaders;
 import central.util.Listx;
@@ -174,5 +175,18 @@ public class MenuMutation {
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 关联查询
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Permission Mutation
+     * 权限修改
+     */
+    @GraphQLGetter
+    public PermissionMutation getPermissions(@Autowired PermissionMutation mutation) {
+        return mutation;
     }
 }

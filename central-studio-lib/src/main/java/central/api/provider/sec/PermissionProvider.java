@@ -47,7 +47,7 @@ import java.util.List;
  * @since 2022/10/06
  */
 @Repository
-@BodyPath("sec.permissions")
+@BodyPath("sec.menus.permissions")
 @GraphQLStub(path = "sec", client = "providerClient")
 public interface PermissionProvider extends Provider {
     /**

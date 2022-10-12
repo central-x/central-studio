@@ -27,6 +27,7 @@ package central.provider.graphql.org.entity;
 import central.bean.Tenantable;
 import central.data.org.RankInput;
 import central.sql.data.ModifiableEntity;
+import central.sql.meta.annotation.Relation;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -52,6 +53,7 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_ORG_RANK")
 @EqualsAndHashCode(callSuper = true)
+@Relation(alias = "unit", target = UnitEntity.class, property = "unitId")
 public class RankEntity extends ModifiableEntity implements Tenantable {
     @Serial
     private static final long serialVersionUID = 8727419074291577397L;

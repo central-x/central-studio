@@ -49,6 +49,9 @@ type Menu implements Entity & Modifiable {
 菜单查询
 """
 type MenuQuery {
+    "权限查询"
+    permissions: PermissionQuery!
+
     """
     查询数据
     """

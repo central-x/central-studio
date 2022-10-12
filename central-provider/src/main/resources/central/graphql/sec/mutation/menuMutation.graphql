@@ -31,6 +31,10 @@ input MenuInput {
 菜单修改
 """
 type MenuMutation {
+    """
+    权限修改
+    """
+    permissions: PermissionMutation!
 
     """
     保存数据

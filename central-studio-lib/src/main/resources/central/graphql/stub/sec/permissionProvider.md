@@ -6,23 +6,42 @@ findById
 ```graphql
 query PermissionProvider($id: String) {
     sec {
-        passwords {
-            findById(id: $id) {
-                id
-                accountId
-                account {
+        menus {
+            permissions {
+                findById(id: $id) {
                     id
-                    username
+                    applicationId
+                    application {
+                        id
+                        code
+                        name
+                    }
+                    menuId
+                    menu {
+                        id
+                        code
+                        name
+                    }
+                    code
                     name
-                }
-                value
+                    enabled
+                    remark
 
-                creatorId
-                createDate
-                creator {
-                    id
-                    username
-                    name
+                    creatorId
+                    createDate
+                    creator {
+                        id
+                        username
+                        name
+                    }
+
+                    modifierId
+                    modifyDate
+                    modifier {
+                        id
+                        username
+                        name
+                    }
                 }
             }
         }
@@ -38,23 +57,42 @@ findByIds
 ```graphql
 query PermissionProvider($ids: [String]) {
     sec {
-        passwords {
-            findByIds(ids: $ids){
-                id
-                accountId
-                account {
+        menus {
+            permissions {
+                findByIds(ids: $ids) {
                     id
-                    username
+                    applicationId
+                    application {
+                        id
+                        code
+                        name
+                    }
+                    menuId
+                    menu {
+                        id
+                        code
+                        name
+                    }
+                    code
                     name
-                }
-                value
+                    enabled
+                    remark
 
-                creatorId
-                createDate
-                creator {
-                    id
-                    username
-                    name
+                    creatorId
+                    createDate
+                    creator {
+                        id
+                        username
+                        name
+                    }
+
+                    modifierId
+                    modifyDate
+                    modifier {
+                        id
+                        username
+                        name
+                    }
                 }
             }
         }
@@ -70,23 +108,42 @@ findBy
 ```graphql
 query PermissionProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
     sec {
-        passwords {
-            findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
-                id
-                accountId
-                account {
+        menus {
+            permissions {
+                findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
                     id
-                    username
+                    applicationId
+                    application {
+                        id
+                        code
+                        name
+                    }
+                    menuId
+                    menu {
+                        id
+                        code
+                        name
+                    }
+                    code
                     name
-                }
-                value
+                    enabled
+                    remark
 
-                creatorId
-                createDate
-                creator {
-                    id
-                    username
-                    name
+                    creatorId
+                    createDate
+                    creator {
+                        id
+                        username
+                        name
+                    }
+
+                    modifierId
+                    modifyDate
+                    modifier {
+                        id
+                        username
+                        name
+                    }
                 }
             }
         }
@@ -102,31 +159,50 @@ pageBy
 ```graphql
 query PermissionProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
     sec {
-        passwords {
-            pageBy(pageIndex: $pageIndex, pageSize: $pageSize, conditions: $conditions, orders: $orders){
-                pager {
-                    pageIndex
-                    pageSize
-                    pageCount
-                    itemCount
-                }
-                data {
-                    ... on Password {
-                        id
-                        accountId
-                        account {
+        menus {
+            permissions {
+                pageBy(pageIndex: $pageIndex, pageSize: $pageSize, conditions: $conditions, orders: $orders) {
+                    pager {
+                        pageIndex
+                        pageSize
+                        pageCount
+                        itemCount
+                    }
+                    data {
+                        ... on Permission {
                             id
-                            username
+                            applicationId
+                            application {
+                                id
+                                code
+                                name
+                            }
+                            menuId
+                            menu {
+                                id
+                                code
+                                name
+                            }
+                            code
                             name
-                        }
-                        value
+                            enabled
+                            remark
 
-                        creatorId
-                        createDate
-                        creator {
-                            id
-                            username
-                            name
+                            creatorId
+                            createDate
+                            creator {
+                                id
+                                username
+                                name
+                            }
+
+                            modifierId
+                            modifyDate
+                            modifier {
+                                id
+                                username
+                                name
+                            }
                         }
                     }
                 }
@@ -144,8 +220,10 @@ countBy
 ```graphql
 query PermissionProvider($conditions: [ConditionInput]) {
     sec {
-        passwords {
-            countBy(conditions: $conditions)
+        menus {
+            permissions {
+                countBy(conditions: $conditions)
+            }
         }
     }
 }
@@ -157,25 +235,44 @@ insert
 * 保存数据
 
 ```graphql
-mutation PermissionProvider($input: PasswordInput, $operator: String) {
+mutation PermissionProvider($input: PermissionInput, $operator: String) {
     sec {
-        passwords {
-            insert(input: $input, operator: $operator) {
-                id
-                accountId
-                account {
+        menus {
+            permissions {
+                insert(input: $input, operator: $operator) {
                     id
-                    username
+                    applicationId
+                    application {
+                        id
+                        code
+                        name
+                    }
+                    menuId
+                    menu {
+                        id
+                        code
+                        name
+                    }
+                    code
                     name
-                }
-                value
+                    enabled
+                    remark
 
-                creatorId
-                createDate
-                creator {
-                    id
-                    username
-                    name
+                    creatorId
+                    createDate
+                    creator {
+                        id
+                        username
+                        name
+                    }
+
+                    modifierId
+                    modifyDate
+                    modifier {
+                        id
+                        username
+                        name
+                    }
                 }
             }
         }
@@ -189,25 +286,147 @@ insertBatch
 * 批量保存数据
 
 ```graphql
-mutation PermissionProvider($inputs: [PasswordInput], $operator: String) {
+mutation PermissionProvider($inputs: [PermissionInput], $operator: String) {
     sec {
-        passwords {
-            insertBatch(inputs: $inputs, operator: $operator) {
-                id
-                accountId
-                account {
+        menus {
+            permissions {
+                insertBatch(inputs: $inputs, operator: $operator) {
                     id
-                    username
+                    applicationId
+                    application {
+                        id
+                        code
+                        name
+                    }
+                    menuId
+                    menu {
+                        id
+                        code
+                        name
+                    }
+                    code
                     name
-                }
-                value
+                    enabled
+                    remark
 
-                creatorId
-                createDate
-                creator {
+                    creatorId
+                    createDate
+                    creator {
+                        id
+                        username
+                        name
+                    }
+
+                    modifierId
+                    modifyDate
+                    modifier {
+                        id
+                        username
+                        name
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+
+update
+===
+
+* 更新数据
+
+```graphql
+mutation RoleProvider($input: PermissionInput, $operator: String) {
+    sec {
+        menus {
+            permissions {
+                update(input: $input, operator: $operator) {
                     id
-                    username
+                    applicationId
+                    application {
+                        id
+                        code
+                        name
+                    }
+                    menuId
+                    menu {
+                        id
+                        code
+                        name
+                    }
+                    code
                     name
+                    enabled
+                    remark
+
+                    creatorId
+                    createDate
+                    creator {
+                        id
+                        username
+                        name
+                    }
+
+                    modifierId
+                    modifyDate
+                    modifier {
+                        id
+                        username
+                        name
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+updateBatch
+===
+
+* 批量更新数据
+
+```graphql
+mutation RoleProvider($inputs: [PermissionInput], $operator: String) {
+    sec {
+        menus {
+            permissions {
+                updateBatch(inputs: $inputs, operator: $operator) {
+                    id
+                    applicationId
+                    application {
+                        id
+                        code
+                        name
+                    }
+                    menuId
+                    menu {
+                        id
+                        code
+                        name
+                    }
+                    code
+                    name
+                    enabled
+                    remark
+
+                    creatorId
+                    createDate
+                    creator {
+                        id
+                        username
+                        name
+                    }
+
+                    modifierId
+                    modifyDate
+                    modifier {
+                        id
+                        username
+                        name
+                    }
                 }
             }
         }
@@ -223,8 +442,10 @@ deleteByIds
 ```graphql
 mutation PermissionProvider($ids: [String]) {
     sec {
-        passwords {
-            deleteByIds(ids: $ids)
+        menus {
+            permissions {
+                deleteByIds(ids: $ids)
+            }
         }
     }
 }
@@ -238,8 +459,10 @@ deleteBy
 ```graphql
 mutation PermissionProvider($conditions: [ConditionInput]) {
     sec {
-        passwords {
-            deleteBy(conditions: $conditions)
+        menus {
+            permissions {
+                deleteBy(conditions: $conditions)
+            }
         }
     }
 }

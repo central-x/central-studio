@@ -94,22 +94,12 @@ public class TestAreaProvider extends TestProvider {
         var area = this.provider.findById(entity.getId());
         assertNotNull(area);
         assertEquals(entity.getId(), area.getId());
-        assertEquals(entity.getParentId(), area.getParentId());
         assertNull(area.getParent());
-        assertEquals(entity.getCode(), area.getCode());
-        assertEquals(entity.getName(), area.getName());
-        assertEquals(entity.getType(), area.getType());
-        assertEquals(entity.getOrder(), area.getOrder());
 
         assertNotNull(area.getCreator());
-        assertEquals(this.properties.getSupervisor().getUsername(), area.getCreator().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), area.getCreator().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), area.getCreator().getName());
+        assertEquals(properties.getSupervisor().getUsername(), area.getCreator().getId());
         assertNotNull(area.getModifier());
-        assertEquals(this.properties.getSupervisor().getUsername(), area.getModifier().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), area.getModifier().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), area.getModifier().getName());
-        assertEquals(area.getCreateDate(), area.getModifyDate());
+        assertEquals(properties.getSupervisor().getUsername(), area.getModifier().getId());
     }
 
     /**
@@ -271,41 +261,15 @@ public class TestAreaProvider extends TestProvider {
         var inserted = this.provider.insert(country, this.properties.getSupervisor().getUsername());
         assertNotNull(inserted);
         assertNotNull(inserted.getId());
-        assertEquals(country.getParentId(), inserted.getParentId());
-        assertEquals(country.getCode(), inserted.getCode());
-        assertEquals(country.getName(), inserted.getName());
-        assertEquals(country.getType(), inserted.getType());
-        assertEquals(country.getOrder(), inserted.getOrder());
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getCreatorId());
-        assertNotNull(inserted.getCreateDate());
+
+        // 关联查询
         assertNotNull(inserted.getCreator());
         assertEquals(this.properties.getSupervisor().getUsername(), inserted.getCreator().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getCreator().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), inserted.getCreator().getName());
-
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getModifierId());
-        assertNotNull(inserted.getModifyDate());
-        assertNotNull(inserted.getCreator());
+        assertNotNull(inserted.getModifier());
         assertEquals(this.properties.getSupervisor().getUsername(), inserted.getModifier().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getModifier().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), inserted.getModifier().getName());
-
-        assertEquals(inserted.getCreateDate(), inserted.getModifyDate(), "创建数据后，创建日期和修改日期应该相同");
 
         // 查询数据库
-        var entity = this.mapper.findById(inserted.getId());
-        assertNotNull(entity);
-        assertNotNull(entity.getTenantCode());
-        assertEquals(inserted.getId(), entity.getId());
-        assertEquals(inserted.getParentId(), entity.getParentId());
-        assertEquals(inserted.getCode(), entity.getCode());
-        assertEquals(inserted.getName(), entity.getName());
-        assertEquals(inserted.getType(), entity.getType());
-        assertEquals(inserted.getOrder(), entity.getOrder());
-        assertEquals(inserted.getCreateDate(), entity.getCreateDate());
-        assertEquals(inserted.getCreatorId(), entity.getCreatorId());
-        assertEquals(inserted.getModifyDate(), entity.getModifyDate());
-        assertEquals(inserted.getModifierId(), entity.getModifierId());
+        assertTrue(this.mapper.existsBy(Conditions.of(AreaEntity.class).eq(AreaEntity::getCode, "86")));
     }
 
     /**

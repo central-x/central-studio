@@ -28,6 +28,7 @@ import central.bean.Tenantable;
 import central.data.org.AreaInput;
 import central.data.org.option.AreaType;
 import central.sql.data.ModifiableEntity;
+import central.sql.meta.annotation.Relation;
 import central.util.Objectx;
 import central.validation.Enums;
 import central.validation.Label;
@@ -55,6 +56,7 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_ORG_AREA")
 @EqualsAndHashCode(callSuper = true)
+@Relation(alias = "parent", target = AreaEntity.class, property = "parentId")
 public class AreaEntity extends ModifiableEntity implements Tenantable {
     @Serial
     private static final long serialVersionUID = 6193768380339341902L;

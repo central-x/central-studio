@@ -28,15 +28,17 @@ import central.api.provider.org.AccountProvider;
 import central.bean.Page;
 import central.data.org.Account;
 import central.data.org.AccountInput;
+import central.data.org.option.AreaType;
 import central.lang.Stringx;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
-import central.provider.graphql.org.entity.AccountEntity;
-import central.provider.graphql.org.mapper.AccountMapper;
+import central.provider.graphql.org.entity.*;
+import central.provider.graphql.org.mapper.*;
 import central.sql.Conditions;
 import central.sql.Orders;
 import central.sql.data.Entity;
+import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,11 +71,39 @@ public class TestAccountProvider extends TestProvider {
     @Setter(onMethod_ = @Autowired)
     private AccountMapper mapper;
 
+    @Setter(onMethod_ = @Autowired)
+    private AreaMapper areaMapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private UnitMapper unitMapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private RankMapper rankMapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private PostMapper postMapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private DepartmentMapper departmentMapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private AccountUnitMapper unitRelMapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private AccountDepartmentMapper departmentRelMapper;
+
     @BeforeEach
     @AfterEach
     public void clear() {
         // 清空数据
         mapper.deleteAll();
+        areaMapper.deleteAll();
+        unitMapper.deleteAll();
+        rankMapper.deleteAll();
+        postMapper.deleteAll();
+        departmentRelMapper.deleteAll();
+        unitRelMapper.deleteAll();
+        departmentRelMapper.deleteAll();
     }
 
     /**
@@ -127,28 +157,12 @@ public class TestAccountProvider extends TestProvider {
         var account = list.stream().filter(it -> Objects.equals(it.getId(), entity.getId())).findFirst().orElse(null);
         assertNotNull(account);
         assertNotNull(account.getId());
-        assertEquals(entity.getUsername(), account.getUsername());
-        assertEquals(entity.getEmail(), account.getEmail());
-        assertEquals(entity.getMobile(), account.getMobile());
-        assertEquals(entity.getName(), account.getName());
-        assertEquals(entity.getAvatar(), account.getAvatar());
-        assertEquals(entity.getEnabled(), account.getEnabled());
-        assertEquals(entity.getDeleted(), account.getDeleted());
-        assertEquals(entity.getCreatorId(), account.getCreatorId());
-        assertNotNull(account.getCreateDate());
+
+        // 关联查询
         assertNotNull(account.getCreator());
         assertEquals(this.properties.getSupervisor().getUsername(), account.getCreator().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), account.getCreator().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), account.getCreator().getName());
-
-        assertEquals(entity.getModifierId(), account.getModifierId());
-        assertNotNull(account.getModifyDate());
-        assertNotNull(account.getCreator());
+        assertNotNull(account.getModifier());
         assertEquals(this.properties.getSupervisor().getUsername(), account.getModifier().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), account.getModifier().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), account.getModifier().getName());
-
-        assertEquals(account.getCreateDate(), account.getModifyDate(), "创建数据后，创建日期和修改日期应该相同");
     }
 
     /**
@@ -178,6 +192,112 @@ public class TestAccountProvider extends TestProvider {
         assertNotNull(list);
         assertEquals(2, list.size());
         assertTrue(list.stream().allMatch(it -> it.getName().endsWith("3")));
+    }
+
+    /**
+     * @see AccountProvider#findBy
+     */
+    @Test
+    public void case3_1() {
+        var areaEntity = new AreaEntity();
+        areaEntity.setParentId("");
+        areaEntity.setCode("86");
+        areaEntity.setName("中国");
+        areaEntity.setType(AreaType.COUNTRY.getValue());
+        areaEntity.setOrder(0);
+        areaEntity.setTenantCode("master");
+        areaEntity.updateCreator(properties.getSupervisor().getUsername());
+        this.areaMapper.insert(areaEntity);
+
+        var unitEntity = new UnitEntity();
+        unitEntity.setParentId("");
+        unitEntity.setAreaId(areaEntity.getId());
+        unitEntity.setCode("10001");
+        unitEntity.setName("测试单位");
+        unitEntity.setOrder(0);
+        unitEntity.setTenantCode("master");
+        unitEntity.updateCreator(properties.getSupervisor().getUsername());
+        this.unitMapper.insert(unitEntity);
+
+        var rankEntity = new RankEntity();
+        rankEntity.setUnitId(unitEntity.getId());
+        rankEntity.setCode("10000");
+        rankEntity.setName("测试职级");
+        rankEntity.setOrder(0);
+        rankEntity.setTenantCode("master");
+        rankEntity.updateCreator(properties.getSupervisor().getUsername());
+        this.rankMapper.insert(rankEntity);
+
+        var accountEntity = new AccountEntity();
+        accountEntity.setUsername("zhangs");
+        accountEntity.setEmail("zhangs@central-x.com");
+        accountEntity.setMobile("18888888888");
+        accountEntity.setName("张三");
+        accountEntity.setAvatar("1234");
+        accountEntity.setAdmin(Boolean.FALSE);
+        accountEntity.setEnabled(Boolean.TRUE);
+        accountEntity.setDeleted(Boolean.FALSE);
+        accountEntity.setTenantCode("master");
+        accountEntity.updateCreator(properties.getSupervisor().getUsername());
+        this.mapper.insert(accountEntity);
+
+        var unitRelEntity = new AccountUnitEntity();
+        unitRelEntity.setAccountId(accountEntity.getId());
+        unitRelEntity.setUnitId(unitEntity.getId());
+        unitRelEntity.setRankId(rankEntity.getId());
+        unitRelEntity.setPrimary(Boolean.TRUE);
+        unitRelEntity.setTenantCode("master");
+        unitRelEntity.updateCreator(properties.getSupervisor().getUsername());
+        this.unitRelMapper.insert(unitRelEntity);
+
+        var departmentEntity = new DepartmentEntity();
+        departmentEntity.setUnitId(unitEntity.getId());
+        departmentEntity.setParentId("");
+        departmentEntity.setCode("10086");
+        departmentEntity.setName("测试部门");
+        departmentEntity.setOrder(0);
+        departmentEntity.setTenantCode("master");
+        departmentEntity.updateCreator(properties.getSupervisor().getUsername());
+        this.departmentMapper.insert(departmentEntity);
+
+        var postEntity = new PostEntity();
+        postEntity.setUnitId(unitEntity.getId());
+        postEntity.setCode("10002");
+        postEntity.setName("测试职务");
+        postEntity.setOrder(0);
+        postEntity.setTenantCode("master");
+        postEntity.updateCreator(properties.getSupervisor().getUsername());
+        this.postMapper.insert(postEntity);
+
+        var departmentRelEntity = new AccountDepartmentEntity();
+        departmentRelEntity.setAccountId(accountEntity.getId());
+        departmentRelEntity.setDepartmentId(departmentEntity.getId());
+        departmentRelEntity.setUnitId(unitEntity.getId());
+        departmentRelEntity.setPostId(postEntity.getId());
+        departmentRelEntity.setPrimary(true);
+        departmentRelEntity.setTenantCode("master");
+        departmentRelEntity.updateCreator(properties.getSupervisor().getUsername());
+        this.departmentRelMapper.insert(departmentRelEntity);
+
+        List<Account> accounts = this.provider.findBy(null, null, Conditions.of(Account.class).eq("unit.code", "10001"), null);
+        assertNotNull(accounts);
+        assertEquals(1, accounts.size());
+        assertTrue(accounts.stream().anyMatch(it -> Objects.equals(accountEntity.getId(), it.getId())));
+
+        accounts = this.provider.findBy(null, null, Conditions.of(Account.class).eq("rank.code", "10000"), null);
+        assertNotNull(accounts);
+        assertEquals(1, accounts.size());
+        assertTrue(accounts.stream().anyMatch(it -> Objects.equals(accountEntity.getId(), it.getId())));
+
+        accounts = this.provider.findBy(null, null, Conditions.of(Account.class).eq("department.code", "10086"), null);
+        assertNotNull(accounts);
+        assertEquals(1, accounts.size());
+        assertTrue(accounts.stream().anyMatch(it -> Objects.equals(accountEntity.getId(), it.getId())));
+
+        accounts = this.provider.findBy(null, null, Conditions.of(Account.class).eq("post.code", "10002"), null);
+        assertNotNull(accounts);
+        assertEquals(1, accounts.size());
+        assertTrue(accounts.stream().anyMatch(it -> Objects.equals(accountEntity.getId(), it.getId())));
     }
 
     /**
@@ -259,47 +379,9 @@ public class TestAccountProvider extends TestProvider {
         // 保存数据
         var inserted = this.provider.insert(input, this.properties.getSupervisor().getUsername());
         assertNotNull(inserted);
-        assertNotNull(inserted.getId());
-        assertEquals(input.getUsername(), inserted.getUsername());
-        assertEquals(input.getEmail(), inserted.getEmail());
-        assertEquals(input.getMobile(), inserted.getMobile());
-        assertEquals(input.getName(), inserted.getName());
-        assertEquals(input.getAvatar(), inserted.getAvatar());
-        assertEquals(input.getEnabled(), inserted.getEnabled());
-        assertEquals(input.getDeleted(), inserted.getDeleted());
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getCreatorId());
-        assertNotNull(inserted.getCreateDate());
-        assertNotNull(inserted.getCreator());
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getCreator().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getCreator().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), inserted.getCreator().getName());
-
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getModifierId());
-        assertNotNull(inserted.getModifyDate());
-        assertNotNull(inserted.getCreator());
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getModifier().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), inserted.getModifier().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), inserted.getModifier().getName());
-
-        assertEquals(inserted.getCreateDate(), inserted.getModifyDate(), "创建数据后，创建日期和修改日期应该相同");
 
         // 查询数据库
-        var entity = this.mapper.findById(inserted.getId());
-        assertNotNull(entity);
-        assertNotNull(entity.getTenantCode());
-        assertEquals(inserted.getId(), entity.getId());
-        assertEquals(inserted.getUsername(), entity.getUsername());
-        assertEquals(inserted.getEmail(), entity.getEmail());
-        assertEquals(inserted.getMobile(), entity.getMobile());
-        assertEquals(inserted.getName(), entity.getName());
-        assertEquals(inserted.getAvatar(), entity.getAvatar());
-        assertEquals(inserted.getAdmin(), entity.getAdmin());
-        assertEquals(inserted.getEnabled(), entity.getEnabled());
-        assertEquals(inserted.getDeleted(), entity.getDeleted());
-        assertEquals(inserted.getCreateDate(), entity.getCreateDate());
-        assertEquals(inserted.getCreatorId(), entity.getCreatorId());
-        assertEquals(inserted.getModifyDate(), entity.getModifyDate());
-        assertEquals(inserted.getModifierId(), entity.getModifierId());
+        assertTrue(this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getId, inserted.getId())));
     }
 
     /**
@@ -335,59 +417,12 @@ public class TestAccountProvider extends TestProvider {
         assertNotNull(inserted);
         assertEquals(2, inserted.size());
 
-        // 张三
-        var zhangsInserted = inserted.stream().filter(it -> Objects.equals(zhangsInput.getUsername(), it.getUsername())).findFirst().orElse(null);
-        assertNotNull(zhangsInserted);
-        assertNotNull(zhangsInserted.getId());
-        assertEquals(zhangsInput.getUsername(), zhangsInserted.getUsername());
-        assertEquals(zhangsInput.getEmail(), zhangsInserted.getEmail());
-        assertEquals(zhangsInput.getMobile(), zhangsInserted.getMobile());
-        assertEquals(zhangsInput.getName(), zhangsInserted.getName());
-        assertEquals(zhangsInput.getAvatar(), zhangsInserted.getAvatar());
-        assertEquals(zhangsInput.getEnabled(), zhangsInserted.getEnabled());
-        assertEquals(zhangsInput.getDeleted(), zhangsInserted.getDeleted());
-        assertEquals(this.properties.getSupervisor().getUsername(), zhangsInserted.getCreatorId());
-        assertNotNull(zhangsInserted.getCreateDate());
-        assertNotNull(zhangsInserted.getCreator());
-        assertEquals(this.properties.getSupervisor().getUsername(), zhangsInserted.getCreator().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), zhangsInserted.getCreator().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), zhangsInserted.getCreator().getName());
-
-        assertEquals(this.properties.getSupervisor().getUsername(), zhangsInserted.getModifierId());
-        assertNotNull(zhangsInserted.getModifyDate());
-        assertNotNull(zhangsInserted.getCreator());
-        assertEquals(this.properties.getSupervisor().getUsername(), zhangsInserted.getModifier().getId());
-        assertEquals(this.properties.getSupervisor().getUsername(), zhangsInserted.getModifier().getUsername());
-        assertEquals(this.properties.getSupervisor().getName(), zhangsInserted.getModifier().getName());
-
-        assertEquals(zhangsInserted.getCreateDate(), zhangsInserted.getModifyDate(), "创建数据后，创建日期和修改日期应该相同");
+        assertTrue(inserted.stream().anyMatch(it -> Objects.equals(zhangsInput.getUsername(), it.getUsername())));
+        assertTrue(inserted.stream().anyMatch(it -> Objects.equals(lisInput.getUsername(), it.getUsername())));
 
         // 查询数据库
-        var zhangsEntity = this.mapper.findById(zhangsInserted.getId());
-        assertNotNull(zhangsEntity);
-        assertNotNull(zhangsEntity.getTenantCode());
-        assertEquals(zhangsInserted.getId(), zhangsEntity.getId());
-        assertEquals(zhangsInserted.getUsername(), zhangsEntity.getUsername());
-        assertEquals(zhangsInserted.getEmail(), zhangsEntity.getEmail());
-        assertEquals(zhangsInserted.getMobile(), zhangsEntity.getMobile());
-        assertEquals(zhangsInserted.getName(), zhangsEntity.getName());
-        assertEquals(zhangsInserted.getAvatar(), zhangsEntity.getAvatar());
-        assertEquals(zhangsInserted.getAdmin(), zhangsEntity.getAdmin());
-        assertEquals(zhangsInserted.getEnabled(), zhangsEntity.getEnabled());
-        assertEquals(zhangsInserted.getDeleted(), zhangsEntity.getDeleted());
-        assertEquals(zhangsInserted.getCreateDate(), zhangsEntity.getCreateDate());
-        assertEquals(zhangsInserted.getCreatorId(), zhangsEntity.getCreatorId());
-        assertEquals(zhangsInserted.getModifyDate(), zhangsEntity.getModifyDate());
-        assertEquals(zhangsInserted.getModifierId(), zhangsEntity.getModifierId());
-
-        // 李四
-        var lisInserted = inserted.stream().filter(it -> Objects.equals(lisInput.getUsername(), it.getUsername())).findFirst().orElse(null);
-        assertNotNull(lisInserted);
-        assertNotNull(lisInserted.getId());
-
-        var lisEntity = this.mapper.findById(lisInserted.getId());
-        assertNotNull(lisEntity);
-        assertNotNull(lisEntity.getTenantCode());
+        assertTrue(this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, zhangsInput.getUsername())));
+        assertTrue(this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, lisInput.getUsername())));
     }
 
     /**
@@ -415,26 +450,12 @@ public class TestAccountProvider extends TestProvider {
         // 修改数据
         var input = account.toInput().toBuilder()
                 .name("章三")
-                .avatar("12345")
-                .enabled(Boolean.FALSE)
-                .deleted(Boolean.TRUE)
                 .build();
         var updated = this.provider.update(input, this.properties.getSupervisor().getUsername());
         assertNotNull(updated);
         assertEquals(account.getId(), updated.getId());
-        assertEquals(account.getUsername(), updated.getUsername(), "用户名[username]未修改");
-        assertEquals(account.getEmail(), updated.getEmail(), "邮箱[email]未修改");
-        assertEquals(account.getMobile(), updated.getMobile(), "手机号[mobile]未修改");
-        assertNotEquals(account.getName(), updated.getName(), "姓名[name]已修改");
-        assertEquals(input.getName(), updated.getName(), "姓名[name]需要修改为" + input.getName());
-        assertNotEquals(account.getAvatar(), updated.getAvatar(), "头像[avatar]已修改");
-        assertEquals(input.getAvatar(), updated.getAvatar(), "头像[avatar]需修改为" + input.getAvatar());
-        assertNotEquals(account.getEnabled(), updated.getEnabled(), "启用状态[enabled]已修改");
-        assertEquals(input.getEnabled(), updated.getEnabled(), "启用状态[enabled]需修改为" + input.getEnabled());
-        assertNotEquals(account.getDeleted(), updated.getDeleted(), "删除状态[deleted]已修改");
-        assertEquals(input.getDeleted(), updated.getDeleted(), "删除状态[deleted]需修改为" + input.getDeleted());
-        assertEquals(account.getCreateDate(), updated.getCreateDate(), "创建日期[createDate]未修改");
-        assertNotEquals(account.getModifyDate(), updated.getModifyDate(), "修改日期[modifyDate]需已修改");
+
+        assertTrue(this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getName, input.getName())));
     }
 
     /**
@@ -455,62 +476,24 @@ public class TestAccountProvider extends TestProvider {
         zhangsEntity.updateCreator(this.properties.getSupervisor().getUsername());
         this.mapper.insert(zhangsEntity);
 
-        var lisEntity = new AccountEntity();
-        lisEntity.setUsername("zhangs");
-        lisEntity.setEmail("zhangs@central-x.com");
-        lisEntity.setMobile("18888888888");
-        lisEntity.setName("张三");
-        lisEntity.setAvatar("1234");
-        lisEntity.setAdmin(Boolean.FALSE);
-        lisEntity.setEnabled(Boolean.TRUE);
-        lisEntity.setDeleted(Boolean.FALSE);
-        lisEntity.setTenantCode("master");
-        lisEntity.updateCreator(this.properties.getSupervisor().getUsername());
-        this.mapper.insert(lisEntity);
-
         // 获取数据
-        var accounts = this.provider.findByIds(List.of(zhangsEntity.getId(), lisEntity.getId()));
-        assertNotNull(accounts);
-        assertEquals(2, accounts.size());
+        var account = this.provider.findById(zhangsEntity.getId());
+        assertNotNull(account);
 
         // 修改数据
-        var inputs = accounts.stream().map(it -> it.toInput()
-                .toBuilder()
+        var input = account.toInput().toBuilder()
                 .name("章三")
-                .avatar("12345")
-                .enabled(Boolean.FALSE)
-                .deleted(Boolean.TRUE)
-                .build()
-        ).toList();
+                .build();
 
-        var updated = this.provider.updateBatch(inputs, this.properties.getSupervisor().getUsername());
-        assertNotNull(updated);
-        var zhangsUpdated = updated.stream().filter(it -> Objects.equals(zhangsEntity.getId(), it.getId())).findFirst().orElse(null);
-        assertNotNull(zhangsUpdated);
+        var accounts = this.provider.updateBatch(List.of(input), this.properties.getSupervisor().getUsername());
+        assertNotNull(accounts);
+        assertEquals(1, accounts.size());
 
-        assertEquals(zhangsEntity.getUsername(), zhangsUpdated.getUsername(), "用户名[username]未修改");
-        assertEquals(zhangsEntity.getEmail(), zhangsUpdated.getEmail(), "邮箱[email]未修改");
-        assertEquals(zhangsEntity.getMobile(), zhangsUpdated.getMobile(), "手机号[mobile]未修改");
-        assertEquals("章三", zhangsUpdated.getName(), "姓名[name]已修改");
-        assertEquals("12345", zhangsUpdated.getAvatar(), "头像[avatar]已修改");
-        assertEquals(Boolean.FALSE, zhangsUpdated.getEnabled(), "启用状态[enabled]已修改");
-        assertEquals(Boolean.TRUE, zhangsUpdated.getDeleted(), "删除状态[deleted]已修改");
-        assertEquals(zhangsEntity.getCreateDate(), zhangsUpdated.getCreateDate(), "创建日期[createDate]未修改");
-        assertEquals(zhangsUpdated.getModifyDate(), zhangsUpdated.getModifyDate(),  "修改日期[modifyDate]需已修改");
+        account = Listx.getFirstOrNull(accounts);
+        assertNotNull(account);
+        assertEquals(zhangsEntity.getId(), account.getId());
 
-
-        var lisUpdated = updated.stream().filter(it -> Objects.equals(lisEntity.getId(), it.getId())).findFirst().orElse(null);
-        assertNotNull(lisUpdated);
-
-        assertEquals(lisEntity.getUsername(), lisUpdated.getUsername(), "用户名[username]未修改");
-        assertEquals(lisEntity.getEmail(), lisUpdated.getEmail(), "邮箱[email]未修改");
-        assertEquals(lisEntity.getMobile(), lisUpdated.getMobile(), "手机号[mobile]未修改");
-        assertEquals("章三", lisUpdated.getName(), "姓名[name]已修改");
-        assertEquals("12345", lisUpdated.getAvatar(), "头像[avatar]已修改");
-        assertEquals(Boolean.FALSE, lisUpdated.getEnabled(), "启用状态[enabled]已修改");
-        assertEquals(Boolean.TRUE, lisUpdated.getDeleted(), "删除状态[deleted]已修改");
-        assertEquals(lisEntity.getCreateDate(), lisUpdated.getCreateDate(), "创建日期[createDate]未修改");
-        assertEquals(lisUpdated.getModifyDate(), lisUpdated.getModifyDate(),  "修改日期[modifyDate]需已修改");
+        assertTrue(this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getName, input.getName())));
 
     }
 

@@ -29,6 +29,7 @@ import central.bean.Deletable;
 import central.bean.Tenantable;
 import central.data.org.AccountInput;
 import central.sql.data.ModifiableEntity;
+import central.sql.meta.annotation.TableRelation;
 import central.util.Objectx;
 import central.validation.Label;
 import jakarta.persistence.Id;
@@ -53,6 +54,10 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_ORG_ACCOUNT")
 @EqualsAndHashCode(callSuper = true)
+@TableRelation(alias = "unit", table = AccountUnitEntity.class, target = UnitEntity.class, relationProperty = "accountId", targetRelationProperty = "unitId")
+@TableRelation(alias = "rank", table = AccountUnitEntity.class, target = RankEntity.class, relationProperty = "accountId", targetRelationProperty = "rankId")
+@TableRelation(alias = "department", table = AccountDepartmentEntity.class, target = DepartmentEntity.class, relationProperty = "accountId", targetRelationProperty = "departmentId")
+@TableRelation(alias = "post", table = AccountDepartmentEntity.class, target = PostEntity.class, relationProperty = "accountId", targetRelationProperty = "postId")
 public class AccountEntity extends ModifiableEntity implements Available, Deletable, Tenantable {
     @Serial
     private static final long serialVersionUID = -7393559754393169213L;

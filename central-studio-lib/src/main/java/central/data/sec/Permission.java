@@ -28,6 +28,7 @@ import central.bean.Available;
 import central.bean.Codeable;
 import central.bean.Remarkable;
 import central.data.org.Account;
+import central.data.ten.Application;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -52,6 +53,18 @@ import java.io.Serial;
 public class Permission extends ModifiableEntity implements Codeable, Available, Remarkable {
     @Serial
     private static final long serialVersionUID = -6065228625130524836L;
+
+    /**
+     * 应用主键
+     */
+    @Nonnull
+    private String applicationId;
+
+    /**
+     * 应用
+     */
+    @Nonnull
+    private Application application;
 
     /**
      * 菜单主键
@@ -107,6 +120,7 @@ public class Permission extends ModifiableEntity implements Codeable, Available,
     public PermissionInput toInput() {
         return PermissionInput.builder()
                 .id(this.getId())
+                .applicationId(this.getApplicationId())
                 .menuId(this.getMenuId())
                 .code(this.getCode())
                 .name(this.getName())

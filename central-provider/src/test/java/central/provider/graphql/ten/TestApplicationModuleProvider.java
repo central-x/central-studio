@@ -35,6 +35,7 @@ import central.provider.graphql.ten.entity.ApplicationModuleEntity;
 import central.provider.graphql.ten.mapper.ApplicationMapper;
 import central.provider.graphql.ten.mapper.ApplicationModuleMapper;
 import central.sql.Conditions;
+import central.sql.Orders;
 import central.util.Guidx;
 import central.util.Listx;
 import lombok.Setter;
@@ -231,24 +232,24 @@ public class TestApplicationModuleProvider extends TestProvider {
         this.mapper.insertBatch(modules);
 
         // 查询数据
-        var result = this.provider.findBy(1L, 0L, Conditions.of(ApplicationModule.class).eq("application.code", "central-security"), null);
+        var result = this.provider.findBy(1L, 0L, Conditions.of(ApplicationModule.class).eq("application.code", "central-security"), Orders.of(ApplicationModule.class).asc(ApplicationModule::getContextPath));
         assertNotNull(result);
         assertEquals(1, result.size());
 
-        var module = result.stream().filter(it -> Objects.equals(module1.getId(), it.getId())).findFirst().orElse(null);
+        var module = result.stream().filter(it -> Objects.equals(module2.getId(), it.getId())).findFirst().orElse(null);
         assertNotNull(module);
-        assertEquals(module1.getId(), module.getId());
-        assertEquals(module1.getApplicationId(), module.getApplicationId());
+        assertEquals(module2.getId(), module.getId());
+        assertEquals(module2.getApplicationId(), module.getApplicationId());
         assertNotNull(module.getApplication());
         // 关联查询
         assertEquals(entity.getCode(), module.getApplication().getCode());
         assertEquals(entity.getName(), module.getApplication().getName());
         assertEquals(entity.getEnabled(), module.getApplication().getEnabled());
 
-        assertEquals(module1.getUrl(), module.getUrl());
-        assertEquals(module1.getContextPath(), module.getContextPath());
-        assertEquals(module1.getEnabled(), module.getEnabled());
-        assertEquals(module1.getRemark(), module.getRemark());
+        assertEquals(module2.getUrl(), module.getUrl());
+        assertEquals(module2.getContextPath(), module.getContextPath());
+        assertEquals(module2.getEnabled(), module.getEnabled());
+        assertEquals(module2.getRemark(), module.getRemark());
     }
 
     /**

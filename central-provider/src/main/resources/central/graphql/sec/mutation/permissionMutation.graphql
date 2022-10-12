@@ -4,6 +4,8 @@
 input PermissionInput {
     "主键"
     id:                     ID
+    "应用主键"
+    applicationId:          String
     "菜单主键"
     menuId:                 String
     "标识"

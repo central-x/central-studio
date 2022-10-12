@@ -27,6 +27,7 @@ package central.provider.graphql.org.entity;
 import central.bean.Tenantable;
 import central.data.org.DepartmentInput;
 import central.sql.data.ModifiableEntity;
+import central.sql.meta.annotation.Relation;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -52,6 +53,8 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_ORG_DEPARTMENT")
 @EqualsAndHashCode(callSuper = true)
+@Relation(alias = "unit", target = UnitEntity.class, property = "unitId")
+@Relation(alias = "parent", target = DepartmentEntity.class, property = "parentId")
 public class DepartmentEntity extends ModifiableEntity implements Tenantable {
     @Serial
     private static final long serialVersionUID = -2959984565268243608L;

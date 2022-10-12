@@ -56,6 +56,7 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_SEC_MENU")
 @EqualsAndHashCode(callSuper = true)
+@Relation(alias = "parent", target = MenuEntity.class, property = "parentId")
 @Relation(alias = "permission", target = PermissionEntity.class, referencedProperty = "menuId")
 @Relation(alias = "application", target = ApplicationEntity.class, property = "applicationId")
 public class MenuEntity extends ModifiableEntity implements Tenantable {

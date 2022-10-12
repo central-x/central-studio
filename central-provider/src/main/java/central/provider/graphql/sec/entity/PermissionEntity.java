@@ -106,6 +106,7 @@ public class PermissionEntity extends ModifiableEntity implements Tenantable {
 
     public void fromInput(PermissionInput input) {
         this.setId(input.getId());
+        this.setApplicationId(input.getApplicationId());
         this.setMenuId(input.getMenuId());
         this.setCode(input.getCode());
         this.setName(input.getName());

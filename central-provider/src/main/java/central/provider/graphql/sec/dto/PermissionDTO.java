@@ -26,6 +26,7 @@ package central.provider.graphql.sec.dto;
 
 import central.provider.graphql.sec.entity.PermissionEntity;
 import central.provider.graphql.org.dto.AccountDTO;
+import central.provider.graphql.ten.dto.ApplicationDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;
@@ -48,7 +49,15 @@ public class PermissionDTO extends PermissionEntity {
     private static final long serialVersionUID = -3462948911635473156L;
 
     /**
-     * 菜单信息
+     * 应用
+     */
+    @GraphQLGetter
+    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader){
+        return loader.load(this.getApplicationId());
+    }
+
+    /**
+     * 菜单
      */
     @GraphQLGetter
     public CompletableFuture<MenuDTO> getMenu(DataLoader<String, MenuDTO> loader) {
