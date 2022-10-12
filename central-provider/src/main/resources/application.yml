@@ -12,7 +12,7 @@ spring:
     password: central.x
 
 # 应用配置
-app:
+studio:
   provider:
     code: central-provider
     key: central-provider-key

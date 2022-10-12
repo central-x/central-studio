@@ -16,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
  */
 @Data
 @Validated
-@ConfigurationProperties("app.provider")
+@ConfigurationProperties("studio.provider")
 public class ApplicationProperties {
 
     @NotBlank
