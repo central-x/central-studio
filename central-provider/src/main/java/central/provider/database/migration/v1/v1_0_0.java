@@ -24,11 +24,28 @@
 
 package central.provider.database.migration.v1;
 
+import central.data.sys.option.DatabaseType;
+import central.io.IOStreamx;
+import central.provider.graphql.sys.entity.DatabaseEntity;
+import central.provider.graphql.sys.mapper.DatabaseMapper;
+import central.provider.graphql.ten.entity.ApplicationEntity;
+import central.provider.graphql.ten.entity.TenantApplicationEntity;
+import central.provider.graphql.ten.entity.TenantEntity;
+import central.provider.graphql.ten.mapper.ApplicationMapper;
+import central.provider.graphql.ten.mapper.TenantApplicationMapper;
+import central.provider.graphql.ten.mapper.TenantMapper;
+import central.sql.SqlExecutor;
 import central.sql.SqlType;
 import central.sql.datasource.migration.*;
+import central.util.Guidx;
 import central.util.Version;
+import lombok.SneakyThrows;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -520,6 +537,93 @@ public class v1_0_0 extends Migration {
 
             database.addTable(table);
         }
+    }
+
+    @Override
+    @SneakyThrows
+    public void upgrade(SqlExecutor executor) throws SQLException {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 初始化应用信息
+        var applicationMapper = executor.getMapper(ApplicationMapper.class);
+
+        // 租户中心
+        var tenantApp = new ApplicationEntity();
+        tenantApp.setId("UFQG4uh6DtrT4AgLA4Z");
+        tenantApp.setCode("central-tenant");
+        tenantApp.setName("租户中心");
+        tenantApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-tenant.png")));
+        tenantApp.setUrl("lb://central-tenant");
+        tenantApp.setContextPath("/tenant");
+        tenantApp.setKey("btdHv1HdTTWzCEbiRdg");
+        tenantApp.setEnabled(Boolean.TRUE);
+        tenantApp.setRemark("用于维护租户、应用系统以及其租用关系");
+        tenantApp.updateCreator("syssa");
+
+        // 统一认证中心
+        var securityApp = new ApplicationEntity();
+        securityApp.setId("v788o67covIaDMn67mN");
+        securityApp.setCode("central-security");
+        securityApp.setName("统一认证中心");
+        securityApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
+        securityApp.setUrl("http://127.0.0.1:3100");
+        securityApp.setContextPath("/security");
+        securityApp.setKey("AkJSi2kmH7vSO5lJcvY");
+        securityApp.setEnabled(Boolean.TRUE);
+        securityApp.setRemark("用于统一管理全局会话");
+        securityApp.updateCreator("syssa");
+
+        applicationMapper.insertBatch(List.of(tenantApp, securityApp));
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 初始化主数据库信息
+        var databaseMapper = executor.getMapper(DatabaseMapper.class);
+
+        var masterDatabase = new DatabaseEntity();
+        masterDatabase.setId("OIJN8cob9iZzJ1NigWE");
+        masterDatabase.setApplicationId(tenantApp.getId());
+        masterDatabase.setCode("master");
+        masterDatabase.setName("主数据源");
+        masterDatabase.setType(DatabaseType.MYSQL.getValue());
+        masterDatabase.setEnabled(Boolean.TRUE);
+        masterDatabase.setRemark("本数据源是通过配置文件初始化，请勿修改");
+        masterDatabase.setTenantCode("master");
+        masterDatabase.updateCreator("syssa");
+        databaseMapper.insert(masterDatabase);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 初始化主租户
+        var tenantMapper = executor.getMapper(TenantMapper.class);
+
+        var masterTenant = new TenantEntity();
+        masterTenant.setId("2Hp475EmG4I6sNN0dUJ");
+        masterTenant.setCode("master");
+        masterTenant.setName("主租户");
+        masterTenant.setDatabaseId(masterDatabase.getId());
+        masterTenant.setEnabled(Boolean.TRUE);
+        masterTenant.setRemark("本租户主要用于管理基础软硬件及其他租户数据");
+        masterTenant.updateCreator("syssa");
+        tenantMapper.insert(masterTenant);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 初始化主租户的租用关系
+        var relMapper = executor.getMapper(TenantApplicationMapper.class);
+
+        var tenantAppRel = new TenantApplicationEntity();
+        tenantAppRel.setId("2B4wrNPDL80tfvSE8ve");
+        tenantAppRel.setTenantId(masterTenant.getId());
+        tenantAppRel.setApplicationId(tenantApp.getId());
+        tenantAppRel.setEnabled(Boolean.TRUE);
+        tenantAppRel.setPrimary(Boolean.FALSE);
+        tenantAppRel.updateCreator("syssa");
+
+        var securityAppRel = new TenantApplicationEntity();
+        securityAppRel.setId("jlUpCMrWWhUNhWHiBh5");
+        securityAppRel.setTenantId(masterTenant.getId());
+        securityAppRel.setApplicationId(securityApp.getId());
+        securityAppRel.setEnabled(Boolean.TRUE);
+        securityAppRel.setPrimary(Boolean.TRUE);
+        securityAppRel.updateCreator("syssa");
+        relMapper.insertBatch(List.of(tenantAppRel, securityAppRel));
     }
 
     @Override

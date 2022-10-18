@@ -33,27 +33,9 @@ package central.api;
 public interface Headers {
 
     /**
-     * 原始请求路径
-     * 主要后端微服务使用
-     */
-    String ORIGIN_URI = "X-Central-OriginUri";
-
-    /**
      * 请求位置
      * 包含请求协议、域名、端口、租户路径
      * 主要前端使用
      */
     String LOCATION = "X-Central-Location";
-
-    /**
-     * 访问凭证
-     * 主要后端微服务使用
-     */
-    String TOKEN = "X-Central-Token";
-
-    /**
-     * 版本号
-     * 用户
-     */
-    String VERSION = "X-Central-Version";
 }

@@ -25,6 +25,7 @@
 package central.data.ten;
 
 import central.bean.Available;
+import central.bean.Orderable;
 import central.data.org.Account;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;

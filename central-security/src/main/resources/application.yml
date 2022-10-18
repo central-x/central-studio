@@ -1,0 +1,10 @@
+server:
+  port: 3100
+  servlet:
+    context-path: /security
+  tomcat:
+    remoteip:
+      protocol-header: X-Forwarded-Proto
+      host-header: X-Forwarded-Host
+      port-header: X-Forwarded-Port
+      remote-ip-header: X-Forwarded-For

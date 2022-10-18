@@ -32,10 +32,12 @@ import central.sql.Orders;
 import central.starter.graphql.stub.Provider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
+import central.starter.web.http.XForwardedHeaders;
 import central.validation.group.Insert;
 import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -56,6 +58,7 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 数据
      */
     AccountDepartment findById(String id);
+    AccountDepartment findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 查询数据
@@ -64,6 +67,7 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 数据
      */
     List<AccountDepartment> findByIds(List<String> ids);
+    List<AccountDepartment> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 查询数据
@@ -75,6 +79,7 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 数据列表
      */
     List<AccountDepartment> findBy(Long limit, Long offset, Conditions<AccountDepartment> conditions, Orders<AccountDepartment> orders);
+    List<AccountDepartment> findBy(Long limit, Long offset, Conditions<AccountDepartment> conditions, Orders<AccountDepartment> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 分页查询数据
@@ -86,6 +91,7 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 分页数据
      */
     Page<AccountDepartment> pageBy(Long pageIndex, Long pageSize, Conditions<AccountDepartment> conditions, Orders<AccountDepartment> orders);
+    Page<AccountDepartment> pageBy(Long pageIndex, Long pageSize, Conditions<AccountDepartment> conditions, Orders<AccountDepartment> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 查询符合条件的数据数量
@@ -94,6 +100,7 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 数据数量
      */
     Long countBy(Conditions<AccountDepartment> conditions);
+    Long countBy(Conditions<AccountDepartment> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 保存数据
@@ -103,6 +110,7 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 保存后的实体数据
      */
     AccountDepartment insert(@Validated({Insert.class, Default.class}) AccountDepartmentInput input, String operator);
+    AccountDepartment insert(@Validated({Insert.class, Default.class}) AccountDepartmentInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 批量保存数据
@@ -112,6 +120,7 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 保存后的实体数据
      */
     List<AccountDepartment> insertBatch(@Validated({Insert.class, Default.class}) List<AccountDepartmentInput> inputs, String operator);
+    List<AccountDepartment> insertBatch(@Validated({Insert.class, Default.class}) List<AccountDepartmentInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 删除数据
@@ -120,6 +129,7 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 己删除的数据量
      */
     Long deleteByIds(List<String> ids);
+    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 删除数据
@@ -128,4 +138,5 @@ public interface AccountDepartmentProvider extends Provider {
      * @return 己删除的数据量
      */
     Long deleteBy(Conditions<AccountDepartment> conditions);
+    Long deleteBy(Conditions<AccountDepartment> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 }

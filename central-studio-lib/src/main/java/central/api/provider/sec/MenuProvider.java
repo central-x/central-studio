@@ -32,11 +32,13 @@ import central.sql.Orders;
 import central.starter.graphql.stub.Provider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
+import central.starter.web.http.XForwardedHeaders;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -58,6 +60,8 @@ public interface MenuProvider extends Provider {
      */
     Menu findById(String id);
 
+    Menu findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 查询数据
      *
@@ -65,6 +69,8 @@ public interface MenuProvider extends Provider {
      * @return 数据
      */
     List<Menu> findByIds(List<String> ids);
+
+    List<Menu> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 查询数据
@@ -77,6 +83,8 @@ public interface MenuProvider extends Provider {
      */
     List<Menu> findBy(Long limit, Long offset, Conditions<Menu> conditions, Orders<Menu> orders);
 
+    List<Menu> findBy(Long limit, Long offset, Conditions<Menu> conditions, Orders<Menu> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 分页查询数据
      *
@@ -88,6 +96,8 @@ public interface MenuProvider extends Provider {
      */
     Page<Menu> pageBy(Long pageIndex, Long pageSize, Conditions<Menu> conditions, Orders<Menu> orders);
 
+    Page<Menu> pageBy(Long pageIndex, Long pageSize, Conditions<Menu> conditions, Orders<Menu> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 查询符合条件的数据数量
      *
@@ -95,6 +105,8 @@ public interface MenuProvider extends Provider {
      * @return 数据数量
      */
     Long countBy(Conditions<Menu> conditions);
+
+    Long countBy(Conditions<Menu> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 保存数据
@@ -105,6 +117,8 @@ public interface MenuProvider extends Provider {
      */
     Menu insert(@Validated({Insert.class, Default.class}) MenuInput input, String operator);
 
+    Menu insert(@Validated({Insert.class, Default.class}) MenuInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 批量保存数据
      *
@@ -113,6 +127,8 @@ public interface MenuProvider extends Provider {
      * @return 保存后的实体数据
      */
     List<Menu> insertBatch(@Validated({Insert.class, Default.class}) List<MenuInput> inputs, String operator);
+
+    List<Menu> insertBatch(@Validated({Insert.class, Default.class}) List<MenuInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 更新数据
@@ -123,6 +139,8 @@ public interface MenuProvider extends Provider {
      */
     Menu update(@Validated({Update.class, Default.class}) MenuInput input, String operator);
 
+    Menu update(@Validated({Update.class, Default.class}) MenuInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 批量更新数据
      *
@@ -132,6 +150,8 @@ public interface MenuProvider extends Provider {
      */
     List<Menu> updateBatch(@Validated({Update.class, Default.class}) List<MenuInput> inputs, String operator);
 
+    List<Menu> updateBatch(@Validated({Update.class, Default.class}) List<MenuInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 删除数据
      *
@@ -140,6 +160,8 @@ public interface MenuProvider extends Provider {
      */
     Long deleteByIds(List<String> ids);
 
+    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 删除数据
      *
@@ -147,4 +169,6 @@ public interface MenuProvider extends Provider {
      * @return 己删除的数据量
      */
     Long deleteBy(Conditions<Menu> conditions);
+
+    Long deleteBy(Conditions<Menu> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 }

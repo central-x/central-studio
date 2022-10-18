@@ -32,16 +32,19 @@ import central.sql.Orders;
 import central.starter.graphql.stub.Provider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
+import central.starter.web.http.XForwardedHeaders;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
 /**
  * 行政区划
+ *
  * @author Alan Yeh
  * @since 2022/10/06
  */
@@ -57,6 +60,8 @@ public interface AreaProvider extends Provider {
      */
     Area findById(String id);
 
+    Area findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 查询数据
      *
@@ -64,6 +69,8 @@ public interface AreaProvider extends Provider {
      * @return 数据
      */
     List<Area> findByIds(List<String> ids);
+
+    List<Area> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 查询数据
@@ -76,6 +83,8 @@ public interface AreaProvider extends Provider {
      */
     List<Area> findBy(Long limit, Long offset, Conditions<Area> conditions, Orders<Area> orders);
 
+    List<Area> findBy(Long limit, Long offset, Conditions<Area> conditions, Orders<Area> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 分页查询数据
      *
@@ -87,6 +96,8 @@ public interface AreaProvider extends Provider {
      */
     Page<Area> pageBy(Long pageIndex, Long pageSize, Conditions<Area> conditions, Orders<Area> orders);
 
+    Page<Area> pageBy(Long pageIndex, Long pageSize, Conditions<Area> conditions, Orders<Area> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 查询符合条件的数据数量
      *
@@ -94,6 +105,8 @@ public interface AreaProvider extends Provider {
      * @return 数据数量
      */
     Long countBy(Conditions<Area> conditions);
+
+    Long countBy(Conditions<Area> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 保存数据
@@ -104,6 +117,8 @@ public interface AreaProvider extends Provider {
      */
     Area insert(@Validated({Insert.class, Default.class}) AreaInput input, String operator);
 
+    Area insert(@Validated({Insert.class, Default.class}) AreaInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 批量保存数据
      *
@@ -112,6 +127,8 @@ public interface AreaProvider extends Provider {
      * @return 保存后的实体数据
      */
     List<Area> insertBatch(@Validated({Insert.class, Default.class}) List<AreaInput> inputs, String operator);
+
+    List<Area> insertBatch(@Validated({Insert.class, Default.class}) List<AreaInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 更新数据
@@ -122,6 +139,8 @@ public interface AreaProvider extends Provider {
      */
     Area update(@Validated({Update.class, Default.class}) AreaInput input, String operator);
 
+    Area update(@Validated({Update.class, Default.class}) AreaInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 批量更新数据
      *
@@ -131,6 +150,8 @@ public interface AreaProvider extends Provider {
      */
     List<Area> updateBatch(@Validated({Update.class, Default.class}) List<AreaInput> inputs, String operator);
 
+    List<Area> updateBatch(@Validated({Update.class, Default.class}) List<AreaInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 删除数据
      *
@@ -139,6 +160,8 @@ public interface AreaProvider extends Provider {
      */
     Long deleteByIds(List<String> ids);
 
+    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 删除数据
      *
@@ -146,4 +169,6 @@ public interface AreaProvider extends Provider {
      * @return 己删除的数据量
      */
     Long deleteBy(Conditions<Area> conditions);
+
+    Long deleteBy(Conditions<Area> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 }
