@@ -32,11 +32,13 @@ import central.sql.Orders;
 import central.starter.graphql.stub.Provider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
+import central.starter.web.http.XForwardedHeaders;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -58,6 +60,8 @@ public interface PermissionProvider extends Provider {
      */
     Permission findById(String id);
 
+    Permission findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 查询数据
      *
@@ -65,6 +69,8 @@ public interface PermissionProvider extends Provider {
      * @return 数据
      */
     List<Permission> findByIds(List<String> ids);
+
+    List<Permission> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 查询数据
@@ -77,6 +83,8 @@ public interface PermissionProvider extends Provider {
      */
     List<Permission> findBy(Long limit, Long offset, Conditions<Permission> conditions, Orders<Permission> orders);
 
+    List<Permission> findBy(Long limit, Long offset, Conditions<Permission> conditions, Orders<Permission> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 分页查询数据
      *
@@ -88,6 +96,8 @@ public interface PermissionProvider extends Provider {
      */
     Page<Permission> pageBy(Long pageIndex, Long pageSize, Conditions<Permission> conditions, Orders<Permission> orders);
 
+    Page<Permission> pageBy(Long pageIndex, Long pageSize, Conditions<Permission> conditions, Orders<Permission> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 查询符合条件的数据数量
      *
@@ -95,6 +105,8 @@ public interface PermissionProvider extends Provider {
      * @return 数据数量
      */
     Long countBy(Conditions<Permission> conditions);
+
+    Long countBy(Conditions<Permission> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 保存数据
@@ -105,6 +117,8 @@ public interface PermissionProvider extends Provider {
      */
     Permission insert(@Validated({Insert.class, Default.class}) PermissionInput input, String operator);
 
+    Permission insert(@Validated({Insert.class, Default.class}) PermissionInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 批量保存数据
      *
@@ -113,6 +127,8 @@ public interface PermissionProvider extends Provider {
      * @return 保存后的实体数据
      */
     List<Permission> insertBatch(@Validated({Insert.class, Default.class}) List<PermissionInput> inputs, String operator);
+
+    List<Permission> insertBatch(@Validated({Insert.class, Default.class}) List<PermissionInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 更新数据
@@ -123,6 +139,8 @@ public interface PermissionProvider extends Provider {
      */
     Permission update(@Validated({Update.class, Default.class}) PermissionInput input, String operator);
 
+    Permission update(@Validated({Update.class, Default.class}) PermissionInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 批量更新数据
      *
@@ -132,6 +150,8 @@ public interface PermissionProvider extends Provider {
      */
     List<Permission> updateBatch(@Validated({Update.class, Default.class}) List<PermissionInput> inputs, String operator);
 
+    List<Permission> updateBatch(@Validated({Update.class, Default.class}) List<PermissionInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 删除数据
      *
@@ -140,6 +160,8 @@ public interface PermissionProvider extends Provider {
      */
     Long deleteByIds(List<String> ids);
 
+    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 删除数据
      *
@@ -147,4 +169,6 @@ public interface PermissionProvider extends Provider {
      * @return 己删除的数据量
      */
     Long deleteBy(Conditions<Permission> conditions);
+
+    Long deleteBy(Conditions<Permission> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 }

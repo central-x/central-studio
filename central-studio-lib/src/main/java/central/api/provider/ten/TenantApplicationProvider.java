@@ -48,7 +48,7 @@ import java.util.List;
  */
 @Repository
 @BodyPath("ten.tenants.applications")
-@GraphQLStub(path = "ten", client = "providerClient")
+@GraphQLStub(path = "ten", client = "tenantProviderClient")
 public interface TenantApplicationProvider extends Provider {
     /**
      * 查询数据

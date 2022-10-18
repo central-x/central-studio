@@ -35,6 +35,7 @@ query TenantProvider($id: String) {
                         url
                         contextPath
                         key
+                        enabled
                         modules {
                             id
                             applicationId
@@ -103,6 +104,7 @@ query TenantProvider($ids: [String]) {
                         url
                         contextPath
                         key
+                        enabled
                         modules {
                             id
                             applicationId
@@ -171,6 +173,7 @@ query TenantProvider($limit: Long, $offset: Long, $conditions: [ConditionInput],
                         url
                         contextPath
                         key
+                        enabled
                         modules {
                             id
                             applicationId
@@ -247,6 +250,7 @@ query TenantProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionI
                                 url
                                 contextPath
                                 key
+                                enabled
                                 modules {
                                     id
                                     applicationId
@@ -332,6 +336,7 @@ mutation TenantProvider($input: TenantInput, $operator: String) {
                         url
                         contextPath
                         key
+                        enabled
                         modules {
                             id
                             applicationId
@@ -400,6 +405,7 @@ mutation TenantProvider($inputs: [TenantInput], $operator: String) {
                         url
                         contextPath
                         key
+                        enabled
                         modules {
                             id
                             applicationId
@@ -468,6 +474,7 @@ mutation TenantProvider($input: TenantInput, $operator: String) {
                         url
                         contextPath
                         key
+                        enabled
                         modules {
                             id
                             applicationId
@@ -536,6 +543,7 @@ mutation TenantProvider($inputs: [TenantInput], $operator: String) {
                         url
                         contextPath
                         key
+                        enabled
                         modules {
                             id
                             applicationId

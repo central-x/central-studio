@@ -32,10 +32,12 @@ import central.sql.Orders;
 import central.starter.graphql.stub.Provider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
+import central.starter.web.http.XForwardedHeaders;
 import central.validation.group.Insert;
 import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -57,6 +59,8 @@ public interface AccountUnitProvider extends Provider {
      */
     AccountUnit findById(String id);
 
+    AccountUnit findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 查询数据
      *
@@ -64,6 +68,8 @@ public interface AccountUnitProvider extends Provider {
      * @return 数据
      */
     List<AccountUnit> findByIds(List<String> ids);
+
+    List<AccountUnit> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 查询数据
@@ -76,6 +82,8 @@ public interface AccountUnitProvider extends Provider {
      */
     List<AccountUnit> findBy(Long limit, Long offset, Conditions<AccountUnit> conditions, Orders<AccountUnit> orders);
 
+    List<AccountUnit> findBy(Long limit, Long offset, Conditions<AccountUnit> conditions, Orders<AccountUnit> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 分页查询数据
      *
@@ -87,6 +95,8 @@ public interface AccountUnitProvider extends Provider {
      */
     Page<AccountUnit> pageBy(Long pageIndex, Long pageSize, Conditions<AccountUnit> conditions, Orders<AccountUnit> orders);
 
+    Page<AccountUnit> pageBy(Long pageIndex, Long pageSize, Conditions<AccountUnit> conditions, Orders<AccountUnit> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 查询符合条件的数据数量
      *
@@ -94,6 +104,8 @@ public interface AccountUnitProvider extends Provider {
      * @return 数据数量
      */
     Long countBy(Conditions<AccountUnit> conditions);
+
+    Long countBy(Conditions<AccountUnit> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     /**
      * 保存数据
@@ -104,6 +116,8 @@ public interface AccountUnitProvider extends Provider {
      */
     AccountUnit insert(@Validated({Insert.class, Default.class}) AccountUnitInput input, String operator);
 
+    AccountUnit insert(@Validated({Insert.class, Default.class}) AccountUnitInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 批量保存数据
      *
@@ -113,6 +127,8 @@ public interface AccountUnitProvider extends Provider {
      */
     List<AccountUnit> insertBatch(@Validated({Insert.class, Default.class}) List<AccountUnitInput> inputs, String operator);
 
+    List<AccountUnit> insertBatch(@Validated({Insert.class, Default.class}) List<AccountUnitInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 删除数据
      *
@@ -121,6 +137,8 @@ public interface AccountUnitProvider extends Provider {
      */
     Long deleteByIds(List<String> ids);
 
+    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+
     /**
      * 删除数据
      *
@@ -128,4 +146,6 @@ public interface AccountUnitProvider extends Provider {
      * @return 己删除的数据量
      */
     Long deleteBy(Conditions<AccountUnit> conditions);
+
+    Long deleteBy(Conditions<AccountUnit> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 }

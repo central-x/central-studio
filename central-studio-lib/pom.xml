@@ -23,6 +23,11 @@
 
         <dependency>
             <groupId>com.central-x</groupId>
+            <artifactId>central-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
             <artifactId>central-starter-graphql-stub</artifactId>
             <version>1.0.x-SNAPSHOT</version>
             <scope>provided</scope>

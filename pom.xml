@@ -8,7 +8,9 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>central-gateway</module>
         <module>central-provider</module>
+        <module>central-security</module>
         <module>central-studio-lib</module>
     </modules>
 

@@ -139,18 +139,4 @@
             <url>https://mirror.yeh.cn/repository/maven-public/</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <!-- 发布仓库 -->
-    <distributionManagement>
-        <repository>
-            <id>centralx-releases</id>
-            <name>CentralX Release Repository</name>
-            <url>https://deploy.yeh.cn/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>centralx-snapshots</id>
-            <name>CentralX Snapshot Repository</name>
-            <url>https://deploy.yeh.cn/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
