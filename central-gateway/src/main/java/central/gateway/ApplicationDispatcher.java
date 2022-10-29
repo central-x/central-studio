@@ -30,7 +30,7 @@ import central.gateway.core.GlobalGatewayFilter;
 import central.gateway.core.StandardGatewayFilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;
 import central.lang.Stringx;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import central.starter.web.reactive.extension.ServerWebExchangex;
 import central.util.Objectx;
 import central.starter.web.reactive.support.RemoteAddressResolver;

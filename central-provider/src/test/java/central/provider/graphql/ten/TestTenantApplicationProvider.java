@@ -104,7 +104,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -165,7 +165,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -228,7 +228,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -291,7 +291,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -344,7 +344,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -394,7 +394,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -446,7 +446,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -499,7 +499,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -556,7 +556,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -614,7 +614,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());
@@ -665,7 +665,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         application.setUrl("http://127.0.0.1:3110");
         application.setContextPath("/security");
-        application.setKey(Guidx.nextID());
+        application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
         application.updateCreator(properties.getSupervisor().getUsername());

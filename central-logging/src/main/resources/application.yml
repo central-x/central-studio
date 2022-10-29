@@ -1,0 +1,9 @@
+server:
+  servlet:
+    context-path: /logging
+  port: 3400
+
+spring:
+  application:
+    name: central-provider
+    version: @{ project.version }@

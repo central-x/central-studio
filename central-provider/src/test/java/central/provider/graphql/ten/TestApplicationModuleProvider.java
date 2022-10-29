@@ -93,7 +93,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -148,7 +148,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -204,7 +204,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -263,7 +263,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -327,7 +327,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -370,7 +370,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -414,7 +414,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -463,7 +463,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -517,7 +517,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -576,7 +576,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -621,7 +621,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());

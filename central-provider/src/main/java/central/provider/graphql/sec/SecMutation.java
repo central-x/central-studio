@@ -24,9 +24,7 @@
 
 package central.provider.graphql.sec;
 
-import central.provider.graphql.sec.mutation.MenuMutation;
 import central.provider.graphql.sec.mutation.PasswordMutation;
-import central.provider.graphql.sec.mutation.RoleMutation;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,25 +38,8 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(path = "sec", types = {MenuMutation.class, RoleMutation.class, PasswordMutation.class})
+@GraphQLSchema(path = "sec", types = {PasswordMutation.class})
 public class SecMutation {
-    /**
-     * Menu Mutation
-     * 菜单修改
-     */
-    @GraphQLGetter
-    public MenuMutation getMenus(@Autowired MenuMutation mutation) {
-        return mutation;
-    }
-
-    /**
-     * Role Mutation
-     * 角色修改
-     */
-    @GraphQLGetter
-    public RoleMutation getRoles(@Autowired RoleMutation mutation) {
-        return mutation;
-    }
 
     /**
      * Password Mutation

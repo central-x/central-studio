@@ -2,12 +2,18 @@ extend type Mutation {
     "组织架构数据修改"
     org: OrgMutation!
 
-    "安全数据修改"
-    sec: SecMutation!
+    "权限数据修改"
+    auth: AuthMutation!
 
     "系统数据修改"
     sys: SysMutation!
 
     "租户数据修改"
     ten: TenMutation!
+
+    "安全数据修改"
+    sec: SecMutation!
+
+    "日志数据修改"
+    log: LogMutation!
 }

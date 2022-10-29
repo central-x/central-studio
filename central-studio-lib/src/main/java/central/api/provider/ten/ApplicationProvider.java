@@ -24,21 +24,12 @@
 
 package central.api.provider.ten;
 
-import central.bean.Page;
 import central.data.ten.Application;
 import central.data.ten.ApplicationInput;
-import central.sql.Conditions;
-import central.sql.Orders;
-import central.starter.graphql.stub.Provider;
+import central.starter.graphql.stub.ModifiableProvider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
-import central.validation.group.Insert;
-import central.validation.group.Update;
-import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
-import org.springframework.validation.annotation.Validated;
-
-import java.util.List;
 
 /**
  * 应用
@@ -48,103 +39,6 @@ import java.util.List;
  */
 @Repository
 @BodyPath("ten.applications")
-@GraphQLStub(path = "ten", client = "tenantProviderClient")
-public interface ApplicationProvider extends Provider {
-    /**
-     * 查询数据
-     *
-     * @param id 主键
-     * @return 数据
-     */
-    Application findById(String id);
-
-    /**
-     * 查询数据
-     *
-     * @param ids 主键
-     * @return 数据
-     */
-    List<Application> findByIds(List<String> ids);
-
-    /**
-     * 查询数据
-     *
-     * @param limit      数据量（不传的话，就返回所有数据）
-     * @param offset     偏移量（跳过前 N 条数据）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 数据列表
-     */
-    List<Application> findBy(Long limit, Long offset, Conditions<Application> conditions, Orders<Application> orders);
-
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标（最小值为 1，最大值为 100）
-     * @param pageSize   分页大小（最小值为 1，最大值为 100）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 分页数据
-     */
-    Page<Application> pageBy(Long pageIndex, Long pageSize, Conditions<Application> conditions, Orders<Application> orders);
-
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @return 数据数量
-     */
-    Long countBy(Conditions<Application> conditions);
-
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    Application insert(@Validated({Insert.class, Default.class}) ApplicationInput input, String operator);
-
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    List<Application> insertBatch(@Validated({Insert.class, Default.class}) List<ApplicationInput> inputs, String operator);
-
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    Application update(@Validated({Update.class, Default.class}) ApplicationInput input, String operator);
-
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    List<Application> updateBatch(@Validated({Update.class, Default.class}) List<ApplicationInput> inputs, String operator);
-
-    /**
-     * 删除数据
-     *
-     * @param ids 主键
-     * @return 己删除的数据量
-     */
-    Long deleteByIds(List<String> ids);
-
-    /**
-     * 删除数据
-     *
-     * @param conditions 筛选条件
-     * @return 己删除的数据量
-     */
-    Long deleteBy(Conditions<Application> conditions);
+@GraphQLStub(path = "ten", client = "masterProviderClient")
+public interface ApplicationProvider extends ModifiableProvider<Application, ApplicationInput> {
 }

@@ -102,5 +102,5 @@ public interface ExchangeAttributes {
     /**
      * JWT Token
      */
-    Attribute<JWTCreator.Builder> TOKEN = Attribute.of(ExchangeAttributes.class.getName() + ".claims", () -> JWT.create().withJWTId(Guidx.nextID()).withExpiresAt(new Date(System.currentTimeMillis() + Duration.ofMinutes(3).toMillis())));
+    Attribute<JWTCreator.Builder> TOKEN = Attribute.of(ExchangeAttributes.class.getName() + ".token", () -> JWT.create().withJWTId(Guidx.nextID()).withExpiresAt(new Date(System.currentTimeMillis() + Duration.ofMinutes(3).toMillis())));
 }

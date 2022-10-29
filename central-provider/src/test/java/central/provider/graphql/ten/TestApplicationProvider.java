@@ -93,7 +93,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -128,7 +128,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(Base64.getEncoder().encodeToString(entity.getLogoBytes()), application.getLogo());
         assertEquals(entity.getUrl(), application.getUrl());
         assertEquals(entity.getContextPath(), application.getContextPath());
-        assertEquals(entity.getKey(), application.getKey());
+        assertEquals(entity.getSecret(), application.getSecret());
         assertEquals(entity.getEnabled(), application.getEnabled());
         assertEquals(entity.getRemark(), application.getRemark());
         assertNotNull(application.getModules());
@@ -148,7 +148,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -184,7 +184,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(Base64.getEncoder().encodeToString(entity.getLogoBytes()), application.getLogo());
         assertEquals(entity.getUrl(), application.getUrl());
         assertEquals(entity.getContextPath(), application.getContextPath());
-        assertEquals(entity.getKey(), application.getKey());
+        assertEquals(entity.getSecret(), application.getSecret());
         assertEquals(entity.getEnabled(), application.getEnabled());
         assertEquals(entity.getRemark(), application.getRemark());
         assertNotNull(application.getModules());
@@ -204,7 +204,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -240,7 +240,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(Base64.getEncoder().encodeToString(entity.getLogoBytes()), application.getLogo());
         assertEquals(entity.getUrl(), application.getUrl());
         assertEquals(entity.getContextPath(), application.getContextPath());
-        assertEquals(entity.getKey(), application.getKey());
+        assertEquals(entity.getSecret(), application.getSecret());
         assertEquals(entity.getEnabled(), application.getEnabled());
         assertEquals(entity.getRemark(), application.getRemark());
         assertNotNull(application.getModules());
@@ -260,7 +260,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -303,7 +303,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(Base64.getEncoder().encodeToString(entity.getLogoBytes()), application.getLogo());
         assertEquals(entity.getUrl(), application.getUrl());
         assertEquals(entity.getContextPath(), application.getContextPath());
-        assertEquals(entity.getKey(), application.getKey());
+        assertEquals(entity.getSecret(), application.getSecret());
         assertEquals(entity.getEnabled(), application.getEnabled());
         assertEquals(entity.getRemark(), application.getRemark());
         assertNotNull(application.getModules());
@@ -323,7 +323,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -366,7 +366,7 @@ public class TestApplicationProvider extends TestProvider {
                 .logo(Base64.getEncoder().encodeToString("1234".getBytes(StandardCharsets.UTF_8)))
                 .url("http://127.0.0.1:3100")
                 .contextPath("/security")
-                .key(Guidx.nextID())
+                .secret(Guidx.nextID())
                 .enabled(Boolean.TRUE)
                 .remark("用于所有应用的认证处理")
                 .build();
@@ -377,7 +377,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getLogo(), application.getLogo());
         assertEquals(input.getUrl(), application.getUrl());
         assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getKey(), application.getKey());
+        assertEquals(input.getSecret(), application.getSecret());
         assertEquals(input.getEnabled(), application.getEnabled());
         assertEquals(input.getRemark(), application.getRemark());
 
@@ -388,7 +388,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getLogo(), application.getLogo());
         assertEquals(input.getUrl(), application.getUrl());
         assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getKey(), application.getKey());
+        assertEquals(input.getSecret(), application.getSecret());
         assertEquals(input.getEnabled(), application.getEnabled());
         assertEquals(input.getRemark(), application.getRemark());
     }
@@ -404,7 +404,7 @@ public class TestApplicationProvider extends TestProvider {
                 .logo(Base64.getEncoder().encodeToString("1234".getBytes(StandardCharsets.UTF_8)))
                 .url("http://127.0.0.1:3100")
                 .contextPath("/security")
-                .key(Guidx.nextID())
+                .secret(Guidx.nextID())
                 .enabled(Boolean.TRUE)
                 .remark("用于所有应用的认证处理")
                 .build();
@@ -420,7 +420,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getLogo(), application.getLogo());
         assertEquals(input.getUrl(), application.getUrl());
         assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getKey(), application.getKey());
+        assertEquals(input.getSecret(), application.getSecret());
         assertEquals(input.getEnabled(), application.getEnabled());
         assertEquals(input.getRemark(), application.getRemark());
 
@@ -431,7 +431,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getLogo(), application.getLogo());
         assertEquals(input.getUrl(), application.getUrl());
         assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getKey(), application.getKey());
+        assertEquals(input.getSecret(), application.getSecret());
         assertEquals(input.getEnabled(), application.getEnabled());
         assertEquals(input.getRemark(), application.getRemark());
     }
@@ -447,7 +447,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -488,7 +488,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getLogo(), application.getLogo());
         assertEquals(input.getUrl(), application.getUrl());
         assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getKey(), application.getKey());
+        assertEquals(input.getSecret(), application.getSecret());
         assertEquals(input.getEnabled(), application.getEnabled());
         assertEquals(input.getRemark(), application.getRemark());
     }
@@ -504,7 +504,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -547,7 +547,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getLogo(), application.getLogo());
         assertEquals(input.getUrl(), application.getUrl());
         assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getKey(), application.getKey());
+        assertEquals(input.getSecret(), application.getSecret());
         assertEquals(input.getEnabled(), application.getEnabled());
         assertEquals(input.getRemark(), application.getRemark());
     }
@@ -563,7 +563,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());
@@ -610,7 +610,7 @@ public class TestApplicationProvider extends TestProvider {
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
         entity.setContextPath("/security");
-        entity.setKey(Guidx.nextID());
+        entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
         entity.updateCreator(properties.getSupervisor().getUsername());

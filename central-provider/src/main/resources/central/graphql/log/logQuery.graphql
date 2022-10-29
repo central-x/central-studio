@@ -1,0 +1,13 @@
+"""
+日志数据查询
+"""
+type LogQuery {
+    "采集器查询"
+    collectors: LogCollectorQuery
+
+    "过滤器查询"
+    filters: LogFilterQuery
+
+    "存储器查询"
+    storages: LogStorageQuery
+}

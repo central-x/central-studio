@@ -95,7 +95,7 @@ public class ApplicationEntity extends ModifiableEntity {
     @Label("密钥")
     @NotBlank
     @Size(min = 1, max = 32)
-    private String key;
+    private String secret;
 
     @Label("是否启用")
     @NotNull
@@ -119,7 +119,7 @@ public class ApplicationEntity extends ModifiableEntity {
         }
         this.setUrl(input.getUrl());
         this.setContextPath(input.getContextPath());
-        this.setKey(input.getKey());
+        this.setSecret(input.getSecret());
         this.setEnabled(input.getEnabled());
         this.setRemark(input.getRemark());
     }

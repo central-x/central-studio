@@ -24,23 +24,12 @@
 
 package central.api.provider.sys;
 
-import central.bean.Page;
 import central.data.sys.Dictionary;
 import central.data.sys.DictionaryInput;
-import central.sql.Conditions;
-import central.sql.Orders;
-import central.starter.graphql.stub.Provider;
+import central.starter.graphql.stub.ModifiableProvider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
-import central.starter.web.http.XForwardedHeaders;
-import central.validation.group.Insert;
-import central.validation.group.Update;
-import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestHeader;
-
-import java.util.List;
 
 /**
  * 字典
@@ -51,124 +40,5 @@ import java.util.List;
 @Repository
 @BodyPath("sys.dictionaries")
 @GraphQLStub(path = "sys", client = "providerClient")
-public interface DictionaryProvider extends Provider {
-    /**
-     * 查询数据
-     *
-     * @param id 主键
-     * @return 数据
-     */
-    Dictionary findById(String id);
-
-    Dictionary findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询数据
-     *
-     * @param ids 主键
-     * @return 数据
-     */
-    List<Dictionary> findByIds(List<String> ids);
-
-    List<Dictionary> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询数据
-     *
-     * @param limit      数据量（不传的话，就返回所有数据）
-     * @param offset     偏移量（跳过前 N 条数据）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 数据列表
-     */
-    List<Dictionary> findBy(Long limit, Long offset, Conditions<Dictionary> conditions, Orders<Dictionary> orders);
-
-    List<Dictionary> findBy(Long limit, Long offset, Conditions<Dictionary> conditions, Orders<Dictionary> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标（最小值为 1，最大值为 100）
-     * @param pageSize   分页大小（最小值为 1，最大值为 100）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 分页数据
-     */
-    Page<Dictionary> pageBy(Long pageIndex, Long pageSize, Conditions<Dictionary> conditions, Orders<Dictionary> orders);
-
-    List<Dictionary> pageBy(Long pageIndex, Long pageSize, Conditions<Dictionary> conditions, Orders<Dictionary> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @return 数据数量
-     */
-    Long countBy(Conditions<Dictionary> conditions);
-
-    Long countBy(Conditions<Dictionary> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    Dictionary insert(@Validated({Insert.class, Default.class}) DictionaryInput input, String operator);
-
-    Dictionary insert(@Validated({Insert.class, Default.class}) DictionaryInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    List<Dictionary> insertBatch(@Validated({Insert.class, Default.class}) List<DictionaryInput> inputs, String operator);
-
-    List<Dictionary> insertBatch(@Validated({Insert.class, Default.class}) List<DictionaryInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    Dictionary update(@Validated({Update.class, Default.class}) DictionaryInput input, String operator);
-
-    Dictionary update(@Validated({Update.class, Default.class}) DictionaryInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    List<Dictionary> updateBatch(@Validated({Update.class, Default.class}) List<DictionaryInput> inputs, String operator);
-
-    List<Dictionary> updateBatch(@Validated({Update.class, Default.class}) List<DictionaryInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 删除数据
-     *
-     * @param ids 主键
-     * @return 己删除的数据量
-     */
-    Long deleteByIds(List<String> ids);
-
-    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 删除数据
-     *
-     * @param conditions 筛选条件
-     * @return 己删除的数据量
-     */
-    Long deleteBy(Conditions<Dictionary> conditions);
-
-    Long deleteBy(Conditions<Dictionary> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+public interface DictionaryProvider extends ModifiableProvider<Dictionary, DictionaryInput> {
 }

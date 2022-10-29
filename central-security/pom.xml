@@ -18,6 +18,12 @@
     <dependencies>
         <dependency>
             <groupId>com.central-x</groupId>
+            <artifactId>central-studio-lib</artifactId>
+            <version>1.0.x-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
             <artifactId>central-starter-graphql-stub</artifactId>
             <version>1.0.x-SNAPSHOT</version>
         </dependency>
@@ -32,18 +38,9 @@
             <artifactId>central-starter-logging</artifactId>
         </dependency>
 
-        <!-- 数据库依赖 -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
         </dependency>
 
         <!-- 测试依赖 -->
@@ -55,6 +52,31 @@
     </dependencies>
 
     <build>
+        <!-- 替换 bootstrap.yml 里面的版本号 -->
+        <resources>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.yml</exclude>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <!-- 本项目是程序文件，不发布到 Maven 仓库 -->
             <plugin>
@@ -79,7 +101,7 @@
                 <configuration>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
                     <delimiters>
-                        <delimiter>@{*}@</delimiter>
+                        <delimiter>@{ * }@</delimiter>
                     </delimiters>
                 </configuration>
             </plugin>

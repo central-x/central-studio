@@ -24,6 +24,8 @@
 
 package central.api.scheduled.fetcher;
 
+import central.api.scheduled.fetcher.log.LogContainer;
+import central.api.scheduled.fetcher.log.LogFetcher;
 import central.api.scheduled.fetcher.sys.SysContainer;
 import central.api.scheduled.fetcher.sys.SystemFetcher;
 import central.api.scheduled.fetcher.ten.TenantContainer;
@@ -45,4 +47,8 @@ public interface DataFetchers {
      * 系统类数据
      */
     Attribute<DataFetcher<SysContainer>> SYSTEM = Attribute.of(DataFetchers.class.getName() + ".system", SystemFetcher::new);
+    /**
+     * 日志类数据
+     */
+    Attribute<DataFetcher<LogContainer>> LOG = Attribute.of(DataFetchers.class.getName() + ".log", LogFetcher::new);
 }

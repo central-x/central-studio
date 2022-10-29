@@ -1,12 +1,7 @@
 """
-安全数据修改
+认证数据修改
 """
 type SecMutation {
-    "角色修改"
-    roles: RoleMutation!
-
-    "菜单修改"
-    menus: MenuMutation!
 
     "密码修改"
     passwords: PasswordMutation!

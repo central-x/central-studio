@@ -24,23 +24,12 @@
 
 package central.api.provider.org;
 
-import central.bean.Page;
 import central.data.org.Post;
 import central.data.org.PostInput;
-import central.sql.Conditions;
-import central.sql.Orders;
-import central.starter.graphql.stub.Provider;
+import central.starter.graphql.stub.ModifiableProvider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
-import central.starter.web.http.XForwardedHeaders;
-import central.validation.group.Insert;
-import central.validation.group.Update;
-import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestHeader;
-
-import java.util.List;
 
 /**
  * 职务
@@ -51,124 +40,5 @@ import java.util.List;
 @Repository
 @BodyPath("org.posts")
 @GraphQLStub(path = "org", client = "providerClient")
-public interface PostProvider extends Provider {
-    /**
-     * 查询数据
-     *
-     * @param id 主键
-     * @return 数据
-     */
-    Post findById(String id);
-
-    Post findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询数据
-     *
-     * @param ids 主键
-     * @return 数据
-     */
-    List<Post> findByIds(List<String> ids);
-
-    List<Post> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询数据
-     *
-     * @param limit      数据量（不传的话，就返回所有数据）
-     * @param offset     偏移量（跳过前 N 条数据）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 数据列表
-     */
-    List<Post> findBy(Long limit, Long offset, Conditions<Post> conditions, Orders<Post> orders);
-
-    List<Post> findBy(Long limit, Long offset, Conditions<Post> conditions, Orders<Post> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标（最小值为 1，最大值为 100）
-     * @param pageSize   分页大小（最小值为 1，最大值为 100）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 分页数据
-     */
-    Page<Post> pageBy(Long pageIndex, Long pageSize, Conditions<Post> conditions, Orders<Post> orders);
-
-    Page<Post> pageBy(Long pageIndex, Long pageSize, Conditions<Post> conditions, Orders<Post> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @return 数据数量
-     */
-    Long countBy(Conditions<Post> conditions);
-
-    Long countBy(Conditions<Post> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    Post insert(@Validated({Insert.class, Default.class}) PostInput input, String operator);
-
-    Post insert(@Validated({Insert.class, Default.class}) PostInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    List<Post> insertBatch(@Validated({Insert.class, Default.class}) List<PostInput> inputs, String operator);
-
-    List<Post> insertBatch(@Validated({Insert.class, Default.class}) List<PostInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    Post update(@Validated({Update.class, Default.class}) PostInput input, String operator);
-
-    Post update(@Validated({Update.class, Default.class}) PostInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    List<Post> updateBatch(@Validated({Update.class, Default.class}) List<PostInput> inputs, String operator);
-
-    List<Post> updateBatch(@Validated({Update.class, Default.class}) List<PostInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 删除数据
-     *
-     * @param ids 主键
-     * @return 己删除的数据量
-     */
-    Long deleteByIds(List<String> ids);
-
-    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 删除数据
-     *
-     * @param conditions 筛选条件
-     * @return 己删除的数据量
-     */
-    Long deleteBy(Conditions<Post> conditions);
-
-    Long deleteBy(Conditions<Post> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+public interface PostProvider extends ModifiableProvider<Post, PostInput> {
 }

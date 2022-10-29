@@ -24,23 +24,12 @@
 
 package central.api.provider.org;
 
-import central.bean.Page;
 import central.data.org.Account;
 import central.data.org.AccountInput;
-import central.sql.Conditions;
-import central.sql.Orders;
-import central.starter.graphql.stub.Provider;
+import central.starter.graphql.stub.ModifiableProvider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
-import central.starter.web.http.XForwardedHeaders;
-import central.validation.group.Insert;
-import central.validation.group.Update;
-import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestHeader;
-
-import java.util.List;
 
 /**
  * 帐户
@@ -51,124 +40,5 @@ import java.util.List;
 @Repository
 @BodyPath("org.accounts")
 @GraphQLStub(path = "org", client = "providerClient")
-public interface AccountProvider extends Provider {
-    /**
-     * 查询数据
-     *
-     * @param id 主键
-     * @return 数据
-     */
-    Account findById(String id);
-
-    Account findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询数据
-     *
-     * @param ids 主键
-     * @return 数据
-     */
-    List<Account> findByIds(List<String> ids);
-
-    List<Account> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询数据
-     *
-     * @param limit      数据量（不传的话，就返回所有数据）
-     * @param offset     偏移量（跳过前 N 条数据）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 数据列表
-     */
-    List<Account> findBy(Long limit, Long offset, Conditions<Account> conditions, Orders<Account> orders);
-
-    List<Account> findBy(Long limit, Long offset, Conditions<Account> conditions, Orders<Account> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标（最小值为 1，最大值为 100）
-     * @param pageSize   分页大小（最小值为 1，最大值为 100）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 分页数据
-     */
-    Page<Account> pageBy(Long pageIndex, Long pageSize, Conditions<Account> conditions, Orders<Account> orders);
-
-    Page<Account> pageBy(Long pageIndex, Long pageSize, Conditions<Account> conditions, Orders<Account> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @return 数据数量
-     */
-    Long countBy(Conditions<Account> conditions);
-
-    Long countBy(Conditions<Account> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    Account insert(@Validated({Insert.class, Default.class}) AccountInput input, String operator);
-
-    Account insert(@Validated({Insert.class, Default.class}) AccountInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    List<Account> insertBatch(@Validated({Insert.class, Default.class}) List<AccountInput> inputs, String operator);
-
-    List<Account> insertBatch(@Validated({Insert.class, Default.class}) List<AccountInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    Account update(@Validated({Update.class, Default.class}) AccountInput input, String operator);
-
-    Account update(@Validated({Update.class, Default.class}) AccountInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 更新后的实体数据
-     */
-    List<Account> updateBatch(@Validated({Update.class, Default.class}) List<AccountInput> inputs, String operator);
-
-    List<Account> updateBatch(@Validated({Update.class, Default.class}) List<AccountInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 删除数据
-     *
-     * @param ids 主键
-     * @return 己删除的数据量
-     */
-    Long deleteByIds(List<String> ids);
-
-    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 删除数据
-     *
-     * @param conditions 筛选条件
-     * @return 己删除的数据量
-     */
-    Long deleteBy(Conditions<Account> conditions);
-
-    Long deleteBy(Conditions<Account> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+public interface AccountProvider extends ModifiableProvider<Account, AccountInput> {
 }

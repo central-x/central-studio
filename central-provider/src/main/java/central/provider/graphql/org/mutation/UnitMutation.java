@@ -33,7 +33,7 @@ import central.provider.graphql.org.mapper.UnitMapper;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -160,6 +160,8 @@ public class UnitMutation {
             return 0;
         }
 
+        // TODO 级联删除？
+
         return this.mapper.deleteBy(Conditions.of(UnitEntity.class).in(UnitEntity::getId, ids).eq(UnitEntity::getTenantCode, tenant));
     }
 
@@ -173,6 +175,8 @@ public class UnitMutation {
     public long deleteBy(@RequestParam Conditions<UnitEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
+
+        // TODO 级联删除？
         return this.mapper.deleteBy(conditions);
     }
 }

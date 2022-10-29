@@ -24,6 +24,8 @@
 
 package central.provider.graphql;
 
+import central.provider.graphql.auth.AuthQuery;
+import central.provider.graphql.log.LogQuery;
 import central.provider.graphql.sec.SecQuery;
 import central.provider.graphql.org.OrgQuery;
 import central.provider.graphql.sys.SysQuery;
@@ -40,19 +42,21 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(types = {SecQuery.class, OrgQuery.class, SysQuery.class, TenQuery.class})
+@GraphQLSchema(types = {AuthQuery.class, OrgQuery.class, SysQuery.class, TenQuery.class, SecQuery.class, LogQuery.class})
 public class Query {
     /**
-     * Security Query
-     * 安全相关查询
+     * Authority Query
+     * <p>
+     * 权限相关相询
      */
     @GraphQLGetter
-    public SecQuery getSec(@Autowired SecQuery query) {
+    public AuthQuery getAuth(@Autowired AuthQuery query) {
         return query;
     }
 
     /**
      * Organization Query
+     * <p>
      * 组织架构相关查询
      */
     @GraphQLGetter
@@ -62,6 +66,7 @@ public class Query {
 
     /**
      * System Query
+     * <p>
      * 系统配置相关查询
      */
     @GraphQLGetter
@@ -71,10 +76,31 @@ public class Query {
 
     /**
      * Tenant Query
+     * <p>
      * 租户相关查询
      */
     @GraphQLGetter
     public TenQuery getTen(@Autowired TenQuery query) {
+        return query;
+    }
+
+    /**
+     * Security Query
+     * <p>
+     * 认证相关查询
+     */
+    @GraphQLGetter
+    public SecQuery getSec(@Autowired SecQuery query) {
+        return query;
+    }
+
+    /**
+     * Log Query
+     * <p>
+     * 日志中心相关查询
+     */
+    @GraphQLGetter
+    public LogQuery getLog(@Autowired LogQuery query) {
         return query;
     }
 }

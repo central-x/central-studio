@@ -14,7 +14,7 @@ query ApplicationProvider($id: String) {
                 logo
                 url
                 contextPath
-                key
+                secret
                 enabled
                 remark
                 modules {
@@ -63,7 +63,7 @@ query ApplicationProvider($ids: [String]) {
                 logo
                 url
                 contextPath
-                key
+                secret
                 enabled
                 remark
                 modules {
@@ -112,7 +112,7 @@ query ApplicationProvider($limit: Long, $offset: Long, $conditions: [ConditionIn
                 logo
                 url
                 contextPath
-                key
+                secret
                 enabled
                 remark
                 modules {
@@ -169,7 +169,7 @@ query ApplicationProvider($pageIndex: Long, $pageSize: Long, $conditions: [Condi
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                         remark
                         modules {
@@ -235,7 +235,7 @@ mutation ApplicationProvider($input: ApplicationInput, $operator: String) {
                 logo
                 url
                 contextPath
-                key
+                secret
                 enabled
                 remark
                 modules {
@@ -284,7 +284,7 @@ mutation ApplicationProvider($inputs: [ApplicationInput], $operator: String) {
                 logo
                 url
                 contextPath
-                key
+                secret
                 enabled
                 remark
                 modules {
@@ -333,7 +333,7 @@ mutation ApplicationProvider($input: ApplicationInput, $operator: String) {
                 logo
                 url
                 contextPath
-                key
+                secret
                 enabled
                 remark
                 modules {
@@ -382,7 +382,7 @@ mutation ApplicationProvider($inputs: [ApplicationInput], $operator: String) {
                 logo
                 url
                 contextPath
-                key
+                secret
                 enabled
                 remark
                 modules {

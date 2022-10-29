@@ -35,6 +35,7 @@ import java.util.function.Supplier;
  * @since 2022/10/14
  */
 public interface DataFetcher<T> extends Supplier<T> {
+
     /**
      * 设置 Provider Supplier
      * 在设置了 supplier 之后，才可以正常获取数据

@@ -24,7 +24,7 @@
 
 package central.data.org;
 
-import central.data.sec.Role;
+import central.data.auth.Role;
 import central.bean.Available;
 import central.bean.Deletable;
 import central.sql.data.ModifiableEntity;

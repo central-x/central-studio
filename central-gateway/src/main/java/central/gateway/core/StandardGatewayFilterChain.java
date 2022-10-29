@@ -38,10 +38,23 @@ import java.util.List;
  */
 public class StandardGatewayFilterChain implements GatewayFilterChain {
 
+    /**
+     * 待执行过滤器下标
+     */
     private final int index;
 
+    /**
+     * 过滤器列表
+     */
     @Getter
     private final List<? extends GatewayFilter> filters;
+
+    /**
+     * 获取下一个调用链
+     */
+    private StandardGatewayFilterChain next() {
+        return new StandardGatewayFilterChain(this, this.index + 1);
+    }
 
     public StandardGatewayFilterChain(List<? extends GatewayFilter> filters) {
         this.filters = filters;
@@ -57,19 +70,23 @@ public class StandardGatewayFilterChain implements GatewayFilterChain {
         return new StandardGatewayFilterChain(filters);
     }
 
+    /**
+     * 执行调用链
+     *
+     * @param exchange 待过滤的 Server Web Exchange
+     */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange) {
         return Mono.defer(() -> {
             if (this.index < filters.size()) {
                 // 还有下一个
                 var filter = this.filters.get(this.index);
-                var chain = new StandardGatewayFilterChain(this, this.index + 1);
                 if (filter.predicate(exchange)) {
                     // 断言成功，则执行过滤器
-                    return filter.filter(exchange, chain);
+                    return filter.filter(exchange, next());
                 } else {
                     // 断言失败，直接执行下一个过滤器
-                    return chain.filter(exchange);
+                    return next().filter(exchange);
                 }
             } else {
                 // 完成所有过滤器

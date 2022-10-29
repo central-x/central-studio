@@ -78,6 +78,31 @@
     </dependencies>
 
     <build>
+        <!-- 替换 bootstrap.yml 里面的版本号 -->
+        <resources>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.yml</exclude>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <!-- 本项目是程序文件，不发布到 Maven 仓库 -->
             <plugin>
@@ -102,7 +127,7 @@
                 <configuration>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
                     <delimiters>
-                        <delimiter>@{*}@</delimiter>
+                        <delimiter>@{ * }@</delimiter>
                     </delimiters>
                 </configuration>
             </plugin>

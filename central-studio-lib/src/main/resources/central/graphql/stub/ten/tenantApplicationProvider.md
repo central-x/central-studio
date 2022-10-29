@@ -25,7 +25,7 @@ query TenantApplicationProvider($id: String) {
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     enabled
@@ -80,7 +80,7 @@ query TenantApplicationProvider($ids: [String]) {
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     enabled
@@ -135,7 +135,7 @@ query TenantApplicationProvider($limit: Long, $offset: Long, $conditions: [Condi
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     enabled
@@ -198,7 +198,7 @@ query TenantApplicationProvider($pageIndex: Long, $pageSize: Long, $conditions: 
                                 logo
                                 url
                                 contextPath
-                                key
+                                secret
                                 enabled
                             }
                             enabled
@@ -272,7 +272,7 @@ mutation TenantApplicationProvider($input: TenantApplicationInput, $operator: St
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     enabled
@@ -327,7 +327,7 @@ mutation TenantApplicationProvider($inputs: [TenantApplicationInput], $operator:
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     enabled
@@ -382,7 +382,7 @@ mutation TenantApplicationProvider($input: TenantApplicationInput, $operator: St
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     enabled
@@ -437,7 +437,7 @@ mutation TenantApplicationProvider($inputs: [TenantApplicationInput], $operator:
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     enabled

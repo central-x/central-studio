@@ -28,7 +28,7 @@ import central.data.ten.Application;
 import central.gateway.core.GatewayFilter;
 import central.gateway.core.GatewayFilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import central.starter.web.reactive.extension.ServerWebExchangex;
 import central.util.Listx;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -101,7 +101,7 @@ public class WebSocketRoutingFilter implements GatewayFilter, InitializingBean {
         if (targetApplication != null) {
             // 已注册的应用系统需要生成 token 传递过去
             // 该应用系统在接收到请求后，需验证该 token，用于防止其它系统非法调用
-            var token = exchange.getRequiredAttribute(ExchangeAttributes.TOKEN).sign(Algorithm.HMAC256(targetApplication.getKey()));
+            var token = exchange.getRequiredAttribute(ExchangeAttributes.TOKEN).sign(Algorithm.HMAC256(targetApplication.getSecret()));
             headers.add(XForwardedHeaders.TOKEN, token);
         }
 

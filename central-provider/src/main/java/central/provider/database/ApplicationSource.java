@@ -24,6 +24,7 @@
 
 package central.provider.database;
 
+import central.provider.database.migration.v0.v0;
 import central.provider.database.migration.v1.v1;
 import central.sql.SqlDialect;
 import central.sql.SqlSource;
@@ -31,7 +32,7 @@ import central.sql.datasource.dynamic.DynamicSqlSource;
 import central.sql.datasource.dynamic.lookup.LookupKeyHolder;
 import central.sql.impl.standard.StandardDataSourceMigrator;
 import central.sql.impl.standard.StandardSource;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import central.util.Version;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
@@ -72,7 +73,12 @@ public class ApplicationSource extends DynamicSqlSource implements InitializingB
         return StandardSource.builder()
                 .dataSource(dataSource)
                 .dialect(dialect)
-                .migrator(StandardDataSourceMigrator.builder().name(environment.getProperty("spring.application.name")).target(Version.of("1.0.0")).addAll(v1.migrations).build())
+                .migrator(StandardDataSourceMigrator.builder()
+                        .name(environment.getProperty("spring.application.name"))
+                        .target(Version.of("1.0.0"))
+                        .addAll(v0.migrations)
+                        .addAll(v1.migrations)
+                        .build())
                 .build();
     }
 

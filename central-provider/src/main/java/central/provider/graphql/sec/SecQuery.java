@@ -24,9 +24,7 @@
 
 package central.provider.graphql.sec;
 
-import central.provider.graphql.sec.query.MenuQuery;
 import central.provider.graphql.sec.query.PasswordQuery;
-import central.provider.graphql.sec.query.RoleQuery;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,26 +38,9 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(path = "sec", types = {MenuQuery.class, RoleQuery.class, PasswordQuery.class})
+@GraphQLSchema(path = "sec", types = {PasswordQuery.class})
 public class SecQuery {
 
-    /**
-     * Menu Query
-     * 菜单查询
-     */
-    @GraphQLGetter
-    public MenuQuery getMenus(@Autowired MenuQuery query) {
-        return query;
-    }
-
-    /**
-     * Role Query
-     * 角色查询
-     */
-    @GraphQLGetter
-    public RoleQuery getRoles(@Autowired RoleQuery query) {
-        return query;
-    }
 
     /**
      * Password Query

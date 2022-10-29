@@ -1,0 +1,81 @@
+"""
+存储器输入
+"""
+input LogStorageInput {
+    "主键"
+    id:                     ID
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "类型"
+    type:                   String
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+    "初始化参数"
+    params:                 String
+}
+
+"""
+存储器修改
+"""
+type LogStorageMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: LogStorageInput,
+        "操作人"
+        operator: String
+    ): LogStorage
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [LogStorageInput],
+        "操作人"
+        operator: String
+    ): [LogStorage]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: LogStorageInput,
+        "操作人"
+        operator: String
+    ): LogStorage
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [LogStorageInput],
+        "操作人"
+        operator: String
+    ): [LogStorage]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

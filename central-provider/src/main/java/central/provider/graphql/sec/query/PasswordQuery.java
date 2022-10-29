@@ -26,15 +26,17 @@ package central.provider.graphql.sec.query;
 
 import central.api.DTO;
 import central.bean.Page;
+import central.provider.ApplicationProperties;
 import central.provider.graphql.sec.dto.PasswordDTO;
 import central.provider.graphql.sec.entity.PasswordEntity;
 import central.provider.graphql.sec.mapper.PasswordMapper;
+import central.security.Passwordx;
 import central.sql.Conditions;
 import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,6 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -60,6 +63,19 @@ public class PasswordQuery {
     @Setter(onMethod_ = @Autowired)
     private PasswordMapper mapper;
 
+    @Setter(onMethod_ = @Autowired)
+    private ApplicationProperties properties;
+
+    private PasswordDTO getSupervisorPassword(String tenant) {
+        var password = new PasswordEntity();
+        password.setId(properties.getSupervisor().getUsername());
+        password.setAccountId(properties.getSupervisor().getUsername());
+        password.setValue(Passwordx.encrypt(Passwordx.digest(properties.getSupervisor().getPassword())));
+        password.setTenantCode(tenant);
+        password.updateCreator(properties.getSupervisor().getUsername());
+        return DTO.wrap(password, PasswordDTO.class);
+    }
+
     /**
      * 批量数据加载器
      *
@@ -69,23 +85,31 @@ public class PasswordQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, PasswordDTO> batchLoader(@RequestParam List<String> ids,
                                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(PasswordEntity.class).in(PasswordEntity::getId, ids).eq(PasswordEntity::getTenantCode, tenant))
+        var result = this.mapper.findBy(Conditions.of(PasswordEntity.class).in(PasswordEntity::getId, ids).eq(PasswordEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, PasswordDTO.class))
                 .collect(Collectors.toMap(PasswordDTO::getId, it -> it));
+        if (ids.contains(properties.getSupervisor().getUsername())) {
+            result.put(properties.getSupervisor().getUsername(), getSupervisorPassword(tenant));
+        }
+        return result;
     }
 
     /**
      * 根据主键查询数据
      *
-     * @param id         主键
+     * @param id     主键
      * @param tenant 租户标识
      */
     @GraphQLFetcher
     public @Nullable PasswordDTO findById(@RequestParam String id,
                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(PasswordEntity.class).eq(PasswordEntity::getId, id).eq(PasswordEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, PasswordDTO.class);
+        if (Objects.equals(properties.getSupervisor().getUsername(), id)) {
+            return getSupervisorPassword(tenant);
+        } else {
+            var entity = this.mapper.findFirstBy(Conditions.of(PasswordEntity.class).eq(PasswordEntity::getId, id).eq(PasswordEntity::getTenantCode, tenant));
+            return DTO.wrap(entity, PasswordDTO.class);
+        }
     }
 
 
