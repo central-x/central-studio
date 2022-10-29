@@ -18,7 +18,7 @@ query ApplicationModuleProvider($id: String) {
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     url
@@ -68,7 +68,7 @@ query ApplicationModuleProvider($ids: [String]) {
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     url
@@ -118,7 +118,7 @@ query ApplicationModuleProvider($limit: Long, $offset: Long, $conditions: [Condi
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     url
@@ -176,7 +176,7 @@ query ApplicationModuleProvider($pageIndex: Long, $pageSize: Long, $conditions: 
                                 logo
                                 url
                                 contextPath
-                                key
+                                secret
                                 enabled
                             }
                             url
@@ -245,7 +245,7 @@ mutation ApplicationModuleProvider($input: ApplicationModuleInput, $operator: St
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     url
@@ -295,7 +295,7 @@ mutation ApplicationModuleProvider($inputs: [ApplicationModuleInput], $operator:
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     url
@@ -345,7 +345,7 @@ mutation ApplicationModuleProvider($input: ApplicationModuleInput, $operator: St
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     url
@@ -395,7 +395,7 @@ mutation ApplicationModuleProvider($inputs: [ApplicationModuleInput], $operator:
                         logo
                         url
                         contextPath
-                        key
+                        secret
                         enabled
                     }
                     url

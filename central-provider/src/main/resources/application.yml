@@ -6,12 +6,16 @@ server:
 spring:
   application:
     name: central-provider
+    version: @{ project.version }@
   datasource:
     name: master
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/centralx?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
     password: root
+
+logging:
+  config: classpath:logback-http.xml
 
 # 应用配置
 studio:

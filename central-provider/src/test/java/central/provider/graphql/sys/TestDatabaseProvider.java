@@ -89,7 +89,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -133,7 +133,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -182,7 +182,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -231,7 +231,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -285,7 +285,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -319,7 +319,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -352,7 +352,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -389,7 +389,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -430,7 +430,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -471,7 +471,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
@@ -506,7 +506,7 @@ public class TestDatabaseProvider extends TestProvider {
         applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         applicationEntity.setUrl("http://127.0.0.1:3100");
         applicationEntity.setContextPath("/security");
-        applicationEntity.setKey(Guidx.nextID());
+        applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认班上");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());

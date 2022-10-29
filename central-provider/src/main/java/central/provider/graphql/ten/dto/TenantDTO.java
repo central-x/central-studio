@@ -33,7 +33,7 @@ import central.provider.graphql.ten.query.TenantApplicationQuery;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;

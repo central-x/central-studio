@@ -36,7 +36,7 @@ import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -72,7 +72,7 @@ public class TenantQuery {
     public @Nonnull Map<String, TenantDTO> batchLoader(@RequestParam List<String> ids,
                                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return this.mapper.findBy(Conditions.of(TenantEntity.class).in(TenantEntity::getId, ids))
+        return this.mapper.findByIds(ids)
                 .stream()
                 .map(it -> DTO.wrap(it, TenantDTO.class))
                 .collect(Collectors.toMap(TenantDTO::getId, it -> it));
@@ -88,7 +88,7 @@ public class TenantQuery {
     public @Nullable TenantDTO findById(@RequestParam String id,
                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entity = this.mapper.findFirstBy(Conditions.of(TenantEntity.class).eq(TenantEntity::getId, id));
+        var entity = this.mapper.findById(id);
         return DTO.wrap(entity, TenantDTO.class);
     }
 
@@ -103,7 +103,7 @@ public class TenantQuery {
     public @Nonnull List<TenantDTO> findByIds(@RequestParam List<String> ids,
                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entities = this.mapper.findBy(Conditions.of(TenantEntity.class).in(TenantEntity::getId, ids));
+        var entities = this.mapper.findByIds(ids);
 
         return DTO.wrap(entities, TenantDTO.class);
     }

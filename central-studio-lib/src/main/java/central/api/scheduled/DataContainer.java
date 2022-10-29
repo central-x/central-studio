@@ -26,13 +26,19 @@ package central.api.scheduled;
 
 import lombok.Getter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 数据容器
  *
  * @author Alan Yeh
  * @since 2022/10/13
  */
-public class DataContainer {
+public class DataContainer implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 3858239352157731175L;
+
     /**
      * 容器创建时间
      */

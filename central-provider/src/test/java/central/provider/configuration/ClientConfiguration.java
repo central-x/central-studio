@@ -29,7 +29,7 @@ import central.net.http.processor.impl.AddHeaderProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
 import central.starter.graphql.stub.ProviderClient;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,11 +44,20 @@ import org.springframework.context.annotation.Configuration;
 public class ClientConfiguration {
 
     @Bean
+    public ProviderClient masterProviderClient(@Value("${server.port}") int port) {
+        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+                .contact(new SpringContract())
+                .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
+                .baseUrl("http://127.0.0.1:" + port + "/provider")
+                .target(ProviderClient.class);
+    }
+
+    @Bean
     public ProviderClient providerClient(@Value("${server.port}") int port) {
         return HttpProxyFactory.builder(OkHttpExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
-                .baseUrl("http://127.0.0.1:" + port)
+                .baseUrl("http://127.0.0.1:" + port + "/provider")
                 .target(ProviderClient.class);
     }
 }

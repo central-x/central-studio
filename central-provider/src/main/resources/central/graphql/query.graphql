@@ -2,12 +2,18 @@ extend type Query {
     "组织架构数据查询"
     org: OrgQuery
 
-    "安全数据查询"
-    sec: SecQuery
+    "权限数据查询"
+    auth: AuthQuery
 
     "系统数据查询"
     sys: SysQuery
 
     "租户数据查询"
     ten: TenQuery
+
+    "日数数据查询"
+    log: LogQuery
+
+    "认证数据查询"
+    sec: SecQuery
 }

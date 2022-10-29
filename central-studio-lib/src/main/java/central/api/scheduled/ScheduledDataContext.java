@@ -30,6 +30,7 @@ import central.bean.LifeCycle;
 import central.lang.Attribute;
 import central.lang.Stringx;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.Map;
@@ -48,12 +49,19 @@ public class ScheduledDataContext implements LifeCycle {
     private ScheduledExecutorService scheduled;
 
     private final Map<String, DataFetcher<? extends DataContainer>> dataFetcher = new ConcurrentHashMap<>();
+    private final Map<String, DataListener> dataListener = new ConcurrentHashMap<>();
     private final Map<String, DataContainer> data = new ConcurrentHashMap<>();
 
     private final int delay;
 
     private final ProviderSupplier supplier;
 
+    /**
+     * 创建定时刷新数据容器
+     *
+     * @param delay    刷新检查频率
+     * @param supplier 类型获取器
+     */
     public ScheduledDataContext(int delay, ProviderSupplier supplier) {
         this.delay = delay;
         this.supplier = supplier;
@@ -62,42 +70,13 @@ public class ScheduledDataContext implements LifeCycle {
     @Override
     public void initialized() {
         scheduled = Executors.newSingleThreadScheduledExecutor(new CustomizableThreadFactory("central-data-fetcher"));
-        scheduled.scheduleWithFixedDelay(new ScheduledFetcher(this.dataFetcher, this.data, this.supplier), this.delay, this.delay, TimeUnit.MILLISECONDS);
+        scheduled.scheduleWithFixedDelay(new ScheduledFetcher(this.dataFetcher, this.dataListener, this.data, this.supplier), this.delay, this.delay, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void destroy() {
         scheduled.shutdownNow();
         scheduled = null;
-    }
-
-    /**
-     * 定期刷新数据
-     */
-    @RequiredArgsConstructor
-    private static class ScheduledFetcher implements Runnable {
-        private final Map<String, DataFetcher<? extends DataContainer>> fetcher;
-        private final Map<String, DataContainer> data;
-
-        private final ProviderSupplier supplier;
-
-        @Override
-        public void run() {
-            var keys = fetcher.keySet();
-            for (var it : keys) {
-                data.compute(it, (key, container) -> {
-                    var fetcher = this.fetcher.get(key);
-                    if (fetcher == null) {
-                        return new TenantContainer();
-                    } else if (container == null || container.isTimeout(fetcher.getTimeout())) {
-                        fetcher.setProviderSupplier(supplier);
-                        return fetcher.get();
-                    } else {
-                        return container;
-                    }
-                });
-            }
-        }
     }
 
     /**
@@ -113,6 +92,14 @@ public class ScheduledDataContext implements LifeCycle {
         this.dataFetcher.put(fetcher.getCode(), fetcher.requireValue());
     }
 
+    public <T extends DataContainer> void addFetcher(Attribute<? extends DataFetcher<T>> fetcher, DataListener<T> listener) {
+        if (this.dataFetcher.containsKey(fetcher.getCode())) {
+            throw new IllegalStateException(Stringx.format("数据任务[{}]冲突", fetcher.getCode()));
+        }
+        this.dataFetcher.put(fetcher.getCode(), fetcher.requireValue());
+        this.dataListener.put(fetcher.getCode(), listener);
+    }
+
     /**
      * 移除定期获取数据任务
      *
@@ -121,6 +108,7 @@ public class ScheduledDataContext implements LifeCycle {
      */
     public <T extends DataContainer> void removeFetcher(Attribute<? extends DataFetcher<T>> fetcher) {
         this.dataFetcher.remove(fetcher.getCode());
+        this.dataListener.remove(fetcher.getCode());
     }
 
     /**
@@ -132,5 +120,44 @@ public class ScheduledDataContext implements LifeCycle {
      */
     public <T extends DataContainer> T get(Attribute<? extends DataFetcher<T>> fetcher) {
         return (T) this.data.get(fetcher.getCode());
+    }
+
+    /**
+     * 定期刷新数据
+     */
+    @Slf4j
+    @RequiredArgsConstructor
+    private static class ScheduledFetcher implements Runnable {
+        private final Map<String, DataFetcher<? extends DataContainer>> fetcher;
+        private final Map<String, DataListener> listener;
+        private final Map<String, DataContainer> data;
+        private final ProviderSupplier supplier;
+
+        @Override
+        public void run() {
+            var keys = fetcher.keySet();
+            for (var it : keys) {
+                try {
+                    data.compute(it, (key, container) -> {
+                        var fetcher = this.fetcher.get(key);
+                        if (fetcher == null) {
+                            return new TenantContainer();
+                        } else if (container == null || container.isTimeout(fetcher.getTimeout())) {
+                            fetcher.setProviderSupplier(supplier);
+                            var data = fetcher.get();
+                            var listener = this.listener.get(key);
+                            if (listener != null){
+                                listener.refresh(key, data);
+                            }
+                            return data;
+                        } else {
+                            return container;
+                        }
+                    });
+                } catch (Throwable throwable) {
+                    log.error("刷新数据出现异常: " + throwable.getLocalizedMessage(), throwable);
+                }
+            }
+        }
     }
 }

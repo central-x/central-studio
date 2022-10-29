@@ -33,7 +33,7 @@ import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
 import central.starter.graphql.stub.ProviderClient;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -64,7 +64,7 @@ public class ApplicationConfiguration {
      * 租户用的 HTTP 客户端
      */
     @Bean
-    public ProviderClient tenantProviderClient() {
+    public ProviderClient masterProviderClient() {
         return HttpProxyFactory.builder(OkHttpExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new TransmitForwardedProcessor())

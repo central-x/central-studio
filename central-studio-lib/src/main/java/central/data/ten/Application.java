@@ -89,7 +89,7 @@ public class Application extends ModifiableEntity implements Codeable, Available
      * 密钥
      */
     @Nonnull
-    private String key;
+    private String secret;
 
     /**
      * 是否启用
@@ -132,7 +132,7 @@ public class Application extends ModifiableEntity implements Codeable, Available
                 .logo(this.getLogo())
                 .url(this.getUrl())
                 .contextPath(this.getContextPath())
-                .key(this.getKey())
+                .secret(this.getSecret())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
                 .modules(Listx.asStream(this.getModules()).map(ApplicationModule::toInput).toList())

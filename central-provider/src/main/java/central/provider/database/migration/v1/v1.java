@@ -35,5 +35,5 @@ import java.util.List;
  * @since 2022/09/26
  */
 public interface v1 {
-    List<Migration> migrations = List.of(new v1_0_0());
+    List<Migration> migrations = List.of();
 }

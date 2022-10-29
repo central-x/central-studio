@@ -176,7 +176,7 @@ public class TestAccountProvider extends TestProvider {
             var entity = new AccountEntity();
             entity.setUsername("zhang" + i);
             entity.setEmail("zhang" + i + "@central-x.com");
-            entity.setMobile("18888888" + Stringx.padding(Integer.toString(i), 3, '0'));
+            entity.setMobile("18888888" + Stringx.paddingRight(Integer.toString(i), 3, '0'));
             entity.setName("张" + i);
             entity.setAvatar("avatar" + i);
             entity.setAdmin(Boolean.FALSE);
@@ -311,7 +311,7 @@ public class TestAccountProvider extends TestProvider {
             var entity = new AccountEntity();
             entity.setUsername("zhang" + i);
             entity.setEmail("zhang" + i + "@central-x.com");
-            entity.setMobile("18888888" + Stringx.padding(Integer.toString(i), 3, '0'));
+            entity.setMobile("18888888" + Stringx.paddingRight(Integer.toString(i), 3, '0'));
             entity.setName("张" + i);
             entity.setAvatar("avatar" + i);
             entity.setAdmin(Boolean.FALSE);
@@ -344,7 +344,7 @@ public class TestAccountProvider extends TestProvider {
             var entity = new AccountEntity();
             entity.setUsername("zhang" + i);
             entity.setEmail("zhang" + i + "@central-x.com");
-            entity.setMobile("18888888" + Stringx.padding(Integer.toString(i), 3, '0'));
+            entity.setMobile("18888888" + Stringx.paddingRight(Integer.toString(i), 3, '0'));
             entity.setName("张" + i);
             entity.setAvatar("avatar" + i);
             entity.setAdmin(Boolean.FALSE);
@@ -509,7 +509,7 @@ public class TestAccountProvider extends TestProvider {
             var entity = new AccountEntity();
             entity.setUsername("zhang" + i);
             entity.setEmail("zhang" + i + "@central-x.com");
-            entity.setMobile("18888888" + Stringx.padding(Integer.toString(i), 3, '0'));
+            entity.setMobile("18888888" + Stringx.paddingRight(Integer.toString(i), 3, '0'));
             entity.setName("张" + i);
             entity.setAvatar("avatar" + i);
             entity.setAdmin(Boolean.FALSE);
@@ -548,7 +548,7 @@ public class TestAccountProvider extends TestProvider {
             var entity = new AccountEntity();
             entity.setUsername("zhang" + i);
             entity.setEmail("zhang" + i + "@central-x.com");
-            entity.setMobile("18888888" + Stringx.padding(Integer.toString(i), 3, '0'));
+            entity.setMobile("18888888" + Stringx.paddingRight(Integer.toString(i), 3, '0'));
             entity.setName("张" + i);
             entity.setAvatar("avatar" + i);
             entity.setAdmin(Boolean.FALSE);

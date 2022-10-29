@@ -40,6 +40,7 @@ import java.time.Duration;
  * @since 2022/10/13
  */
 public class TenantFetcher implements DataFetcher<TenantContainer> {
+
     @Setter
     private ProviderSupplier providerSupplier;
 
@@ -48,16 +49,16 @@ public class TenantFetcher implements DataFetcher<TenantContainer> {
 
     @Override
     public TenantContainer get() {
-        if (providerSupplier != null) {
-            var tenantProvider = this.providerSupplier.get(TenantProvider.class);
-            var tenants = tenantProvider.findBy(null, null, null, null);
-
-            var applicationProvider = this.providerSupplier.get(ApplicationProvider.class);
-            var applications = applicationProvider.findBy(null, null, null, null);
-
-            return new TenantContainer(tenants, applications);
-        } else {
+        if (providerSupplier == null){
             return new TenantContainer();
         }
+
+        var tenantProvider = this.providerSupplier.get(TenantProvider.class);
+        var tenants = tenantProvider.findBy(null, null, null, null);
+
+        var applicationProvider = this.providerSupplier.get(ApplicationProvider.class);
+        var applications = applicationProvider.findBy(null, null, null, null);
+
+        return new TenantContainer(tenants, applications);
     }
 }

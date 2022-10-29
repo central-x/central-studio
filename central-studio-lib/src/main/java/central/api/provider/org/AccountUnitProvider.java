@@ -24,22 +24,12 @@
 
 package central.api.provider.org;
 
-import central.bean.Page;
 import central.data.org.AccountUnit;
 import central.data.org.AccountUnitInput;
-import central.sql.Conditions;
-import central.sql.Orders;
 import central.starter.graphql.stub.Provider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
-import central.starter.web.http.XForwardedHeaders;
-import central.validation.group.Insert;
-import jakarta.validation.groups.Default;
 import org.springframework.stereotype.Repository;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestHeader;
-
-import java.util.List;
 
 /**
  * 帐户与单位关联关系
@@ -50,102 +40,5 @@ import java.util.List;
 @Repository
 @BodyPath("org.accounts.units")
 @GraphQLStub(path = "org", client = "providerClient")
-public interface AccountUnitProvider extends Provider {
-    /**
-     * 查询数据
-     *
-     * @param id 主键
-     * @return 数据
-     */
-    AccountUnit findById(String id);
-
-    AccountUnit findById(String id, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询数据
-     *
-     * @param ids 主键
-     * @return 数据
-     */
-    List<AccountUnit> findByIds(List<String> ids);
-
-    List<AccountUnit> findByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询数据
-     *
-     * @param limit      数据量（不传的话，就返回所有数据）
-     * @param offset     偏移量（跳过前 N 条数据）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 数据列表
-     */
-    List<AccountUnit> findBy(Long limit, Long offset, Conditions<AccountUnit> conditions, Orders<AccountUnit> orders);
-
-    List<AccountUnit> findBy(Long limit, Long offset, Conditions<AccountUnit> conditions, Orders<AccountUnit> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标（最小值为 1，最大值为 100）
-     * @param pageSize   分页大小（最小值为 1，最大值为 100）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 分页数据
-     */
-    Page<AccountUnit> pageBy(Long pageIndex, Long pageSize, Conditions<AccountUnit> conditions, Orders<AccountUnit> orders);
-
-    Page<AccountUnit> pageBy(Long pageIndex, Long pageSize, Conditions<AccountUnit> conditions, Orders<AccountUnit> orders, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @return 数据数量
-     */
-    Long countBy(Conditions<AccountUnit> conditions);
-
-    Long countBy(Conditions<AccountUnit> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    AccountUnit insert(@Validated({Insert.class, Default.class}) AccountUnitInput input, String operator);
-
-    AccountUnit insert(@Validated({Insert.class, Default.class}) AccountUnitInput input, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @return 保存后的实体数据
-     */
-    List<AccountUnit> insertBatch(@Validated({Insert.class, Default.class}) List<AccountUnitInput> inputs, String operator);
-
-    List<AccountUnit> insertBatch(@Validated({Insert.class, Default.class}) List<AccountUnitInput> inputs, String operator, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 删除数据
-     *
-     * @param ids 主键
-     * @return 己删除的数据量
-     */
-    Long deleteByIds(List<String> ids);
-
-    Long deleteByIds(List<String> ids, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
-
-    /**
-     * 删除数据
-     *
-     * @param conditions 筛选条件
-     * @return 己删除的数据量
-     */
-    Long deleteBy(Conditions<AccountUnit> conditions);
-
-    Long deleteBy(Conditions<AccountUnit> conditions, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+public interface AccountUnitProvider extends Provider<AccountUnit, AccountUnitInput> {
 }

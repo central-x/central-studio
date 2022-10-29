@@ -28,12 +28,13 @@ import central.api.DTO;
 import central.data.org.DepartmentInput;
 import central.lang.Stringx;
 import central.provider.graphql.org.dto.DepartmentDTO;
+import central.provider.graphql.org.entity.AccountDepartmentEntity;
 import central.provider.graphql.org.entity.DepartmentEntity;
 import central.provider.graphql.org.mapper.DepartmentMapper;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -155,12 +156,19 @@ public class DepartmentMutation {
      */
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
-                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                            @RequestHeader(XForwardedHeaders.TENANT) String tenant,
+                            @Autowired AccountDepartmentMutation mutation) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
 
-        return this.mapper.deleteBy(Conditions.of(DepartmentEntity.class).in(DepartmentEntity::getId, ids).eq(DepartmentEntity::getTenantCode, tenant));
+        var effected = this.mapper.deleteBy(Conditions.of(DepartmentEntity.class).in(DepartmentEntity::getId, ids).eq(DepartmentEntity::getTenantCode, tenant));
+
+        if (effected > 0L) {
+            // 级联删除
+            mutation.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getDepartmentId, ids), tenant);
+        }
+        return effected;
     }
 
     /**
@@ -171,8 +179,21 @@ public class DepartmentMutation {
      */
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<DepartmentEntity> conditions,
-                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                         @RequestHeader(XForwardedHeaders.TENANT) String tenant,
+                         @Autowired AccountDepartmentMutation mutation) {
         conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+
+        var entities = this.mapper.findBy(conditions);
+        if (entities.isEmpty()) {
+            return 0L;
+        }
+
+        var effected = this.mapper.deleteBy(conditions);
+
+        // 级联删除
+        var ids = entities.stream().map(DepartmentEntity::getId).toList();
+        mutation.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getDepartmentId, ids), tenant);
+
+        return effected;
     }
 }

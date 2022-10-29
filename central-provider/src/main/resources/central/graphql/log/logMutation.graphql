@@ -1,0 +1,13 @@
+"""
+日志数据修改
+"""
+type LogMutation {
+    "采集器查询"
+    collectors: LogCollectorMutation
+
+    "过滤器查询"
+    filters: LogFilterMutation
+
+    "存储器查询"
+    storages: LogStorageMutation
+}

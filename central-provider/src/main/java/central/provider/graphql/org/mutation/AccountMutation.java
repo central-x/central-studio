@@ -28,13 +28,15 @@ import central.api.DTO;
 import central.data.org.AccountInput;
 import central.lang.Stringx;
 import central.provider.graphql.org.dto.AccountDTO;
+import central.provider.graphql.org.entity.AccountDepartmentEntity;
 import central.provider.graphql.org.entity.AccountEntity;
+import central.provider.graphql.org.entity.AccountUnitEntity;
 import central.provider.graphql.org.mapper.AccountMapper;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -181,12 +183,20 @@ public class AccountMutation {
      */
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
-                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                            @RequestHeader(XForwardedHeaders.TENANT) String tenant,
+                            @Autowired AccountUnitMutation unitMutation,
+                            @Autowired AccountDepartmentMutation departmentMutation) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
 
-        return this.mapper.deleteBy(Conditions.of(AccountEntity.class).in(AccountEntity::getId, ids).eq(AccountEntity::getTenantCode, tenant));
+        var effected = this.mapper.deleteBy(Conditions.of(AccountEntity.class).in(AccountEntity::getId, ids).eq(AccountEntity::getTenantCode, tenant));
+        if (effected > 0L) {
+            // 级联删除
+            unitMutation.deleteBy(Conditions.of(AccountUnitEntity.class).in(AccountUnitEntity::getAccountId, ids), tenant);
+            departmentMutation.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getAccountId, ids), tenant);
+        }
+        return effected;
     }
 
     /**
@@ -197,9 +207,24 @@ public class AccountMutation {
      */
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<AccountEntity> conditions,
-                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                         @RequestHeader(XForwardedHeaders.TENANT) String tenant,
+                         @Autowired AccountUnitMutation unitMutation,
+                         @Autowired AccountDepartmentMutation departmentMutation) {
         conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+
+        var entities = this.mapper.findBy(conditions);
+        if (entities.isEmpty()) {
+            return 0L;
+        }
+
+        var effected = this.mapper.deleteBy(conditions);
+
+        // 级联删除
+        var ids = entities.stream().map(AccountEntity::getId).toList();
+        unitMutation.deleteBy(Conditions.of(AccountUnitEntity.class).in(AccountUnitEntity::getAccountId, ids), tenant);
+        departmentMutation.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getAccountId, ids), tenant);
+
+        return effected;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -53,28 +53,28 @@ public class SystemFetcher implements DataFetcher<SysContainer> {
 
     @Override
     public SysContainer get() {
-        if (providerSupplier != null) {
-            var tenantProvider = providerSupplier.get(TenantProvider.class);
-            var dictionaryProvider = providerSupplier.get(DictionaryProvider.class);
-
-            var container = new HashMap<String, Map<String, Map<String, Dictionary>>>();
-
-            // 获取所有租户，然后依次获取该租户下所有的字典
-            var tenants = tenantProvider.findBy(null, null, null, null);
-
-            for (var tenant : tenants) {
-                var dictionaries = dictionaryProvider.findBy(null, null,
-                        Conditions.of(Dictionary.class).eq(Dictionary::getEnabled, Boolean.TRUE),
-                        null, tenant.getCode());
-                // 把查出来的字典放到容器里
-                dictionaries.forEach(dictionary -> container.computeIfAbsent(tenant.getCode(), key -> new HashMap<>())
-                        .computeIfAbsent(dictionary.getApplication().getCode(), key -> new HashMap<>())
-                        .put(dictionary.getCode(), dictionary));
-            }
-
-            return new SysContainer(container);
-        } else {
+        if (providerSupplier == null) {
             return new SysContainer();
         }
+
+        var tenantProvider = providerSupplier.get(TenantProvider.class);
+        var dictionaryProvider = providerSupplier.get(DictionaryProvider.class);
+
+        var container = new HashMap<String, Map<String, Map<String, Dictionary>>>();
+
+        // 获取所有租户，然后依次获取该租户下所有的字典
+        var tenants = tenantProvider.findBy(null, null, null, null);
+
+        for (var tenant : tenants) {
+            var dictionaries = dictionaryProvider.findBy(null, null,
+                    Conditions.of(Dictionary.class).eq(Dictionary::getEnabled, Boolean.TRUE),
+                    null, tenant.getCode());
+            // 把查出来的字典放到容器里
+            dictionaries.forEach(dictionary -> container.computeIfAbsent(tenant.getCode(), key -> new HashMap<>())
+                    .computeIfAbsent(dictionary.getApplication().getCode(), key -> new HashMap<>())
+                    .put(dictionary.getCode(), dictionary));
+        }
+
+        return new SysContainer(container);
     }
 }

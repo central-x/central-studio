@@ -35,7 +35,7 @@ import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -71,7 +71,7 @@ public class TenantApplicationQuery {
     public @Nonnull Map<String, TenantApplicationDTO> batchLoader(@RequestParam List<String> ids,
                                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return this.mapper.findBy(Conditions.of(TenantApplicationEntity.class).in(TenantApplicationEntity::getId, ids))
+        return this.mapper.findByIds(ids)
                 .stream()
                 .map(it -> DTO.wrap(it, TenantApplicationDTO.class))
                 .collect(Collectors.toMap(TenantApplicationDTO::getId, it -> it));
@@ -87,7 +87,7 @@ public class TenantApplicationQuery {
     public @Nullable TenantApplicationDTO findById(@RequestParam String id,
                                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entity = this.mapper.findFirstBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getId, id));
+        var entity = this.mapper.findById(id);
         return DTO.wrap(entity, TenantApplicationDTO.class);
     }
 
@@ -102,7 +102,7 @@ public class TenantApplicationQuery {
     public @Nonnull List<TenantApplicationDTO> findByIds(@RequestParam List<String> ids,
                                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entities = this.mapper.findBy(Conditions.of(TenantApplicationEntity.class).in(TenantApplicationEntity::getId, ids));
+        var entities = this.mapper.findByIds(ids);
         return DTO.wrap(entities, TenantApplicationDTO.class);
     }
 

@@ -15,7 +15,7 @@ type Application implements Entity & Modifiable & Codeable & Available {
     "上下文路径"
     contextPath:            String!
     "密钥"
-    key:                    String!
+    secret:                 String!
     "是否启用"
     enabled:                Boolean!
     "备注"

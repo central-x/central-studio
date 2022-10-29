@@ -33,7 +33,7 @@ import central.provider.graphql.org.mapper.PostMapper;
 import central.sql.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -160,6 +160,8 @@ public class PostMutation {
             return 0;
         }
 
+        // TODO 级联删除？
+
         return this.mapper.deleteBy(Conditions.of(PostEntity.class).in(PostEntity::getId, ids).eq(PostEntity::getTenantCode, tenant));
     }
 
@@ -173,6 +175,8 @@ public class PostMutation {
     public long deleteBy(@RequestParam Conditions<PostEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(PostEntity::getTenantCode, tenant);
+
+        // TODO 级联删除？
         return this.mapper.deleteBy(conditions);
     }
 }

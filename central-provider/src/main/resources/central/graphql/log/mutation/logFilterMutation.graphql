@@ -1,0 +1,90 @@
+"""
+存储器输入
+"""
+input LogFilterInput {
+    "主键"
+    id:                     ID
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+    "采集器主键"
+    collectorIds:            [String]
+    "存储器主键"
+    storageIds:              [String]
+    "断言"
+    predicates:            [LogPredicateInput]
+}
+
+input LogPredicateInput {
+    "类型"
+    type:                   String
+    "初始化参数"
+    params:                 String
+}
+
+"""
+存储器修改
+"""
+type LogFilterMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: LogFilterInput,
+        "操作人"
+        operator: String
+    ): LogFilter
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [LogFilterInput],
+        "操作人"
+        operator: String
+    ): [LogFilter]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: LogFilterInput,
+        "操作人"
+        operator: String
+    ): LogFilter
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [LogFilterInput],
+        "操作人"
+        operator: String
+    ): [LogFilter]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

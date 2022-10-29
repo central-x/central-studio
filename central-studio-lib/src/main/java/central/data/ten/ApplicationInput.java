@@ -90,7 +90,7 @@ public class ApplicationInput implements Serializable {
     @Label("密钥")
     @NotBlank
     @Size(min = 1, max = 32)
-    private String key;
+    private String secret;
 
     @Label("是否启用")
     @NotNull

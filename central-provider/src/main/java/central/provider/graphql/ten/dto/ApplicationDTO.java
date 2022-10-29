@@ -25,7 +25,6 @@
 package central.provider.graphql.ten.dto;
 
 import central.api.DTO;
-import central.data.ten.ApplicationModule;
 import central.lang.Arrayx;
 import central.provider.graphql.ten.entity.ApplicationEntity;
 import central.provider.graphql.org.dto.AccountDTO;
@@ -35,7 +34,7 @@ import central.sql.Conditions;
 import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
-import central.starter.web.http.XForwardedHeaders;
+import central.web.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
