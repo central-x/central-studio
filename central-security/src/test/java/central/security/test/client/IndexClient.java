@@ -24,7 +24,7 @@
 
 package central.security.test.client;
 
-import central.data.org.Account;
+import central.data.organization.Account;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;

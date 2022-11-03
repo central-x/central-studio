@@ -1,0 +1,81 @@
+"""
+对象输入
+"""
+input StorageObjectInput {
+    "主键"
+    id:                     ID
+    "存储桶主键"
+    bucketId:               String
+    "名称"
+    name:                   String
+    "大小"
+    size:                   Long
+    "摘要"
+    digest:                 String
+    "存储键"
+    key:                    String
+    "是否已确认"
+    confirmed:              Boolean
+}
+
+"""
+对象修改
+"""
+type StorageObjectMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: StorageObjectInput,
+        "操作人"
+        operator: String
+    ): StorageObject
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [StorageObjectInput],
+        "操作人"
+        operator: String
+    ): [StorageObject]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: StorageObjectInput,
+        "操作人"
+        operator: String
+    ): StorageObject
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [StorageObjectInput],
+        "操作人"
+        operator: String
+    ): [StorageObject]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

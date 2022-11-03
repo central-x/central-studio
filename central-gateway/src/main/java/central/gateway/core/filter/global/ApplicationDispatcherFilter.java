@@ -25,8 +25,8 @@
 package central.gateway.core.filter.global;
 
 import central.bean.Orderable;
-import central.data.ten.ApplicationModule;
-import central.data.ten.Tenant;
+import central.data.saas.ApplicationModule;
+import central.data.saas.Tenant;
 import central.gateway.core.GatewayFilterChain;
 import central.gateway.core.GlobalGatewayFilter;
 import central.gateway.core.attribute.ExchangeAttributes;

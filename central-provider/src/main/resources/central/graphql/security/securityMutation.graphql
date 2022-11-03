@@ -1,0 +1,8 @@
+"""
+认证数据修改
+"""
+type SecurityMutation {
+
+    "密码修改"
+    passwords: PasswordMutation!
+}

@@ -1,0 +1,13 @@
+"""
+存储数据查询
+"""
+type StorageQuery {
+    "存储桶查询"
+    buckets: StorageBucketQuery!
+
+    "文件查询"
+    files: StorageFileQuery!
+
+    "对象查询"
+    objects: StorageObjectQuery!
+}

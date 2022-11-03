@@ -24,7 +24,7 @@
 
 package central.provider.test;
 
-import central.data.ten.TenantInput;
+import central.data.saas.TenantInput;
 import central.util.Guidx;
 import central.validation.Validatex;
 import org.junit.jupiter.api.Test;

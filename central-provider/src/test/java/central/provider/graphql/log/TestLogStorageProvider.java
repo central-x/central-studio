@@ -24,7 +24,6 @@
 
 package central.provider.graphql.log;
 
-import central.api.provider.auth.MenuProvider;
 import central.api.provider.log.LogStorageProvider;
 import central.data.log.LogStorage;
 import central.data.log.LogStorageInput;
@@ -77,7 +76,7 @@ public class TestLogStorageProvider {
 
 
     /**
-     * @see MenuProvider#findById
+     * @see LogStorageProvider#findById
      */
     @Test
     public void case1() {
@@ -99,7 +98,7 @@ public class TestLogStorageProvider {
         // 查询数据
         var storage = this.provider.findById(entity.getId());
         assertNotNull(storage);
-        assertEquals(storage.getId(), storage.getId());
+        assertEquals(entity.getId(), storage.getId());
         assertNotNull(storage.getCode());
         assertNotNull(storage.getName());
         assertNotNull(storage.getType());
@@ -117,7 +116,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#findByIds
+     * @see LogStorageProvider#findByIds
      */
     @Test
     public void case2() {
@@ -143,7 +142,7 @@ public class TestLogStorageProvider {
 
         var storage = Listx.getFirstOrNull(storages);
         assertNotNull(storage);
-        assertEquals(storage.getId(), storage.getId());
+        assertEquals(entity.getId(), storage.getId());
         assertNotNull(storage.getCode());
         assertNotNull(storage.getName());
         assertNotNull(storage.getType());
@@ -158,7 +157,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#findBy
+     * @see LogStorageProvider#findBy
      */
     @Test
     public void case3() {
@@ -184,7 +183,7 @@ public class TestLogStorageProvider {
 
         var storage = Listx.getFirstOrNull(storages);
         assertNotNull(storage);
-        assertEquals(storage.getId(), storage.getId());
+        assertEquals(entity.getId(), storage.getId());
         assertNotNull(storage.getCode());
         assertNotNull(storage.getName());
         assertNotNull(storage.getType());
@@ -199,7 +198,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#pageBy
+     * @see LogStorageProvider#pageBy
      */
     @Test
     public void case4() {
@@ -229,7 +228,7 @@ public class TestLogStorageProvider {
 
         var storage = Listx.getFirstOrNull(page.getData());
         assertNotNull(storage);
-        assertEquals(storage.getId(), storage.getId());
+        assertEquals(entity.getId(), storage.getId());
         assertNotNull(storage.getCode());
         assertNotNull(storage.getName());
         assertNotNull(storage.getType());
@@ -244,7 +243,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#countBy
+     * @see LogStorageProvider#countBy
      */
     @Test
     public void case5() {
@@ -270,7 +269,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#insert
+     * @see LogStorageProvider#insert
      */
     @Test
     public void case6() {
@@ -299,7 +298,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#insertBatch
+     * @see LogStorageProvider#insertBatch
      */
     @Test
     public void case7() {
@@ -332,7 +331,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#update
+     * @see LogStorageProvider#update
      */
     @Test
     public void case8() {
@@ -370,7 +369,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#updateBatch
+     * @see LogStorageProvider#updateBatch
      */
     @Test
     public void case9() {
@@ -412,7 +411,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#deleteByIds
+     * @see LogStorageProvider#deleteByIds
      */
     @Test
     public void case10() {
@@ -439,7 +438,7 @@ public class TestLogStorageProvider {
     }
 
     /**
-     * @see MenuProvider#deleteBy(Conditions)
+     * @see LogStorageProvider#deleteBy(Conditions)
      */
     @Test
     public void case11() {

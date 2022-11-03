@@ -25,7 +25,7 @@
 package central.security.controller.session.request;
 
 import central.api.client.security.SessionClaims;
-import central.data.org.Account;
+import central.data.organization.Account;
 import central.security.controller.session.SessionController;
 import central.security.controller.session.support.Endpoint;
 import central.security.core.SecurityAction;
@@ -38,8 +38,6 @@ import central.util.Guidx;
 import central.util.Mapx;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpStatus;

@@ -1,19 +1,22 @@
 extend type Query {
     "组织架构数据查询"
-    org: OrgQuery
+    organization: OrganizationQuery!
 
     "权限数据查询"
-    auth: AuthQuery
+    authority: AuthorityQuery!
 
     "系统数据查询"
-    sys: SysQuery
+    system: SystemQuery!
 
     "租户数据查询"
-    ten: TenQuery
+    saas: SaasQuery!
 
     "日数数据查询"
-    log: LogQuery
+    log: LogQuery!
 
     "认证数据查询"
-    sec: SecQuery
+    security: SecurityQuery!
+
+    "存储数据查询"
+    storage: StorageQuery!
 }

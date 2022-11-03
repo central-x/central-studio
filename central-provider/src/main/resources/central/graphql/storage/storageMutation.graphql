@@ -1,0 +1,13 @@
+"""
+存储数据修改
+"""
+type StorageMutation {
+    "存储桶修改"
+    buckets: StorageBucketMutation!
+
+    "文件修改"
+    files: StorageFileMutation!
+
+    "对象查询"
+    objects: StorageObjectMutation!
+}

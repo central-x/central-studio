@@ -26,10 +26,12 @@ package central.api.scheduled.fetcher;
 
 import central.api.scheduled.fetcher.log.LogContainer;
 import central.api.scheduled.fetcher.log.LogFetcher;
-import central.api.scheduled.fetcher.sys.SysContainer;
-import central.api.scheduled.fetcher.sys.SystemFetcher;
-import central.api.scheduled.fetcher.ten.TenantContainer;
-import central.api.scheduled.fetcher.ten.TenantFetcher;
+import central.api.scheduled.fetcher.storage.StorageContainer;
+import central.api.scheduled.fetcher.storage.StorageFetcher;
+import central.api.scheduled.fetcher.system.SysContainer;
+import central.api.scheduled.fetcher.system.SystemFetcher;
+import central.api.scheduled.fetcher.saas.SaasContainer;
+import central.api.scheduled.fetcher.saas.SaasFetcher;
 import central.lang.Attribute;
 
 /**
@@ -42,7 +44,7 @@ public interface DataFetchers {
     /**
      * 租户类数据
      */
-    Attribute<DataFetcher<TenantContainer>> TENANT = Attribute.of(DataFetchers.class.getName() + ".tenant", TenantFetcher::new);
+    Attribute<DataFetcher<SaasContainer>> SAAS = Attribute.of(DataFetchers.class.getName() + ".saas", SaasFetcher::new);
     /**
      * 系统类数据
      */
@@ -51,4 +53,8 @@ public interface DataFetchers {
      * 日志类数据
      */
     Attribute<DataFetcher<LogContainer>> LOG = Attribute.of(DataFetchers.class.getName() + ".log", LogFetcher::new);
+    /**
+     * 存储中心数据
+     */
+    Attribute<DataFetcher<StorageContainer>> STORAGE = Attribute.of(DataFetchers.class.getName() + ".storage", StorageFetcher::new);
 }

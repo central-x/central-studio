@@ -34,6 +34,5 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/09/26
  */
 @Configuration
-@EnableGraphQLStub(packages = "central.api")
 public class TestApplicationConfiguration {
 }

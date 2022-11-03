@@ -1,8 +1,0 @@
-"""
-认证数据查询
-"""
-type SecQuery {
-
-    "密码查询"
-    passwords: PasswordQuery!
-}

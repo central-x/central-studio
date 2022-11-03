@@ -24,10 +24,8 @@
 
 package central.data.log;
 
-import central.bean.Available;
-import central.bean.Codeable;
-import central.bean.Remarkable;
-import central.data.org.Account;
+import central.bean.*;
+import central.data.organization.Account;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -35,8 +33,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serial;
 
 /**

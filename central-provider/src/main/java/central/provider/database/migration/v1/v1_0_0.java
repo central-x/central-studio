@@ -24,29 +24,8 @@
 
 package central.provider.database.migration.v1;
 
-import central.data.sys.option.DatabaseType;
-import central.io.IOStreamx;
-import central.provider.graphql.sys.entity.DatabaseEntity;
-import central.provider.graphql.sys.mapper.DatabaseMapper;
-import central.provider.graphql.ten.entity.ApplicationEntity;
-import central.provider.graphql.ten.entity.TenantApplicationEntity;
-import central.provider.graphql.ten.entity.TenantEntity;
-import central.provider.graphql.ten.mapper.ApplicationMapper;
-import central.provider.graphql.ten.mapper.TenantApplicationMapper;
-import central.provider.graphql.ten.mapper.TenantMapper;
-import central.sql.SqlExecutor;
-import central.sql.SqlType;
 import central.sql.datasource.migration.*;
-import central.util.Guidx;
 import central.util.Version;
-import lombok.SneakyThrows;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.sql.SQLException;
-import java.util.Base64;
-import java.util.List;
 
 /**
  * 初始化基础数据结构

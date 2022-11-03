@@ -25,10 +25,10 @@
 package central.security.controller.session.request;
 
 import central.api.client.security.SessionClaims;
-import central.api.provider.org.AccountProvider;
-import central.api.provider.sec.PasswordProvider;
-import central.data.org.Account;
-import central.data.sec.Password;
+import central.api.provider.organization.AccountProvider;
+import central.api.provider.security.PasswordProvider;
+import central.data.organization.Account;
+import central.data.security.Password;
 import central.lang.Stringx;
 import central.security.Passwordx;
 import central.security.controller.session.SessionController;

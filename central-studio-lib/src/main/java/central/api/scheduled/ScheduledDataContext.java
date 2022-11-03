@@ -25,7 +25,7 @@
 package central.api.scheduled;
 
 import central.api.scheduled.fetcher.DataFetcher;
-import central.api.scheduled.fetcher.ten.TenantContainer;
+import central.api.scheduled.fetcher.saas.SaasContainer;
 import central.bean.LifeCycle;
 import central.lang.Attribute;
 import central.lang.Stringx;
@@ -141,7 +141,7 @@ public class ScheduledDataContext implements LifeCycle {
                     data.compute(it, (key, container) -> {
                         var fetcher = this.fetcher.get(key);
                         if (fetcher == null) {
-                            return new TenantContainer();
+                            return new SaasContainer();
                         } else if (container == null || container.isTimeout(fetcher.getTimeout())) {
                             fetcher.setProviderSupplier(supplier);
                             var data = fetcher.get();

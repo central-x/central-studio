@@ -190,7 +190,7 @@ public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordere
             return Mono.error(ex);
         }
 
-        var tenant = this.dataContext.get(DataFetchers.TENANT).getTenantByCode(tenantCode);
+        var tenant = this.dataContext.get(DataFetchers.SAAS).getTenantByCode(tenantCode);
         if (tenant == null) {
             log.info("租户[{}]不存在", tenantCode);
             return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("Invalid tenant '{}'", tenantCode)));

@@ -3,11 +3,11 @@
 """
 type LogMutation {
     "采集器查询"
-    collectors: LogCollectorMutation
+    collectors: LogCollectorMutation!
 
     "过滤器查询"
-    filters: LogFilterMutation
+    filters: LogFilterMutation!
 
     "存储器查询"
-    storages: LogStorageMutation
+    storages: LogStorageMutation!
 }
