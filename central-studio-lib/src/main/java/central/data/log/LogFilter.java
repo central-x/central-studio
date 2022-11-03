@@ -24,7 +24,8 @@
 
 package central.data.log;
 
-import central.data.org.Account;
+import central.bean.*;
+import central.data.organization.Account;
 import central.sql.data.ModifiableEntity;
 import central.util.Listx;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -33,8 +34,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serial;
 import java.util.List;
 
@@ -48,7 +47,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class LogFilter extends ModifiableEntity {
+public class LogFilter extends ModifiableEntity implements Codeable, Available, Remarkable {
     @Serial
     private static final long serialVersionUID = -8320855690325346616L;
     /**

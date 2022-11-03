@@ -24,12 +24,13 @@
 
 package central.provider.graphql;
 
-import central.provider.graphql.auth.AuthMutation;
+import central.provider.graphql.authority.AuthorityMutation;
 import central.provider.graphql.log.LogMutation;
-import central.provider.graphql.sec.SecMutation;
-import central.provider.graphql.org.OrgMutation;
-import central.provider.graphql.sys.SysMutation;
-import central.provider.graphql.ten.TenMutation;
+import central.provider.graphql.organization.OrganizationMutation;
+import central.provider.graphql.security.SecurityMutation;
+import central.provider.graphql.storage.StorageMutation;
+import central.provider.graphql.system.SystemMutation;
+import central.provider.graphql.saas.SaasMutation;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(types = {AuthMutation.class, SecMutation.class, OrgMutation.class, SysMutation.class, TenMutation.class, LogMutation.class})
+@GraphQLSchema(types = {AuthorityMutation.class, SecurityMutation.class, OrganizationMutation.class, SystemMutation.class, SaasMutation.class, LogMutation.class, StorageMutation.class})
 public class Mutation {
 
     /**
@@ -51,7 +52,7 @@ public class Mutation {
      * 权限相关修改
      */
     @GraphQLGetter
-    public AuthMutation getAuth(@Autowired AuthMutation mutation) {
+    public AuthorityMutation getAuthority(@Autowired AuthorityMutation mutation) {
         return mutation;
     }
 
@@ -61,7 +62,7 @@ public class Mutation {
      * 组织架构相关修改
      */
     @GraphQLGetter
-    public OrgMutation getOrg(@Autowired OrgMutation mutation) {
+    public OrganizationMutation getOrganization(@Autowired OrganizationMutation mutation) {
         return mutation;
     }
 
@@ -71,7 +72,7 @@ public class Mutation {
      * 系统配置相关修改
      */
     @GraphQLGetter
-    public SysMutation getSys(@Autowired SysMutation mutation) {
+    public SystemMutation getSystem(@Autowired SystemMutation mutation) {
         return mutation;
     }
 
@@ -81,7 +82,7 @@ public class Mutation {
      * 租户相关修改
      */
     @GraphQLGetter
-    public TenMutation getTen(@Autowired TenMutation mutation) {
+    public SaasMutation getSaas(@Autowired SaasMutation mutation) {
         return mutation;
     }
 
@@ -91,7 +92,7 @@ public class Mutation {
      * 认证相关修改
      */
     @GraphQLGetter
-    public SecMutation getSec(@Autowired SecMutation mutation) {
+    public SecurityMutation getSecurity(@Autowired SecurityMutation mutation) {
         return mutation;
     }
 
@@ -102,6 +103,16 @@ public class Mutation {
      */
     @GraphQLGetter
     public LogMutation getLog(@Autowired LogMutation mutation) {
+        return mutation;
+    }
+
+    /**
+     * Storage Mutation
+     * <p>
+     * 存储中心修改
+     */
+    @GraphQLGetter
+    public StorageMutation getStorage(@Autowired StorageMutation mutation) {
         return mutation;
     }
 }

@@ -24,12 +24,13 @@
 
 package central.provider.graphql;
 
-import central.provider.graphql.auth.AuthQuery;
+import central.provider.graphql.authority.AuthorityQuery;
 import central.provider.graphql.log.LogQuery;
-import central.provider.graphql.sec.SecQuery;
-import central.provider.graphql.org.OrgQuery;
-import central.provider.graphql.sys.SysQuery;
-import central.provider.graphql.ten.TenQuery;
+import central.provider.graphql.security.SecurityQuery;
+import central.provider.graphql.organization.OrganizationQuery;
+import central.provider.graphql.storage.StorageQuery;
+import central.provider.graphql.system.SystemQuery;
+import central.provider.graphql.saas.SaasQuery;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(types = {AuthQuery.class, OrgQuery.class, SysQuery.class, TenQuery.class, SecQuery.class, LogQuery.class})
+@GraphQLSchema(types = {AuthorityQuery.class, OrganizationQuery.class, SystemQuery.class, SaasQuery.class, SecurityQuery.class, LogQuery.class, StorageQuery.class})
 public class Query {
     /**
      * Authority Query
@@ -50,7 +51,7 @@ public class Query {
      * 权限相关相询
      */
     @GraphQLGetter
-    public AuthQuery getAuth(@Autowired AuthQuery query) {
+    public AuthorityQuery getAuthority(@Autowired AuthorityQuery query) {
         return query;
     }
 
@@ -60,7 +61,7 @@ public class Query {
      * 组织架构相关查询
      */
     @GraphQLGetter
-    public OrgQuery getOrg(@Autowired OrgQuery query) {
+    public OrganizationQuery getOrganization(@Autowired OrganizationQuery query) {
         return query;
     }
 
@@ -70,7 +71,7 @@ public class Query {
      * 系统配置相关查询
      */
     @GraphQLGetter
-    public SysQuery getSys(@Autowired SysQuery query) {
+    public SystemQuery getSystem(@Autowired SystemQuery query) {
         return query;
     }
 
@@ -80,7 +81,7 @@ public class Query {
      * 租户相关查询
      */
     @GraphQLGetter
-    public TenQuery getTen(@Autowired TenQuery query) {
+    public SaasQuery getSaas(@Autowired SaasQuery query) {
         return query;
     }
 
@@ -90,7 +91,7 @@ public class Query {
      * 认证相关查询
      */
     @GraphQLGetter
-    public SecQuery getSec(@Autowired SecQuery query) {
+    public SecurityQuery getSecurity(@Autowired SecurityQuery query) {
         return query;
     }
 
@@ -101,6 +102,16 @@ public class Query {
      */
     @GraphQLGetter
     public LogQuery getLog(@Autowired LogQuery query) {
+        return query;
+    }
+
+    /**
+     * Storage Query
+     * <p>
+     * 存储中心相关查询
+     */
+    @GraphQLGetter
+    public StorageQuery getStorage(@Autowired StorageQuery query) {
         return query;
     }
 }

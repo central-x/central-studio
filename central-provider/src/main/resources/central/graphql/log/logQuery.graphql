@@ -3,11 +3,11 @@
 """
 type LogQuery {
     "采集器查询"
-    collectors: LogCollectorQuery
+    collectors: LogCollectorQuery!
 
     "过滤器查询"
-    filters: LogFilterQuery
+    filters: LogFilterQuery!
 
     "存储器查询"
-    storages: LogStorageQuery
+    storages: LogStorageQuery!
 }

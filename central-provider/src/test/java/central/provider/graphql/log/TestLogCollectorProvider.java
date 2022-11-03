@@ -24,7 +24,6 @@
 
 package central.provider.graphql.log;
 
-import central.api.provider.auth.MenuProvider;
 import central.api.provider.log.LogCollectorProvider;
 import central.data.log.LogCollector;
 import central.data.log.LogCollectorInput;
@@ -77,7 +76,7 @@ public class TestLogCollectorProvider {
 
 
     /**
-     * @see MenuProvider#findById
+     * @see LogCollectorProvider#findById
      */
     @Test
     public void case1() {
@@ -94,7 +93,7 @@ public class TestLogCollectorProvider {
         // 查询数据
         var collector = this.provider.findById(entity.getId());
         assertNotNull(collector);
-        assertEquals(collector.getId(), collector.getId());
+        assertEquals(entity.getId(), collector.getId());
         assertNotNull(collector.getCode());
         assertNotNull(collector.getName());
         assertNotNull(collector.getType());
@@ -103,7 +102,7 @@ public class TestLogCollectorProvider {
         assertNotNull(collector.getParams());
         var params = Jsonx.Default().deserialize(collector.getParams(), TypeReference.ofMap(String.class, Object.class));
         assertNotNull(params);
-        assertEquals(5, params.size());
+        assertEquals(1, params.size());
         // 关联查询
         assertNotNull(collector.getCreator());
         assertEquals(properties.getSupervisor().getUsername(), collector.getCreator().getId());
@@ -112,7 +111,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#findByIds
+     * @see LogCollectorProvider#findByIds
      */
     @Test
     public void case2() {
@@ -133,7 +132,7 @@ public class TestLogCollectorProvider {
 
         var collector = Listx.getFirstOrNull(collectors);
         assertNotNull(collector);
-        assertEquals(collector.getId(), collector.getId());
+        assertEquals(entity.getId(), collector.getId());
         assertNotNull(collector.getCode());
         assertNotNull(collector.getName());
         assertNotNull(collector.getType());
@@ -148,7 +147,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#findBy
+     * @see LogCollectorProvider#findBy
      */
     @Test
     public void case3() {
@@ -169,7 +168,7 @@ public class TestLogCollectorProvider {
 
         var collector = Listx.getFirstOrNull(collectors);
         assertNotNull(collector);
-        assertEquals(collector.getId(), collector.getId());
+        assertEquals(entity.getId(), collector.getId());
         assertNotNull(collector.getCode());
         assertNotNull(collector.getName());
         assertNotNull(collector.getType());
@@ -184,7 +183,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#pageBy
+     * @see LogCollectorProvider#pageBy
      */
     @Test
     public void case4() {
@@ -209,7 +208,7 @@ public class TestLogCollectorProvider {
 
         var collector = Listx.getFirstOrNull(page.getData());
         assertNotNull(collector);
-        assertEquals(collector.getId(), collector.getId());
+        assertEquals(entity.getId(), collector.getId());
         assertNotNull(collector.getCode());
         assertNotNull(collector.getName());
         assertNotNull(collector.getType());
@@ -224,7 +223,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#countBy
+     * @see LogCollectorProvider#countBy
      */
     @Test
     public void case5() {
@@ -245,7 +244,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#insert
+     * @see LogCollectorProvider#insert
      */
     @Test
     public void case6() {
@@ -269,7 +268,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#insertBatch
+     * @see LogCollectorProvider#insertBatch
      */
     @Test
     public void case7() {
@@ -297,7 +296,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#update
+     * @see LogCollectorProvider#update
      */
     @Test
     public void case8() {
@@ -330,7 +329,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#updateBatch
+     * @see LogCollectorProvider#updateBatch
      */
     @Test
     public void case9() {
@@ -367,7 +366,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#deleteByIds
+     * @see LogCollectorProvider#deleteByIds
      */
     @Test
     public void case10() {
@@ -389,7 +388,7 @@ public class TestLogCollectorProvider {
     }
 
     /**
-     * @see MenuProvider#deleteBy(Conditions)
+     * @see LogCollectorProvider#deleteBy(Conditions)
      */
     @Test
     public void case11() {

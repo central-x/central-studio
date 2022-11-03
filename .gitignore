@@ -22,6 +22,7 @@
 .springBeans
 /build
 /logs
+log_tmp
 /code
 MANIFEST.MF
 _site/
@@ -43,3 +44,4 @@ secrets.yml
 .sts4-cache
 .mv.db
 .trace.db
+tmp

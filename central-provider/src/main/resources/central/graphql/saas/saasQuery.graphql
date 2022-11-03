@@ -1,0 +1,10 @@
+"""
+租户数据查询
+"""
+type SaasQuery {
+    "租户查询"
+    tenants: TenantQuery!
+
+    "应用查询"
+    applications: ApplicationQuery!
+}

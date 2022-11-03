@@ -1,19 +1,22 @@
 extend type Mutation {
     "组织架构数据修改"
-    org: OrgMutation!
+    organization: OrganizationMutation!
 
     "权限数据修改"
-    auth: AuthMutation!
+    authority: AuthorityMutation!
 
     "系统数据修改"
-    sys: SysMutation!
+    system: SystemMutation!
 
     "租户数据修改"
-    ten: TenMutation!
-
-    "安全数据修改"
-    sec: SecMutation!
+    saas: SaasMutation!
 
     "日志数据修改"
     log: LogMutation!
+
+    "认证数据修改"
+    security: SecurityMutation!
+
+    "存储数据修改"
+    storage: StorageMutation!
 }

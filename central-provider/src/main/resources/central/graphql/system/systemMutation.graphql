@@ -1,0 +1,10 @@
+"""
+系统数据修改
+"""
+type SystemMutation {
+    "数据库修改"
+    databases: DatabaseMutation!
+
+    "字典修改"
+    dictionaries: DictionaryMutation!
+}

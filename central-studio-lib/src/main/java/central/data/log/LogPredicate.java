@@ -24,6 +24,7 @@
 
 package central.data.log;
 
+import central.bean.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,10 +49,12 @@ public class LogPredicate implements Serializable {
     /**
      * 类型
      */
+    @Nonnull
     private String type;
     /**
      * 初始化参数
      */
+    @Nonnull
     private String params;
 
     public LogPredicateInput toInput() {

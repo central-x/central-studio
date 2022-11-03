@@ -25,7 +25,7 @@
 package central.provider.graphql.log.dto;
 
 import central.provider.graphql.log.entity.LogStorageEntity;
-import central.provider.graphql.org.dto.AccountDTO;
+import central.provider.graphql.organization.dto.AccountDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;

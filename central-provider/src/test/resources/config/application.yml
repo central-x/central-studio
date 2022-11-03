@@ -1,5 +1,5 @@
 server:
-  port: 19090
+  port: 13200
 
 logging:
   config: classpath:logback-default.xml

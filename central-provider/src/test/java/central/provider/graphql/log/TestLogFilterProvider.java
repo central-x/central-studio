@@ -160,7 +160,7 @@ public class TestLogFilterProvider {
         // 查询数据
         var filter = this.provider.findById(id);
         assertNotNull(filter);
-        assertEquals(filter.getId(), filter.getId());
+        assertEquals(id, filter.getId());
         assertNotNull(filter.getCode());
         assertNotNull(filter.getName());
         assertNotNull(filter.getEnabled());
@@ -460,7 +460,7 @@ public class TestLogFilterProvider {
         // 查询数据
         var filter = this.provider.findById(id);
         assertNotNull(filter);
-        assertEquals(filter.getId(), filter.getId());
+        assertEquals(id, filter.getId());
 
         var input = filter.toInput().toBuilder()
                 .code("test1")
@@ -486,7 +486,7 @@ public class TestLogFilterProvider {
         // 查询数据
         var filter = this.provider.findById(id);
         assertNotNull(filter);
-        assertEquals(filter.getId(), filter.getId());
+        assertEquals(id, filter.getId());
 
         var input = filter.toInput().toBuilder()
                 .code("test1")

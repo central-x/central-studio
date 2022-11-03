@@ -1,0 +1,22 @@
+"""
+组织架构数据修改
+"""
+type OrganizationMutation {
+    "行政区划修改"
+    areas: AreaMutation!
+
+    "单位修改"
+    units: UnitMutation!
+
+    "部门修改"
+    departments: DepartmentMutation!
+
+    "职务修改"
+    posts: PostMutation!
+
+    "职级修改"
+    ranks: RankMutation!
+
+    "帐户修改"
+    accounts: AccountMutation!
+}

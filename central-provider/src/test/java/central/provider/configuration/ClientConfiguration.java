@@ -43,21 +43,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ClientConfiguration {
 
-    @Bean
-    public ProviderClient masterProviderClient(@Value("${server.port}") int port) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
-                .baseUrl("http://127.0.0.1:" + port + "/provider")
-                .target(ProviderClient.class);
-    }
-
-    @Bean
-    public ProviderClient providerClient(@Value("${server.port}") int port) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
-                .baseUrl("http://127.0.0.1:" + port + "/provider")
-                .target(ProviderClient.class);
-    }
+//    @Bean
+//    public ProviderClient masterProviderClient(@Value("${server.port}") int port) {
+//        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+//                .contact(new SpringContract())
+//                .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
+//                .baseUrl("http://127.0.0.1:" + port + "/provider")
+//                .target(ProviderClient.class);
+//    }
+//
+//    @Bean
+//    public ProviderClient providerClient(@Value("${server.port}") int port) {
+//        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+//                .contact(new SpringContract())
+//                .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
+//                .baseUrl("http://127.0.0.1:" + port + "/provider")
+//                .target(ProviderClient.class);
+//    }
 }

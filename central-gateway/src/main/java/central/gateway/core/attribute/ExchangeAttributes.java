@@ -24,9 +24,9 @@
 
 package central.gateway.core.attribute;
 
-import central.data.ten.Application;
-import central.data.ten.ApplicationModule;
-import central.data.ten.Tenant;
+import central.data.saas.Application;
+import central.data.saas.ApplicationModule;
+import central.data.saas.Tenant;
 import central.gateway.core.body.EmptyBody;
 import central.gateway.core.body.HttpResponseBody;
 import central.lang.Attribute;

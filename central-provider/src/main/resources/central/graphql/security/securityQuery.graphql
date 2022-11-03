@@ -1,0 +1,8 @@
+"""
+认证数据查询
+"""
+type SecurityQuery {
+
+    "密码查询"
+    passwords: PasswordQuery!
+}

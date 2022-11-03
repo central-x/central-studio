@@ -1,0 +1,10 @@
+"""
+租户数据修改
+"""
+type SaasMutation {
+    "租户修改"
+    tenants: TenantMutation!
+
+    "应用修改"
+    applications: ApplicationMutation!
+}

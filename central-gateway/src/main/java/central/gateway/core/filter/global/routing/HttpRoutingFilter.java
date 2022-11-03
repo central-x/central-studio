@@ -24,7 +24,7 @@
 
 package central.gateway.core.filter.global.routing;
 
-import central.data.ten.Application;
+import central.data.saas.Application;
 import central.gateway.core.GatewayFilter;
 import central.gateway.core.GatewayFilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;

@@ -1,8 +1,0 @@
-"""
-认证数据修改
-"""
-type SecMutation {
-
-    "密码修改"
-    passwords: PasswordMutation!
-}

@@ -1,0 +1,10 @@
+"""
+权限数据修改
+"""
+type AuthorityMutation {
+    "角色修改"
+    roles: RoleMutation!
+
+    "菜单修改"
+    menus: MenuMutation!
+}

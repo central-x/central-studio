@@ -104,7 +104,7 @@ public class ApplicationConfiguration {
     @Bean(initMethod = "initialized", destroyMethod = "destroy")
     public ScheduledDataContext dataContext(ApplicationContext applicationContext) {
         var context = new ScheduledDataContext(5000, new SpringSupplier(applicationContext));
-        context.addFetcher(DataFetchers.TENANT);
+        context.addFetcher(DataFetchers.SAAS);
         context.addFetcher(DataFetchers.LOG, (tenant, container) -> {
             applicationContext.publishEvent(new DataRefreshEvent<>(tenant, container));
         });

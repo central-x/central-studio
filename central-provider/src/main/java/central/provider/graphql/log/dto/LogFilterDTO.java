@@ -32,7 +32,7 @@ import central.provider.graphql.log.entity.LogFilterEntity;
 import central.provider.graphql.log.entity.LogStorageEntity;
 import central.provider.graphql.log.query.LogCollectorQuery;
 import central.provider.graphql.log.query.LogStorageQuery;
-import central.provider.graphql.org.dto.AccountDTO;
+import central.provider.graphql.organization.dto.AccountDTO;
 import central.sql.Conditions;
 import central.sql.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
