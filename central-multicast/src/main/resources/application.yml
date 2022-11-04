@@ -1,0 +1,31 @@
+server:
+  port: 3600
+  servlet:
+    context-path: /multicast
+  tomcat:
+    remoteip:
+      protocol-header: X-Forwarded-Proto
+      host-header: X-Forwarded-Host
+      port-header: X-Forwarded-Port
+      remote-ip-header: X-Forwarded-For
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  application:
+    name: central-multicast
+    secret: AkJSi2kmH7vSO5lJcvY
+    version: @{ project.version }@
+
+logging:
+  config: classpath:logback-http.xml
+
+central:
+  logging:
+    http:
+      #      server: lb://central-logging
+      path: central
+      code: ${spring.application.name}
+      secret: ${spring.application.secret}

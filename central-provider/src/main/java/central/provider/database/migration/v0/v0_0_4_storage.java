@@ -24,7 +24,6 @@
 
 package central.provider.database.migration.v0;
 
-import central.data.storage.StorageBucket;
 import central.provider.graphql.storage.entity.StorageBucketEntity;
 import central.provider.graphql.storage.mapper.StorageBucketMapper;
 import central.sql.SqlExecutor;

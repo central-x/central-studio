@@ -8,15 +8,18 @@ extend type Mutation {
     "系统数据修改"
     system: SystemMutation!
 
-    "租户数据修改"
+    "租户中心修改"
     saas: SaasMutation!
 
-    "日志数据修改"
+    "日志中心修改"
     log: LogMutation!
 
-    "认证数据修改"
+    "认证中心修改"
     security: SecurityMutation!
 
-    "存储数据修改"
+    "存储中心修改"
     storage: StorageMutation!
+
+    "广播中心修改"
+    multicast: MulticastMutation!
 }

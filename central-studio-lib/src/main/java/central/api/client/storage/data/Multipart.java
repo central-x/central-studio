@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.api.client.storage;
+package central.api.client.storage.data;
 
 import central.util.Guidx;
 import lombok.AllArgsConstructor;

@@ -72,6 +72,7 @@ public class TestObjectController {
     private Container container;
 
     @BeforeEach
+    @SuppressWarnings("BusyWait")
     public void boot() throws Exception {
         // 等待存储中心完全启动起来才可以单元测试
         while (container.getBuckets("master").isEmpty()) {

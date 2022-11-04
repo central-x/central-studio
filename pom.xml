@@ -10,6 +10,7 @@
     <modules>
         <module>central-gateway</module>
         <module>central-logging</module>
+        <module>central-multicast</module>
         <module>central-provider</module>
         <module>central-security</module>
         <module>central-storage</module>

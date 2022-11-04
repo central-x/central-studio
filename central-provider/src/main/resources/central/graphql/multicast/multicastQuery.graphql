@@ -1,0 +1,10 @@
+"""
+广播中心查询
+"""
+type MulticastQuery {
+    "广播器查询"
+    broadcasters: MulticastBroadcasterQuery!
+
+    "广播消息查询"
+    messages: MulticastMessageQuery!
+}

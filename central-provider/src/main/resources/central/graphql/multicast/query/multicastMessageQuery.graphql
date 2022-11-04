@@ -1,0 +1,87 @@
+"""
+广播消息
+"""
+type MulticastMessage implements Entity & Modifiable {
+    "主键"
+    id:                     ID!
+    "广播器主键"
+    broadcasterId:          String
+    "广播器"
+    broadcaster:            MulticastBroadcaster
+    "消息体"
+    body:                   String!
+    "广播模式"
+    mode:                   String!
+    "消息状态"
+    status:                 String!
+
+    "创建帐户信息"
+    creator:                Account!
+    "创建帐户主键"
+    creatorId:              String!
+    "创建时间"
+    createDate:             Timestamp!
+    "修改帐户信息"
+    modifier:               Account!
+    "修改帐户主键"
+    modifierId:             String!
+    "修改时间"
+    modifyDate:             Timestamp!
+}
+
+"""
+广播消息查询
+"""
+type MulticastMessageQuery {
+    """
+    查询数据
+    """
+    findById(
+        "主键"
+        id: String
+    ): MulticastMessage
+
+    """
+    查询数据
+    """
+    findByIds(
+        "主键"
+        ids: [String]
+    ): [MulticastMessage]
+
+    """
+    查询数据
+    """
+    findBy(
+        "数据量（不传的话，就返回所有数据）"
+        limit: Long,
+        "偏移量（跳过前 N 条数据）"
+        offset: Long,
+        "筛选条件"
+        conditions: [ConditionInput] = [],
+        "数据列表"
+        orders: [OrderInput] = []
+    ): [MulticastMessage]
+
+    """
+    查询数据
+    """
+    pageBy(
+        "分页下标，从 1 开始"
+        pageIndex: Long,
+        "分页大小，最小值为 1，最大值为 100"
+        pageSize: Long,
+        "筛选条件"
+        conditions: [ConditionInput] = [],
+        "排序条件"
+        orders: [OrderInput] = []
+    ): Page
+
+    """
+    查询符合条件的数据数量
+    """
+    countBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

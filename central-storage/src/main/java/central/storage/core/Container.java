@@ -33,8 +33,6 @@ import central.pluglet.PlugletFactory;
 import lombok.Setter;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
@@ -55,13 +53,10 @@ import java.util.*;
  * @since 2022/10/30
  */
 @Component
-public class Container implements ApplicationContextAware, DisposableBean, GenericApplicationListener {
+public class Container implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;
-
-    @Setter
-    private ApplicationContext applicationContext;
 
     /**
      * 存储桶
