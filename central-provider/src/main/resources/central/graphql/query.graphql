@@ -8,15 +8,18 @@ extend type Query {
     "系统数据查询"
     system: SystemQuery!
 
-    "租户数据查询"
+    "租户中心查询"
     saas: SaasQuery!
 
-    "日数数据查询"
+    "日志中心查询"
     log: LogQuery!
 
-    "认证数据查询"
+    "认证中心查询"
     security: SecurityQuery!
 
-    "存储数据查询"
+    "存储中心查询"
     storage: StorageQuery!
+
+    "广播中心查询"
+    multicast: MulticastQuery!
 }

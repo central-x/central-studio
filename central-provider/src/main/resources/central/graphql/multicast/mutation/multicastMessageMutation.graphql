@@ -1,0 +1,77 @@
+"""
+广播消息输入
+"""
+input MulticastMessageInput {
+    "主键"
+    id:                     ID
+    "广播器主键"
+    broadcasterId:          String
+    "消息体"
+    body:                   String
+    "广播模式"
+    mode:                   String
+    "状态"
+    status:                 String
+}
+
+"""
+广播消息修改
+"""
+type MulticastMessageMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: MulticastMessageInput,
+        "操作人"
+        operator: String
+    ): MulticastMessage
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [MulticastMessageInput],
+        "操作人"
+        operator: String
+    ): [MulticastMessage]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: MulticastMessageInput,
+        "操作人"
+        operator: String
+    ): MulticastMessage
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [MulticastMessageInput],
+        "操作人"
+        operator: String
+    ): [MulticastMessage]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

@@ -1,0 +1,83 @@
+"""
+广播器输入
+"""
+input MulticastBroadcasterInput {
+    "主键"
+    id:                     ID
+    "应用主键"
+    applicationId:          String
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "类型"
+    type:                   String
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+    "初始化参数"
+    params:                 String
+}
+
+"""
+广播器修改
+"""
+type MulticastBroadcasterMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: MulticastBroadcasterInput,
+        "操作人"
+        operator: String
+    ): MulticastBroadcaster
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [MulticastBroadcasterInput],
+        "操作人"
+        operator: String
+    ): [MulticastBroadcaster]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: MulticastBroadcasterInput,
+        "操作人"
+        operator: String
+    ): MulticastBroadcaster
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [MulticastBroadcasterInput],
+        "操作人"
+        operator: String
+    ): [MulticastBroadcaster]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

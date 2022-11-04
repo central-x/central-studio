@@ -26,6 +26,8 @@ package central.api.scheduled.fetcher;
 
 import central.api.scheduled.fetcher.log.LogContainer;
 import central.api.scheduled.fetcher.log.LogFetcher;
+import central.api.scheduled.fetcher.multicast.MulticastContainer;
+import central.api.scheduled.fetcher.multicast.MulticastFetcher;
 import central.api.scheduled.fetcher.storage.StorageContainer;
 import central.api.scheduled.fetcher.storage.StorageFetcher;
 import central.api.scheduled.fetcher.system.SysContainer;
@@ -57,4 +59,8 @@ public interface DataFetchers {
      * 存储中心数据
      */
     Attribute<DataFetcher<StorageContainer>> STORAGE = Attribute.of(DataFetchers.class.getName() + ".storage", StorageFetcher::new);
+    /**
+     * 广播中心数据
+     */
+    Attribute<DataFetcher<MulticastContainer>> MULTICAST = Attribute.of(DataFetchers.class.getName() + ".multicast", MulticastFetcher::new);
 }

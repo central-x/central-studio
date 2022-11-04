@@ -570,7 +570,20 @@ public class v0_0_1_initial extends Migration {
         storageApp.setRemark("用于统一管理文件存储");
         storageApp.updateCreator("syssa");
 
-        applicationMapper.insertBatch(List.of(saasApp, securityApp, storageApp));
+        // 广播中 心
+        var multicastApp = new ApplicationEntity();
+        multicastApp.setId("5HjlG6lusTufjoRapw");
+        multicastApp.setCode("central-multicast");
+        multicastApp.setName("广播中心");
+        multicastApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));        storageApp.setUrl("http://127.0.0.1:3500");
+        multicastApp.setUrl("http://127.0.0.1:3600");
+        multicastApp.setContextPath("/multicast");
+        multicastApp.setSecret("QHO85BzFQq8hqDzREJ");
+        multicastApp.setEnabled(Boolean.TRUE);
+        multicastApp.setRemark("用于统一消息推送");
+        multicastApp.updateCreator("syssa");
+
+        applicationMapper.insertBatch(List.of(saasApp, securityApp, storageApp, multicastApp));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 初始化主数据库信息
@@ -630,8 +643,16 @@ public class v0_0_1_initial extends Migration {
         storageAppRel.setPrimary(Boolean.FALSE);
         storageAppRel.updateCreator("syssa");
 
+        var multicastAppRel = new TenantApplicationEntity();
+        multicastAppRel.setId("pDaMEd4CZPupGLSqvc");
+        multicastAppRel.setTenantId(masterTenant.getId());
+        multicastAppRel.setApplicationId(multicastApp.getId());
+        multicastAppRel.setEnabled(Boolean.TRUE);
+        multicastAppRel.setPrimary(Boolean.FALSE);
+        multicastAppRel.updateCreator("syssa");
 
-        relMapper.insertBatch(List.of(tenantAppRel, securityAppRel, storageAppRel));
+
+        relMapper.insertBatch(List.of(tenantAppRel, securityAppRel, storageAppRel, multicastAppRel));
     }
 
     @Override

@@ -1,0 +1,10 @@
+"""
+广播中心修改
+"""
+type MulticastMutation {
+    "广播器修改"
+    broadcasters: MulticastBroadcasterMutation!
+
+    "广播消息修改"
+    messages: MulticastMessageMutation!
+}
