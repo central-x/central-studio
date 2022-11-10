@@ -113,15 +113,18 @@ public interface SecurityRequest {
      * 解析参数
      * <p>
      * 此方法可以从 query，或者从 contentType 为 application/x-www-form-urlencoded 类型的请求体里面解析参数
+     *
+     * @param type   参数类型
+     * @param groups 校验组
      */
-    <T> T getParameter(Class<T> type);
+    <T> T bindParameter(Class<T> type, Class<?>... groups);
 
     /**
      * 获取请求体
      * <p>
      * 此方法主要用于从 contentType 为 application/json 类型的请求体里面解析参数
      */
-    <T> T getBody(Class<T> type);
+    <T> T bindBody(Class<T> type, Class<?>... groups);
 
     /**
      * 获取安全执行行为

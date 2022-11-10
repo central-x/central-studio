@@ -35,5 +35,11 @@ import java.util.List;
  * @since 2022/10/26
  */
 public interface v0 {
-    List<Migration> migrations = List.of(new v0_0_1_initial(), new v0_0_2_security(), new v0_0_3_log(), new v0_0_4_storage(), new v0_0_5_multicast());
+    List<Migration> migrations = List.of(
+            new v0_0_1_initial(),
+            new v0_0_2_security(),
+            new v0_0_3_log(),
+            new v0_0_4_storage(),
+            new v0_0_5_multicast(),
+            new v0_0_6_gateway());
 }

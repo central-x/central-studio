@@ -34,7 +34,7 @@ import lombok.Setter;
 import java.time.Duration;
 
 /**
- * 租户数据
+ * 租户中心数据获取
  *
  * @author Alan Yeh
  * @since 2022/10/13

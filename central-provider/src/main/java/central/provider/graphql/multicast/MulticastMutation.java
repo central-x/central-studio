@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 /**
  * Multicast Mutation
  * <p>
- * 广播修改
+ * 广播中心修改
  *
  * @author Alan Yeh
  * @since 2022/11/03

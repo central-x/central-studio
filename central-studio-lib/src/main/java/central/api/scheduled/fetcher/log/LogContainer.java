@@ -34,7 +34,7 @@ import java.io.Serial;
 import java.util.*;
 
 /**
- * 日志数据容器
+ * 日志中心数据容器
  *
  * @author Alan Yeh
  * @since 2022/10/25

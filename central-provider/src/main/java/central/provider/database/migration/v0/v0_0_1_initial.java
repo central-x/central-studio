@@ -519,7 +519,7 @@ public class v0_0_1_initial extends Migration {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 100; i ++){
+        for (int i = 0; i < 100; i++) {
             System.out.println(Guidx.nextID());
         }
     }
@@ -570,12 +570,13 @@ public class v0_0_1_initial extends Migration {
         storageApp.setRemark("用于统一管理文件存储");
         storageApp.updateCreator("syssa");
 
-        // 广播中 心
+        // 广播中心
         var multicastApp = new ApplicationEntity();
         multicastApp.setId("5HjlG6lusTufjoRapw");
         multicastApp.setCode("central-multicast");
         multicastApp.setName("广播中心");
-        multicastApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));        storageApp.setUrl("http://127.0.0.1:3500");
+        multicastApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
+        storageApp.setUrl("http://127.0.0.1:3500");
         multicastApp.setUrl("http://127.0.0.1:3600");
         multicastApp.setContextPath("/multicast");
         multicastApp.setSecret("QHO85BzFQq8hqDzREJ");
@@ -583,7 +584,21 @@ public class v0_0_1_initial extends Migration {
         multicastApp.setRemark("用于统一消息推送");
         multicastApp.updateCreator("syssa");
 
-        applicationMapper.insertBatch(List.of(saasApp, securityApp, storageApp, multicastApp));
+        // 网关中心
+        var gatewayApp = new ApplicationEntity();
+        gatewayApp.setId("4yus43AGTA7kzyrDbbG");
+        gatewayApp.setCode("central-gateway");
+        gatewayApp.setName("网关中心");
+        gatewayApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
+        storageApp.setUrl("http://127.0.0.1:3500");
+        gatewayApp.setUrl("http://127.0.0.1:3000");
+        gatewayApp.setContextPath("/gateway");
+        gatewayApp.setSecret("TT6cdfpHIPastoipuDg");
+        gatewayApp.setEnabled(Boolean.TRUE);
+        gatewayApp.setRemark("用于统一管理网关");
+        gatewayApp.updateCreator("syssa");
+
+        applicationMapper.insertBatch(List.of(saasApp, securityApp, storageApp, multicastApp, gatewayApp));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 初始化主数据库信息
@@ -651,8 +666,15 @@ public class v0_0_1_initial extends Migration {
         multicastAppRel.setPrimary(Boolean.FALSE);
         multicastAppRel.updateCreator("syssa");
 
+        var gatewayAppRel = new TenantApplicationEntity();
+        gatewayAppRel.setId("L1kpkzehI9oofBw2EbO");
+        gatewayAppRel.setTenantId(masterTenant.getId());
+        gatewayAppRel.setApplicationId(gatewayApp.getId());
+        gatewayAppRel.setEnabled(Boolean.TRUE);
+        gatewayAppRel.setPrimary(Boolean.FALSE);
+        gatewayAppRel.updateCreator("syssa");
 
-        relMapper.insertBatch(List.of(tenantAppRel, securityAppRel, storageAppRel, multicastAppRel));
+        relMapper.insertBatch(List.of(tenantAppRel, securityAppRel, storageAppRel, multicastAppRel, gatewayAppRel));
     }
 
     @Override

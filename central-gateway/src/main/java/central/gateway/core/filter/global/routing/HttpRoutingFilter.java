@@ -25,8 +25,8 @@
 package central.gateway.core.filter.global.routing;
 
 import central.data.saas.Application;
-import central.gateway.core.GatewayFilter;
-import central.gateway.core.GatewayFilterChain;
+import central.gateway.core.filter.Filter;
+import central.gateway.core.filter.FilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;
 import central.gateway.core.body.ConnectionBody;
 import central.web.XForwardedHeaders;
@@ -71,7 +71,7 @@ import java.util.concurrent.TimeoutException;
  */
 @Slf4j
 @ExtensionMethod(ServerWebExchangex.class)
-public class HttpRoutingFilter implements GatewayFilter, InitializingBean, EnvironmentAware {
+public class HttpRoutingFilter implements Filter, InitializingBean, EnvironmentAware {
 
     @Setter
     private Environment environment;
@@ -116,7 +116,7 @@ public class HttpRoutingFilter implements GatewayFilter, InitializingBean, Envir
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
         URI targetServer = exchange.getRequiredAttribute(ExchangeAttributes.TARGET_SERVER);
         final Application targetApplication = exchange.getAttribute(ExchangeAttributes.TARGET_APPLICATION);
         final HttpHeaders headers = new HttpHeaders(new LinkedMultiValueMap<>(exchange.getRequest().getHeaders()));

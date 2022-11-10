@@ -76,7 +76,7 @@ public class LogoutRequest extends Request {
 
     public LogoutRequest(HttpServletRequest request) {
         super(request);
-        this.params = this.getParameter(Params.class);
+        this.params = this.bindParameter(Params.class);
 
         Validatex.Default().validate(params, new Class[0], (message) -> new ResponseStatusException(HttpStatus.BAD_REQUEST, message));
     }
@@ -107,7 +107,7 @@ public class LogoutRequest extends Request {
 
             try {
                 var session = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
-                        .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.SESSION_ISSUER))
+                        .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))
                         .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode())
                         .build()
                         .verify(request.getParams().getToken());

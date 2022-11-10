@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 /**
  * Log Mutation
  * <p>
- * 日志数据修改
+ * 日志中心修改
  *
  * @author Alan Yeh
  * @since 2022/10/25

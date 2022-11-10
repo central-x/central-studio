@@ -28,6 +28,7 @@ import central.io.IOStreamx;
 import central.lang.Arrayx;
 import central.lang.Stringx;
 import central.security.core.SecurityRequest;
+import central.validation.Validatex;
 import central.web.XForwardedHeaders;
 import central.util.Convertx;
 import central.util.Jsonx;
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.beans.Introspector;
@@ -143,7 +145,7 @@ public abstract class Request implements SecurityRequest {
 
     @Override
     @SneakyThrows
-    public <T> T getParameter(Class<T> type) {
+    public <T> T bindParameter(Class<T> type, Class<?>... groups) {
         var info = Introspector.getBeanInfo(type);
         var properties = info.getPropertyDescriptors();
 
@@ -158,13 +160,17 @@ public abstract class Request implements SecurityRequest {
                 property.getWriteMethod().invoke(instance, castedValue);
             }
         }
+        Validatex.Default().validate(instance, groups, ServletRequestBindingException::new);
         return instance;
     }
 
     @Override
     @SneakyThrows
-    public <T> T getBody(Class<T> type) {
+    public <T> T bindBody(Class<T> type, Class<?>... groups) {
         String body = IOStreamx.readText(this.getRequest().getInputStream(), StandardCharsets.UTF_8);
-        return Jsonx.Default().deserialize(body, type);
+        var instance = Jsonx.Default().deserialize(body, type);
+
+        Validatex.Default().validate(instance, groups, ServletRequestBindingException::new);
+        return instance;
     }
 }

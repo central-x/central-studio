@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 广播中心
+ * 广播中心数据获取
  *
  * @author Alan Yeh
  * @since 2022/11/04

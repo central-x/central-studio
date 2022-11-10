@@ -34,6 +34,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Storage Query
+ * <p>
+ * 存储中心查询
  *
  * @author Alan Yeh
  * @since 2022/10/30

@@ -25,6 +25,7 @@
 package central.provider.graphql;
 
 import central.provider.graphql.authority.AuthorityMutation;
+import central.provider.graphql.gateway.GatewayMutation;
 import central.provider.graphql.log.LogMutation;
 import central.provider.graphql.multicast.MulticastMutation;
 import central.provider.graphql.organization.OrganizationMutation;
@@ -44,7 +45,7 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(types = {AuthorityMutation.class, SecurityMutation.class, OrganizationMutation.class, SystemMutation.class, SaasMutation.class, LogMutation.class, StorageMutation.class, MulticastMutation.class})
+@GraphQLSchema(types = {AuthorityMutation.class, SecurityMutation.class, OrganizationMutation.class, SystemMutation.class, SaasMutation.class, LogMutation.class, StorageMutation.class, MulticastMutation.class, GatewayMutation.class})
 public class Mutation {
 
     /**
@@ -124,6 +125,16 @@ public class Mutation {
      */
     @GraphQLGetter
     public MulticastMutation getMulticast(@Autowired MulticastMutation mutation) {
+        return mutation;
+    }
+
+    /**
+     * Gateway Mutation
+     * <p>
+     * 网关中心修改
+     */
+    @GraphQLGetter
+    public GatewayMutation getGateway(@Autowired GatewayMutation mutation) {
         return mutation;
     }
 }

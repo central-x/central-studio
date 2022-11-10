@@ -38,7 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 广播中心容器
+ * 广播中心数据容器
  *
  * @author Alan Yeh
  * @since 2022/11/04

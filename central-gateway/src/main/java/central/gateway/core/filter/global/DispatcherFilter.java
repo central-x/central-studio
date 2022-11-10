@@ -24,8 +24,8 @@
 
 package central.gateway.core.filter.global;
 
-import central.gateway.core.GatewayFilterChain;
-import central.gateway.core.GlobalGatewayFilter;
+import central.gateway.core.filter.FilterChain;
+import central.gateway.core.filter.GlobalFilter;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -34,9 +34,9 @@ import reactor.core.publisher.Mono;
  * @author Alan Yeh
  * @since 2022/10/13
  */
-public class DispatcherFilter implements GlobalGatewayFilter {
+public class DispatcherFilter implements GlobalFilter {
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
         return null;
     }
 }

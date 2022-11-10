@@ -32,7 +32,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Organization Mutation
- * 组织架构类修改
+ * <p>
+ * 组织架构中心修改
  *
  * @author Alan Yeh
  * @since 2022/10/03
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Component;
 public class OrganizationMutation {
     /**
      * Area Mutation
+     * <p>
      * 行政区划修改
      */
     @GraphQLGetter
@@ -51,6 +53,7 @@ public class OrganizationMutation {
 
     /**
      * Unit Mutation
+     * <p>
      * 单位修改
      */
     @GraphQLGetter
@@ -60,7 +63,9 @@ public class OrganizationMutation {
 
     /**
      * Department Mutation
+     * <p>
      * 部门修改
+     * <p>
      * TODO 这个是不是应该放到 UnitMutation 下
      */
     @GraphQLGetter
@@ -70,7 +75,9 @@ public class OrganizationMutation {
 
     /**
      * Rank Mutation
+     * <p>
      * 职级修改
+     * <p>
      * TODO 这个是不是应该放到 UnitMutation 下
      */
     @GraphQLGetter
@@ -80,7 +87,9 @@ public class OrganizationMutation {
 
     /**
      * Post Mutation
+     * <p>
      * 职务修改
+     * <p>
      * TODO 这个是不是应该放到 UnitMutation 下
      */
     @GraphQLGetter
@@ -90,6 +99,7 @@ public class OrganizationMutation {
 
     /**
      * Account Mutation
+     * <p>
      * 帐户修改
      */
     @GraphQLGetter

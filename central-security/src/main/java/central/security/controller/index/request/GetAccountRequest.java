@@ -75,7 +75,7 @@ public class GetAccountRequest extends Request {
 
         @Override
         public void execute(SecurityExchange exchange) {
-            var cookie = exchange.getRequiredAttribute(ExchangeAttributes.COOKIE);
+            var cookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
             var token = cookie.get(exchange);
 
             if (Stringx.isNotBlank(token)) {

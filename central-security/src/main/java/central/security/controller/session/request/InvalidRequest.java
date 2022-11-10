@@ -68,9 +68,9 @@ public class InvalidRequest extends Request {
     public InvalidRequest(HttpServletRequest request) {
         super(request);
         if (MediaType.APPLICATION_JSON.isCompatibleWith(this.getContentType())) {
-            this.params = this.getBody(Params.class);
+            this.params = this.bindBody(Params.class);
         } else {
-            this.params = this.getParameter(Params.class);
+            this.params = this.bindParameter(Params.class);
         }
 
         Validatex.Default().validate(params, new Class[0], (message) -> new ResponseStatusException(HttpStatus.BAD_REQUEST, message));

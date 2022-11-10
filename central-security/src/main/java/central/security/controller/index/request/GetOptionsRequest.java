@@ -76,7 +76,7 @@ public class GetOptionsRequest extends Request {
     @Getter
     @RequiredArgsConstructor
     public enum Options implements OptionalEnum<Attribute<?>> {
-        CAPTCHA("captcha.enabled", ExchangeAttributes.Captcha.Options.ENABLED);
+        CAPTCHA("captcha.enabled", ExchangeAttributes.Captcha.ENABLED);
 
         private final String name;
 

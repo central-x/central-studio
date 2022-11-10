@@ -24,13 +24,19 @@
 
 package central.gateway.core.filter.global;
 
-import central.gateway.core.GatewayFilterChain;
-import central.gateway.core.GlobalGatewayFilter;
+import central.gateway.core.attribute.ExchangeAttributes;
+import central.gateway.core.filter.*;
+import central.starter.web.reactive.extension.ServerWebExchangex;
+import lombok.Setter;
+import lombok.experimental.ExtensionMethod;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.Comparator;
 
 /**
  * 用户自定义网关
@@ -40,9 +46,22 @@ import reactor.core.publisher.Mono;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 3)
-public class DynamicGatewayFilter implements GlobalGatewayFilter {
+@ExtensionMethod(ServerWebExchangex.class)
+public class DynamicGatewayFilter implements GlobalFilter {
+
+    @Setter(onMethod_ = @Autowired)
+    private Container container;
+
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return chain.filter(exchange);
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
+        var tenant = exchange.getRequiredAttribute(ExchangeAttributes.TENANT);
+
+        var filters = container.getFilters(tenant.getCode()).stream()
+                .sorted(Comparator.comparing(DynamicFilter::getOrder).reversed())
+                .toList();
+
+        // 执行用户定义的过滤器
+        return StandardFilterChain.of(filters).filter(exchange)
+                .then(chain.filter(exchange));
     }
 }

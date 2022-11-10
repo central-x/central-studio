@@ -24,7 +24,8 @@
 
 package central.provider.graphql.security;
 
-import central.provider.graphql.security.query.PasswordQuery;
+import central.provider.graphql.security.query.SecurityPasswordQuery;
+import central.provider.graphql.security.query.SecurityStrategyQuery;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,22 +33,33 @@ import org.springframework.stereotype.Component;
 
 /**
  * Authority Query
- * 安全相关查询
+ * <p>
+ * 认证中心查询
  *
  * @author Alan Yeh
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(path = "security", types = {PasswordQuery.class})
+@GraphQLSchema(path = "security", types = {SecurityPasswordQuery.class, SecurityStrategyQuery.class})
 public class SecurityQuery {
-
 
     /**
      * Password Query
+     * <p>
      * 密码查询
      */
     @GraphQLGetter
-    public PasswordQuery getPasswords(@Autowired PasswordQuery query) {
+    public SecurityPasswordQuery getPasswords(@Autowired SecurityPasswordQuery query) {
+        return query;
+    }
+
+    /**
+     * Strategy Query
+     * <p>
+     * 安全策略查询
+     */
+    @GraphQLGetter
+    public SecurityStrategyQuery getStrategies(@Autowired SecurityStrategyQuery query) {
         return query;
     }
 }

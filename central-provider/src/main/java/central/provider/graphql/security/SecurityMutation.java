@@ -24,7 +24,8 @@
 
 package central.provider.graphql.security;
 
-import central.provider.graphql.security.mutation.PasswordMutation;
+import central.provider.graphql.security.mutation.SecurityPasswordMutation;
+import central.provider.graphql.security.mutation.SecurityStrategyMutation;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,21 +33,33 @@ import org.springframework.stereotype.Component;
 
 /**
  * Security Mutation
- * 安全相关修改
+ * <p>
+ * 认证中心修改
  *
  * @author Alan Yeh
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(path = "security", types = {PasswordMutation.class})
+@GraphQLSchema(path = "security", types = {SecurityPasswordMutation.class, SecurityStrategyMutation.class})
 public class SecurityMutation {
 
     /**
      * Password Mutation
+     * <p>
      * 密码修改
      */
     @GraphQLGetter
-    public PasswordMutation getPasswords(@Autowired PasswordMutation mutation) {
+    public SecurityPasswordMutation getPasswords(@Autowired SecurityPasswordMutation mutation) {
+        return mutation;
+    }
+
+    /**
+     * Strategy Mutation
+     * <p>
+     * 安全策略修改
+     */
+    @GraphQLGetter
+    public SecurityStrategyMutation getStrategies(@Autowired SecurityStrategyMutation mutation) {
         return mutation;
     }
 }

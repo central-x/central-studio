@@ -32,7 +32,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Organization Query
- * 组织架构类查询
+ * <p>
+ * 组织架构中心查询
  *
  * @author Alan Yeh
  * @since 2022/10/03
@@ -43,6 +44,7 @@ public class OrganizationQuery {
 
     /**
      * Area Query
+     * <p>
      * 行政区划查询
      */
     @GraphQLGetter
@@ -52,6 +54,7 @@ public class OrganizationQuery {
 
     /**
      * Unit Query
+     * <p>
      * 单位查询
      */
     @GraphQLGetter
@@ -61,7 +64,9 @@ public class OrganizationQuery {
 
     /**
      * Department Query
+     * <p>
      * 部门查询
+     * <p>
      * TODO 这个是不是应该放到 UnitQuery 下
      */
     @GraphQLGetter
@@ -71,7 +76,9 @@ public class OrganizationQuery {
 
     /**
      * Rank Query
+     * <p>
      * 职级查询
+     * <p>
      * TODO 这个是不是应该放到 UnitQuery 下
      */
     @GraphQLGetter
@@ -81,7 +88,9 @@ public class OrganizationQuery {
 
     /**
      * Post Query
+     * <p>
      * 职务查询
+     * <p>
      * TODO 这个是不是应该放到 UnitQuery 下
      */
     @GraphQLGetter
@@ -91,6 +100,7 @@ public class OrganizationQuery {
 
     /**
      * Account Query
+     * <p>
      * 帐户查询
      */
     @GraphQLGetter

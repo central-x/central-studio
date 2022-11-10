@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Security Action
@@ -53,6 +54,10 @@ public abstract class SecurityAction implements ApplicationContextAware {
 
     public <T> T getBean(Class<? extends T> type) {
         return (T) beanCache.computeIfAbsent(this.getClass().getName() + "." + type.getName(), key -> applicationContext.getBean(type));
+    }
+
+    public <T> T getBean(Class<T> type, Supplier<T> supplier) {
+        return (T) beanCache.computeIfAbsent(type.getName(), key -> supplier.get());
     }
 
     /**

@@ -39,7 +39,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 存储中心容器
+ * 存储中心数据容器
  *
  * @author Alan Yeh
  * @since 2022/10/30

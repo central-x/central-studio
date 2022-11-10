@@ -24,10 +24,14 @@
 
 package central.api.scheduled.fetcher;
 
+import central.api.scheduled.fetcher.gateway.GatewayContainer;
+import central.api.scheduled.fetcher.gateway.GatewayFetcher;
 import central.api.scheduled.fetcher.log.LogContainer;
 import central.api.scheduled.fetcher.log.LogFetcher;
 import central.api.scheduled.fetcher.multicast.MulticastContainer;
 import central.api.scheduled.fetcher.multicast.MulticastFetcher;
+import central.api.scheduled.fetcher.security.SecurityContainer;
+import central.api.scheduled.fetcher.security.SecurityFetcher;
 import central.api.scheduled.fetcher.storage.StorageContainer;
 import central.api.scheduled.fetcher.storage.StorageFetcher;
 import central.api.scheduled.fetcher.system.SysContainer;
@@ -63,4 +67,12 @@ public interface DataFetchers {
      * 广播中心数据
      */
     Attribute<DataFetcher<MulticastContainer>> MULTICAST = Attribute.of(DataFetchers.class.getName() + ".multicast", MulticastFetcher::new);
+    /**
+     * 认证中心数据
+     */
+    Attribute<DataFetcher<SecurityContainer>> SECURITY = Attribute.of(DataFetchers.class.getName() + ".security", SecurityFetcher::new);
+    /**
+     * 网关中心数据
+     */
+    Attribute<DataFetcher<GatewayContainer>> GATEWAY = Attribute.of(DataFetchers.class.getName() + ".gateway", GatewayFetcher::new);
 }

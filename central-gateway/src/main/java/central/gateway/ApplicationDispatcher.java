@@ -26,8 +26,8 @@ package central.gateway;
 
 import central.api.scheduled.fetcher.DataFetchers;
 import central.api.scheduled.ScheduledDataContext;
-import central.gateway.core.GlobalGatewayFilter;
-import central.gateway.core.StandardGatewayFilterChain;
+import central.gateway.core.filter.GlobalFilter;
+import central.gateway.core.filter.StandardFilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;
 import central.lang.Stringx;
 import central.web.XForwardedHeaders;
@@ -70,7 +70,7 @@ import java.util.stream.Collectors;
 public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordered {
 
     @Setter(onMethod_ = @Autowired)
-    private List<GlobalGatewayFilter> filters;
+    private List<GlobalFilter> filters;
 
     @Setter(onMethod_ = @Autowired)
     private ApplicationProperties properties;
@@ -118,7 +118,9 @@ public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordere
                             headers.set(XForwardedHeaders.HOST, originUri.getHost());
                             headers.set(XForwardedHeaders.PORT, String.valueOf(originUri.getPort()));
                             headers.set(XForwardedHeaders.FOR, remoteAddress.getAddress().getHostAddress());
-                        }).build())
+                        })
+                        .remoteAddress(remoteAddress)
+                        .build())
                 .build();
 
         log.info("接收请求: '{} {}'", request.getMethod().name(), originUri);
@@ -206,7 +208,7 @@ public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordere
         exchange.setAttribute(ExchangeAttributes.TENANT, tenant);
         exchange.getRequiredAttribute(ExchangeAttributes.TOKEN).withClaim("tc", tenant.getCode());
 
-        return StandardGatewayFilterChain.of(this.filters).filter(exchange);
+        return StandardFilterChain.of(this.filters).filter(exchange);
     }
 
     private URI rebuildUri(ServerHttpRequest request) {

@@ -81,9 +81,9 @@ public class VerifyRequest extends Request {
     public VerifyRequest(HttpServletRequest request) {
         super(request);
         if (MediaType.APPLICATION_JSON.isCompatibleWith(this.getContentType())) {
-            this.params = this.getBody(Params.class);
+            this.params = this.bindBody(Params.class);
         } else {
-            this.params = this.getParameter(Params.class);
+            this.params = this.bindParameter(Params.class);
         }
 
         Validatex.Default().validate(params, new Class[0], (message) -> new ResponseStatusException(HttpStatus.BAD_REQUEST, message));
@@ -123,7 +123,7 @@ public class VerifyRequest extends Request {
 //                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是有效的会话凭证");
             }
 
-            if (!Objects.equals(token.getIssuer(), exchange.getRequiredAttribute(ExchangeAttributes.SESSION_ISSUER))) {
+            if (!Objects.equals(token.getIssuer(), exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))) {
                 log.info("不是本系统颁发的会话凭证");
                 exchange.getResponse().setBody(new StringBody("false"));
                 return;

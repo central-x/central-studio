@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 /**
  * Tenant Query
  * <p>
- * 租户类查询
+ * 租户中心查询
  *
  * @author Alan Yeh
  * @since 2022/10/03

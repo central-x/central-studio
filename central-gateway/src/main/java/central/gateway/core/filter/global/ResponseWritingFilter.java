@@ -24,8 +24,8 @@
 
 package central.gateway.core.filter.global;
 
-import central.gateway.core.GatewayFilterChain;
-import central.gateway.core.GlobalGatewayFilter;
+import central.gateway.core.filter.FilterChain;
+import central.gateway.core.filter.GlobalFilter;
 import central.gateway.core.attribute.ExchangeAttributes;
 import central.starter.web.reactive.extension.ServerWebExchangex;
 import lombok.experimental.ExtensionMethod;
@@ -49,9 +49,9 @@ import java.util.List;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ExtensionMethod(ServerWebExchangex.class)
-public class ResponseWritingFilter implements GlobalGatewayFilter {
+public class ResponseWritingFilter implements GlobalFilter {
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
         return chain.filter(exchange)
                 .doOnError(throwable -> cleanup(exchange))
                 .then(Mono.defer(() -> {

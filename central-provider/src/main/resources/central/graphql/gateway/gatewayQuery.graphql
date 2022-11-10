@@ -1,0 +1,7 @@
+"""
+网关中心查询
+"""
+type GatewayQuery {
+    "过滤器查询"
+    filters: GatewayFilterQuery!
+}

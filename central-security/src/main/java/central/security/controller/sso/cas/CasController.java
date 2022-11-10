@@ -24,8 +24,22 @@
 
 package central.security.controller.sso.cas;
 
+import central.security.controller.sso.cas.request.LoginRequest;
+import central.security.controller.sso.cas.request.LogoutRequest;
+import central.security.controller.sso.cas.request.ValidateRequest;
+import central.security.core.SecurityDispatcher;
+import central.security.core.SecurityExchange;
+import central.security.core.SecurityResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.io.IOException;
 
 /**
  * Central Authentication Service
@@ -38,4 +52,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/sso/cas")
 public class CasController {
+    @Setter(onMethod_ = @Autowired)
+    private SecurityDispatcher dispatcher;
+
+    /**
+     * 认证入口
+     */
+    @GetMapping("/login")
+    public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        this.dispatcher.dispatch(SecurityExchange.of(LoginRequest.of(request), SecurityResponse.of(response)));
+    }
+
+    /**
+     * ST 认证
+     */
+    @PostMapping({"/serviceValidate", "/p3/serviceValidate"})
+    public void validate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        this.dispatcher.dispatch(SecurityExchange.of(ValidateRequest.of(request), SecurityResponse.of(response)));
+    }
+
+    /**
+     * 退出登录
+     */
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        this.dispatcher.dispatch(SecurityExchange.of(LogoutRequest.of(request), SecurityResponse.of(response)));
+    }
 }

@@ -124,9 +124,9 @@ public class LoginByCredentialRequest extends Request {
                     // 终端类型
                     .withClaim(SessionClaims.ENDPOINT, endpoint.getValue())
                     // 颁发者
-                    .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.SESSION_ISSUER))
+                    .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))
                     // 会话有效时间
-                    .withClaim(SessionClaims.TIMEOUT, exchange.getRequiredAttribute(ExchangeAttributes.SESSION_TIMEOUT))
+                    .withClaim(SessionClaims.TIMEOUT, exchange.getRequiredAttribute(ExchangeAttributes.Session.TIMEOUT))
                     // 租户标识
                     .withClaim(SessionClaims.TENANT_CODE, exchange.getRequest().getTenantCode());
 
