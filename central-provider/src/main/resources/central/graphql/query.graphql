@@ -22,4 +22,7 @@ extend type Query {
 
     "广播中心查询"
     multicast: MulticastQuery!
+
+    "网关中心查询"
+    gateway: GatewayQuery!
 }

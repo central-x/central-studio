@@ -26,9 +26,9 @@ package central.security.controller.session.request;
 
 import central.api.client.security.SessionClaims;
 import central.api.provider.organization.AccountProvider;
-import central.api.provider.security.PasswordProvider;
+import central.api.provider.security.SecurityPasswordProvider;
 import central.data.organization.Account;
-import central.data.security.Password;
+import central.data.security.SecurityPassword;
 import central.lang.Stringx;
 import central.security.Passwordx;
 import central.security.controller.session.SessionController;
@@ -97,9 +97,9 @@ public class LoginRequest extends Request {
         super(request);
 
         if (MediaType.APPLICATION_JSON.isCompatibleWith(this.getContentType())) {
-            this.params = this.getBody(Params.class);
+            this.params = this.bindBody(Params.class);
         } else {
-            this.params = this.getParameter(Params.class);
+            this.params = this.bindParameter(Params.class);
         }
 
         Validatex.Default().validate(params, new Class[0], (message) -> new ResponseStatusException(HttpStatus.BAD_REQUEST, message));
@@ -118,7 +118,7 @@ public class LoginRequest extends Request {
 
         private AccountProvider accountProvider;
 
-        private PasswordProvider passwordProvider;
+        private SecurityPasswordProvider passwordProvider;
 
         private KeyPair keyPair;
 
@@ -127,7 +127,7 @@ public class LoginRequest extends Request {
         @Override
         public void afterPropertiesSet() throws Exception {
             this.accountProvider = this.getBean(AccountProvider.class);
-            this.passwordProvider = this.getBean(PasswordProvider.class);
+            this.passwordProvider = this.getBean(SecurityPasswordProvider.class);
             this.keyPair = this.getBean(KeyPair.class);
             this.session = this.getBean(SecuritySession.class);
         }
@@ -174,12 +174,12 @@ public class LoginRequest extends Request {
 
             // 查找用户密码
 
-            Password password;
+            SecurityPassword password;
             if (account.getSupervisor()) {
                 // 超级管理员
                 password = this.passwordProvider.findById(account.getId());
             } else {
-                var passwords = this.passwordProvider.findBy(null, null, Conditions.of(Password.class).eq(Password::getAccountId, account.getId()), null);
+                var passwords = this.passwordProvider.findBy(null, null, Conditions.of(SecurityPassword.class).eq(SecurityPassword::getAccountId, account.getId()), null);
                 password = Listx.getFirstOrNull(passwords);
             }
 
@@ -221,9 +221,9 @@ public class LoginRequest extends Request {
                     // 终端类型
                     .withClaim(SessionClaims.ENDPOINT, endpoint.getValue())
                     // 颁发者
-                    .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.SESSION_ISSUER))
+                    .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))
                     // 会话有效时间
-                    .withClaim(SessionClaims.TIMEOUT, exchange.getRequiredAttribute(ExchangeAttributes.SESSION_TIMEOUT))
+                    .withClaim(SessionClaims.TIMEOUT, exchange.getRequiredAttribute(ExchangeAttributes.Session.TIMEOUT))
                     // 租户标识
                     .withClaim(SessionClaims.TENANT_CODE, exchange.getRequest().getTenantCode());
 

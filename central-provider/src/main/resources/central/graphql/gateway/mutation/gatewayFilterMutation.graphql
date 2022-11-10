@@ -1,0 +1,90 @@
+"""
+过滤器输入
+"""
+input GatewayFilterInput {
+    "主键"
+    id:                     ID
+    "类型"
+    type:                   String
+    "匹配路径"
+    path:                   String
+    "排序号"
+    order:                  Int
+    "是否启用"
+    enabled:                Boolean
+    "备注"
+    remark:                 String
+    "初始化参数"
+    params:                 String
+    "断言"
+    predicates:            [GatewayPredicateInput]
+}
+
+input GatewayPredicateInput {
+    "类型"
+    type:                   String
+    "初始化参数"
+    params:                 String
+}
+
+"""
+过滤器修改
+"""
+type GatewayFilterMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: GatewayFilterInput,
+        "操作人"
+        operator: String
+    ): GatewayFilter
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [GatewayFilterInput],
+        "操作人"
+        operator: String
+    ): [GatewayFilter]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: GatewayFilterInput,
+        "操作人"
+        operator: String
+    ): GatewayFilter
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [GatewayFilterInput],
+        "操作人"
+        operator: String
+    ): [GatewayFilter]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

@@ -4,5 +4,8 @@
 type SecurityMutation {
 
     "密码修改"
-    passwords: PasswordMutation!
+    passwords: SecurityPasswordMutation!
+
+    "安全策略修改"
+    strategies: SecurityStrategyMutation!
 }

@@ -24,8 +24,8 @@
 
 package central.gateway.core.filter.global.routing;
 
-import central.gateway.core.GatewayFilter;
-import central.gateway.core.GatewayFilterChain;
+import central.gateway.core.filter.Filter;
+import central.gateway.core.filter.FilterChain;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -36,7 +36,7 @@ import reactor.core.publisher.Mono;
  * @author Alan Yeh
  * @since 2022/10/13
  */
-public class ResourceRoutingFilter implements GatewayFilter, InitializingBean {
+public class ResourceRoutingFilter implements Filter, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -44,7 +44,7 @@ public class ResourceRoutingFilter implements GatewayFilter, InitializingBean {
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
         return null;
     }
 }

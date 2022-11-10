@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 /**
  * Log Query
  * <p>
- * 日志类查询
+ * 日志中心查询
  *
  * @author Alan Yeh
  * @since 2022/10/25

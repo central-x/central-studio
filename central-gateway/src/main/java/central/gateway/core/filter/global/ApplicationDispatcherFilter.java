@@ -27,8 +27,8 @@ package central.gateway.core.filter.global;
 import central.bean.Orderable;
 import central.data.saas.ApplicationModule;
 import central.data.saas.Tenant;
-import central.gateway.core.GatewayFilterChain;
-import central.gateway.core.GlobalGatewayFilter;
+import central.gateway.core.filter.FilterChain;
+import central.gateway.core.filter.GlobalFilter;
 import central.gateway.core.attribute.ExchangeAttributes;
 import central.lang.Stringx;
 import central.starter.web.reactive.extension.ServerWebExchangex;
@@ -59,9 +59,9 @@ import java.util.*;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 @ExtensionMethod(ServerWebExchangex.class)
-public class ApplicationDispatcherFilter implements GlobalGatewayFilter {
+public class ApplicationDispatcherFilter implements GlobalFilter {
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
         Tenant tenant = exchange.getRequiredAttribute(ExchangeAttributes.TENANT);
 
         var application = tenant.getApplications().stream()
@@ -166,7 +166,7 @@ public class ApplicationDispatcherFilter implements GlobalGatewayFilter {
             log.info("重定向: '{}'", Stringx.addSuffix(contextPath, "/"));
 
             URI originUri = exchange.getRequiredAttribute(ExchangeAttributes.ORIGIN_URI);
-            return RedirectRender.of(exchange).redirect(URI.create(UriComponentsBuilder.fromUri(originUri).path(originUri.getPath() + "/").build().toString())).render();
+            return RedirectRender.of(exchange).redirect(URI.create(UriComponentsBuilder.fromUri(originUri).replacePath(originUri.getPath() + "/").build().toString())).render();
         }
 
         // 构建 URI

@@ -92,9 +92,9 @@ public class LoginByTokenRequest extends Request {
     public LoginByTokenRequest(HttpServletRequest request) {
         super(request);
         if (MediaType.APPLICATION_JSON.isCompatibleWith(this.getContentType())) {
-            this.params = this.getBody(Params.class);
+            this.params = this.bindBody(Params.class);
         } else {
-            this.params = this.getParameter(Params.class);
+            this.params = this.bindParameter(Params.class);
         }
 
         Validatex.Default().validate(params, new Class[0], (message) -> new ResponseStatusException(HttpStatus.BAD_REQUEST, message));
@@ -137,7 +137,7 @@ public class LoginByTokenRequest extends Request {
             try {
                 token = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
                         .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode())
-                        .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.SESSION_ISSUER))
+                        .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))
                         .build().verify(request.getParams().getToken());
             } catch (JWTVerificationException ex) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是有效会话凭证");
@@ -192,9 +192,9 @@ public class LoginByTokenRequest extends Request {
                     // 终端类型
                     .withClaim(SessionClaims.ENDPOINT, endpoint.getValue())
                     // 颁发者
-                    .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.SESSION_ISSUER))
+                    .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))
                     // 会话有效时间
-                    .withClaim(SessionClaims.TIMEOUT, exchange.getRequiredAttribute(ExchangeAttributes.SESSION_TIMEOUT))
+                    .withClaim(SessionClaims.TIMEOUT, exchange.getRequiredAttribute(ExchangeAttributes.Session.TIMEOUT))
                     // 租户标识
                     .withClaim(SessionClaims.TENANT_CODE, exchange.getRequest().getTenantCode());
 

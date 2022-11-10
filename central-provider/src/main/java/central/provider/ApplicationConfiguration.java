@@ -1,5 +1,6 @@
 package central.provider;
 
+import central.api.scheduled.DataContext;
 import central.api.scheduled.ScheduledDataContext;
 import central.api.scheduled.SpringSupplier;
 import central.api.scheduled.event.DataRefreshEvent;
@@ -61,7 +62,7 @@ public class ApplicationConfiguration {
      * 热数据容器
      */
     @Bean(initMethod = "initialized", destroyMethod = "destroy")
-    public ScheduledDataContext dataContext(ApplicationContext applicationContext) {
+    public DataContext dataContext(ApplicationContext applicationContext) {
         var context = new ScheduledDataContext(5000, new SpringSupplier(applicationContext));
         context.addFetcher(DataFetchers.SAAS);
         context.addFetcher(DataFetchers.LOG, (tenant, container) -> {

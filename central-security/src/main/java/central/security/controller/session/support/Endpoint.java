@@ -44,10 +44,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public enum Endpoint implements OptionalEnum<String> {
 
-    WEB("网页端（Web）", "web", ExchangeAttributes.ENDPOINT_WEB),
-    PC("电脑客户端（PC）", "pc", ExchangeAttributes.ENDPOINT_PC),
-    PHONE("手机客户端（Phone）", "phone", ExchangeAttributes.ENDPOINT_PHONE),
-    PAD("平板客户端（Pad）", "pad", ExchangeAttributes.ENDPOINT_PAD);
+    WEB("网页端（Web）", "web", ExchangeAttributes.Endpoint.WEB),
+    PC("电脑客户端（PC）", "pc", ExchangeAttributes.Endpoint.PC),
+    PHONE("手机客户端（Phone）", "phone", ExchangeAttributes.Endpoint.PHONE),
+    PAD("平板客户端（Pad）", "pad", ExchangeAttributes.Endpoint.PAD);
 
     private final String name;
     private final String value;

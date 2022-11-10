@@ -24,10 +24,10 @@
 
 package central.gateway.core.filter.global;
 
-import central.gateway.core.GatewayFilter;
-import central.gateway.core.GatewayFilterChain;
-import central.gateway.core.GlobalGatewayFilter;
-import central.gateway.core.StandardGatewayFilterChain;
+import central.gateway.core.filter.Filter;
+import central.gateway.core.filter.FilterChain;
+import central.gateway.core.filter.GlobalFilter;
+import central.gateway.core.filter.StandardFilterChain;
 import central.gateway.core.filter.global.routing.HttpRoutingFilter;
 import central.gateway.core.filter.global.routing.NotSupportedProtocolRoutingFilter;
 import central.gateway.core.filter.global.routing.ResourceRoutingFilter;
@@ -53,12 +53,12 @@ import java.util.List;
  */
 @Component
 @Order
-public class RequestRoutingFilter implements GlobalGatewayFilter, ApplicationContextAware, InitializingBean {
+public class RequestRoutingFilter implements GlobalFilter, ApplicationContextAware, InitializingBean {
 
     @Setter
     private ApplicationContext applicationContext;
 
-    private final List<GatewayFilter> filters = new ArrayList<>(5);
+    private final List<Filter> filters = new ArrayList<>(5);
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -70,7 +70,7 @@ public class RequestRoutingFilter implements GlobalGatewayFilter, ApplicationCon
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return StandardGatewayFilterChain.of(this.filters).filter(exchange);
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
+        return StandardFilterChain.of(this.filters).filter(exchange);
     }
 }

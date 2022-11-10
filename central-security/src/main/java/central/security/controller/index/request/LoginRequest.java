@@ -28,6 +28,7 @@ import central.api.client.security.SessionClient;
 import central.security.controller.index.IndexController;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
+import central.security.core.ability.CaptchableRequest;
 import central.security.core.attribute.ExchangeAttributes;
 import central.security.core.body.StringBody;
 import central.security.core.request.Request;
@@ -51,7 +52,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @see IndexController#login
  * @since 2022/10/19
  */
-public class LoginRequest extends Request {
+public class LoginRequest extends Request implements CaptchableRequest {
 
     @Data
     @AllArgsConstructor
@@ -75,12 +76,17 @@ public class LoginRequest extends Request {
     @Getter
     private final Params params;
 
+    @Override
+    public String getCaptcha() {
+        return params.getCaptcha();
+    }
+
     public LoginRequest(HttpServletRequest request) {
         super(request);
         if (MediaType.APPLICATION_JSON.isCompatibleWith(this.getContentType())) {
-            this.params = this.getBody(Params.class);
+            this.params = this.bindBody(Params.class);
         } else {
-            this.params = this.getParameter(Params.class);
+            this.params = this.bindParameter(Params.class);
         }
         Validatex.Default().validate(params, new Class[0], (message) -> new ResponseStatusException(HttpStatus.BAD_REQUEST, message));
     }
@@ -110,9 +116,9 @@ public class LoginRequest extends Request {
                 var session = this.client.login(params.getAccount(), params.getPassword(), params.getSecret(), null);
 
                 // 把会话放到 Cookie 里
-                exchange.getRequiredAttribute(ExchangeAttributes.COOKIE).set(exchange, session);
+                exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE).set(exchange, session);
                 exchange.getResponse().setBody(new StringBody("登录成功"));
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "帐号或密码错误");
             }
         }

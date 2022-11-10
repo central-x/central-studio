@@ -24,8 +24,8 @@
 
 package central.gateway.core.filter.global;
 
-import central.gateway.core.GatewayFilterChain;
-import central.gateway.core.GlobalGatewayFilter;
+import central.gateway.core.filter.FilterChain;
+import central.gateway.core.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -40,9 +40,9 @@ import reactor.core.publisher.Mono;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
-public class ApiDispatcherFilter implements GlobalGatewayFilter {
+public class ApiDispatcherFilter implements GlobalFilter {
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
         return chain.filter(exchange);
     }
 }

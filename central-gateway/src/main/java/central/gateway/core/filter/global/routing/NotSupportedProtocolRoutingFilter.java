@@ -24,8 +24,8 @@
 
 package central.gateway.core.filter.global.routing;
 
-import central.gateway.core.GatewayFilter;
-import central.gateway.core.GatewayFilterChain;
+import central.gateway.core.filter.Filter;
+import central.gateway.core.filter.FilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;
 import central.lang.Stringx;
 import org.springframework.http.HttpStatus;
@@ -41,9 +41,9 @@ import java.net.URI;
  * @author Alan Yeh
  * @since 2022/10/13
  */
-public class NotSupportedProtocolRoutingFilter implements GatewayFilter {
+public class NotSupportedProtocolRoutingFilter implements Filter {
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
         URI targetUri = exchange.getRequiredAttribute(ExchangeAttributes.TARGET_SERVER.getCode());
 
         return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, Stringx.format("不支持的协议 '{}'", targetUri.getScheme())));

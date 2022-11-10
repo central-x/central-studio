@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 /**
  * Multicast Query
  * <p>
- * 广播查贸易
+ * 广播中心查易
  *
  * @author Alan Yeh
  * @since 2022/11/03

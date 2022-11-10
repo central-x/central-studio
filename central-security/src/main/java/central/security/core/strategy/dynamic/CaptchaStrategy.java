@@ -25,13 +25,24 @@
 package central.security.core.strategy.dynamic;
 
 import central.lang.BooleanEnum;
+import central.lang.Stringx;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.security.core.CookieManager;
 import central.security.core.SecurityExchange;
+import central.security.core.ability.CaptchableRequest;
 import central.security.core.attribute.ExchangeAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
+import central.security.support.captcha.CaptchaContainer;
+import central.validation.Label;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * 验证码策略
@@ -44,29 +55,87 @@ public class CaptchaStrategy implements Strategy {
     @Control(label = "说明", type = ControlType.LABEl, defaultValue = "　　本策略用于控制登录时的验证码和策略")
     private String label;
 
+    @Label("启用")
     @NotNull
     @Control(label = "启用", type = ControlType.RADIO, defaultValue = "1", comment = "用于控制登录时是否需要输入验证码")
+    @Setter
     private BooleanEnum enabled;
 
     @NotNull
     @Control(label = "有效期", type = ControlType.NUMBER, defaultValue = "180000", comment = "单位（毫秒）。用于控制验证码的失效时间，失效后需要重新获取验证码")
+    @Setter
     private Long timeout;
 
+    @Label("大小写敏感")
     @NotNull
     @Control(label = "大小写敏感", type = ControlType.RADIO, defaultValue = "0", comment = "校验验证码时，是否大小写敏感")
+    @Setter
     private BooleanEnum caseSensitive;
 
-    @NotNull
+    @Label("Cookie")
+    @NotBlank
+    @Size(min = 1, max = 36)
     @Control(label = "Cookie", defaultValue = "X-Auth-Captcha", comment = "用于控制验证码跟踪的 Cookie 字段")
+    @Setter
     private String cookie;
 
     @Override
     public void execute(SecurityExchange exchange, StrategyChain chain) {
-        // 保存
-        exchange.setAttribute(ExchangeAttributes.Captcha.Options.ENABLED, this.enabled.getJValue());
+        // 设置请求属性
+        exchange.setAttribute(ExchangeAttributes.Captcha.ENABLED, this.enabled.getJValue());
+        exchange.setAttribute(ExchangeAttributes.Captcha.CASE_SENSITIVE, this.caseSensitive.getJValue());
+        exchange.setAttribute(ExchangeAttributes.Captcha.COOKIE, new CookieManager(this.cookie));
 
+        if (BooleanEnum.TRUE.isCompatibleWith(this.enabled)) {
 
+            if (exchange.getRequest() instanceof CaptchableRequest) {
+                // 需要处理验证码
+                this.validateCaptcha(exchange);
+            }
+        }
 
         chain.execute(exchange);
+    }
+
+    @Setter(onMethod_ = @Autowired)
+    private CaptchaContainer container;
+
+    /**
+     * 验证验证码
+     */
+    private void validateCaptcha(SecurityExchange exchange) {
+        var cookieManager = exchange.getRequiredAttribute(ExchangeAttributes.Captcha.COOKIE);
+        var captchaKey = cookieManager.get(exchange);
+
+        if (Stringx.isNullOrBlank(captchaKey)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "请获取验证码后再登录");
+        }
+
+        // 获取用户输入的验证码信息
+        var value = ((CaptchableRequest) exchange.getRequest()).getCaptcha();
+        if (Stringx.isNullOrBlank(value)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验输入验证码");
+        }
+
+        // 从容器获取验证码信息
+        var captcha = this.container.get(captchaKey);
+
+        if (Stringx.isNullOrBlank(captcha)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码已过期，请重新获取");
+        }
+
+        // 验证
+        if (exchange.getRequiredAttribute(ExchangeAttributes.Captcha.CASE_SENSITIVE)) {
+            if (!captcha.equals(value)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码错误");
+            }
+        } else {
+            if (!captcha.equalsIgnoreCase(value)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码错误");
+            }
+        }
+
+        // 验证通过
+        cookieManager.remove(exchange);
     }
 }

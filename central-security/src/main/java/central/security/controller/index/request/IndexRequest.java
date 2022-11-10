@@ -111,7 +111,7 @@ public class IndexRequest extends Request {
                 }
 
                 // 如果当前会话有效，则直接重定向到指定的地址
-                var cookie = exchange.getRequiredAttribute(ExchangeAttributes.COOKIE);
+                var cookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
                 var token = cookie.get(exchange);
 
                 if (this.verifier.verify(token)) {

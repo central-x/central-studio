@@ -34,7 +34,7 @@ import java.io.Serial;
 import java.util.*;
 
 /**
- * 租户类数据容器
+ * 租户中心数据容器
  *
  * @author Alan Yeh
  * @since 2022/10/13

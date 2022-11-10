@@ -22,4 +22,7 @@ extend type Mutation {
 
     "广播中心修改"
     multicast: MulticastMutation!
+
+    "网关中心修改"
+    gateway: GatewayMutation!
 }

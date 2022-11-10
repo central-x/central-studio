@@ -26,8 +26,10 @@ package central.security;
 
 import central.api.client.security.SessionClient;
 import central.api.client.security.SessionVerifier;
+import central.api.scheduled.DataContext;
 import central.api.scheduled.ScheduledDataContext;
 import central.api.scheduled.SpringSupplier;
+import central.api.scheduled.event.DataRefreshEvent;
 import central.api.scheduled.fetcher.DataFetchers;
 import central.net.http.executor.okhttp.OkHttpExecutor;
 import central.net.http.processor.impl.SetHeaderProcessor;
@@ -35,6 +37,9 @@ import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.processor.impl.TransmitHeaderProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;;
+import central.pluglet.PlugletFactory;
+import central.pluglet.binder.SpringBeanFieldBinder;
+import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.security.signer.KeyPair;
 import central.starter.graphql.stub.ProviderClient;
 import central.web.XForwardedHeaders;
@@ -83,9 +88,12 @@ public class ApplicationConfiguration {
      * 热数据容器
      */
     @Bean(initMethod = "initialized", destroyMethod = "destroy")
-    public ScheduledDataContext dataContext(ApplicationContext applicationContext) {
+    public DataContext dataContext(ApplicationContext applicationContext) {
         var context = new ScheduledDataContext(5000, new SpringSupplier(applicationContext));
         context.addFetcher(DataFetchers.SAAS);
+        context.addFetcher(DataFetchers.SECURITY, (tenant, container) -> {
+            applicationContext.publishEvent(new DataRefreshEvent<>(tenant, container));
+        });
         return context;
     }
 
@@ -107,5 +115,16 @@ public class ApplicationConfiguration {
     @Bean
     public SessionVerifier sessionVerifier() {
         return new SessionVerifier();
+    }
+
+    /**
+     * 插件工厂
+     */
+    @Bean
+    public PlugletFactory plugletFactory(ApplicationContext applicationContext) {
+        var factory = new PlugletFactory();
+        factory.registerBinder(new SpringBeanFieldBinder(applicationContext));
+        factory.registerLifeCycleProcessor(new SpringLifeCycleProcess(applicationContext));
+        return factory;
     }
 }

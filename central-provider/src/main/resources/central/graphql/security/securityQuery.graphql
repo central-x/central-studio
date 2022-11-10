@@ -4,5 +4,8 @@
 type SecurityQuery {
 
     "密码查询"
-    passwords: PasswordQuery!
+    passwords: SecurityPasswordQuery!
+
+    "安全策略查询"
+    strategies: SecurityStrategyQuery!
 }

@@ -26,7 +26,6 @@ package central.api.scheduled;
 
 import central.api.scheduled.fetcher.DataFetcher;
 import central.api.scheduled.fetcher.saas.SaasContainer;
-import central.bean.LifeCycle;
 import central.lang.Attribute;
 import central.lang.Stringx;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * @author Alan Yeh
  * @since 2022/10/13
  */
-public class ScheduledDataContext implements LifeCycle {
+public class ScheduledDataContext implements DataContext {
     private ScheduledExecutorService scheduled;
 
     private final Map<String, DataFetcher<? extends DataContainer>> dataFetcher = new ConcurrentHashMap<>();
@@ -82,7 +81,7 @@ public class ScheduledDataContext implements LifeCycle {
     /**
      * 添加定期获取数据任务
      *
-     * @param fetcher 属性
+     * @param fetcher 数据获取器
      * @param <T>     数据类型
      */
     public <T extends DataContainer> void addFetcher(Attribute<? extends DataFetcher<T>> fetcher) {
@@ -92,6 +91,13 @@ public class ScheduledDataContext implements LifeCycle {
         this.dataFetcher.put(fetcher.getCode(), fetcher.requireValue());
     }
 
+    /**
+     * 添加定期获取数据任务，并监听数据变化
+     *
+     * @param fetcher  数据获取器
+     * @param listener 数据监听器
+     * @param <T>      数据类型
+     */
     public <T extends DataContainer> void addFetcher(Attribute<? extends DataFetcher<T>> fetcher, DataListener<T> listener) {
         if (this.dataFetcher.containsKey(fetcher.getCode())) {
             throw new IllegalStateException(Stringx.format("数据任务[{}]冲突", fetcher.getCode()));
@@ -103,7 +109,7 @@ public class ScheduledDataContext implements LifeCycle {
     /**
      * 移除定期获取数据任务
      *
-     * @param fetcher 属性
+     * @param fetcher 数据获取器
      * @param <T>     数据类型
      */
     public <T extends DataContainer> void removeFetcher(Attribute<? extends DataFetcher<T>> fetcher) {
@@ -114,7 +120,7 @@ public class ScheduledDataContext implements LifeCycle {
     /**
      * 获取数据
      *
-     * @param fetcher 属性
+     * @param fetcher 数据获取器
      * @param <T>     数据类型
      * @return 数据
      */
@@ -146,7 +152,7 @@ public class ScheduledDataContext implements LifeCycle {
                             fetcher.setProviderSupplier(supplier);
                             var data = fetcher.get();
                             var listener = this.listener.get(key);
-                            if (listener != null){
+                            if (listener != null) {
                                 listener.refresh(key, data);
                             }
                             return data;

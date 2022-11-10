@@ -62,15 +62,46 @@ public class v0_0_2_security extends Migration {
             var table = Table.of("X_SEC_PASSWORD", "密码", columns, indies);
             database.addTable(table);
         }
+        {
+            // 策略
+            var columns = List.of(
+                    Column.of("ID", true, SqlType.STRING, 32, "主键"),
+                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("NAME", SqlType.STRING, 50, "名称"),
+                    Column.of("TYPE", SqlType.STRING, 32, "类型"),
+                    Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
+                    Column.of("REMARK", SqlType.STRING, 1024, "备注"),
+                    Column.of("PARAMS", SqlType.CLOB, "初始化参数"),
+                    Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
+                    Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
+                    Column.of("MODIFIER_ID", SqlType.STRING, 36, "更新人主键"),
+                    Column.of("MODIFY_DATE", SqlType.DATETIME, "更新时间"),
+                    Column.of("TENANT_CODE", SqlType.STRING, 32, "租户编码")
+            );
+
+            var indies = List.of(
+                    Index.of("X_SSTR_CODE", false, "CODE")
+            );
+
+            var table = Table.of("X_SEC_STRATEGY", "安全策略", columns, indies);
+            database.addTable(table);
+        }
     }
 
     @Override
     public void downgrade(Database database) throws SQLException {
         {
             // 密码
-            var password = database.getTable("X_SEC_PASSWORD");
-            if (password != null) {
-                password.drop();
+            var table = database.getTable("X_SEC_PASSWORD");
+            if (table != null) {
+                table.drop();
+            }
+        }
+        {
+            // 策略
+            var table = database.getTable("X_SEC_STRATEGY");
+            if (table != null) {
+                table.drop();
             }
         }
     }

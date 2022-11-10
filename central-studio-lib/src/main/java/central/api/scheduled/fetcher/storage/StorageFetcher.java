@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 存储中心数据
+ * 存储中心数据获取
  *
  * @author Alan Yeh
  * @since 2022/10/30

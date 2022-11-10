@@ -1,0 +1,7 @@
+"""
+网关中心修改
+"""
+type GatewayMutation {
+    "过滤器修改"
+    filters: GatewayFilterMutation!
+}

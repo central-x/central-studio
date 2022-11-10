@@ -24,6 +24,8 @@
 
 package central.gateway;
 
+import central.api.scheduled.DataContext;
+import central.api.scheduled.event.DataRefreshEvent;
 import central.api.scheduled.fetcher.DataFetchers;
 import central.api.scheduled.ScheduledDataContext;
 import central.api.scheduled.SpringSupplier;
@@ -32,6 +34,9 @@ import central.net.http.processor.impl.SetHeaderProcessor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
+import central.pluglet.PlugletFactory;
+import central.pluglet.binder.SpringBeanFieldBinder;
+import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.starter.graphql.stub.ProviderClient;
 import central.web.XForwardedHeaders;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -77,9 +82,23 @@ public class ApplicationConfiguration {
      * 热数据容器
      */
     @Bean(initMethod = "initialized", destroyMethod = "destroy")
-    public ScheduledDataContext dataContext(ApplicationContext applicationContext) {
+    public DataContext dataContext(ApplicationContext applicationContext) {
         var context = new ScheduledDataContext(5000, new SpringSupplier(applicationContext));
         context.addFetcher(DataFetchers.SAAS);
+        context.addFetcher(DataFetchers.GATEWAY, (tenant, container) -> {
+            applicationContext.publishEvent(new DataRefreshEvent<>(tenant, container));
+        });
         return context;
+    }
+
+    /**
+     * 插件工厂
+     */
+    @Bean
+    public PlugletFactory plugletFactory(ApplicationContext applicationContext) {
+        var factory = new PlugletFactory();
+        factory.registerBinder(new SpringBeanFieldBinder(applicationContext));
+        factory.registerLifeCycleProcessor(new SpringLifeCycleProcess(applicationContext));
+        return factory;
     }
 }

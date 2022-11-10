@@ -25,8 +25,8 @@
 package central.gateway.core.filter.global.routing;
 
 import central.data.saas.Application;
-import central.gateway.core.GatewayFilter;
-import central.gateway.core.GatewayFilterChain;
+import central.gateway.core.filter.Filter;
+import central.gateway.core.filter.FilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;
 import central.web.XForwardedHeaders;
 import central.starter.web.reactive.extension.ServerWebExchangex;
@@ -62,7 +62,7 @@ import java.util.List;
  */
 @Slf4j
 @ExtensionMethod(ServerWebExchangex.class)
-public class WebSocketRoutingFilter implements GatewayFilter, InitializingBean {
+public class WebSocketRoutingFilter implements Filter, InitializingBean {
     /**
      * Sec-Websocket protocol.
      */
@@ -85,7 +85,7 @@ public class WebSocketRoutingFilter implements GatewayFilter, InitializingBean {
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
         URI targetServer = exchange.getRequiredAttribute(ExchangeAttributes.TARGET_SERVER);
         final Application targetApplication = exchange.getAttribute(ExchangeAttributes.TARGET_APPLICATION);
 

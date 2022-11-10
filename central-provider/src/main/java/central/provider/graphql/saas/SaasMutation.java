@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 /**
  * Tenant Mutation
  * <p>
- * 租户类修改
+ * 租户中心修改
  *
  * @author Alan Yeh
  * @since 2022/10/03

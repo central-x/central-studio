@@ -40,7 +40,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 日志数据
+ * 日志中心数据获取
  *
  * @author Alan Yeh
  * @since 2022/10/25
