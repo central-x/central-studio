@@ -35,7 +35,7 @@ import java.io.Serializable;
  * @author Alan Yeh
  * @since 2022/10/13
  */
-public class DataContainer implements Serializable {
+public abstract class DataContainer implements Serializable {
     @Serial
     private static final long serialVersionUID = 3858239352157731175L;
 
@@ -44,11 +44,4 @@ public class DataContainer implements Serializable {
      */
     @Getter
     private final long timestamp = System.currentTimeMillis();
-
-    /**
-     * 是否过期
-     */
-    public boolean isTimeout(long timeout) {
-        return System.currentTimeMillis() - this.timestamp > timeout;
-    }
 }

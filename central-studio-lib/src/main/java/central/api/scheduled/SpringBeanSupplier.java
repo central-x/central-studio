@@ -29,15 +29,23 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * Spring Provider Supplier
+ * <p>
+ * 用于向 DataFetcher 提供 Bean
  *
  * @author Alan Yeh
  * @since 2022/10/14
  */
 @RequiredArgsConstructor
-public class SpringSupplier implements ProviderSupplier {
+public class SpringBeanSupplier implements BeanSupplier {
 
     private final ApplicationContext applicationContext;
 
+    /**
+     * 获取指定类型的 Bean
+     *
+     * @param provider 类型
+     * @param <T>      类型
+     */
     @Override
     public <T> T get(Class<T> provider) {
         return applicationContext.getBean(provider);

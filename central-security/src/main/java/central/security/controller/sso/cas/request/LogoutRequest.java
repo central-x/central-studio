@@ -26,7 +26,7 @@ package central.security.controller.sso.cas.request;
 
 import central.api.client.security.SessionVerifier;
 import central.api.scheduled.DataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.lang.Stringx;
 import central.net.http.executor.okhttp.OkHttpExecutor;
 import central.net.http.proxy.HttpProxyFactory;
@@ -126,7 +126,7 @@ public class LogoutRequest extends Request {
             var request = (LogoutRequest) exchange.getRequest();
 
             // 验证 service 是否可信
-            var application = this.context.get(DataFetchers.SAAS).getApplications().stream()
+            var application = this.context.getData(DataFetcherType.SAAS).getApplications().stream()
                     .filter(it -> Stringx.addSuffix(request.getParams().getService(), "/").startsWith(Stringx.addSuffix(it.getUrl() + it.getContextPath(), "/")))
                     .findFirst().orElse(null);
             if (application == null) {
@@ -172,7 +172,7 @@ public class LogoutRequest extends Request {
                 // 因此这里使用了线程池去发送注销会话的请求
                 var tickets = this.tickets.getTicketBySession(request.getTenantCode(), sessionJwt);
                 for (var ticket : tickets) {
-                    var app = this.context.get(DataFetchers.SAAS).getApplicationByCode(ticket.getCode());
+                    var app = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(ticket.getCode());
                     if (app == null) {
                         continue;
                     }

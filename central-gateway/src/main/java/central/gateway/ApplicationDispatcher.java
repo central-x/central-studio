@@ -24,7 +24,7 @@
 
 package central.gateway;
 
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.ScheduledDataContext;
 import central.gateway.core.filter.GlobalFilter;
 import central.gateway.core.filter.StandardFilterChain;
@@ -192,7 +192,7 @@ public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordere
             return Mono.error(ex);
         }
 
-        var tenant = this.dataContext.get(DataFetchers.SAAS).getTenantByCode(tenantCode);
+        var tenant = this.dataContext.getData(DataFetcherType.SAAS).getTenantByCode(tenantCode);
         if (tenant == null) {
             log.info("租户[{}]不存在", tenantCode);
             return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("Invalid tenant '{}'", tenantCode)));

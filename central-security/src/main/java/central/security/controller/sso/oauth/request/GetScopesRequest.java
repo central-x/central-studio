@@ -27,7 +27,7 @@ package central.security.controller.sso.oauth.request;
 import central.api.client.security.SessionVerifier;
 import central.api.provider.organization.AccountProvider;
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.data.organization.Account;
 import central.data.saas.Application;
 import central.lang.Stringx;
@@ -120,7 +120,7 @@ public class GetScopesRequest extends Request {
 
             // 组装授权信息
             var account = this.provider.findById(sessionJwt.getSubject());
-            var application = this.context.get(DataFetchers.SAAS).getApplicationByCode(transaction.getClientId());
+            var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(transaction.getClientId());
             var scopes = transaction.getScopes();
 
             var vo = new GetScopeVO();

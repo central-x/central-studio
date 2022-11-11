@@ -25,7 +25,7 @@
 package central.logging.core;
 
 import central.api.scheduled.event.DataRefreshEvent;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.fetcher.log.LogContainer;
 import central.logging.core.collector.DynamicCollector;
 import central.logging.core.filter.DynamicFilter;
@@ -122,7 +122,7 @@ public class Container implements ApplicationContextAware, DisposableBean, Gener
     @Override
     public void onApplicationEvent(@Nonnull ApplicationEvent event) {
         if (event instanceof DataRefreshEvent<?> refreshEvent) {
-            if (!Objects.equals(refreshEvent.getCode(), DataFetchers.LOG.getCode())) {
+            if (!Objects.equals(refreshEvent.getCode(), DataFetcherType.LOG.getCode())) {
                 return;
             }
             var container = (LogContainer) refreshEvent.getContainer();

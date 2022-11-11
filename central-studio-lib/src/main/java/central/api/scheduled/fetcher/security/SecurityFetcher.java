@@ -26,7 +26,7 @@ package central.api.scheduled.fetcher.security;
 
 import central.api.provider.saas.TenantProvider;
 import central.api.provider.security.SecurityStrategyProvider;
-import central.api.scheduled.ProviderSupplier;
+import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.security.SecurityStrategy;
 import lombok.Getter;
@@ -44,19 +44,19 @@ import java.util.List;
  */
 public class SecurityFetcher implements DataFetcher<SecurityContainer> {
     @Setter
-    private ProviderSupplier providerSupplier;
+    private BeanSupplier supplier;
 
     @Getter
-    private final long timeout = Duration.ofSeconds(30).toMillis();
+    private final Duration timeout = Duration.ofSeconds(30);
 
     @Override
     public SecurityContainer get() {
-        if (providerSupplier == null) {
+        if (supplier == null) {
             return new SecurityContainer();
         }
 
-        var tenantProvider = providerSupplier.get(TenantProvider.class);
-        var strategyProvider = providerSupplier.get(SecurityStrategyProvider.class);
+        var tenantProvider = supplier.get(TenantProvider.class);
+        var strategyProvider = supplier.get(SecurityStrategyProvider.class);
 
         // 获取所有租户，然后依次获取该租户下的所有安全策略
         var tenants = tenantProvider.findBy(null, null, null, null);

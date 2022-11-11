@@ -30,7 +30,7 @@ package central.api.scheduled;
  * @author Alan Yeh
  * @since 2022/10/14
  */
-public interface ProviderSupplier {
+public interface BeanSupplier {
     /**
      * 根据 Provider 类型获取实例
      *

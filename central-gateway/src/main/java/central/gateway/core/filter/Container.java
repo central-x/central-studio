@@ -25,7 +25,7 @@
 package central.gateway.core.filter;
 
 import central.api.scheduled.event.DataRefreshEvent;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.fetcher.gateway.GatewayContainer;
 import central.pluglet.PlugletFactory;
 import lombok.Setter;
@@ -96,7 +96,7 @@ public class Container implements DisposableBean, GenericApplicationListener {
     @Override
     public void onApplicationEvent(@Nonnull ApplicationEvent event) {
         if (event instanceof DataRefreshEvent<?> refreshEvent) {
-            if (!Objects.equals(refreshEvent.getCode(), DataFetchers.GATEWAY.getCode())) {
+            if (!Objects.equals(refreshEvent.getCode(), DataFetcherType.GATEWAY.getCode())) {
                 return;
             }
 

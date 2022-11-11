@@ -27,7 +27,7 @@ package central.security.controller.sso.cas.request;
 import central.api.client.security.SessionVerifier;
 import central.api.provider.organization.AccountProvider;
 import central.api.scheduled.DataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.bean.OptionalEnum;
 import central.data.organization.Account;
 import central.lang.Stringx;
@@ -145,7 +145,7 @@ public class ValidateRequest extends Request {
             var request = (ValidateRequest) exchange.getRequest();
 
             // 验证 service 是否可信
-            var application = this.context.get(DataFetchers.SAAS).getApplications().stream()
+            var application = this.context.getData(DataFetcherType.SAAS).getApplications().stream()
                     .filter(it -> Stringx.addSuffix(request.getParams().getService(), "/").startsWith(Stringx.addSuffix(it.getUrl() + it.getContextPath(), "/")))
                     .findFirst().orElse(null);
             if (application == null) {

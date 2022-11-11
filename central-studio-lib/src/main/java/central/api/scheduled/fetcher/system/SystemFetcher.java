@@ -26,7 +26,7 @@ package central.api.scheduled.fetcher.system;
 
 import central.api.provider.system.DictionaryProvider;
 import central.api.provider.saas.TenantProvider;
-import central.api.scheduled.ProviderSupplier;
+import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.system.Dictionary;
 import central.sql.Conditions;
@@ -46,19 +46,19 @@ import java.util.Map;
 public class SystemFetcher implements DataFetcher<SysContainer> {
 
     @Setter
-    private ProviderSupplier providerSupplier;
+    private BeanSupplier supplier;
 
     @Getter
-    private final long timeout = Duration.ofSeconds(30).toMillis();
+    private final Duration timeout = Duration.ofSeconds(30);
 
     @Override
     public SysContainer get() {
-        if (providerSupplier == null) {
+        if (supplier == null) {
             return new SysContainer();
         }
 
-        var tenantProvider = providerSupplier.get(TenantProvider.class);
-        var dictionaryProvider = providerSupplier.get(DictionaryProvider.class);
+        var tenantProvider = supplier.get(TenantProvider.class);
+        var dictionaryProvider = supplier.get(DictionaryProvider.class);
 
         var container = new HashMap<String, Map<String, Map<String, Dictionary>>>();
 

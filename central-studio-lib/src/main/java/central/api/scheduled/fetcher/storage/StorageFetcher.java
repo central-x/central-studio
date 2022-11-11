@@ -26,7 +26,7 @@ package central.api.scheduled.fetcher.storage;
 
 import central.api.provider.storage.StorageBucketProvider;
 import central.api.provider.saas.TenantProvider;
-import central.api.scheduled.ProviderSupplier;
+import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.storage.StorageBucket;
 import lombok.Getter;
@@ -46,19 +46,19 @@ import java.util.Objects;
 public class StorageFetcher implements DataFetcher<StorageContainer> {
 
     @Setter
-    private ProviderSupplier providerSupplier;
+    private BeanSupplier supplier;
 
     @Getter
-    private final long timeout = Duration.ofSeconds(30).toMillis();
+    private final Duration timeout = Duration.ofSeconds(30);
 
     @Override
     public StorageContainer get() {
-        if (providerSupplier == null) {
+        if (supplier == null) {
             return new StorageContainer();
         }
 
-        var tenantProvider = providerSupplier.get(TenantProvider.class);
-        var bucketProvider = providerSupplier.get(StorageBucketProvider.class);
+        var tenantProvider = supplier.get(TenantProvider.class);
+        var bucketProvider = supplier.get(StorageBucketProvider.class);
 
         // 获取所有租户，然后依次获取该租户下的所有存储桶
         var tenants = tenantProvider.findBy(null, null, null, null);

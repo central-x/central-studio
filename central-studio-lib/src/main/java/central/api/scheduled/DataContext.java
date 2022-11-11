@@ -34,7 +34,7 @@ import central.lang.Attribute;
  * @author Alan Yeh
  * @since 2022/11/10
  */
-public interface DataContext extends LifeCycle{
+public interface DataContext extends LifeCycle {
     /**
      * 添加数据获取器
      *
@@ -50,5 +50,5 @@ public interface DataContext extends LifeCycle{
      * @param <T>     数据类型
      * @return 数据容器
      */
-    <T extends DataContainer> T get(Attribute<? extends DataFetcher<T>> fetcher);
+    <T extends DataContainer> T getData(Attribute<? extends DataFetcher<T>> fetcher);
 }

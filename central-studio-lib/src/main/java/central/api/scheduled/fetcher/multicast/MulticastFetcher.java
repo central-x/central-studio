@@ -26,7 +26,7 @@ package central.api.scheduled.fetcher.multicast;
 
 import central.api.provider.multicast.MulticastBroadcasterProvider;
 import central.api.provider.saas.TenantProvider;
-import central.api.scheduled.ProviderSupplier;
+import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.multicast.MulticastBroadcaster;
 import lombok.Getter;
@@ -46,19 +46,19 @@ import java.util.Objects;
 public class MulticastFetcher implements DataFetcher<MulticastContainer> {
 
     @Setter
-    private ProviderSupplier providerSupplier;
+    private BeanSupplier supplier;
 
     @Getter
-    private final long timeout = Duration.ofSeconds(30).toMillis();
+    private final Duration timeout = Duration.ofSeconds(30);
 
     @Override
     public MulticastContainer get() {
-        if (providerSupplier == null) {
+        if (supplier == null) {
             return new MulticastContainer();
         }
 
-        var tenantProvider = providerSupplier.get(TenantProvider.class);
-        var multicastProvider = providerSupplier.get(MulticastBroadcasterProvider.class);
+        var tenantProvider = supplier.get(TenantProvider.class);
+        var multicastProvider = supplier.get(MulticastBroadcasterProvider.class);
 
         // 获取所有租户，然后依次获取该租户下的所有广播器
         var tenants = tenantProvider.findBy(null, null, null, null);

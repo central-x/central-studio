@@ -26,7 +26,7 @@ package central.api.scheduled.fetcher.gateway;
 
 import central.api.provider.gateway.GatewayFilterProvider;
 import central.api.provider.saas.TenantProvider;
-import central.api.scheduled.ProviderSupplier;
+import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.gateway.GatewayFilter;
 import lombok.Getter;
@@ -45,19 +45,19 @@ import java.util.Objects;
  */
 public class GatewayFetcher implements DataFetcher<GatewayContainer> {
     @Setter
-    private ProviderSupplier providerSupplier;
+    private BeanSupplier supplier;
 
     @Getter
-    private final long timeout = Duration.ofSeconds(5).toMillis();
+    private final Duration timeout = Duration.ofSeconds(5);
 
     @Override
     public GatewayContainer get() {
-        if (providerSupplier == null) {
+        if (supplier == null) {
             return new GatewayContainer();
         }
 
-        var tenantProvider = providerSupplier.get(TenantProvider.class);
-        var filterProvider = providerSupplier.get(GatewayFilterProvider.class);
+        var tenantProvider = supplier.get(TenantProvider.class);
+        var filterProvider = supplier.get(GatewayFilterProvider.class);
 
         // 获取所有租户，然后依次获取该租户下的所有过滤器
         var tenants = tenantProvider.findBy(null, null, null, null);

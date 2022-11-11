@@ -25,7 +25,7 @@
 package central.security.controller.sso.oauth.request;
 
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.lang.Stringx;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
@@ -114,7 +114,7 @@ public abstract class ResourceRequest extends Request {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: " + ex.getLocalizedMessage());
             }
 
-            var application = this.context.get(DataFetchers.SAAS).getApplicationByCode(Listx.getFirstOrNull(accessToken.getAudience()));
+            var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(Listx.getFirstOrNull(accessToken.getAudience()));
             if (application == null || !application.getEnabled()) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Invalid client '" + Listx.getFirstOrNull(accessToken.getAudience()) + "'");
             }

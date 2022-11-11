@@ -24,8 +24,9 @@
 
 package central.api.scheduled.fetcher;
 
-import central.api.scheduled.ProviderSupplier;
+import central.api.scheduled.BeanSupplier;
 
+import java.time.Duration;
 import java.util.function.Supplier;
 
 /**
@@ -40,10 +41,10 @@ public interface DataFetcher<T> extends Supplier<T> {
      * 设置 Provider Supplier
      * 在设置了 supplier 之后，才可以正常获取数据
      */
-    void setProviderSupplier(ProviderSupplier supplier);
+    void setSupplier(BeanSupplier supplier);
 
     /**
      * 获取数据超时时间
      */
-    long getTimeout();
+    Duration getTimeout();
 }

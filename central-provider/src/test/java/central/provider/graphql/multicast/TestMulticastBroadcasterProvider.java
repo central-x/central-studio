@@ -26,7 +26,7 @@ package central.provider.graphql.multicast;
 
 import central.api.provider.multicast.MulticastBroadcasterProvider;
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.fetcher.saas.SaasContainer;
 import central.data.multicast.MulticastBroadcaster;
 import central.data.multicast.MulticastBroadcasterInput;
@@ -107,7 +107,7 @@ public class TestMulticastBroadcasterProvider {
             SaasContainer container = null;
             while (container == null || container.getApplications().isEmpty()) {
                 Thread.sleep(100);
-                container = context.get(DataFetchers.SAAS);
+                container = context.getData(DataFetcherType.SAAS);
             }
         }
     }

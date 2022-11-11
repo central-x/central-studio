@@ -26,9 +26,9 @@ package central.logging;
 
 import central.api.scheduled.DataContext;
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.SpringSupplier;
+import central.api.scheduled.SpringBeanSupplier;
 import central.api.scheduled.event.DataRefreshEvent;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.net.http.executor.okhttp.OkHttpExecutor;
 import central.net.http.processor.impl.SetHeaderProcessor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
@@ -104,10 +104,13 @@ public class ApplicationConfiguration {
      */
     @Bean(initMethod = "initialized", destroyMethod = "destroy")
     public DataContext dataContext(ApplicationContext applicationContext) {
-        var context = new ScheduledDataContext(5000, new SpringSupplier(applicationContext));
-        context.addFetcher(DataFetchers.SAAS);
-        context.addFetcher(DataFetchers.LOG, (tenant, container) -> {
-            applicationContext.publishEvent(new DataRefreshEvent<>(tenant, container));
+        var context = new ScheduledDataContext(new SpringBeanSupplier(applicationContext));
+        context.addFetcher(DataFetcherType.SAAS);
+        context.addFetcher(DataFetcherType.LOG);
+        context.addObserver(event -> {
+            if (event instanceof ScheduledDataContext.DataRefreshedEvent refreshed) {
+                applicationContext.publishEvent(new DataRefreshEvent<>(refreshed.getFetcher().getCode(), refreshed.getContainer()));
+            }
         });
         return context;
     }

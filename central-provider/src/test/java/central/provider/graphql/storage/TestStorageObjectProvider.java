@@ -26,7 +26,7 @@ package central.provider.graphql.storage;
 
 import central.api.provider.storage.StorageObjectProvider;
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.fetcher.saas.SaasContainer;
 import central.data.storage.StorageObject;
 import central.data.storage.StorageObjectInput;
@@ -115,7 +115,7 @@ public class TestStorageObjectProvider {
             SaasContainer container = null;
             while (container == null || container.getApplications().isEmpty()) {
                 Thread.sleep(100);
-                container = context.get(DataFetchers.SAAS);
+                container = context.getData(DataFetcherType.SAAS);
             }
         }
     }

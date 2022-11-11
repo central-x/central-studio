@@ -26,7 +26,7 @@ package central.security.controller.sso.oauth.request;
 
 import central.api.client.security.SessionVerifier;
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.lang.Arrayx;
 import central.lang.Stringx;
 import central.security.Digestx;
@@ -183,7 +183,7 @@ public class AuthorizeRequest extends Request {
             var request = (AuthorizeRequest) exchange.getRequest();
 
 
-            var application = this.context.get(DataFetchers.SAAS).getApplicationByCode(request.getParams().getClientId());
+            var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(request.getParams().getClientId());
             if (application == null) {
                 // 此应用不是已登记的应用
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用标识[client_id]无效");

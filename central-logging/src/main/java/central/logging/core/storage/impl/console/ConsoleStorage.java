@@ -37,6 +37,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.ExecutorService;
@@ -109,7 +110,7 @@ public class ConsoleStorage implements Storage, InitializingBean, DisposableBean
             output.append("\033[0;36m").append(input.getLocation()).append("\033[0m:\n");
             output.append(input.getContent()).append("\n");
 
-            queue.add(new DelayedElement<>(output.toString(), Math.max(input.getTimestamp().getTime() + 3000 - System.currentTimeMillis(), 0)));
+            queue.add(new DelayedElement<>(output.toString(), Duration.ofMillis(Math.max(input.getTimestamp().getTime() + 3000 - System.currentTimeMillis(), 0))));
         }
     }
 

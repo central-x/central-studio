@@ -26,7 +26,7 @@ package central.api.scheduled.fetcher.saas;
 
 import central.api.provider.saas.ApplicationProvider;
 import central.api.provider.saas.TenantProvider;
-import central.api.scheduled.ProviderSupplier;
+import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,21 +42,21 @@ import java.time.Duration;
 public class SaasFetcher implements DataFetcher<SaasContainer> {
 
     @Setter
-    private ProviderSupplier providerSupplier;
+    private BeanSupplier supplier;
 
     @Getter
-    private final long timeout = Duration.ofSeconds(5).toMillis();
+    private final Duration timeout = Duration.ofSeconds(5);
 
     @Override
     public SaasContainer get() {
-        if (providerSupplier == null){
+        if (supplier == null){
             return new SaasContainer();
         }
 
-        var tenantProvider = this.providerSupplier.get(TenantProvider.class);
+        var tenantProvider = this.supplier.get(TenantProvider.class);
         var tenants = tenantProvider.findBy(null, null, null, null);
 
-        var applicationProvider = this.providerSupplier.get(ApplicationProvider.class);
+        var applicationProvider = this.supplier.get(ApplicationProvider.class);
         var applications = applicationProvider.findBy(null, null, null, null);
 
         return new SaasContainer(tenants, applications);

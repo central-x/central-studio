@@ -27,7 +27,7 @@ package central.api.scheduled.fetcher.log;
 import central.api.provider.log.LogCollectorProvider;
 import central.api.provider.log.LogFilterProvider;
 import central.api.provider.log.LogStorageProvider;
-import central.api.scheduled.ProviderSupplier;
+import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.log.LogCollector;
 import central.data.log.LogFilter;
@@ -48,29 +48,29 @@ import java.util.stream.Collectors;
 public class LogFetcher implements DataFetcher<LogContainer> {
 
     @Setter
-    private ProviderSupplier providerSupplier;
+    private BeanSupplier supplier;
 
     @Getter
-    private final long timeout = Duration.ofSeconds(5).toMillis();
+    private final Duration timeout = Duration.ofSeconds(5);
 
     @Override
     public LogContainer get() {
-        if (providerSupplier == null) {
+        if (supplier == null) {
             return new LogContainer();
         }
 
         // 获取采集器数据
-        var collectorProvider = providerSupplier.get(LogCollectorProvider.class);
+        var collectorProvider = supplier.get(LogCollectorProvider.class);
         var collectorData = collectorProvider.findBy(null, null, null, null);
         var collectors = collectorData.stream().collect(Collectors.toMap(LogCollector::getId, Function.identity()));
 
         // 获取过滤器数据
-        var filterProvider = providerSupplier.get(LogFilterProvider.class);
+        var filterProvider = supplier.get(LogFilterProvider.class);
         var filterData = filterProvider.findBy(null, null, null, null);
         var filters = filterData.stream().collect(Collectors.toMap(LogFilter::getId, Function.identity()));
 
         // 获取存储器数据
-        var storageProvider = providerSupplier.get(LogStorageProvider.class);
+        var storageProvider = supplier.get(LogStorageProvider.class);
         var storageData = storageProvider.findBy(null, null, null, null);
         var storages = storageData.stream().collect(Collectors.toMap(LogStorage::getId, Function.identity()));
 

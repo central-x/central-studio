@@ -25,7 +25,7 @@
 package central.api.scheduled.event;
 
 import central.api.scheduled.DataContainer;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.lang.Attribute;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
@@ -45,7 +45,7 @@ public class DataRefreshEvent<T extends DataContainer> extends ApplicationEvent 
     /**
      * 数据标识
      *
-     * @see DataFetchers
+     * @see DataFetcherType
      * @see Attribute#getCode
      */
     public String getCode() {

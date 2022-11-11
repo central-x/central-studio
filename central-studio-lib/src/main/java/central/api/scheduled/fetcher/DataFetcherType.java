@@ -46,33 +46,33 @@ import central.lang.Attribute;
  * @author Alan Yeh
  * @since 2022/10/13
  */
-public interface DataFetchers {
+public interface DataFetcherType {
     /**
      * 租户类数据
      */
-    Attribute<DataFetcher<SaasContainer>> SAAS = Attribute.of(DataFetchers.class.getName() + ".saas", SaasFetcher::new);
+    Attribute<DataFetcher<SaasContainer>> SAAS = Attribute.of("fetcher.saas", SaasFetcher::new);
     /**
      * 系统类数据
      */
-    Attribute<DataFetcher<SysContainer>> SYSTEM = Attribute.of(DataFetchers.class.getName() + ".system", SystemFetcher::new);
+    Attribute<DataFetcher<SysContainer>> SYSTEM = Attribute.of("fetcher.system", SystemFetcher::new);
     /**
      * 日志类数据
      */
-    Attribute<DataFetcher<LogContainer>> LOG = Attribute.of(DataFetchers.class.getName() + ".log", LogFetcher::new);
+    Attribute<DataFetcher<LogContainer>> LOG = Attribute.of("fetcher.log", LogFetcher::new);
     /**
      * 存储中心数据
      */
-    Attribute<DataFetcher<StorageContainer>> STORAGE = Attribute.of(DataFetchers.class.getName() + ".storage", StorageFetcher::new);
+    Attribute<DataFetcher<StorageContainer>> STORAGE = Attribute.of("fetcher.storage", StorageFetcher::new);
     /**
      * 广播中心数据
      */
-    Attribute<DataFetcher<MulticastContainer>> MULTICAST = Attribute.of(DataFetchers.class.getName() + ".multicast", MulticastFetcher::new);
+    Attribute<DataFetcher<MulticastContainer>> MULTICAST = Attribute.of("fetcher.multicast", MulticastFetcher::new);
     /**
      * 认证中心数据
      */
-    Attribute<DataFetcher<SecurityContainer>> SECURITY = Attribute.of(DataFetchers.class.getName() + ".security", SecurityFetcher::new);
+    Attribute<DataFetcher<SecurityContainer>> SECURITY = Attribute.of("fetcher.security", SecurityFetcher::new);
     /**
      * 网关中心数据
      */
-    Attribute<DataFetcher<GatewayContainer>> GATEWAY = Attribute.of(DataFetchers.class.getName() + ".gateway", GatewayFetcher::new);
+    Attribute<DataFetcher<GatewayContainer>> GATEWAY = Attribute.of("fetcher.gateway", GatewayFetcher::new);
 }

@@ -25,18 +25,23 @@
 package central.api.scheduled;
 
 import central.api.scheduled.fetcher.DataFetcher;
-import central.api.scheduled.fetcher.saas.SaasContainer;
 import central.lang.Attribute;
 import central.lang.Stringx;
+import central.util.ObserveEvent;
+import central.util.Observable;
+import central.util.ObservableList;
+import central.util.ObservableMap;
+import central.util.concurrent.DelayedElement;
+import central.util.concurrent.DelayedQueue;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
+import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 定期刷新的数据
@@ -44,38 +49,63 @@ import java.util.concurrent.TimeUnit;
  * @author Alan Yeh
  * @since 2022/10/13
  */
-public class ScheduledDataContext implements DataContext {
-    private ScheduledExecutorService scheduled;
+public class ScheduledDataContext extends Observable<ScheduledDataContext> implements DataContext {
+    /**
+     * 数据刷新事件
+     */
+    @Getter
+    @RequiredArgsConstructor
+    public static class DataRefreshedEvent implements ObserveEvent<ScheduledDataContext> {
+        private final ScheduledDataContext observable;
 
-    private final Map<String, DataFetcher<? extends DataContainer>> dataFetcher = new ConcurrentHashMap<>();
-    private final Map<String, DataListener> dataListener = new ConcurrentHashMap<>();
-    private final Map<String, DataContainer> data = new ConcurrentHashMap<>();
+        /**
+         * 刷新数据的 Fetcher
+         */
+        private final Attribute<? extends DataFetcher<?>> fetcher;
 
-    private final int delay;
+        /**
+         * 刷新的数据
+         */
+        private final DataContainer container;
 
-    private final ProviderSupplier supplier;
+        public static DataRefreshedEvent of(ScheduledDataContext context, Attribute<? extends DataFetcher<?>> fetcher, DataContainer container) {
+            return new DataRefreshedEvent(context, fetcher, container);
+        }
+    }
+
+    private ExecutorService service;
+
+    /**
+     * 数据获取器
+     */
+    private final ObservableList<Attribute<? extends DataFetcher<?>>> fetchers = new ObservableList<>();
+
+    /**
+     * 数据容器
+     */
+    private final Map<String, DataContainer> data = new ObservableMap<>(new ConcurrentHashMap<>());
+
+    /**
+     * Bean 获取器
+     */
+    private final BeanSupplier supplier;
 
     /**
      * 创建定时刷新数据容器
      *
-     * @param delay    刷新检查频率
-     * @param supplier 类型获取器
+     * @param supplier 类型获取器，用于给数据获取器获取组件
      */
-    public ScheduledDataContext(int delay, ProviderSupplier supplier) {
-        this.delay = delay;
+    public ScheduledDataContext(BeanSupplier supplier) {
         this.supplier = supplier;
-    }
-
-    @Override
-    public void initialized() {
-        scheduled = Executors.newSingleThreadScheduledExecutor(new CustomizableThreadFactory("central-data-fetcher"));
-        scheduled.scheduleWithFixedDelay(new ScheduledFetcher(this.dataFetcher, this.dataListener, this.data, this.supplier), this.delay, this.delay, TimeUnit.MILLISECONDS);
+        service = Executors.newFixedThreadPool(1, new CustomizableThreadFactory("central-data-fetcher"));
+        service.submit(new ScheduledFetcher(this, this.fetchers));
     }
 
     @Override
     public void destroy() {
-        scheduled.shutdownNow();
-        scheduled = null;
+        // 销毁线程
+        service.shutdownNow();
+        service = null;
     }
 
     /**
@@ -85,25 +115,10 @@ public class ScheduledDataContext implements DataContext {
      * @param <T>     数据类型
      */
     public <T extends DataContainer> void addFetcher(Attribute<? extends DataFetcher<T>> fetcher) {
-        if (this.dataFetcher.containsKey(fetcher.getCode())) {
+        if (this.fetchers.contains(fetcher)) {
             throw new IllegalStateException(Stringx.format("数据任务[{}]冲突", fetcher.getCode()));
         }
-        this.dataFetcher.put(fetcher.getCode(), fetcher.requireValue());
-    }
-
-    /**
-     * 添加定期获取数据任务，并监听数据变化
-     *
-     * @param fetcher  数据获取器
-     * @param listener 数据监听器
-     * @param <T>      数据类型
-     */
-    public <T extends DataContainer> void addFetcher(Attribute<? extends DataFetcher<T>> fetcher, DataListener<T> listener) {
-        if (this.dataFetcher.containsKey(fetcher.getCode())) {
-            throw new IllegalStateException(Stringx.format("数据任务[{}]冲突", fetcher.getCode()));
-        }
-        this.dataFetcher.put(fetcher.getCode(), fetcher.requireValue());
-        this.dataListener.put(fetcher.getCode(), listener);
+        this.fetchers.add(fetcher);
     }
 
     /**
@@ -113,8 +128,7 @@ public class ScheduledDataContext implements DataContext {
      * @param <T>     数据类型
      */
     public <T extends DataContainer> void removeFetcher(Attribute<? extends DataFetcher<T>> fetcher) {
-        this.dataFetcher.remove(fetcher.getCode());
-        this.dataListener.remove(fetcher.getCode());
+        this.fetchers.remove(fetcher);
     }
 
     /**
@@ -124,7 +138,7 @@ public class ScheduledDataContext implements DataContext {
      * @param <T>     数据类型
      * @return 数据
      */
-    public <T extends DataContainer> T get(Attribute<? extends DataFetcher<T>> fetcher) {
+    public <T extends DataContainer> T getData(Attribute<? extends DataFetcher<T>> fetcher) {
         return (T) this.data.get(fetcher.getCode());
     }
 
@@ -132,37 +146,63 @@ public class ScheduledDataContext implements DataContext {
      * 定期刷新数据
      */
     @Slf4j
-    @RequiredArgsConstructor
     private static class ScheduledFetcher implements Runnable {
-        private final Map<String, DataFetcher<? extends DataContainer>> fetcher;
-        private final Map<String, DataListener> listener;
-        private final Map<String, DataContainer> data;
-        private final ProviderSupplier supplier;
+        // 延迟队列，把 DataFetcher 放到这个队列里，就不需要通过循环来检测下一次更新数据的时间了
+        private final DelayedQueue<DelayedElement<Attribute<? extends DataFetcher<?>>>> queue = new DelayedQueue<>();
+        private final ScheduledDataContext context;
+        private final ObservableList<Attribute<? extends DataFetcher<?>>> fetchers;
+
+        public ScheduledFetcher(ScheduledDataContext context, ObservableList<Attribute<? extends DataFetcher<?>>> fetchers) {
+            this.context = context;
+            this.fetchers = fetchers;
+
+            fetchers.addObserver(event -> {
+                if (event instanceof ObservableList.ElementAdded<Attribute<? extends DataFetcher<?>>> added) {
+                    for (var newFetcher : added.getElements()) {
+                        this.queue.offer(new DelayedElement<>(newFetcher, Duration.ZERO));
+                    }
+                }
+            });
+        }
 
         @Override
+        @SneakyThrows
         public void run() {
-            var keys = fetcher.keySet();
-            for (var it : keys) {
-                try {
-                    data.compute(it, (key, container) -> {
-                        var fetcher = this.fetcher.get(key);
-                        if (fetcher == null) {
-                            return new SaasContainer();
-                        } else if (container == null || container.isTimeout(fetcher.getTimeout())) {
-                            fetcher.setProviderSupplier(supplier);
-                            var data = fetcher.get();
-                            var listener = this.listener.get(key);
-                            if (listener != null) {
-                                listener.refresh(key, data);
-                            }
-                            return data;
-                        } else {
-                            return container;
+            try {
+                while (true) {
+                    var element = queue.take();
+                    var attribute = element.getElement();
+                    // 当前数据获取器已经不再包含的话，就不再获取数据了
+                    // 由于没有重新加入 queue 队列，因此相当于移除了
+                    if (!this.fetchers.contains(attribute)) {
+                        if (attribute != null) {
+                            // 数据已过期，移除
+                            this.context.data.remove(attribute.getCode());
                         }
-                    });
-                } catch (Throwable throwable) {
-                    log.error("刷新数据出现异常: " + throwable.getLocalizedMessage(), throwable);
+                        continue;
+                    }
+
+                    try {
+                        this.context.data.compute(attribute.getCode(), (key, container) -> {
+                            var fetcher = attribute.requireValue();
+
+                            // 重新添加到队列里，这样就可以周期性执行获取数据的逻辑了
+                            queue.add(new DelayedElement<>(attribute, fetcher.getTimeout()));
+
+                            // 获取新数据
+                            fetcher.setSupplier(this.context.supplier);
+                            var data = (DataContainer) fetcher.get();
+
+                            // 通知观查者数据已变更
+                            this.context.notifyObservers(DataRefreshedEvent.of(context, attribute, data));
+                            return data;
+                        });
+                    } catch (Throwable throwable) {
+                        log.error("刷新数据出现异常: " + throwable.getLocalizedMessage(), throwable);
+                    }
                 }
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }
     }

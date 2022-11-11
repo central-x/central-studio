@@ -25,10 +25,9 @@
 package central.provider.graphql.storage.dto;
 
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.data.saas.Application;
 import central.provider.graphql.organization.dto.AccountDTO;
-import central.provider.graphql.saas.dto.ApplicationDTO;
 import central.provider.graphql.storage.entity.StorageBucketEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
@@ -58,7 +57,7 @@ public class StorageBucketDTO extends StorageBucketEntity {
      */
     @GraphQLGetter
     public Application getApplication(@Autowired ScheduledDataContext context) {
-        var container = context.get(DataFetchers.SAAS);
+        var container = context.getData(DataFetcherType.SAAS);
         if (container == null) {
             return null;
         }

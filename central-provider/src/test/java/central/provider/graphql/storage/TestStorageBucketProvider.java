@@ -26,7 +26,7 @@ package central.provider.graphql.storage;
 
 import central.api.provider.storage.StorageBucketProvider;
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.fetcher.saas.SaasContainer;
 import central.data.storage.StorageBucket;
 import central.data.storage.StorageBucketInput;
@@ -44,7 +44,6 @@ import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +110,7 @@ public class TestStorageBucketProvider {
             SaasContainer container = null;
             while (container == null || container.getApplications().isEmpty()) {
                 Thread.sleep(100);
-                container = context.get(DataFetchers.SAAS);
+                container = context.getData(DataFetcherType.SAAS);
             }
         }
     }

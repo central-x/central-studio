@@ -26,7 +26,7 @@ package central.security.controller.sso.oauth.request;
 
 import central.api.client.security.SessionClaims;
 import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetchers;
+import central.api.scheduled.fetcher.DataFetcherType;
 import central.data.saas.Application;
 import central.security.controller.sso.oauth.OAuthController;
 import central.security.controller.sso.oauth.option.GrantScope;
@@ -183,7 +183,7 @@ public class AccessTokenRequest extends Request {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权码[code]与应用标识[client_id]不符");
             }
 
-            var application = this.context.get(DataFetchers.SAAS).getApplicationByCode(code.getClientId());
+            var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(code.getClientId());
             if (application == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用标识[client_id]无效");
             }
