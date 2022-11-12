@@ -53,7 +53,7 @@ import java.util.Properties;
  */
 public class SmtpBroadcaster implements Broadcaster<MailBody>, InitializingBean {
 
-    @Control(label = "说明", type = ControlType.LABEl, required = false, defaultValue = "　　通过 SMTP 协议发送邮件。")
+    @Control(label = "说明", type = ControlType.LABEL, required = false, defaultValue = "　　通过 SMTP 协议发送邮件。")
     private String label;
 
     @Label("服务器地址")

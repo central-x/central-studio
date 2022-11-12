@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  */
 public class PasswordStrategy implements Strategy, InitializingBean {
 
-    @Control(label = "说明", type = ControlType.LABEl, defaultValue = "　　本策略用于控制用户的密码规则。")
+    @Control(label = "说明", type = ControlType.LABEL, defaultValue = "　　本策略用于控制用户的密码规则。")
     private String label;
 
     @Label("最小长度")

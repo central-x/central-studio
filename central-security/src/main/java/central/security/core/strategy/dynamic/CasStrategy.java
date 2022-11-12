@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class CasStrategy implements Strategy {
 
-    @Control(label = "说明", type = ControlType.LABEl,
+    @Control(label = "说明", type = ControlType.LABEL,
             defaultValue = "　　本策略用于控制中央认证服务（CAS）运行策略。统一认证的相关规则。")
     private String label;
 

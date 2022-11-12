@@ -26,41 +26,51 @@ package central.gateway.core.filter.impl;
 
 import central.gateway.core.filter.Filter;
 import central.gateway.core.filter.FilterChain;
+import central.lang.Stringx;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Setter;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+
 /**
- * 添加请求头
+ * 设置请求参数
  *
  * @author Alan Yeh
- * @since 2022/11/08
+ * @since 2022/11/12
  */
-public class AddRequestHeaderFilter implements Filter {
+public class SetRequestParameterFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,
-            defaultValue = "　　本过滤器用于添加用户自定义的请求头到当前请求中。如果有重名的请求头不会覆盖。")
+            defaultValue = "　　本过滤器用于设置用户自定义的 URL 参数到当前请求中。如果有重名的参数，将会覆盖原有的参数。")
     private String label;
 
     @Setter
-    @Label("请求头名")
+    @Label("参数名")
     @NotBlank
-    @Control(label = "请求头名")
+    @Size(min = 1, max = 50)
+    @Control(label = "参数名")
     private String name;
 
     @Setter
-    @Label("请求头值")
+    @Label("参数值")
     @NotBlank
-    @Control(label = "请求头值", comment = "支持模板语法")
+    @Size(min = 1, max = 4096)
+    @Control(label = "参数值")
     private String value;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
-        var request = exchange.getRequest().mutate().header(this.name, this.value).build();
-        return chain.filter(exchange.mutate().request(request).build());
+        var uri = UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
+                .replaceQueryParam(Stringx.encodeUrl(this.name), Stringx.encodeUrl(this.value))
+                .build().toString();
+
+        return chain.filter(exchange.mutate().request(exchange.getRequest().mutate().uri(URI.create(uri)).build()).build());
     }
 }

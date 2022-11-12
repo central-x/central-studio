@@ -26,41 +26,50 @@ package central.gateway.core.filter.impl;
 
 import central.gateway.core.filter.Filter;
 import central.gateway.core.filter.FilterChain;
+import central.lang.Arrayx;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
-import central.validation.Label;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+import java.util.stream.Collectors;
+
 /**
- * 添加请求头
+ * 移除路径前缀
  *
  * @author Alan Yeh
- * @since 2022/11/08
+ * @since 2022/11/12
  */
-public class AddRequestHeaderFilter implements Filter {
+public class StripPrefixFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,
-            defaultValue = "　　本过滤器用于添加用户自定义的请求头到当前请求中。如果有重名的请求头不会覆盖。")
+            defaultValue = "　　本过滤器用于移除当前请求的 URL 的路径前缀。移除路径后，会影响后续的网关断言结果。")
     private String label;
 
     @Setter
-    @Label("请求头名")
-    @NotBlank
-    @Control(label = "请求头名")
-    private String name;
-
-    @Setter
-    @Label("请求头值")
-    @NotBlank
-    @Control(label = "请求头值", comment = "支持模板语法")
-    private String value;
+    @NotNull(message = "parts 必须不为空")
+    @Min(value = 1, message = "parts 必须大于0")
+    @Control(label = "parts", type = ControlType.NUMBER, defaultValue = "1", comment = "移除前缀的前几部份")
+    private Integer parts;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
-        var request = exchange.getRequest().mutate().header(this.name, this.value).build();
-        return chain.filter(exchange.mutate().request(request).build());
+        var newPath = Arrayx.asStream(StringUtils.tokenizeToStringArray(exchange.getRequest().getURI().getRawPath(), "/"))
+                .skip(this.parts).collect(Collectors.joining("/"));
+        if (exchange.getRequest().getURI().getRawPath().endsWith("/")) {
+            newPath += "/";
+        }
+
+        var uri = UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
+                .replacePath(newPath)
+                .build().toString();
+
+        return chain.filter(exchange.mutate().request(exchange.getRequest().mutate().uri(URI.create(uri)).build()).build());
     }
 }

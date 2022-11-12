@@ -51,7 +51,7 @@ import java.util.List;
  */
 public class OAuthStrategy implements Strategy {
 
-    @Control(label = "说明", type = ControlType.LABEl,
+    @Control(label = "说明", type = ControlType.LABEL,
             defaultValue = "　　本策略用于 OAuth 2.0 认证服务。认证中心实现了 OAuth 2.0 标准里面的授权码（Authorization Code）模式。")
     private String label;
 

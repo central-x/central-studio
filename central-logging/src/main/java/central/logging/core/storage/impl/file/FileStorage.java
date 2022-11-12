@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class FileStorage implements Storage, InitializingBean, DisposableBean {
 
-    @Control(label = "说明", type = ControlType.LABEl, defaultValue = """
+    @Control(label = "说明", type = ControlType.LABEL, defaultValue = """
             本存储器会将日志保存到指定的文件路径中。""")
     private String label;
 

@@ -52,7 +52,7 @@ import org.springframework.web.server.ResponseStatusException;
  */
 public class CaptchaStrategy implements Strategy {
 
-    @Control(label = "说明", type = ControlType.LABEl, defaultValue = "　　本策略用于控制登录时的验证码和策略")
+    @Control(label = "说明", type = ControlType.LABEL, defaultValue = "　　本策略用于控制登录时的验证码和策略")
     private String label;
 
     @Label("启用")

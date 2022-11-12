@@ -45,7 +45,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @since 2022/11/06
  */
 public class SessionCookieStrategy implements Strategy, InitializingBean {
-    @Control(label = "说明", type = ControlType.LABEl, defaultValue = "　　本策略用于控制会话的 Cookie 生成规则。")
+    @Control(label = "说明", type = ControlType.LABEL, defaultValue = "　　本策略用于控制会话的 Cookie 生成规则。")
     private String label;
 
     @Label("Cookie")

@@ -51,7 +51,7 @@ import java.util.concurrent.Executors;
  */
 public class ConsoleStorage implements Storage, InitializingBean, DisposableBean {
 
-    @Control(label = "说明", type = ControlType.LABEl, defaultValue = "　　本存储器不保存日志，主要用于在控制台实时监控日志。")
+    @Control(label = "说明", type = ControlType.LABEL, defaultValue = "　　本存储器不保存日志，主要用于在控制台实时监控日志。")
     private String label;
 
     private final ThreadLocal<SimpleDateFormat> formatter = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));

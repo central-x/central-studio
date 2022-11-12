@@ -34,33 +34,39 @@ import lombok.Setter;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+
 /**
- * 添加请求头
+ * 移除响应头
  *
  * @author Alan Yeh
- * @since 2022/11/08
+ * @since 2022/11/12
  */
-public class AddRequestHeaderFilter implements Filter {
+public class RemoveResponseHeaderFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,
-            defaultValue = "　　本过滤器用于添加用户自定义的请求头到当前请求中。如果有重名的请求头不会覆盖。")
+            defaultValue = "　　本过滤器用于移除用户指定的请求头。移除请求头后，可能会影响后续网关插件的断言结果。")
     private String label;
 
     @Setter
-    @Label("请求头名")
+    @Label("响应头名")
     @NotBlank
-    @Control(label = "请求头名")
-    private String name;
-
-    @Setter
-    @Label("请求头值")
-    @NotBlank
-    @Control(label = "请求头值", comment = "支持模板语法")
-    private String value;
+    @Control(label = "响应头名", comment = "待移除的请求头名称，通过 String::match 进行匹配")
+    private String regexp;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
-        var request = exchange.getRequest().mutate().header(this.name, this.value).build();
-        return chain.filter(exchange.mutate().request(request).build());
+        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+            var names = new ArrayList<String>();
+            for (var name : exchange.getResponse().getHeaders().keySet()) {
+                if (name.toLowerCase().matches(this.regexp)) {
+                    names.add(name);
+                }
+            }
+
+            if (!names.isEmpty()) {
+                names.forEach(exchange.getResponse().getHeaders()::remove);
+            }
+        }));
     }
 }

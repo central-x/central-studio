@@ -32,35 +32,49 @@ import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Setter;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+import java.util.ArrayList;
+
 /**
- * 添加请求头
+ * 移除请求参数
  *
  * @author Alan Yeh
- * @since 2022/11/08
+ * @since 2022/11/12
  */
-public class AddRequestHeaderFilter implements Filter {
+public class RemoveRequestParameterFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,
-            defaultValue = "　　本过滤器用于添加用户自定义的请求头到当前请求中。如果有重名的请求头不会覆盖。")
+            defaultValue = "　　本过滤器用于移除用户指定的请求参数。移除请求参数后，可能会影响后续网关插件的断言结果。")
     private String label;
 
     @Setter
-    @Label("请求头名")
+    @Label("参数名")
     @NotBlank
-    @Control(label = "请求头名")
-    private String name;
-
-    @Setter
-    @Label("请求头值")
-    @NotBlank
-    @Control(label = "请求头值", comment = "支持模板语法")
-    private String value;
+    @Control(label = "参数名", comment = "待移除的参数名，通过 String::match 进行匹配")
+    private String regexp;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {
-        var request = exchange.getRequest().mutate().header(this.name, this.value).build();
-        return chain.filter(exchange.mutate().request(request).build());
+        var components = UriComponentsBuilder.fromUri(exchange.getRequest().getURI()).build();
+
+        var names = new ArrayList<String>();
+        for (var name : components.getQueryParams().keySet()) {
+            if (name.matches(this.regexp)) {
+                names.add(name);
+            }
+        }
+
+        if (names.isEmpty()) {
+            return chain.filter(exchange);
+        } else {
+            var builder = UriComponentsBuilder.fromUri(exchange.getRequest().getURI());
+
+            names.forEach(builder::replaceQuery);
+
+            return chain.filter(exchange.mutate().request(exchange.getRequest().mutate().uri(URI.create(builder.build().toString())).build()).build());
+        }
     }
 }

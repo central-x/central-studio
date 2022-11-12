@@ -46,7 +46,7 @@ import java.io.IOException;
  */
 public class LocalBucket implements Bucket, InitializingBean {
 
-    @Control(label = "说明", type = ControlType.LABEl, required = false, defaultValue = "将对象保存到本地磁盘中。")
+    @Control(label = "说明", type = ControlType.LABEL, required = false, defaultValue = "将对象保存到本地磁盘中。")
     private String label;
 
     @Control(label = "保存位置", comment = "文件保存路径，可以使用相对路径")
