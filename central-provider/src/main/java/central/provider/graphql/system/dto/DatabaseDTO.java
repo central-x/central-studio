@@ -25,15 +25,21 @@
 package central.provider.graphql.system.dto;
 
 import central.api.DTO;
+import central.data.system.DatabaseProperties;
+import central.lang.Stringx;
+import central.lang.reflect.TypeReference;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.provider.graphql.system.entity.DatabaseEntity;
 import central.provider.graphql.saas.dto.ApplicationDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.util.Jsonx;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -54,6 +60,26 @@ public class DatabaseDTO extends DatabaseEntity implements DTO {
     @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
+    }
+
+    /**
+     * 获取主数据库属性
+     */
+    @GraphQLGetter
+    public DatabaseProperties getMaster() {
+        return Jsonx.Default().deserialize(this.getMasterJson(), DatabaseProperties.class);
+    }
+
+    /**
+     * 获取从数据库属性
+     */
+    @GraphQLGetter
+    public List<DatabaseProperties> getSlaves() {
+        if (Stringx.isNullOrBlank(this.getSlavesJson())) {
+            return Collections.emptyList();
+        } else {
+            return Jsonx.Default().deserialize(this.getSlavesJson(), TypeReference.ofList(DatabaseProperties.class));
+        }
     }
 
     /**

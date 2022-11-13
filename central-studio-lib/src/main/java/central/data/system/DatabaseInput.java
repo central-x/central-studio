@@ -27,11 +27,14 @@ package central.data.system;
 import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import javax.annotation.Nonnull;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 数据库输入
@@ -87,4 +90,18 @@ public class DatabaseInput implements Serializable {
     @Label("备注")
     @Size(max = 1024)
     private String remark;
+
+    @Label("主数据库")
+    @NotNull
+    @Valid
+    private DatabasePropertiesInput master;
+
+    @Label("从数据库")
+    @Valid
+    private List<DatabasePropertiesInput> slaves;
+
+    @Label("初始化参数")
+    @NotBlank
+    @Size(min = 1, max = 5 * 1024 * 1024)
+    private String params;
 }

@@ -20,6 +20,19 @@ query DatabaseProvider($id: String) {
                 type
                 enabled
                 remark
+                master {
+                    driver
+                    url
+                    username
+                    password
+                }
+                slaves {
+                    driver
+                    url
+                    username
+                    password
+                }
+                params
 
                 creatorId
                 createDate
@@ -64,6 +77,19 @@ query DatabaseProvider($ids: [String]) {
                 type
                 enabled
                 remark
+                master {
+                    driver
+                    url
+                    username
+                    password
+                }
+                slaves {
+                    driver
+                    url
+                    username
+                    password
+                }
+                params
 
                 creatorId
                 createDate
@@ -108,6 +134,19 @@ query DatabaseProvider($limit: Long, $offset: Long, $conditions: [ConditionInput
                 type
                 enabled
                 remark
+                master {
+                    driver
+                    url
+                    username
+                    password
+                }
+                slaves {
+                    driver
+                    url
+                    username
+                    password
+                }
+                params
 
                 creatorId
                 createDate
@@ -160,6 +199,19 @@ query DatabaseProvider($pageIndex: Long, $pageSize: Long, $conditions: [Conditio
                         type
                         enabled
                         remark
+                        master {
+                            driver
+                            url
+                            username
+                            password
+                        }
+                        slaves {
+                            driver
+                            url
+                            username
+                            password
+                        }
+                        params
 
                         creatorId
                         createDate
@@ -221,6 +273,19 @@ mutation DatabaseProvider($input: DatabaseInput, $operator: String) {
                 type
                 enabled
                 remark
+                master {
+                    driver
+                    url
+                    username
+                    password
+                }
+                slaves {
+                    driver
+                    url
+                    username
+                    password
+                }
+                params
 
                 creatorId
                 createDate
@@ -265,6 +330,19 @@ mutation DatabaseProvider($inputs: [DatabaseInput], $operator: String) {
                 type
                 enabled
                 remark
+                master {
+                    driver
+                    url
+                    username
+                    password
+                }
+                slaves {
+                    driver
+                    url
+                    username
+                    password
+                }
+                params
 
                 creatorId
                 createDate
@@ -309,6 +387,19 @@ mutation DatabaseProvider($input: DatabaseInput, $operator: String) {
                 type
                 enabled
                 remark
+                master {
+                    driver
+                    url
+                    username
+                    password
+                }
+                slaves {
+                    driver
+                    url
+                    username
+                    password
+                }
+                params
 
                 creatorId
                 createDate
@@ -353,6 +444,19 @@ mutation DatabaseProvider($inputs: [DatabaseInput], $operator: String) {
                 type
                 enabled
                 remark
+                master {
+                    driver
+                    url
+                    username
+                    password
+                }
+                slaves {
+                    driver
+                    url
+                    username
+                    password
+                }
+                params
 
                 creatorId
                 createDate

@@ -38,11 +38,13 @@ import central.sql.SqlExecutor;
 import central.sql.SqlType;
 import central.sql.datasource.migration.*;
 import central.util.Guidx;
+import central.util.Jsonx;
 import central.util.Version;
 import lombok.SneakyThrows;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 初始化基础数据结构
@@ -356,6 +358,9 @@ public class v0_0_1_initial extends Migration {
                     Column.of("TYPE", SqlType.STRING, 32, "类型"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
                     Column.of("REMARK", SqlType.STRING, 1024, "备注"),
+                    Column.of("MASTER_JSON", SqlType.CLOB, "主数据库"),
+                    Column.of("SLAVES_JSON", SqlType.CLOB, "从数据库"),
+                    Column.of("PARAMS", SqlType.CLOB, "初始化参数"),
                     Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
                     Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
                     Column.of("MODIFIER_ID", SqlType.STRING, 36, "更新人主键"),
@@ -612,6 +617,12 @@ public class v0_0_1_initial extends Migration {
         masterDatabase.setType(DatabaseType.MYSQL.getValue());
         masterDatabase.setEnabled(Boolean.TRUE);
         masterDatabase.setRemark("本数据源是通过配置文件初始化，请勿修改");
+        masterDatabase.setMasterJson("{}");
+        masterDatabase.setSlavesJson("[]");
+        masterDatabase.setParams(Jsonx.Default().serialize(Map.of(
+                "master", "{}",
+                "slaves", List.of()
+        )));
         masterDatabase.setTenantCode("master");
         masterDatabase.updateCreator("syssa");
         databaseMapper.insert(masterDatabase);

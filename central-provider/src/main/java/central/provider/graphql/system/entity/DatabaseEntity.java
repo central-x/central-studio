@@ -29,6 +29,8 @@ import central.data.system.DatabaseInput;
 import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.Relation;
+import central.util.Jsonx;
+import central.util.Listx;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -98,6 +100,21 @@ public class DatabaseEntity extends ModifiableEntity implements Tenantable {
     @Size(max = 1024)
     private String remark;
 
+    @Label("主数据库")
+    @NotBlank
+    @Size(min = 1, max = 5 * 1024)
+    private String masterJson;
+
+    @Label("从数据库")
+    @NotBlank
+    @Size(min = 1, max = 20 * 1024)
+    private String slavesJson;
+
+    @Label("初始化参数")
+    @NotBlank
+    @Size(min = 1, max = 5 * 1024 * 1024)
+    private String params;
+
     @Label("租户标识")
     @NotBlank
     @Size(min = 1, max = 32)
@@ -111,5 +128,12 @@ public class DatabaseEntity extends ModifiableEntity implements Tenantable {
         this.setType(input.getType());
         this.setEnabled(input.getEnabled());
         this.setRemark(input.getRemark());
+        this.setMasterJson(Jsonx.Default().serialize(input.getMaster()));
+        if (Listx.isNotEmpty(input.getSlaves())){
+            this.setSlavesJson(Jsonx.Default().serialize(input.getSlaves()));
+        } else {
+            this.setSlavesJson("");
+        }
+        this.setParams(input.getParams());
     }
 }

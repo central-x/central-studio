@@ -16,6 +16,23 @@ input DatabaseInput {
     enabled:                Boolean
     "备注"
     remark:                 String
+    "主数据库"
+    master:                 DatabasePropertiesInput
+    "从数据库"
+    slaves:                [DatabasePropertiesInput]
+    "初始化参数"
+    params:                 String
+}
+
+input DatabasePropertiesInput {
+    "驱动"
+    driver:                 String
+    "连接字符串"
+    url:                    String
+    "用户名"
+    username:               String
+    "密码"
+    password:               String
 }
 
 """

@@ -29,6 +29,7 @@ import central.data.organization.Account;
 import central.data.system.option.DatabaseType;
 import central.data.saas.Application;
 import central.sql.data.ModifiableEntity;
+import central.util.Listx;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +37,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
+import java.util.List;
 
 /**
  * 数据库
@@ -96,6 +98,26 @@ public class Database extends ModifiableEntity implements Codeable, Available, R
     private String remark;
 
     /**
+     * 主数据库属性
+     */
+    @Nonnull
+    private DatabaseProperties master;
+
+    /**
+     * 从数据库属性
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<DatabaseProperties> slaves;
+
+    /**
+     * 初始化参数(JSON)
+     * <p>
+     * {@code {"master": "", "slaves": ""}}
+     */
+    @Nonnull
+    private String params;
+
+    /**
      * 创建人信息
      */
     @Nonnull
@@ -118,6 +140,9 @@ public class Database extends ModifiableEntity implements Codeable, Available, R
                 .type(this.getType())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
+                .master(this.getMaster().toInput())
+                .slaves(Listx.asStream(this.getSlaves()).map(DatabaseProperties::toInput).toList())
+                .params(this.getParams())
                 .build();
     }
 }

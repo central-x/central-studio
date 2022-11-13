@@ -25,8 +25,13 @@
 package central.provider.graphql.system;
 
 import central.api.provider.system.DatabaseProvider;
+import central.api.scheduled.ScheduledDataContext;
+import central.api.scheduled.fetcher.DataFetcherType;
+import central.api.scheduled.fetcher.saas.SaasContainer;
 import central.data.system.Database;
 import central.data.system.DatabaseInput;
+import central.data.system.DatabaseProperties;
+import central.data.system.DatabasePropertiesInput;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
@@ -36,6 +41,7 @@ import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
 import central.sql.Conditions;
 import central.util.Guidx;
+import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
@@ -46,6 +52,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,12 +77,35 @@ public class TestDatabaseProvider extends TestProvider {
     @Setter(onMethod_ = @Autowired)
     private ApplicationMapper applicationMapper;
 
+    private static ApplicationEntity applicationEntity;
+
+    @Setter(onMethod_ = @Autowired)
+    private ScheduledDataContext context;
+
     @BeforeEach
     @AfterEach
-    public void clear() {
+    public void clear() throws Exception {
         // 清空数据
         mapper.deleteAll();
-        applicationMapper.deleteAll();
+        if (applicationEntity == null){
+            applicationEntity = new ApplicationEntity();
+            applicationEntity.setCode("central-security");
+            applicationEntity.setName("统一认证");
+            applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
+            applicationEntity.setUrl("http://127.0.0.1:3100");
+            applicationEntity.setContextPath("/security");
+            applicationEntity.setSecret(Guidx.nextID());
+            applicationEntity.setEnabled(Boolean.TRUE);
+            applicationEntity.setRemark("统一认班上");
+            applicationEntity.updateCreator(properties.getSupervisor().getUsername());
+            this.applicationMapper.insert(applicationEntity);
+
+            SaasContainer container = null;
+            while (container == null || container.getApplications().isEmpty()) {
+                Thread.sleep(100);
+                container = context.getData(DataFetcherType.SAAS);
+            }
+        }
     }
 
     /**
@@ -83,18 +113,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case1() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -102,6 +120,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
@@ -110,10 +155,20 @@ public class TestDatabaseProvider extends TestProvider {
         var database = this.provider.findById(databaseEntity.getId());
         assertNotNull(database);
         assertNotNull(database.getId());
+        assertNotNull(database.getParams());
 
         // 关联查询
         assertNotNull(database.getApplication());
         assertEquals(applicationEntity.getId(), database.getApplication().getId());
+
+        assertNotNull(database.getMaster());
+        assertEquals("org.h2.Driver", database.getMaster().getDriver());
+        assertEquals("jdbc:h2:mem:central-provider", database.getMaster().getUrl());
+        assertEquals("centralx", database.getMaster().getUsername());
+        assertEquals("central.x", database.getMaster().getPassword());
+
+        assertNotNull(database.getSlaves());
+        assertEquals(2, database.getSlaves().size());
 
         // 关联查询
         assertNotNull(database.getCreator());
@@ -127,18 +182,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case2() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -146,6 +189,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
@@ -159,10 +229,20 @@ public class TestDatabaseProvider extends TestProvider {
 
         assertNotNull(database);
         assertNotNull(database.getId());
+        assertNotNull(database.getParams());
 
         // 关联查询
         assertNotNull(database.getApplication());
         assertEquals(applicationEntity.getId(), database.getApplication().getId());
+
+        assertNotNull(database.getMaster());
+        assertEquals("org.h2.Driver", database.getMaster().getDriver());
+        assertEquals("jdbc:h2:mem:central-provider", database.getMaster().getUrl());
+        assertEquals("centralx", database.getMaster().getUsername());
+        assertEquals("central.x", database.getMaster().getPassword());
+
+        assertNotNull(database.getSlaves());
+        assertEquals(2, database.getSlaves().size());
 
         // 关联查询
         assertNotNull(database.getCreator());
@@ -176,18 +256,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case3() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -195,6 +263,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
@@ -208,10 +303,20 @@ public class TestDatabaseProvider extends TestProvider {
 
         assertNotNull(database);
         assertNotNull(database.getId());
+        assertNotNull(database.getParams());
 
         // 关联查询
         assertNotNull(database.getApplication());
         assertEquals(applicationEntity.getId(), database.getApplication().getId());
+
+        assertNotNull(database.getMaster());
+        assertEquals("org.h2.Driver", database.getMaster().getDriver());
+        assertEquals("jdbc:h2:mem:central-provider", database.getMaster().getUrl());
+        assertEquals("centralx", database.getMaster().getUsername());
+        assertEquals("central.x", database.getMaster().getPassword());
+
+        assertNotNull(database.getSlaves());
+        assertEquals(2, database.getSlaves().size());
 
         // 关联查询
         assertNotNull(database.getCreator());
@@ -225,18 +330,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case4() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -244,6 +337,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
@@ -262,10 +382,20 @@ public class TestDatabaseProvider extends TestProvider {
 
         assertNotNull(database);
         assertNotNull(database.getId());
+        assertNotNull(database.getParams());
 
         // 关联查询
         assertNotNull(database.getApplication());
         assertEquals(applicationEntity.getId(), database.getApplication().getId());
+
+        assertNotNull(database.getMaster());
+        assertEquals("org.h2.Driver", database.getMaster().getDriver());
+        assertEquals("jdbc:h2:mem:central-provider", database.getMaster().getUrl());
+        assertEquals("centralx", database.getMaster().getUsername());
+        assertEquals("central.x", database.getMaster().getPassword());
+
+        assertNotNull(database.getSlaves());
+        assertEquals(2, database.getSlaves().size());
 
         // 关联查询
         assertNotNull(database.getCreator());
@@ -279,18 +409,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case5() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -298,6 +416,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
@@ -313,18 +458,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case6() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var input = DatabaseInput.builder()
                 .applicationId(applicationEntity.getId())
                 .code("test")
@@ -332,6 +465,33 @@ public class TestDatabaseProvider extends TestProvider {
                 .type("mysql")
                 .enabled(Boolean.TRUE)
                 .remark("测试")
+                .master(new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x"))
+                .slaves(List.of(
+                        new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                        new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+                ))
+                .params(Jsonx.Default().serialize(Map.of(
+                        "master", Map.of(
+                                "name", "central-provider",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        "slaves", List.of(
+                                Map.of(
+                                        "name", "central-provider-slave1",
+                                        "memoryMode", "1",
+                                        "username", "centralx",
+                                        "password", "central.x"
+                                ),
+                                Map.of(
+                                        "name", "central-provider-slave2",
+                                        "memoryMode", "1",
+                                        "username", "centralx",
+                                        "password", "central.x"
+                                )
+                        )
+                )))
                 .build();
 
         var database = this.provider.insert(input, properties.getSupervisor().getUsername());
@@ -346,18 +506,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case7() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var input = DatabaseInput.builder()
                 .applicationId(applicationEntity.getId())
                 .code("test")
@@ -365,6 +513,33 @@ public class TestDatabaseProvider extends TestProvider {
                 .type("mysql")
                 .enabled(Boolean.TRUE)
                 .remark("测试")
+                .master(new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x"))
+                .slaves(List.of(
+                        new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                        new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+                ))
+                .params(Jsonx.Default().serialize(Map.of(
+                        "master", Map.of(
+                                "name", "central-provider",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        "slaves", List.of(
+                                Map.of(
+                                        "name", "central-provider-slave1",
+                                        "memoryMode", "1",
+                                        "username", "centralx",
+                                        "password", "central.x"
+                                ),
+                                Map.of(
+                                        "name", "central-provider-slave2",
+                                        "memoryMode", "1",
+                                        "username", "centralx",
+                                        "password", "central.x"
+                                )
+                        )
+                )))
                 .build();
 
         var databases = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername());
@@ -383,18 +558,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case8() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -402,6 +565,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
@@ -424,18 +614,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case9() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -443,6 +621,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
@@ -465,18 +670,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case10() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -484,6 +677,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
@@ -500,18 +720,6 @@ public class TestDatabaseProvider extends TestProvider {
      */
     @Test
     public void case11() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认班上");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
         var databaseEntity = new DatabaseEntity();
         databaseEntity.setApplicationId(applicationEntity.getId());
         databaseEntity.setCode("test");
@@ -519,6 +727,33 @@ public class TestDatabaseProvider extends TestProvider {
         databaseEntity.setType("mysql");
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
+        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
+        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
+                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+        )));
+        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
+                "master", Map.of(
+                        "name", "central-provider",
+                        "memoryMode", "1",
+                        "username", "centralx",
+                        "password", "central.x"
+                ),
+                "slaves", List.of(
+                        Map.of(
+                                "name", "central-provider-slave1",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        ),
+                        Map.of(
+                                "name", "central-provider-slave2",
+                                "memoryMode", "1",
+                                "username", "centralx",
+                                "password", "central.x"
+                        )
+                )
+        )));
         databaseEntity.setTenantCode("master");
         databaseEntity.updateCreator(properties.getSupervisor().getUsername());
         this.mapper.insert(databaseEntity);
