@@ -25,7 +25,6 @@
         <dependency>
             <groupId>com.central-x</groupId>
             <artifactId>central-starter-graphql-stub</artifactId>
-            <version>1.0.x-SNAPSHOT</version>
         </dependency>
 
         <dependency>
