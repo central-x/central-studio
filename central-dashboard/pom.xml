@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.central-x</groupId>
+        <artifactId>central-parent</artifactId>
+        <version>1.0.x-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>central-dashboard</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.x-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-studio-lib</artifactId>
+            <version>1.0.x-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-starter-graphql-stub</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-starter-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-starter-logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+        </dependency>
+
+        <!-- 测试依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- 替换 bootstrap.yml 里面的版本号 -->
+        <resources>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.yml</exclude>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- 本项目是程序文件，不发布到 Maven 仓库 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- 处理占位符 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>@{ * }@</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
+
+            <!-- Spring Boot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- 镜像仓库 -->
+    <repositories>
+        <repository>
+            <id>mirror</id>
+            <name>Mirror Repository</name>
+            <url>https://mirror.yeh.cn/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
+    <!-- 插件仓库 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mirror</id>
+            <name>Mirror Repository</name>
+            <url>https://mirror.yeh.cn/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
