@@ -89,7 +89,7 @@ public interface ExchangeAttributes {
         /**
          * 是否禁用
          */
-        Attribute<Boolean> ENABLED = Attribute.of("captcha.options.enabled", Boolean.FALSE);
+        Attribute<Boolean> ENABLED = Attribute.of("captcha.enabled", Boolean.FALSE);
         /**
          * 验证码是否大小写敏感
          */

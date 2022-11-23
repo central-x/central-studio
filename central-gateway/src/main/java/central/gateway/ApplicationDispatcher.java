@@ -24,6 +24,7 @@
 
 package central.gateway;
 
+import central.api.scheduled.DataContext;
 import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.ScheduledDataContext;
 import central.gateway.core.filter.GlobalFilter;
@@ -76,7 +77,7 @@ public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordere
     private ApplicationProperties properties;
 
     @Setter(onMethod_ = @Autowired)
-    private ScheduledDataContext dataContext;
+    private DataContext dataContext;
 
     @Override
     public int getOrder() {

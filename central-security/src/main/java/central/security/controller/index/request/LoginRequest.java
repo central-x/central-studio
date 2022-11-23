@@ -117,7 +117,7 @@ public class LoginRequest extends Request implements CaptchableRequest {
 
                 // 把会话放到 Cookie 里
                 exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE).set(exchange, session);
-                exchange.getResponse().setBody(new StringBody("登录成功"));
+                exchange.getResponse().setBody(new StringBody("true"));
             } catch (Exception ex) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "帐号或密码错误");
             }

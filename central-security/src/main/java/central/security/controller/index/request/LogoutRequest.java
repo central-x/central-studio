@@ -73,7 +73,7 @@ public class LogoutRequest extends Request {
             if (Stringx.isNotBlank(token)) {
                 this.verifier.invalid(token);
             }
-            exchange.getResponse().setBody(new StringBody("操作成功"));
+            exchange.getResponse().setBody(new StringBody("true"));
         }
     }
 }

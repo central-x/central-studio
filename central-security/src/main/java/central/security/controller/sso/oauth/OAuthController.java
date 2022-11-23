@@ -60,7 +60,7 @@ public class OAuthController {
     /**
      * OAuth 2.0 认证
      * <p>
-     * 获取认证码（Authorization Code）
+     * 获取授权码（Authorization Code）
      * <p>
      * 完成认证之后，本接口会添加 code 参数和 state 参数重定向到 redirect_uri。
      * 业务系统在接收到这个 code 之后，需要在后台访问开放平台 /api/sso/oauth/token 获取会话凭证，通过会话凭证获取用户信息

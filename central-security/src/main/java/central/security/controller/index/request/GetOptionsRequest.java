@@ -35,8 +35,13 @@ import central.security.core.request.Request;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.apache.bcel.generic.RET;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * 获取登录选项
@@ -63,10 +68,12 @@ public class GetOptionsRequest extends Request {
 
         @Override
         public void execute(SecurityExchange exchange) {
-            var result = new HashMap<String, Object>();
+            var result = new HashMap<String, Map<String, Object>>();
 
             for (var option : Options.values()) {
-                result.put(option.getName(), exchange.getRequiredAttribute(option.getValue()));
+                var parts = option.getName().split("[.]");
+                result.computeIfAbsent(parts[0], key -> new HashMap<>())
+                        .put(parts[1], option.getValue().apply(exchange));
             }
 
             exchange.getResponse().setBody(new JsonBody(result));
@@ -75,11 +82,27 @@ public class GetOptionsRequest extends Request {
 
     @Getter
     @RequiredArgsConstructor
-    public enum Options implements OptionalEnum<Attribute<?>> {
-        CAPTCHA("captcha.enabled", ExchangeAttributes.Captcha.ENABLED);
+    public enum Options implements OptionalEnum<Function<?, ?>> {
+        // 终端密钥配置
+        ENDPOINT_WEB("endpoint.web", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Endpoint.WEB).getSecret()),
+        ENDPOINT_PC("endpoint.pc", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Endpoint.PC).getSecret()),
+        ENDPOINT_PHONE("endpoint.phone", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Endpoint.PHONE).getSecret()),
+        ENDPOINT_PAD("endpoint.pad", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Endpoint.PAD).getSecret()),
+
+        // 验证码配置
+        CAPTCHA("captcha.enabled", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Captcha.ENABLED)),
+        CAPTCHA_TIMEOUT("captcha.timeout", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Captcha.TIMEOUT).toMillis()),
+
+        // 密码配置
+        PASSWORD_MIN("password.min", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.MIN)),
+        PASSWORD_MAX("password.max", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.MAX)),
+        PASSWORD_UPPERCASE("password.uppercase", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.UPPERCASE)),
+        PASSWORD_LOWERCASE("password.lowercase", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.LOWERCASE)),
+        PASSWORD_NUMBER("password.number", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.NUMBER)),
+        PASSWORD_SYMBOL("password.symbol", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.SYMBOL)),
+        PASSWORD_SYMBOLS("password.symbols", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.SYMBOLS).stream().map(Object::toString).collect(Collectors.joining()));
 
         private final String name;
-
-        private final Attribute<?> value;
+        private final Function<SecurityExchange, Object> value;
     }
 }
