@@ -420,14 +420,14 @@ public interface ObjectClient {
     /**
      * 下载文件
      *
-     * @param code  存储桶（Bucket）标识
-     * @param token 访问凭证
-     * @param id    对象主键
-     * @param name  文件名
+     * @param code     存储桶（Bucket）标识
+     * @param token    访问凭证
+     * @param id       对象主键
+     * @param filename 文件名
      * @return 已下载的文件
      */
     @GetMapping("/storage/api/buckets/{code}/objects")
-    File download(@PathVariable String code, @RequestParam String token, @RequestParam String id, @RequestParam(required = false) String name);
+    File download(@PathVariable String code, @RequestParam String token, @RequestParam String id, @RequestParam(required = false) String filename);
 
     /**
      * 下载文件

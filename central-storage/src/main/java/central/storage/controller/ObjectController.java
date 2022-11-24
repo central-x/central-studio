@@ -56,6 +56,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -364,7 +365,7 @@ public class ObjectController {
                 .setInputStream(stream.getInputStream())
                 .setFileName(Objectx.getOrDefault(query.getFilename(), object.getName()))
                 .setContentDisposition(query.getContentDisposition())
-                .setContentType(query.getContentType())
+                .setContentType(Objectx.getOrDefault(query.getContentType(), MediaType.APPLICATION_OCTET_STREAM_VALUE))
                 .setContentLength(object.getSize())
                 .setDigest(object.getDigest())
                 .render();
