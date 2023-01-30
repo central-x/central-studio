@@ -120,7 +120,7 @@
         <repository>
             <id>mirror</id>
             <name>Mirror Repository</name>
-            <url>https://mirror.yeh.cn/repository/maven-public/</url>
+            <url>https://mirror.central-x.com/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -129,7 +129,7 @@
         <pluginRepository>
             <id>mirror</id>
             <name>Mirror Repository</name>
-            <url>https://mirror.yeh.cn/repository/maven-public/</url>
+            <url>https://mirror.central-x.com/repository/maven-public/</url>
         </pluginRepository>
     </pluginRepositories>
 </project>

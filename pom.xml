@@ -52,7 +52,7 @@
         <repository>
             <id>mirror</id>
             <name>Mirror Repository</name>
-            <url>https://mirror.yeh.cn/repository/maven-public/</url>
+            <url>https://mirror.central-x.com/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -61,7 +61,7 @@
         <pluginRepository>
             <id>mirror</id>
             <name>Mirror Repository</name>
-            <url>https://mirror.yeh.cn/repository/maven-public/</url>
+            <url>https://mirror.central-x.com/repository/maven-public/</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -70,12 +70,12 @@
         <repository>
             <id>centralx-releases</id>
             <name>CentralX Release Repository</name>
-            <url>https://deploy.yeh.cn/repository/maven-releases/</url>
+            <url>https://deploy.central-x.com/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>centralx-snapshots</id>
             <name>CentralX Snapshot Repository</name>
-            <url>https://deploy.yeh.cn/repository/maven-snapshots/</url>
+            <url>https://deploy.central-x.com/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
