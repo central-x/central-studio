@@ -30,7 +30,7 @@ import central.lang.Stringx;
 import central.provider.graphql.authority.dto.MenuDTO;
 import central.provider.graphql.authority.entity.MenuEntity;
 import central.provider.graphql.authority.mapper.MenuMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;

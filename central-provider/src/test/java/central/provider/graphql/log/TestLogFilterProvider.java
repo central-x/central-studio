@@ -33,7 +33,7 @@ import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.log.entity.*;
 import central.provider.graphql.log.mapper.*;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;

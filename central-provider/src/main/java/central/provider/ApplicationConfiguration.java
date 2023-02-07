@@ -12,6 +12,7 @@ import central.net.http.proxy.contract.spring.SpringContract;
 import central.sql.datasource.dynamic.lookup.LookupKeyFilter;
 import central.starter.graphql.stub.EnableGraphQLStub;
 import central.starter.graphql.stub.ProviderClient;
+import central.starter.logging.EnableLogPoint;
 import central.web.XForwardedHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,6 +29,7 @@ import org.springframework.core.Ordered;
  * @since 2022/07/07
  */
 @Configuration
+@EnableLogPoint
 @EnableGraphQLStub(packages = "central.api")
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {

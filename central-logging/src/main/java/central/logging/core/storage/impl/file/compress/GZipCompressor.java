@@ -65,9 +65,9 @@ public class GZipCompressor implements Compressor {
             return;
         }
 
-        try (var output = new GZIPOutputStream(new BufferedOutputStream(Files.newOutputStream(gz.toPath(), StandardOpenOption.WRITE)))) {
-            IOStreamx.transfer(Files.newInputStream(file.toPath(), StandardOpenOption.READ), output);
-            output.flush();
+        try (var input = IOStreamx.buffered(Files.newInputStream(file.toPath(), StandardOpenOption.READ));
+             var output = IOStreamx.buffered(new GZIPOutputStream(Files.newOutputStream(gz.toPath(), StandardOpenOption.WRITE)))) {
+            IOStreamx.transfer(input, output);
             // 删除原来的文件
             Filex.delete(file);
         } catch (IOException ex) {

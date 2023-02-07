@@ -26,17 +26,24 @@ package central.provider.graphql.authority.query;
 
 import central.api.DTO;
 import central.bean.Page;
+import central.lang.Stringx;
 import central.provider.graphql.authority.dto.MenuDTO;
 import central.provider.graphql.authority.entity.MenuEntity;
 import central.provider.graphql.authority.mapper.MenuMapper;
-import central.sql.Conditions;
-import central.sql.Orders;
+import central.provider.graphql.authority.service.MenuService;
+import central.sql.query.Columns;
+import central.sql.query.Conditions;
+import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.starter.logging.aop.annotation.LogPoint;
 import central.web.XForwardedHeaders;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.SelectedField;
 import lombok.Setter;
+import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,6 +53,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -58,8 +67,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "authority/query", types = {MenuDTO.class, PermissionQuery.class})
 public class MenuQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private MenuMapper mapper;
+    private MenuService service;
 
     /**
      * 批量数据加载器
@@ -67,13 +77,18 @@ public class MenuQuery {
      * @param ids    主键
      * @param tenant 租户标识
      */
+    @LogPoint
     @GraphQLBatchLoader
-    public @Nonnull Map<String, MenuDTO> batchLoader(@RequestParam List<String> ids,
+    public @Nonnull Map<String, MenuDTO> batchLoader(BatchLoaderEnvironment environment,
+                                                     @RequestParam List<String> ids,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(MenuEntity.class).in(MenuEntity::getId, ids).eq(MenuEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, MenuDTO.class))
-                .collect(Collectors.toMap(MenuDTO::getId, it -> it));
+        var fields = environment.getKeyContextsList().stream().filter(it -> it instanceof DataFetchingEnvironment)
+                .map(it -> (DataFetchingEnvironment) it)
+                .flatMap(it -> it.getSelectionSet().getFields().stream())
+                .map(SelectedField::getName).distinct().toArray(String[]::new);
+
+        return this.service.findByIds(ids, Columns.of(MenuDTO.class, fields), tenant)
+                .stream().collect(Collectors.toMap(MenuDTO::getId, Function.identity()));
     }
 
     /**
@@ -82,11 +97,16 @@ public class MenuQuery {
      * @param id     主键
      * @param tenant 租户标识
      */
+    @LogPoint
     @GraphQLFetcher
-    public @Nullable MenuDTO findById(@RequestParam String id,
+    public @Nullable MenuDTO findById(DataFetchingEnvironment environment,
+                                      @RequestParam String id,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, id).eq(MenuEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, MenuDTO.class);
+        var columns = Columns.of(MenuDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findById".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.findById(id, columns, tenant);
     }
 
 
@@ -96,12 +116,16 @@ public class MenuQuery {
      * @param ids    主键
      * @param tenant 租户标识
      */
+    @LogPoint
     @GraphQLFetcher
-    public @Nonnull List<MenuDTO> findByIds(@RequestParam List<String> ids,
+    public @Nonnull List<MenuDTO> findByIds(DataFetchingEnvironment environment,
+                                            @RequestParam List<String> ids,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(MenuEntity.class).in(MenuEntity::getId, ids).eq(MenuEntity::getTenantCode, tenant));
+        var columns = Columns.of(MenuDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findByIds".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return DTO.wrap(entities, MenuDTO.class);
+        return this.service.findByIds(ids, columns, tenant);
     }
 
     /**
@@ -113,15 +137,19 @@ public class MenuQuery {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
+    @LogPoint
     @GraphQLFetcher
-    public @Nonnull List<MenuDTO> findBy(@RequestParam(required = false) Long limit,
+    public @Nonnull List<MenuDTO> findBy(DataFetchingEnvironment environment,
+                                         @RequestParam(required = false) Long limit,
                                          @RequestParam(required = false) Long offset,
-                                         @RequestParam Conditions<MenuEntity> conditions,
-                                         @RequestParam Orders<MenuEntity> orders,
+                                         @RequestParam Conditions<MenuDTO> conditions,
+                                         @RequestParam Orders<MenuDTO> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, MenuDTO.class);
+        var columns = Columns.of(MenuDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findBy".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.findBy(limit, offset, columns, conditions, orders, tenant);
     }
 
     /**
@@ -133,15 +161,20 @@ public class MenuQuery {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
+    @LogPoint
     @GraphQLFetcher
-    public @Nonnull Page<MenuDTO> pageBy(@RequestParam long pageIndex,
+    public @Nonnull Page<MenuDTO> pageBy(DataFetchingEnvironment environment,
+                                         @RequestParam long pageIndex,
                                          @RequestParam long pageSize,
-                                         @RequestParam Conditions<MenuEntity> conditions,
-                                         @RequestParam Orders<MenuEntity> orders,
+                                         @RequestParam Conditions<MenuDTO> conditions,
+                                         @RequestParam Orders<MenuDTO> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, MenuDTO.class);
+
+        var columns = Columns.of(MenuDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "pageBy".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
     }
 
     /**
@@ -150,11 +183,11 @@ public class MenuQuery {
      * @param conditions 筛选条件
      * @param tenant     租户标识
      */
+    @LogPoint
     @GraphQLFetcher
-    public Long countBy(@RequestParam Conditions<MenuEntity> conditions,
+    public Long countBy(@RequestParam Conditions<MenuDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.service.countBy(conditions, tenant);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ import central.data.multicast.MulticastMessage;
 import central.data.multicast.MulticastMessageInput;
 import central.data.multicast.option.PublishMode;
 import central.data.multicast.option.MessageStatus;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.multicast.entity.MulticastBroadcasterEntity;
@@ -41,7 +41,7 @@ import central.provider.graphql.multicast.mapper.MulticastMessageMapper;
 import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
 import central.provider.graphql.saas.mapper.TenantMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Jsonx;
 import central.util.Listx;
@@ -152,7 +152,7 @@ public class TestMulticastMessageProvider {
         assertEquals(entity.getBroadcasterId(), message.getBroadcaster().getId());
         assertNotNull(message.getMode());
         assertNotNull(message.getStatus());
-        var body = Jsonx.Default().deserialize(message.getBody(), TypeReference.ofMap(String.class, Object.class));
+        var body = Jsonx.Default().deserialize(message.getBody(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(body);
         assertEquals(3, body.size());
         // 关联查询
@@ -189,7 +189,7 @@ public class TestMulticastMessageProvider {
         assertEquals(entity.getBroadcasterId(), message.getBroadcaster().getId());
         assertNotNull(message.getMode());
         assertNotNull(message.getStatus());
-        var body = Jsonx.Default().deserialize(message.getBody(), TypeReference.ofMap(String.class, Object.class));
+        var body = Jsonx.Default().deserialize(message.getBody(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(body);
         assertEquals(3, body.size());
         // 关联查询
@@ -226,7 +226,7 @@ public class TestMulticastMessageProvider {
         assertEquals(entity.getBroadcasterId(), message.getBroadcaster().getId());
         assertNotNull(message.getMode());
         assertNotNull(message.getStatus());
-        var body = Jsonx.Default().deserialize(message.getBody(), TypeReference.ofMap(String.class, Object.class));
+        var body = Jsonx.Default().deserialize(message.getBody(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(body);
         assertEquals(3, body.size());
         // 关联查询
@@ -267,7 +267,7 @@ public class TestMulticastMessageProvider {
         assertEquals(entity.getBroadcasterId(), message.getBroadcaster().getId());
         assertNotNull(message.getMode());
         assertNotNull(message.getStatus());
-        var body = Jsonx.Default().deserialize(message.getBody(), TypeReference.ofMap(String.class, Object.class));
+        var body = Jsonx.Default().deserialize(message.getBody(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(body);
         assertEquals(3, body.size());
         // 关联查询

@@ -30,7 +30,7 @@ import central.provider.graphql.system.dto.DatabaseDTO;
 import central.provider.graphql.saas.entity.TenantApplicationEntity;
 import central.provider.graphql.saas.entity.TenantEntity;
 import central.provider.graphql.saas.query.TenantApplicationQuery;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import central.web.XForwardedHeaders;

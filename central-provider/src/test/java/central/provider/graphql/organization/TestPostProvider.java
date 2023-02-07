@@ -37,7 +37,7 @@ import central.provider.graphql.organization.entity.UnitEntity;
 import central.provider.graphql.organization.mapper.AreaMapper;
 import central.provider.graphql.organization.mapper.PostMapper;
 import central.provider.graphql.organization.mapper.UnitMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;

@@ -40,7 +40,7 @@ import central.security.core.attribute.ExchangeAttributes;
 import central.security.core.body.StringBody;
 import central.security.core.request.Request;
 import central.security.signer.KeyPair;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Listx;
 import central.util.Mapx;

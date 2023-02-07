@@ -24,20 +24,21 @@
 
 package central.provider.graphql.organization.query;
 
-import central.api.DTO;
 import central.bean.Page;
-import central.provider.ApplicationProperties;
 import central.provider.graphql.organization.dto.AccountDTO;
-import central.provider.graphql.organization.entity.AccountEntity;
-import central.provider.graphql.organization.mapper.AccountMapper;
-import central.sql.Conditions;
-import central.sql.Orders;
+import central.provider.graphql.organization.service.AccountService;
+import central.sql.query.Columns;
+import central.sql.query.Conditions;
+import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.SelectedField;
 import lombok.Setter;
+import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -59,42 +61,8 @@ import java.util.stream.Collectors;
 @GraphQLSchema(path = "organization/query", types = {AccountDTO.class, AccountUnitQuery.class})
 public class AccountQuery {
     @Setter(onMethod_ = @Autowired)
-    private AccountMapper mapper;
+    private AccountService service;
 
-    @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
-
-    /**
-     * 获取超级管理员帐号信息
-     *
-     * @param tenant 租户标识
-     */
-    public AccountEntity getSupervisor(String tenant) {
-        var sa = properties.getSupervisor();
-
-        var superAdmin = new AccountEntity();
-        superAdmin.setId(sa.getUsername());
-        superAdmin.setUsername(sa.getUsername());
-        superAdmin.setEmail(sa.getEmail());
-        superAdmin.setMobile(null);
-        superAdmin.setName(sa.getName());
-        superAdmin.setAvatar(sa.getAvatar());
-        superAdmin.setAdmin(Boolean.TRUE);
-        superAdmin.setEnabled(sa.getEnabled());
-        superAdmin.setDeleted(Boolean.FALSE);
-        superAdmin.setTenantCode(tenant);
-        superAdmin.updateCreator(sa.getUsername());
-        return superAdmin;
-    }
-
-    /**
-     * 判断指定主键的帐号是否超级管理员
-     *
-     * @param id 主键
-     */
-    public Boolean isSupervisor(String id) {
-        return Objects.equals(this.properties.getSupervisor().getUsername(), id);
-    }
 
     /**
      * 批量数据加载器
@@ -103,17 +71,16 @@ public class AccountQuery {
      * @param tenant 租户标识
      */
     @GraphQLBatchLoader
-    public @Nonnull Map<String, AccountDTO> batchLoader(@RequestParam Set<String> ids,
+    public @Nonnull Map<String, AccountDTO> batchLoader(BatchLoaderEnvironment environment,
+                                                        @RequestParam Set<String> ids,
                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var result = this.mapper.findBy(Conditions.of(AccountEntity.class).in(AccountEntity::getId, ids).eq(AccountEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, AccountDTO.class))
-                .collect(Collectors.toMap(AccountDTO::getId, it -> it));
-        // 添加超级管理员数据，因此超级管理员的数据不在数据库里
-        if (ids.contains(this.properties.getSupervisor().getUsername())) {
-            result.put(this.properties.getSupervisor().getUsername(), DTO.wrap(this.getSupervisor(tenant), AccountDTO.class));
-        }
-        return result;
+        var fields = environment.getKeyContextsList().stream().filter(it -> it instanceof DataFetchingEnvironment)
+                .map(it -> (DataFetchingEnvironment) it)
+                .flatMap(it -> it.getSelectionSet().getFields().stream())
+                .map(SelectedField::getName).distinct().toArray(String[]::new);
+
+        return this.service.findByIds(ids.stream().toList(), Columns.of(AccountDTO.class, fields), tenant)
+                .stream().collect(Collectors.toMap(AccountDTO::getId, Function.identity()));
     }
 
     /**
@@ -123,15 +90,15 @@ public class AccountQuery {
      * @param tenant 租户标识
      */
     @GraphQLFetcher
-    public @Nullable AccountDTO findById(@RequestParam String id,
+    public @Nullable AccountDTO findById(DataFetchingEnvironment environment,
+                                         @RequestParam String id,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Objects.equals(this.properties.getSupervisor().getUsername(), id)) {
-            var entity = this.getSupervisor(tenant);
-            return DTO.wrap(entity, AccountDTO.class);
-        }
 
-        var entity = this.mapper.findFirstBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getId, id).eq(AccountEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, AccountDTO.class);
+        var columns = Columns.of(AccountDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findById".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.findById(id, columns, tenant);
     }
 
     /**
@@ -141,13 +108,14 @@ public class AccountQuery {
      * @param tenant 租户标识
      */
     @GraphQLFetcher
-    public @Nonnull List<AccountDTO> findByIds(@RequestParam List<String> ids,
+    public @Nonnull List<AccountDTO> findByIds(DataFetchingEnvironment environment,
+                                               @RequestParam List<String> ids,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(AccountEntity.class).in(AccountEntity::getId, ids).eq(AccountEntity::getTenantCode, tenant));
-        if (ids.contains(this.properties.getSupervisor().getUsername())) {
-            entities.add(this.getSupervisor(tenant));
-        }
-        return DTO.wrap(entities, AccountDTO.class);
+        var columns = Columns.of(AccountDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findByIds".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.findByIds(ids, columns, tenant);
     }
 
     /**
@@ -160,14 +128,17 @@ public class AccountQuery {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public @Nonnull List<AccountDTO> findBy(@RequestParam(required = false) Long limit,
+    public @Nonnull List<AccountDTO> findBy(DataFetchingEnvironment environment,
+                                            @RequestParam(required = false) Long limit,
                                             @RequestParam(required = false) Long offset,
-                                            @RequestParam Conditions<AccountEntity> conditions,
-                                            @RequestParam Orders<AccountEntity> orders,
+                                            @RequestParam Conditions<AccountDTO> conditions,
+                                            @RequestParam Orders<AccountDTO> orders,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, AccountDTO.class);
+        var columns = Columns.of(AccountDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findBy".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.findBy(limit, offset, columns, conditions, orders, tenant);
     }
 
     /**
@@ -180,14 +151,17 @@ public class AccountQuery {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public @Nonnull Page<AccountDTO> pageBy(@RequestParam long pageIndex,
+    public @Nonnull Page<AccountDTO> pageBy(DataFetchingEnvironment environment,
+                                            @RequestParam long pageIndex,
                                             @RequestParam long pageSize,
-                                            @RequestParam Conditions<AccountEntity> conditions,
-                                            @RequestParam Orders<AccountEntity> orders,
+                                            @RequestParam Conditions<AccountDTO> conditions,
+                                            @RequestParam Orders<AccountDTO> orders,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, AccountDTO.class);
+        var columns = Columns.of(AccountDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "pageBy".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
     }
 
     /**
@@ -197,10 +171,9 @@ public class AccountQuery {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public Long countBy(@RequestParam Conditions<AccountEntity> conditions,
+    public Long countBy(@RequestParam Conditions<AccountDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.service.countBy(conditions, tenant);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

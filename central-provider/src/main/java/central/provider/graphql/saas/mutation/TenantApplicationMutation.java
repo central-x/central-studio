@@ -31,7 +31,7 @@ import central.lang.Stringx;
 import central.provider.graphql.saas.dto.TenantApplicationDTO;
 import central.provider.graphql.saas.entity.TenantApplicationEntity;
 import central.provider.graphql.saas.mapper.TenantApplicationMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;

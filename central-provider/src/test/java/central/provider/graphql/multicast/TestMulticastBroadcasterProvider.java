@@ -30,7 +30,7 @@ import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.fetcher.saas.SaasContainer;
 import central.data.multicast.MulticastBroadcaster;
 import central.data.multicast.MulticastBroadcasterInput;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.multicast.entity.MulticastBroadcasterEntity;
@@ -38,7 +38,7 @@ import central.provider.graphql.multicast.mapper.MulticastBroadcasterMapper;
 import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
 import central.provider.graphql.saas.mapper.TenantMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Jsonx;
 import central.util.Listx;
@@ -147,7 +147,7 @@ public class TestMulticastBroadcasterProvider {
         assertNotNull(broadcaster.getEnabled());
         assertNotNull(broadcaster.getRemark());
         assertNotNull(broadcaster.getParams());
-        var params = Jsonx.Default().deserialize(broadcaster.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(broadcaster.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(6, params.size());
         // 关联查询

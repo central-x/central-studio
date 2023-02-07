@@ -30,7 +30,7 @@ import central.gateway.core.filter.predicate.PredicateType;
 import central.gateway.core.filter.predicate.impl.PathPredicate;
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
@@ -77,7 +77,7 @@ public class DynamicFilter implements Filter, Ordered, DisposableBean {
             // 2. 初始化其它断言
             for (var predicate : data.getPredicates()) {
                 var type = Assertx.requireNotNull(PredicateType.resolve(predicate.getType()), "找不到指定的断言类型: " + predicate.getType());
-                var params = Jsonx.Default().deserialize(predicate.getParams(), TypeReference.ofMap(String.class, Object.class));
+                var params = Jsonx.Default().deserialize(predicate.getParams(), TypeRef.ofMap(String.class, Object.class));
                 try {
                     var instance = factory.create(type.getType(), params);
                     this.predicates.add(instance);
@@ -90,7 +90,7 @@ public class DynamicFilter implements Filter, Ordered, DisposableBean {
         {
             // 初始化过滤器
             var type = Assertx.requireNotNull(FilterType.resolve(data.getType()), "找不到指定的过滤器类型: " + data.getType());
-            var params = Jsonx.Default().deserialize(data.getParams(), TypeReference.ofMap(String.class, Object.class));
+            var params = Jsonx.Default().deserialize(data.getParams(), TypeRef.ofMap(String.class, Object.class));
 
             try {
                 this.delegate = factory.create(type.getType(), params);

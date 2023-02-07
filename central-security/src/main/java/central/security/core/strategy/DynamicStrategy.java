@@ -27,7 +27,7 @@ package central.security.core.strategy;
 import central.data.security.SecurityStrategy;
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
@@ -59,7 +59,7 @@ public class DynamicStrategy implements Strategy, DisposableBean {
         var type = Assertx.requireNotNull(StrategyType.resolve(data.getType()), "找不到指定类型的插件类型: " + data.getType());
 
         try {
-            var params = Jsonx.Default().deserialize(this.data.getParams(), TypeReference.ofMap(String.class, Object.class));
+            var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
             this.delegate = this.factory.create(type.getType(), params);
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);

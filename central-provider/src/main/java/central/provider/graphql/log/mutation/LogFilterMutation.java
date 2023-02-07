@@ -35,7 +35,7 @@ import central.provider.graphql.log.mapper.LogFilterMapper;
 import central.provider.graphql.log.mapper.LogStorageFilterMapper;
 import central.provider.graphql.log.query.LogCollectorQuery;
 import central.provider.graphql.log.query.LogStorageQuery;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.util.Listx;

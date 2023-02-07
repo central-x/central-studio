@@ -27,12 +27,12 @@ package central.provider.graphql.log;
 import central.api.provider.log.LogStorageProvider;
 import central.data.log.LogStorage;
 import central.data.log.LogStorageInput;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.log.entity.LogStorageEntity;
 import central.provider.graphql.log.mapper.LogStorageMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
@@ -105,7 +105,7 @@ public class TestLogStorageProvider {
         assertNotNull(storage.getEnabled());
         assertNotNull(storage.getRemark());
         assertNotNull(storage.getParams());
-        var params = Jsonx.Default().deserialize(storage.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(storage.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(5, params.size());
         // 关联查询

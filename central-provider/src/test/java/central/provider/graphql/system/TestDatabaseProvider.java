@@ -39,7 +39,7 @@ import central.provider.graphql.system.entity.DatabaseEntity;
 import central.provider.graphql.system.mapper.DatabaseMapper;
 import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Jsonx;
 import central.util.Listx;

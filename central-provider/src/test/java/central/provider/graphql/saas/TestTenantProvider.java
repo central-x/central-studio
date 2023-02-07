@@ -38,7 +38,7 @@ import central.provider.graphql.saas.entity.TenantEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
 import central.provider.graphql.saas.mapper.TenantApplicationMapper;
 import central.provider.graphql.saas.mapper.TenantMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;

@@ -27,12 +27,12 @@ package central.provider.graphql.log;
 import central.api.provider.log.LogCollectorProvider;
 import central.data.log.LogCollector;
 import central.data.log.LogCollectorInput;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.log.entity.LogCollectorEntity;
 import central.provider.graphql.log.mapper.LogCollectorMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
@@ -100,7 +100,7 @@ public class TestLogCollectorProvider {
         assertNotNull(collector.getEnabled());
         assertNotNull(collector.getRemark());
         assertNotNull(collector.getParams());
-        var params = Jsonx.Default().deserialize(collector.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(collector.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(1, params.size());
         // 关联查询

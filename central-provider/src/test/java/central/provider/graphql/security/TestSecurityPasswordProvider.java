@@ -36,7 +36,7 @@ import central.provider.graphql.organization.mapper.AccountMapper;
 import central.provider.graphql.security.entity.SecurityPasswordEntity;
 import central.provider.graphql.security.mapper.SecurityPasswordMapper;
 import central.security.Passwordx;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

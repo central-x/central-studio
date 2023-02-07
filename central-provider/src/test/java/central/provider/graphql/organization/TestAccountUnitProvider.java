@@ -33,7 +33,7 @@ import central.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.provider.graphql.organization.entity.*;
 import central.provider.graphql.organization.mapper.*;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;

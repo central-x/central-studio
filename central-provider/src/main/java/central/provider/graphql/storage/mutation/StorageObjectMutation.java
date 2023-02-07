@@ -30,7 +30,7 @@ import central.lang.Stringx;
 import central.provider.graphql.storage.dto.StorageObjectDTO;
 import central.provider.graphql.storage.entity.StorageObjectEntity;
 import central.provider.graphql.storage.mapper.StorageObjectMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.util.Listx;
@@ -49,7 +49,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Storage Object

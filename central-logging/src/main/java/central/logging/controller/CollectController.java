@@ -26,7 +26,7 @@ package central.logging.controller;
 
 import central.io.IOStreamx;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.logging.controller.param.LogParams;
 import central.logging.core.collector.impl.http.HttpEvent;
 import central.util.Jsonx;
@@ -94,7 +94,7 @@ public class CollectController {
             return Map.of("message", "success");
         }
 
-        var params = Jsonx.Default().deserialize(body, TypeReference.ofList(LogParams.class));
+        var params = Jsonx.Default().deserialize(body, TypeRef.ofList(LogParams.class));
         if (params.isEmpty()) {
             return Map.of("message", "success");
         }

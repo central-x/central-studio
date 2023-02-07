@@ -31,7 +31,7 @@ import central.provider.graphql.organization.dto.DepartmentDTO;
 import central.provider.graphql.organization.entity.AccountDepartmentEntity;
 import central.provider.graphql.organization.entity.DepartmentEntity;
 import central.provider.graphql.organization.mapper.DepartmentMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;

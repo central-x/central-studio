@@ -58,6 +58,8 @@ public class InputStreamBody implements SecurityResponseBody {
 
     @Override
     public void write(SecurityExchange exchange) throws IOException {
-        IOStreamx.transfer(this.body, exchange.getResponse().getResponse().getOutputStream());
+        try (this.body) {
+            IOStreamx.transfer(this.body, exchange.getResponse().getResponse().getOutputStream());
+        }
     }
 }

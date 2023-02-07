@@ -29,7 +29,7 @@ import central.api.provider.saas.TenantProvider;
 import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.system.Dictionary;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -27,12 +27,12 @@ package central.provider.graphql.security;
 import central.api.provider.security.SecurityStrategyProvider;
 import central.data.security.SecurityStrategy;
 import central.data.security.SecurityStrategyInput;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.security.entity.SecurityStrategyEntity;
 import central.provider.graphql.security.mapper.SecurityStrategyMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
@@ -99,7 +99,7 @@ public class TestSecurityStrategyProvider {
         assertNotNull(strategy.getEnabled());
         assertNotNull(strategy.getRemark());
         assertNotNull(strategy.getParams());
-        var params = Jsonx.Default().deserialize(strategy.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(strategy.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(1, params.size());
         // 关联查询

@@ -27,15 +27,18 @@ package central.provider.graphql.authority.dto;
 import central.api.DTO;
 import central.provider.graphql.authority.entity.MenuEntity;
 import central.provider.graphql.authority.entity.PermissionEntity;
-import central.provider.graphql.authority.query.MenuQuery;
 import central.provider.graphql.authority.query.PermissionQuery;
+import central.provider.graphql.authority.service.MenuService;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.provider.graphql.saas.dto.ApplicationDTO;
-import central.sql.Conditions;
-import central.sql.Orders;
+import central.sql.query.Columns;
+import central.sql.query.Conditions;
+import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import central.web.XForwardedHeaders;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.SelectedField;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +65,9 @@ public class MenuDTO extends MenuEntity implements DTO {
      * 应用
      */
     @GraphQLGetter
-    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
-        return loader.load(this.getApplicationId());
+    public CompletableFuture<ApplicationDTO> getApplication(DataFetchingEnvironment environment,
+                                                            DataLoader<String, ApplicationDTO> loader) {
+        return loader.load(this.getApplicationId(), environment);
     }
 
 
@@ -71,17 +75,23 @@ public class MenuDTO extends MenuEntity implements DTO {
      * 父菜单
      */
     @GraphQLGetter
-    public CompletableFuture<MenuDTO> getParent(DataLoader<String, MenuDTO> loader) {
-        return loader.load(this.getParentId());
+    public CompletableFuture<MenuDTO> getParent(DataFetchingEnvironment environment,
+                                                DataLoader<String, MenuDTO> loader) {
+        return loader.load(this.getParentId(), environment);
     }
 
     /**
      * 子菜单
      */
     @GraphQLGetter
-    public List<MenuDTO> getChildren(@Autowired MenuQuery query,
+    public List<MenuDTO> getChildren(DataFetchingEnvironment environment,
+                                     @Autowired MenuService service,
                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return query.findBy(null, null, Conditions.of(MenuEntity.class).eq(MenuEntity::getParentId, this.getId()), Orders.of(MenuEntity.class).asc(MenuEntity::getOrder).asc(MenuEntity::getCode), tenant);
+        var columns = Columns.of(MenuDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "children".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return service.findBy(null, null, columns, Conditions.of(MenuDTO.class).eq(MenuDTO::getParentId, this.getId()), Orders.of(MenuDTO.class).asc(MenuDTO::getOrder).asc(MenuDTO::getCode), tenant);
     }
 
     /**
@@ -97,15 +107,17 @@ public class MenuDTO extends MenuEntity implements DTO {
      * 创建人信息
      */
     @GraphQLGetter
-    public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
-        return loader.load(this.getCreatorId());
+    public CompletableFuture<AccountDTO> getCreator(DataFetchingEnvironment environment,
+                                                    DataLoader<String, AccountDTO> loader) {
+        return loader.load(this.getCreatorId(), environment);
     }
 
     /**
      * 修改人信息
      */
     @GraphQLGetter
-    public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
-        return loader.load(this.getModifierId());
+    public CompletableFuture<AccountDTO> getModifier(DataFetchingEnvironment environment,
+                                                     DataLoader<String, AccountDTO> loader) {
+        return loader.load(this.getModifierId(), environment);
     }
 }

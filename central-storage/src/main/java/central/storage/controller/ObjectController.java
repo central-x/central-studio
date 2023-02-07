@@ -31,7 +31,7 @@ import central.data.storage.StorageObject;
 import central.data.storage.StorageObjectInput;
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.webmvc.render.FileRender;
 import central.storage.controller.param.*;
 import central.storage.controller.query.DetailsQuery;

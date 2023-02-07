@@ -1,5 +1,5 @@
 default:
-  image: mirror.yeh.cn/compiler:jdk17
+  image: mirror.central-x.com/compiler:jdk17
   tags:
     - docker
 
@@ -32,10 +32,10 @@ project:unit-test:
 pages:
   stage: lint
   image:
-    name: jetbrains/qodana-jvm-community:2022.2
+    name: jetbrains/qodana-jvm-community:2023.1
     entrypoint: [""]
   script:
-    - /opt/idea/bin/entrypoint --results-dir=$CI_PROJECT_DIR/public --save-report --report-dir=$CI_PROJECT_DIR/public
+    - qodana --save-report --results-dir=$CI_PROJECT_DIR/public --report-dir=$CI_PROJECT_DIR/public
   artifacts:
     expose_as: 'Lint report'
     paths:
@@ -48,9 +48,9 @@ project:deploy:
     - if: $CI_COMMIT_BRANCH =~ /^*.x$/
     - if: $CI_COMMIT_TAG =~ /^*.RELEASE$/
   before_script:
-    - echo "$DOCKER_PASSWORD" | docker login deploy.yeh.cn --username $DOCKER_USERNAME --password-stdin
+    - echo "$DOCKER_PASSWORD" | docker login deploy.central-x.com --username $DOCKER_USERNAME --password-stdin
   after_script:
-    - docker logout deploy.yeh.cn
+    - docker logout deploy.central-x.com
   script:
     - mvn clean package
     - mvn com.spotify:dockerfile-maven-plugin:build

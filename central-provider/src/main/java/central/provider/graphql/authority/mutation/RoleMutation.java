@@ -30,7 +30,7 @@ import central.lang.Stringx;
 import central.provider.graphql.authority.dto.RoleDTO;
 import central.provider.graphql.authority.entity.RoleEntity;
 import central.provider.graphql.authority.mapper.RoleMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;

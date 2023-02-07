@@ -30,7 +30,7 @@ import central.lang.Stringx;
 import central.provider.graphql.gateway.dto.GatewayFilterDTO;
 import central.provider.graphql.gateway.entity.GatewayFilterEntity;
 import central.provider.graphql.gateway.mapper.GatewayFilterMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.util.Listx;

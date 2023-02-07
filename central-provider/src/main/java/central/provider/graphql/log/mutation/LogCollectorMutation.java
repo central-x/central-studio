@@ -33,7 +33,7 @@ import central.provider.graphql.log.entity.LogCollectorEntity;
 import central.provider.graphql.log.entity.LogCollectorFilterEntity;
 import central.provider.graphql.log.mapper.LogCollectorFilterMapper;
 import central.provider.graphql.log.mapper.LogCollectorMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.util.Listx;

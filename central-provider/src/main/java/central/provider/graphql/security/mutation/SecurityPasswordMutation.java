@@ -29,7 +29,7 @@ import central.data.security.SecurityPasswordInput;
 import central.provider.graphql.security.dto.SecurityPasswordDTO;
 import central.provider.graphql.security.entity.SecurityPasswordEntity;
 import central.provider.graphql.security.mapper.SecurityPasswordMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;

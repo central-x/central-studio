@@ -24,16 +24,14 @@
 
 package central.multicast.core;
 
-import central.api.client.multicast.MessageBody;
 import central.api.client.multicast.body.StandardBody;
 import central.data.multicast.MulticastBroadcaster;
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
-import lombok.experimental.Delegate;
 import org.springframework.beans.factory.DisposableBean;
 
 import java.lang.reflect.ParameterizedType;
@@ -54,7 +52,7 @@ public class DynamicBroadcaster implements Broadcaster<Object>, DisposableBean {
     private final Broadcaster<Object> delegate;
 
     @Getter
-    private final TypeReference<Object> bodyType;
+    private final TypeRef<Object> bodyType;
 
     public DynamicBroadcaster(MulticastBroadcaster data, PlugletFactory factory) {
         this.data = data;
@@ -63,14 +61,14 @@ public class DynamicBroadcaster implements Broadcaster<Object>, DisposableBean {
         var type = Assertx.requireNotNull(BroadcasterType.resolve(data.getType()), "找不到指定类型的广播器类型: " + data.getType());
 
         try {
-            var params = Jsonx.Default().deserialize(data.getParams(), TypeReference.ofMap(String.class, Object.class));
+            var params = Jsonx.Default().deserialize(data.getParams(), TypeRef.ofMap(String.class, Object.class));
             this.delegate = this.factory.create(type.getType(), params);
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }
 
         var parameterizedType = (ParameterizedType) type.getType().getGenericInterfaces()[0];
-        this.bodyType = TypeReference.of(parameterizedType.getActualTypeArguments()[0]);
+        this.bodyType = TypeRef.of(parameterizedType.getActualTypeArguments()[0]);
     }
 
     @Override

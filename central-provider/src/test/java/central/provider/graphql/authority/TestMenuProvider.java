@@ -36,7 +36,7 @@ import central.provider.graphql.authority.mapper.MenuMapper;
 import central.provider.graphql.authority.mapper.PermissionMapper;
 import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Listx;
 import lombok.Setter;
@@ -521,6 +521,8 @@ public class TestMenuProvider extends TestProvider {
 
         assertNotNull(menu);
         assertNotNull(menu.getId());
+
+        menu = this.provider.findById(menu.getId());
 
         // 查询数据库
         assertTrue(this.mapper.existsBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, menu.getId())));

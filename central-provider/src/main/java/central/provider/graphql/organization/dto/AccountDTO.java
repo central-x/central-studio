@@ -29,10 +29,10 @@ import central.provider.graphql.authority.dto.RoleDTO;
 import central.provider.graphql.authority.query.RoleQuery;
 import central.provider.graphql.organization.entity.AccountEntity;
 import central.provider.graphql.organization.entity.AccountUnitEntity;
-import central.provider.graphql.organization.query.AccountQuery;
 import central.provider.graphql.organization.query.AccountUnitQuery;
-import central.sql.Conditions;
-import central.sql.Orders;
+import central.provider.graphql.organization.service.AccountService;
+import central.sql.query.Conditions;
+import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import central.web.XForwardedHeaders;
@@ -62,8 +62,8 @@ public class AccountDTO extends AccountEntity implements DTO {
      * 是否超级管理员
      */
     @GraphQLGetter
-    public Boolean getSupervisor(@Autowired AccountQuery query) {
-        return query.isSupervisor(this.getId());
+    public Boolean getSupervisor(@Autowired AccountService service) {
+        return service.isSupervisor(this.getId());
     }
 
     /**

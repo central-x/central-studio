@@ -24,7 +24,6 @@
 
 package central.provider;
 
-import central.starter.graphql.stub.EnableGraphQLStub;
 import org.springframework.context.annotation.Configuration;
 
 /**

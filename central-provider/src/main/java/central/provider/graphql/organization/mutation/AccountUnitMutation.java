@@ -29,7 +29,7 @@ import central.data.organization.AccountUnitInput;
 import central.provider.graphql.organization.dto.AccountUnitDTO;
 import central.provider.graphql.organization.entity.AccountUnitEntity;
 import central.provider.graphql.organization.mapper.AccountUnitMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;

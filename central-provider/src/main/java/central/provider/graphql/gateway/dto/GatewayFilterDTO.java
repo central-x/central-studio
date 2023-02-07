@@ -26,7 +26,7 @@ package central.provider.graphql.gateway.dto;
 
 import central.data.gateway.GatewayPredicate;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.graphql.gateway.entity.GatewayFilterEntity;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
@@ -62,7 +62,7 @@ public class GatewayFilterDTO extends GatewayFilterEntity {
         if (Stringx.isNullOrEmpty(this.getPredicateJson())) {
             return Collections.emptyList();
         }
-        return Jsonx.Default().deserialize(this.getPredicateJson(), TypeReference.ofList(GatewayPredicate.class));
+        return Jsonx.Default().deserialize(this.getPredicateJson(), TypeRef.ofList(GatewayPredicate.class));
     }
 
     /**

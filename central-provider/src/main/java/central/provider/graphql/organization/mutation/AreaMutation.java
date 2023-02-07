@@ -30,7 +30,7 @@ import central.lang.Stringx;
 import central.provider.graphql.organization.dto.AreaDTO;
 import central.provider.graphql.organization.entity.AreaEntity;
 import central.provider.graphql.organization.mapper.AreaMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;

@@ -29,12 +29,12 @@ import central.data.gateway.GatewayFilter;
 import central.data.gateway.GatewayFilterInput;
 import central.data.gateway.GatewayPredicate;
 import central.data.gateway.GatewayPredicateInput;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.gateway.entity.GatewayFilterEntity;
 import central.provider.graphql.gateway.mapper.GatewayFilterMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
@@ -108,7 +108,7 @@ public class TestGatewayFilterProvider {
         assertNotNull(filter.getEnabled());
         assertNotNull(filter.getRemark());
         assertNotNull(filter.getParams());
-        var params = Jsonx.Default().deserialize(filter.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(filter.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(2, params.size());
 
@@ -162,7 +162,7 @@ public class TestGatewayFilterProvider {
         assertNotNull(filter.getEnabled());
         assertNotNull(filter.getRemark());
         assertNotNull(filter.getParams());
-        var params = Jsonx.Default().deserialize(filter.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(filter.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(2, params.size());
 
@@ -216,7 +216,7 @@ public class TestGatewayFilterProvider {
         assertNotNull(filter.getEnabled());
         assertNotNull(filter.getRemark());
         assertNotNull(filter.getParams());
-        var params = Jsonx.Default().deserialize(filter.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(filter.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(2, params.size());
 
@@ -274,7 +274,7 @@ public class TestGatewayFilterProvider {
         assertNotNull(filter.getEnabled());
         assertNotNull(filter.getRemark());
         assertNotNull(filter.getParams());
-        var params = Jsonx.Default().deserialize(filter.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(filter.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(2, params.size());
 

@@ -34,7 +34,7 @@ import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.entity.ApplicationModuleEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
 import central.provider.graphql.saas.mapper.ApplicationModuleMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Listx;
 import lombok.Setter;

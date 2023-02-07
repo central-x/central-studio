@@ -27,7 +27,7 @@ package central.provider.graphql.system.dto;
 import central.api.DTO;
 import central.data.system.DatabaseProperties;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.provider.graphql.system.entity.DatabaseEntity;
 import central.provider.graphql.saas.dto.ApplicationDTO;
@@ -78,7 +78,7 @@ public class DatabaseDTO extends DatabaseEntity implements DTO {
         if (Stringx.isNullOrBlank(this.getSlavesJson())) {
             return Collections.emptyList();
         } else {
-            return Jsonx.Default().deserialize(this.getSlavesJson(), TypeReference.ofList(DatabaseProperties.class));
+            return Jsonx.Default().deserialize(this.getSlavesJson(), TypeRef.ofList(DatabaseProperties.class));
         }
     }
 

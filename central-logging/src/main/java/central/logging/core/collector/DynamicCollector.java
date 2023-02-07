@@ -24,14 +24,11 @@
 
 package central.logging.core.collector;
 
-import central.api.scheduled.ScheduledDataContext;
 import central.data.log.Log;
 import central.data.log.LogCollector;
 import central.lang.Assertx;
-import central.lang.BooleanEnum;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
-import central.logging.core.filter.DynamicFilter;
+import central.lang.reflect.TypeRef;
 import central.logging.core.filter.Filter;
 import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
@@ -69,7 +66,7 @@ public class DynamicCollector extends Collector implements DisposableBean {
         var type = Assertx.requireNotNull(CollectorType.resolve(data.getType()), "找不到指定类型的采集器: " + data.getType());
 
         try {
-            var params = Jsonx.Default().deserialize(this.data.getParams(), TypeReference.ofMap(String.class, Object.class));
+            var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
             this.collector = this.factory.create(type.getType(), params);
             this.collector.setDelegate(this);
         } catch (Exception ex) {

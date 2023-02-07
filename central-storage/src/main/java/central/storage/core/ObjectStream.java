@@ -64,7 +64,7 @@ public abstract class ObjectStream {
     /**
      * 是否可以重用
      */
-    public boolean isResumable(){
+    public boolean isResumable() {
         return false;
     }
 
@@ -100,7 +100,9 @@ public abstract class ObjectStream {
      * @param output 输出流
      */
     public void transferTo(OutputStream output) throws IOException {
-        IOStreamx.transfer(this.getInputStream(), output);
+        try (var input = this.getInputStream()) {
+            IOStreamx.transfer(input, output);
+        }
     }
 
     /**
@@ -114,7 +116,7 @@ public abstract class ObjectStream {
                 throw new IOException("无法创建目录: " + file.getParentFile().getAbsolutePath());
             }
         }
-        if (file.createNewFile()){
+        if (file.createNewFile()) {
             this.transferTo(Files.newOutputStream(file.toPath(), StandardOpenOption.WRITE));
         }
     }

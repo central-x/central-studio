@@ -30,7 +30,7 @@ import central.lang.Stringx;
 import central.provider.graphql.multicast.dto.MulticastBroadcasterDTO;
 import central.provider.graphql.multicast.entity.MulticastBroadcasterEntity;
 import central.provider.graphql.multicast.mapper.MulticastBroadcasterMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.util.Listx;

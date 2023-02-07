@@ -98,6 +98,8 @@ public class ErrorBody implements SecurityResponseBody {
             stream = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
         }
 
-        IOStreamx.transfer(stream, exchange.getResponse().getResponse().getOutputStream());
+        try (stream){
+            IOStreamx.transfer(stream, exchange.getResponse().getResponse().getOutputStream());
+        }
     }
 }

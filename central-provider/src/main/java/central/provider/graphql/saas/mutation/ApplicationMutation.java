@@ -33,7 +33,7 @@ import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.entity.ApplicationModuleEntity;
 import central.provider.graphql.saas.entity.TenantApplicationEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;

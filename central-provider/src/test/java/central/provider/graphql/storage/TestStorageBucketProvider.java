@@ -30,7 +30,7 @@ import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.fetcher.saas.SaasContainer;
 import central.data.storage.StorageBucket;
 import central.data.storage.StorageBucketInput;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.saas.entity.ApplicationEntity;
@@ -38,7 +38,7 @@ import central.provider.graphql.saas.mapper.ApplicationMapper;
 import central.provider.graphql.saas.mapper.TenantMapper;
 import central.provider.graphql.storage.entity.StorageBucketEntity;
 import central.provider.graphql.storage.mapper.StorageBucketMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Jsonx;
 import central.util.Listx;
@@ -143,7 +143,7 @@ public class TestStorageBucketProvider {
         assertNotNull(bucket.getEnabled());
         assertNotNull(bucket.getRemark());
         assertNotNull(bucket.getParams());
-        var params = Jsonx.Default().deserialize(bucket.getParams(), TypeReference.ofMap(String.class, Object.class));
+        var params = Jsonx.Default().deserialize(bucket.getParams(), TypeRef.ofMap(String.class, Object.class));
         assertNotNull(params);
         assertEquals(1, params.size());
         // 关联查询

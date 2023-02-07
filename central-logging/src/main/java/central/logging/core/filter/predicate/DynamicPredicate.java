@@ -28,7 +28,7 @@ import central.data.log.Log;
 import central.data.log.LogPredicate;
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
@@ -55,7 +55,7 @@ public class DynamicPredicate implements Predicate, DisposableBean {
         var type = Assertx.requireNotNull(PredicateType.resolve(data.getType()), "找不到指定类型的日志断言: " + data.getType());
 
         try {
-            var params = Jsonx.Default().deserialize(data.getParams(), TypeReference.ofMap(String.class, Object.class));
+            var params = Jsonx.Default().deserialize(data.getParams(), TypeRef.ofMap(String.class, Object.class));
             // 动态创建断言
             this.delegate = factory.create(type.getType(), params);
         } catch (Exception ex) {

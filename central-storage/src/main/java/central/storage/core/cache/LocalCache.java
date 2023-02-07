@@ -56,7 +56,9 @@ public class LocalCache implements BucketCache {
     public void put(String key, InputStream data) throws IOException {
         var cache = new File(this.path, key);
         Assertx.mustTrue(cache.createNewFile(), IOException::new, "缓存[{}]已存在", key);
-        IOStreamx.copy(data, Files.newOutputStream(cache.toPath(), StandardOpenOption.WRITE));
+        try (data; var output = Files.newOutputStream(cache.toPath(), StandardOpenOption.WRITE)) {
+            IOStreamx.transfer(data, output);
+        }
     }
 
     @Override
@@ -64,7 +66,9 @@ public class LocalCache implements BucketCache {
         var cache = new File(this.path, key);
         Filex.delete(cache);
         Assertx.mustTrue(cache.createNewFile(), IOException::new, "缓存[{}]创建失败", key);
-        IOStreamx.copy(data, Files.newOutputStream(cache.toPath(), StandardOpenOption.WRITE));
+        try (data; var output = Files.newOutputStream(cache.toPath(), StandardOpenOption.WRITE)) {
+            IOStreamx.transfer(data, output);
+        }
     }
 
     @Override

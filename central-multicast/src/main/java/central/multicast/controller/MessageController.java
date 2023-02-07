@@ -30,7 +30,7 @@ import central.data.multicast.MulticastMessage;
 import central.data.multicast.MulticastMessageInput;
 import central.data.multicast.option.MessageStatus;
 import central.data.multicast.option.PublishMode;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.multicast.controller.param.PublishParams;
 import central.multicast.core.Container;
 import central.multicast.core.DynamicBroadcaster;
@@ -106,7 +106,7 @@ public class MessageController {
         var inputs = new ArrayList<MulticastMessageInput>();
 
         if (PublishMode.STANDARD.isCompatibleWith(params.getMode())) {
-            var bodies = Jsonx.Default().deserialize(Jsonx.Default().serialize(params.getMessages()), TypeReference.ofList(StandardBody.class));
+            var bodies = Jsonx.Default().deserialize(Jsonx.Default().serialize(params.getMessages()), TypeRef.ofList(StandardBody.class));
             for (var body : bodies) {
                 Validatex.Default().validate(body);
                 broadcaster.standardPublish(body);
@@ -118,7 +118,7 @@ public class MessageController {
                         .build());
             }
         } else {
-            var bodies = Jsonx.Default().deserialize(Jsonx.Default().serialize(params.getMessages()), TypeReference.ofList(broadcaster.getBodyType()));
+            var bodies = Jsonx.Default().deserialize(Jsonx.Default().serialize(params.getMessages()), TypeRef.ofList(broadcaster.getBodyType()));
             for (var body : bodies) {
                 Validatex.Default().validate(body);
                 broadcaster.customPublish(body);

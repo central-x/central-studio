@@ -40,7 +40,7 @@ import central.provider.graphql.storage.entity.StorageObjectEntity;
 import central.provider.graphql.storage.mapper.StorageBucketMapper;
 import central.provider.graphql.storage.mapper.StorageObjectMapper;
 import central.security.Digestx;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Jsonx;
 import central.util.Listx;

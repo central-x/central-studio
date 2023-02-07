@@ -32,7 +32,7 @@ import central.provider.graphql.system.dto.DictionaryItemDTO;
 import central.provider.graphql.system.entity.DictionaryEntity;
 import central.provider.graphql.system.entity.DictionaryItemEntity;
 import central.provider.graphql.system.mapper.DictionaryMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;

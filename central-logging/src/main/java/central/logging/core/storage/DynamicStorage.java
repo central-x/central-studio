@@ -28,7 +28,7 @@ import central.data.log.Log;
 import central.data.log.LogStorage;
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
@@ -59,7 +59,7 @@ public class DynamicStorage implements Storage, DisposableBean {
 
         try {
             // 动态创建存储器
-            var params = Jsonx.Default().deserialize(this.data.getParams(), TypeReference.ofMap(String.class, Object.class));
+            var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
             this.storage = factory.create(type.getType(), params);
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);

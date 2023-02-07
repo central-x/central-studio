@@ -32,7 +32,7 @@ import central.provider.graphql.saas.dto.TenantDTO;
 import central.provider.graphql.saas.entity.TenantApplicationEntity;
 import central.provider.graphql.saas.entity.TenantEntity;
 import central.provider.graphql.saas.mapper.TenantMapper;
-import central.sql.Conditions;
+import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;

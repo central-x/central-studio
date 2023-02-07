@@ -26,15 +26,15 @@ package central.provider.graphql.log.dto;
 
 import central.data.log.LogPredicate;
 import central.lang.Stringx;
-import central.lang.reflect.TypeReference;
+import central.lang.reflect.TypeRef;
 import central.provider.graphql.log.entity.LogCollectorEntity;
 import central.provider.graphql.log.entity.LogFilterEntity;
 import central.provider.graphql.log.entity.LogStorageEntity;
 import central.provider.graphql.log.query.LogCollectorQuery;
 import central.provider.graphql.log.query.LogStorageQuery;
 import central.provider.graphql.organization.dto.AccountDTO;
-import central.sql.Conditions;
-import central.sql.Orders;
+import central.sql.query.Conditions;
+import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import central.util.Jsonx;
@@ -95,7 +95,7 @@ public class LogFilterDTO extends LogFilterEntity {
         if (Stringx.isNullOrBlank(this.getPredicateJson())) {
             return Collections.emptyList();
         } else {
-            return Jsonx.Default().deserialize(this.getPredicateJson(), TypeReference.ofList(LogPredicate.class));
+            return Jsonx.Default().deserialize(this.getPredicateJson(), TypeRef.ofList(LogPredicate.class));
         }
     }
 

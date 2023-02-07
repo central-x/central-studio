@@ -65,9 +65,9 @@ public class ZipCompressor implements Compressor {
             return;
         }
 
-        try (var output = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(zip.toPath(), StandardOpenOption.WRITE)))) {
-            IOStreamx.transfer(Files.newInputStream(file.toPath(), StandardOpenOption.READ), output);
-            output.flush();
+        try (var input = IOStreamx.buffered(Files.newInputStream(file.toPath(), StandardOpenOption.READ));
+             var output = IOStreamx.buffered(new ZipOutputStream(Files.newOutputStream(zip.toPath(), StandardOpenOption.WRITE)))) {
+            IOStreamx.transfer(input, output);
             // 删除原来的文件
             Filex.delete(file);
         } catch (IOException ex) {
