@@ -54,6 +54,13 @@ public class MenuService {
     @Setter(onMethod_ = @Autowired)
     private MenuMapper mapper;
 
+    /**
+     * 根据主键查询数据
+     *
+     * @param id      主键
+     * @param columns 字段列表
+     * @param tenant  租户标识
+     */
     public @Nullable MenuDTO findById(@Nullable String id,
                                       @Nullable Columns<MenuDTO> columns,
                                       @Nonnull String tenant) {
@@ -64,6 +71,13 @@ public class MenuService {
         return DTO.wrap(entity, MenuDTO.class);
     }
 
+    /**
+     * 查询数据
+     *
+     * @param ids     主键
+     * @param columns 字段列表
+     * @param tenant  租户标识
+     */
     public @Nonnull List<MenuDTO> findByIds(@Nullable List<String> ids,
                                             @Nullable Columns<MenuDTO> columns,
                                             @Nonnull String tenant) {
@@ -76,6 +90,16 @@ public class MenuService {
         return DTO.wrap(entities, MenuDTO.class);
     }
 
+    /**
+     * 查询数据
+     *
+     * @param limit      获取前 N 条数据
+     * @param offset     偏移量
+     * @param columns    字段列表
+     * @param conditions 过滤条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     */
     public @Nonnull List<MenuDTO> findBy(@Nullable Long limit,
                                          @Nullable Long offset,
                                          @Nullable Columns<MenuDTO> columns,
@@ -87,6 +111,16 @@ public class MenuService {
         return DTO.wrap(list, MenuDTO.class);
     }
 
+    /**
+     * 分页查询数据
+     *
+     * @param pageIndex  分页下标
+     * @param pageSize   分页大小
+     * @param columns    字段列表
+     * @param conditions 过滤条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     */
     public @Nonnull Page<MenuDTO> pageBy(@Nonnull Long pageIndex,
                                          @Nonnull Long pageSize,
                                          @Nullable Columns<MenuDTO> columns,
@@ -98,6 +132,12 @@ public class MenuService {
         return DTO.wrap(page, MenuDTO.class);
     }
 
+    /**
+     * 查询符合条件的数据数量
+     *
+     * @param conditions 筛选条件
+     * @param tenant     租户标识
+     */
     public Long countBy(@Nullable Conditions<MenuDTO> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);

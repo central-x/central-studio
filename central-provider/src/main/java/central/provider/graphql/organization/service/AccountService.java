@@ -67,19 +67,19 @@ public class AccountService {
     public @Nonnull AccountEntity getSupervisor(@Nonnull String tenant) {
         var sa = properties.getSupervisor();
 
-        var superAdmin = new AccountEntity();
-        superAdmin.setId(sa.getUsername());
-        superAdmin.setUsername(sa.getUsername());
-        superAdmin.setEmail(sa.getEmail());
-        superAdmin.setMobile(null);
-        superAdmin.setName(sa.getName());
-        superAdmin.setAvatar(sa.getAvatar());
-        superAdmin.setAdmin(Boolean.TRUE);
-        superAdmin.setEnabled(sa.getEnabled());
-        superAdmin.setDeleted(Boolean.FALSE);
-        superAdmin.setTenantCode(tenant);
-        superAdmin.updateCreator(sa.getUsername());
-        return superAdmin;
+        var supervisor = new AccountEntity();
+        supervisor.setId(sa.getUsername());
+        supervisor.setUsername(sa.getUsername());
+        supervisor.setEmail(sa.getEmail());
+        supervisor.setMobile(null);
+        supervisor.setName(sa.getName());
+        supervisor.setAvatar(sa.getAvatar());
+        supervisor.setAdmin(Boolean.TRUE);
+        supervisor.setEnabled(sa.getEnabled());
+        supervisor.setDeleted(Boolean.FALSE);
+        supervisor.setTenantCode(tenant);
+        supervisor.updateCreator(sa.getUsername());
+        return supervisor;
     }
 
     /**
@@ -91,6 +91,13 @@ public class AccountService {
         return Objects.equals(this.properties.getSupervisor().getUsername(), id);
     }
 
+    /**
+     * 根据主键查询数据
+     *
+     * @param id      主键
+     * @param columns 字段列表
+     * @param tenant  租户标识
+     */
     public @Nullable AccountDTO findById(@Nullable String id,
                                          @Nullable Columns<AccountDTO> columns,
                                          @Nonnull String tenant) {
@@ -103,6 +110,13 @@ public class AccountService {
         return DTO.wrap(entity, AccountDTO.class);
     }
 
+    /**
+     * 查询数据
+     *
+     * @param ids     主键
+     * @param columns 字段列表
+     * @param tenant  租户标识
+     */
     public @Nonnull List<AccountDTO> findByIds(@Nullable List<String> ids,
                                                @Nullable Columns<AccountDTO> columns,
                                                @Nonnull String tenant) {
@@ -120,6 +134,16 @@ public class AccountService {
         return DTO.wrap(entities, AccountDTO.class);
     }
 
+    /**
+     * 查询数据
+     *
+     * @param limit      获取前 N 条数据
+     * @param offset     偏移量
+     * @param columns    字段列表
+     * @param conditions 过滤条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     */
     public @Nonnull List<AccountDTO> findBy(@Nullable Long limit,
                                             @Nullable Long offset,
                                             @Nullable Columns<AccountDTO> columns,
@@ -131,6 +155,16 @@ public class AccountService {
         return DTO.wrap(list, AccountDTO.class);
     }
 
+    /**
+     * 分页查询数据
+     *
+     * @param pageIndex  分页下标
+     * @param pageSize   分页大小
+     * @param columns    字段列表
+     * @param conditions 过滤条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     */
     public @Nonnull Page<AccountDTO> pageBy(@Nonnull long pageIndex,
                                             @Nonnull long pageSize,
                                             @Nullable Columns<AccountDTO> columns,
@@ -142,6 +176,12 @@ public class AccountService {
         return DTO.wrap(page, AccountDTO.class);
     }
 
+    /**
+     * 查询符合条件的数据数量
+     *
+     * @param conditions 筛选条件
+     * @param tenant     租户标识
+     */
     public Long countBy(@Nullable Conditions<AccountDTO> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
