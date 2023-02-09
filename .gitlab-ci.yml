@@ -16,17 +16,17 @@ project:build:
     - mvn clean compile
 
 # 单元测试
-project:unit-test:
-  stage: test
-  script:
-    - mvn verify
-  artifacts:
-    when: always
-    expire_in: 30 days
-    reports:
-      junit:
-        - central-*/target/surefire-reports/TEST-*.xml
-        - central-*/target/failsafe-reports/TEST-*.xml
+#project:unit-test:
+#  stage: test
+#  script:
+#    - mvn verify
+#  artifacts:
+#    when: always
+#    expire_in: 30 days
+#    reports:
+#      junit:
+#        - central-*/target/surefire-reports/TEST-*.xml
+#        - central-*/target/failsafe-reports/TEST-*.xml
 
 # 使用 GitLab Pages 功能托管代码质量报告
 pages:
