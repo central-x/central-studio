@@ -164,7 +164,7 @@ public class PermissionQuery {
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
 
         var columns = Columns.of(PermissionDTO.class, environment.getSelectionSet().getFields().stream()
-                .filter(it -> "pageBy".equals(it.getParentField().getName()))
+                .filter(it -> "Page.data".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
         return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);

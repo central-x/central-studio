@@ -26,16 +26,19 @@ package central.provider.graphql.organization.dto;
 
 import central.api.DTO;
 import central.provider.graphql.authority.dto.RoleDTO;
-import central.provider.graphql.authority.query.RoleQuery;
+import central.provider.graphql.authority.service.RoleService;
 import central.provider.graphql.organization.entity.AccountEntity;
 import central.provider.graphql.organization.entity.AccountUnitEntity;
 import central.provider.graphql.organization.query.AccountUnitQuery;
 import central.provider.graphql.organization.service.AccountService;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import central.web.XForwardedHeaders;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.SelectedField;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,12 +102,17 @@ public class AccountDTO extends AccountEntity implements DTO {
      * 获取角色信息
      */
     @GraphQLGetter
-    public List<RoleDTO> getRoles(@RequestParam(required = false) Long first,
+    public List<RoleDTO> getRoles(DataFetchingEnvironment environment,
+                                  @RequestParam(required = false) Long first,
                                   @RequestParam(required = false) Long offset,
-                                  @RequestParam Conditions conditions,
-                                  @RequestParam Orders orders,
+                                  @RequestParam Conditions<RoleDTO> conditions,
+                                  @RequestParam Orders<RoleDTO> orders,
                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                                  @Autowired RoleQuery query) {
-        return query.findBy(first, offset, Conditions.group(conditions).eq("account.id", this.getId()), orders, tenant);
+                                  @Autowired RoleService service) {
+        var columns = Columns.of(RoleDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "roles".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return service.findBy(first, offset, columns, Conditions.group(conditions).eq("account.id", this.getId()), orders, tenant);
     }
 }

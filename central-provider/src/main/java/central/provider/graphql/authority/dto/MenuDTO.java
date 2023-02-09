@@ -26,9 +26,8 @@ package central.provider.graphql.authority.dto;
 
 import central.api.DTO;
 import central.provider.graphql.authority.entity.MenuEntity;
-import central.provider.graphql.authority.entity.PermissionEntity;
-import central.provider.graphql.authority.query.PermissionQuery;
 import central.provider.graphql.authority.service.MenuService;
+import central.provider.graphql.authority.service.PermissionService;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.provider.graphql.saas.dto.ApplicationDTO;
 import central.sql.query.Columns;
@@ -98,9 +97,14 @@ public class MenuDTO extends MenuEntity implements DTO {
      * 权限信息
      */
     @GraphQLGetter
-    public List<PermissionDTO> getPermissions(@Autowired PermissionQuery query,
+    public List<PermissionDTO> getPermissions(DataFetchingEnvironment environment,
+                                              @Autowired PermissionService service,
                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return query.findBy(null, null, Conditions.of(PermissionEntity.class).eq(PermissionEntity::getMenuId, this.getId()), null, tenant);
+        var columns = Columns.of(PermissionDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "permissions".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return service.findBy(null, null, columns, Conditions.of(PermissionDTO.class).eq(PermissionDTO::getMenuId, this.getId()), null, tenant);
     }
 
     /**
