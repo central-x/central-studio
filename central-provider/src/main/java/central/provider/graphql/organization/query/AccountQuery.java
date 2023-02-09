@@ -67,8 +67,9 @@ public class AccountQuery {
     /**
      * 批量数据加载器
      *
-     * @param ids    主键
-     * @param tenant 租户标识
+     * @param environment Graphql 批量加载上下文环境
+     * @param ids         主键
+     * @param tenant      租户标识
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, AccountDTO> batchLoader(BatchLoaderEnvironment environment,
@@ -86,8 +87,9 @@ public class AccountQuery {
     /**
      * 查询数据
      *
-     * @param id     主键
-     * @param tenant 租户标识
+     * @param environment Graphql 查询上下文环境
+     * @param id          主键
+     * @param tenant      租户标识
      */
     @GraphQLFetcher
     public @Nullable AccountDTO findById(DataFetchingEnvironment environment,
@@ -104,8 +106,9 @@ public class AccountQuery {
     /**
      * 查询数据
      *
-     * @param ids    主键
-     * @param tenant 租户标识
+     * @param environment Graphql 查询上下文环境
+     * @param ids         主键
+     * @param tenant      租户标识
      */
     @GraphQLFetcher
     public @Nonnull List<AccountDTO> findByIds(DataFetchingEnvironment environment,
@@ -121,11 +124,12 @@ public class AccountQuery {
     /**
      * 查询数据
      *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
+     * @param environment Graphql 查询上下文环境
+     * @param limit       获取前 N 条数据
+     * @param offset      偏移量
+     * @param conditions  过滤条件
+     * @param orders      排序条件
+     * @param tenant      租户标识
      */
     @GraphQLFetcher
     public @Nonnull List<AccountDTO> findBy(DataFetchingEnvironment environment,
@@ -144,11 +148,12 @@ public class AccountQuery {
     /**
      * 分页查询数据
      *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
+     * @param environment Graphql 查询上下文环境
+     * @param pageIndex   分页下标
+     * @param pageSize    分页大小
+     * @param conditions  过滤条件
+     * @param orders      排序条件
+     * @param tenant      租户标识
      */
     @GraphQLFetcher
     public @Nonnull Page<AccountDTO> pageBy(DataFetchingEnvironment environment,

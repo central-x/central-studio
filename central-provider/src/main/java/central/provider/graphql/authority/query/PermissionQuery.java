@@ -24,18 +24,20 @@
 
 package central.provider.graphql.authority.query;
 
-import central.api.DTO;
 import central.bean.Page;
 import central.provider.graphql.authority.dto.PermissionDTO;
-import central.provider.graphql.authority.entity.PermissionEntity;
-import central.provider.graphql.authority.mapper.PermissionMapper;
+import central.provider.graphql.authority.service.PermissionService;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.SelectedField;
 import lombok.Setter;
+import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -45,6 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -57,90 +60,114 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "authority/query", types = PermissionDTO.class)
 public class PermissionQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private PermissionMapper mapper;
+    private PermissionService service;
 
     /**
      * 批量数据加载器
      *
-     * @param ids    主键
-     * @param tenant 租户标识
+     * @param environment Graphql 批量加载上下文环境
+     * @param ids         主键
+     * @param tenant      租户标识
      */
     @GraphQLBatchLoader
-    public @Nonnull Map<String, PermissionDTO> batchLoader(@RequestParam List<String> ids,
+    public @Nonnull Map<String, PermissionDTO> batchLoader(BatchLoaderEnvironment environment,
+                                                           @RequestParam List<String> ids,
                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(PermissionEntity.class).in(PermissionEntity::getId, ids).eq(PermissionEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, PermissionDTO.class))
-                .collect(Collectors.toMap(PermissionDTO::getId, it -> it));
+        var fields = environment.getKeyContextsList().stream().filter(it -> it instanceof DataFetchingEnvironment)
+                .map(it -> (DataFetchingEnvironment) it)
+                .flatMap(it -> it.getSelectionSet().getFields().stream())
+                .map(SelectedField::getName).distinct().toArray(String[]::new);
+
+        return this.service.findByIds(ids, Columns.of(PermissionDTO.class, fields), tenant)
+                .stream().collect(Collectors.toMap(PermissionDTO::getId, Function.identity()));
     }
 
     /**
      * 根据主键查询数据
      *
-     * @param id     主键
-     * @param tenant 租户标识
+     * @param environment Graphql 查询上下文环境
+     * @param id          主键
+     * @param tenant      租户标识
      */
     @GraphQLFetcher
-    public @Nullable PermissionDTO findById(@RequestParam String id,
+    public @Nullable PermissionDTO findById(DataFetchingEnvironment environment,
+                                            @RequestParam String id,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getId, id).eq(PermissionEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, PermissionDTO.class);
+        var columns = Columns.of(PermissionDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findById".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.findById(id, columns, tenant);
     }
 
 
     /**
      * 查询数据
      *
-     * @param ids    主键
-     * @param tenant 租户标识
+     * @param environment Graphql 查询上下文环境
+     * @param ids         主键
+     * @param tenant      租户标识
      */
     @GraphQLFetcher
-    public @Nonnull List<PermissionDTO> findByIds(@RequestParam List<String> ids,
+    public @Nonnull List<PermissionDTO> findByIds(DataFetchingEnvironment environment,
+                                                  @RequestParam List<String> ids,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(PermissionEntity.class).in(PermissionEntity::getId, ids).eq(PermissionEntity::getTenantCode, tenant));
+        var columns = Columns.of(PermissionDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findByIds".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return DTO.wrap(entities, PermissionDTO.class);
+        return this.service.findByIds(ids, columns, tenant);
     }
 
     /**
      * 查询数据
      *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
+     * @param environment Graphql 查询上下文环境
+     * @param limit       获取前 N 条数据
+     * @param offset      偏移量
+     * @param conditions  过滤条件
+     * @param orders      排序条件
+     * @param tenant      租户标识
      */
     @GraphQLFetcher
-    public @Nonnull List<PermissionDTO> findBy(@RequestParam(required = false) Long limit,
+    public @Nonnull List<PermissionDTO> findBy(DataFetchingEnvironment environment,
+                                               @RequestParam(required = false) Long limit,
                                                @RequestParam(required = false) Long offset,
-                                               @RequestParam Conditions<PermissionEntity> conditions,
-                                               @RequestParam Orders<PermissionEntity> orders,
+                                               @RequestParam Conditions<PermissionDTO> conditions,
+                                               @RequestParam Orders<PermissionDTO> orders,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(PermissionEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, PermissionDTO.class);
+        var columns = Columns.of(PermissionDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "findBy".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.findBy(limit, offset, columns, conditions, orders, tenant);
     }
 
     /**
      * 分页查询数据
      *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
+     * @param environment Graphql 查询上下文环境
+     * @param pageIndex   分页下标
+     * @param pageSize    分页大小
+     * @param conditions  过滤条件
+     * @param orders      排序条件
+     * @param tenant      租户标识
      */
     @GraphQLFetcher
-    public @Nonnull Page<PermissionDTO> pageBy(@RequestParam long pageIndex,
+    public @Nonnull Page<PermissionDTO> pageBy(DataFetchingEnvironment environment,
+                                               @RequestParam long pageIndex,
                                                @RequestParam long pageSize,
-                                               @RequestParam Conditions<PermissionEntity> conditions,
-                                               @RequestParam Orders<PermissionEntity> orders,
+                                               @RequestParam Conditions<PermissionDTO> conditions,
+                                               @RequestParam Orders<PermissionDTO> orders,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(PermissionEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, PermissionDTO.class);
+
+        var columns = Columns.of(PermissionDTO.class, environment.getSelectionSet().getFields().stream()
+                .filter(it -> "pageBy".equals(it.getParentField().getName()))
+                .map(SelectedField::getName).toList().toArray(new String[0]));
+
+        return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
     }
 
     /**
@@ -150,9 +177,8 @@ public class PermissionQuery {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public Long countBy(@RequestParam Conditions<PermissionEntity> conditions,
+    public Long countBy(@RequestParam Conditions<PermissionDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(PermissionEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.service.countBy(conditions, tenant);
     }
 }
