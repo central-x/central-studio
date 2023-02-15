@@ -27,7 +27,7 @@ package central.security.core.strategy.dynamic;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
 import central.validation.Label;
@@ -58,8 +58,8 @@ public class SessionStrategy implements Strategy {
 
     @Override
     public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(ExchangeAttributes.Session.TIMEOUT, this.timeout);
-        exchange.setAttribute(ExchangeAttributes.Session.ISSUER, this.issuer);
+        exchange.setAttribute(SessionAttributes.TIMEOUT, this.timeout);
+        exchange.setAttribute(SessionAttributes.ISSUER, this.issuer);
         chain.execute(exchange);
     }
 }

@@ -22,21 +22,47 @@
  * SOFTWARE.
  */
 
-package central.dashboard;
+package central.security.core.attribute;
 
-import central.starter.graphql.stub.EnableGraphQLStub;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import central.lang.Attribute;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * Dashboard Application
+ * 密码配置
  *
  * @author Alan Yeh
- * @since 2022/11/17
+ * @since 2023/02/15
  */
-@SpringBootApplication
-public class DashboardApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DashboardApplication.class, args);
-    }
+public interface PasswordAttributes {
+    /**
+     * 最小长度
+     */
+    Attribute<Integer> MIN = Attribute.of("password.min", 6);
+    /**
+     * 最大长度
+     */
+    Attribute<Integer> MAX = Attribute.of("password.max", 16);
+    /**
+     * 大写字母数量
+     */
+    Attribute<Integer> UPPERCASE = Attribute.of("password.capital", 0);
+    /**
+     * 小写字母数量
+     */
+    Attribute<Integer> LOWERCASE = Attribute.of("password.lowercase", 0);
+    /**
+     * 数字数量
+     */
+    Attribute<Integer> NUMBER = Attribute.of("password.number", 0);
+    /**
+     * 字符数量
+     */
+    Attribute<Integer> SYMBOL = Attribute.of("password.symbol", 0);
+    /**
+     * 字符范围
+     */
+    Attribute<Set<Character>> SYMBOLS = Attribute.of("password.symbols", "\\!\"#$%&'()*+,-./:;<>=?@[]_^`{}~|".chars().mapToObj(it -> (char) it).collect(Collectors.toSet()));
+
 }

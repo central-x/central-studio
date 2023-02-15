@@ -35,7 +35,8 @@ import central.security.controller.sso.cas.CasController;
 import central.security.controller.sso.cas.support.CasSession;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.CasAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.RedirectBody;
 import central.security.core.request.Request;
 import central.util.Guidx;
@@ -119,7 +120,7 @@ public class LogoutRequest extends Request {
         @Override
         @SneakyThrows
         public void execute(SecurityExchange exchange) {
-            if (!exchange.getRequiredAttribute(ExchangeAttributes.Cas.ENABLED)) {
+            if (!exchange.getRequiredAttribute(CasAttributes.ENABLED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "中央认证服务（CAS）已禁用");
             }
 
@@ -138,7 +139,7 @@ public class LogoutRequest extends Request {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "服务[service]已禁用: " + request.getParams().getService());
             }
 
-            var cookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
+            var cookie = exchange.getRequiredAttribute(SessionAttributes.COOKIE);
             var session = cookie.get(exchange);
 
             if (Stringx.isNullOrBlank(session)) {
@@ -158,7 +159,7 @@ public class LogoutRequest extends Request {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "会话异常");
             }
 
-            if (exchange.getRequiredAttribute(ExchangeAttributes.Cas.SINGLE_LOGOUT_ENABLED)) {
+            if (exchange.getRequiredAttribute(CasAttributes.SINGLE_LOGOUT_ENABLED)) {
                 // 如果启用了单点退出功能，则执行单点退出逻辑
                 // 1. 注销当前会话
                 this.verifier.invalid(session);

@@ -29,7 +29,7 @@ import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.security.controller.sso.cas.option.Scope;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.CasAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
 import central.validation.Label;
@@ -75,9 +75,9 @@ public class CasStrategy implements Strategy {
 
     @Override
     public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(ExchangeAttributes.Cas.ENABLED, this.enabled.getJValue());
-        exchange.setAttribute(ExchangeAttributes.Cas.SCOPES, new HashSet<>(this.scopes));
-        exchange.setAttribute(ExchangeAttributes.Cas.SINGLE_LOGOUT_ENABLED, this.singleLogout.getJValue());
+        exchange.setAttribute(CasAttributes.ENABLED, this.enabled.getJValue());
+        exchange.setAttribute(CasAttributes.SCOPES, new HashSet<>(this.scopes));
+        exchange.setAttribute(CasAttributes.SINGLE_LOGOUT_ENABLED, this.singleLogout.getJValue());
 
         chain.execute(exchange);
     }

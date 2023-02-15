@@ -29,7 +29,7 @@ import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.security.core.CookieManager;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
 import central.validation.Label;
@@ -78,7 +78,7 @@ public class SessionCookieStrategy implements Strategy, InitializingBean {
 
     @Override
     public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(ExchangeAttributes.Session.COOKIE, this.cookie);
+        exchange.setAttribute(SessionAttributes.COOKIE, this.cookie);
         chain.execute(exchange);
     }
 }

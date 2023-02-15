@@ -29,7 +29,7 @@ import central.security.controller.session.SessionController;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
 import central.security.core.SecuritySession;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.StringBody;
 import central.security.core.request.Request;
 import central.security.signer.KeyPair;
@@ -123,7 +123,7 @@ public class VerifyRequest extends Request {
 //                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是有效的会话凭证");
             }
 
-            if (!Objects.equals(token.getIssuer(), exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))) {
+            if (!Objects.equals(token.getIssuer(), exchange.getRequiredAttribute(SessionAttributes.ISSUER))) {
                 log.info("不是本系统颁发的会话凭证");
                 exchange.getResponse().setBody(new StringBody("false"));
                 return;

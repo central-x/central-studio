@@ -29,7 +29,7 @@ import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.security.controller.sso.oauth.option.GrantScope;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.OAuthAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
 import central.validation.Label;
@@ -86,10 +86,10 @@ public class OAuthStrategy implements Strategy {
 
     @Override
     public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(ExchangeAttributes.OAuth.ENABLED, this.enabled.getJValue());
-        exchange.setAttribute(ExchangeAttributes.OAuth.SCOPES, new HashSet<>(this.scopes));
-        exchange.setAttribute(ExchangeAttributes.OAuth.AUTO_GRANTING, this.authGranting.getJValue());
-        exchange.setAttribute(ExchangeAttributes.OAuth.ACCESS_TOKEN_TIMEOUT, Duration.ofMillis(this.timeout));
+        exchange.setAttribute(OAuthAttributes.ENABLED, this.enabled.getJValue());
+        exchange.setAttribute(OAuthAttributes.SCOPES, new HashSet<>(this.scopes));
+        exchange.setAttribute(OAuthAttributes.AUTO_GRANTING, this.authGranting.getJValue());
+        exchange.setAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT, Duration.ofMillis(this.timeout));
 
         chain.execute(exchange);
     }

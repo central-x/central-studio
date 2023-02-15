@@ -24,19 +24,30 @@
 
 package central.dashboard;
 
-import central.starter.graphql.stub.EnableGraphQLStub;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import central.starter.security.SecurityProvider;
+import lombok.Data;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 
 /**
- * Dashboard Application
+ * Application Security Provider
+ *
+ * 应用安全认证
  *
  * @author Alan Yeh
- * @since 2022/11/17
+ * @since 2023/05/12
  */
-@SpringBootApplication
-public class DashboardApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DashboardApplication.class, args);
+@Data
+public class ApplicationSecurityProvider implements SecurityProvider {
+    @Override
+    public void onReceiveAuthenticationToken(String token) {
+        
+    }
+
+    @Override
+    public void onReceiveAuthorizationInfo(String token, SimpleAuthorizationInfo authorizationInfo) {
+    }
+
+    @Override
+    public void onLogout(String token) {
     }
 }

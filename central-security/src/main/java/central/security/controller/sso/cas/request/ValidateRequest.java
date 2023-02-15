@@ -36,7 +36,7 @@ import central.security.controller.sso.cas.option.Format;
 import central.security.controller.sso.cas.support.CasSession;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.CasAttributes;
 import central.security.core.body.JsonBody;
 import central.security.core.body.XmlBody;
 import central.security.core.request.Request;
@@ -138,7 +138,7 @@ public class ValidateRequest extends Request {
 
         @Override
         public void execute(SecurityExchange exchange) {
-            if (!exchange.getRequiredAttribute(ExchangeAttributes.Cas.ENABLED)) {
+            if (!exchange.getRequiredAttribute(CasAttributes.ENABLED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "中央认证服务（CAS）已禁用");
             }
 
@@ -189,7 +189,7 @@ public class ValidateRequest extends Request {
 
         private void sendSuccess(SecurityExchange exchange, Account account, String pgt, String format) {
             var attrs = new HashMap<String, Object>();
-            for (var attr : exchange.getRequiredAttribute(ExchangeAttributes.Cas.SCOPES)) {
+            for (var attr : exchange.getRequiredAttribute(CasAttributes.SCOPES)) {
                 for (var fetcher : attr.getFetchers()) {
                     attrs.put(fetcher.field(), fetcher.getter().apply(account));
                 }

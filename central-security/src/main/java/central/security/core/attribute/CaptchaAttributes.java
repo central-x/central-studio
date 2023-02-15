@@ -22,21 +22,34 @@
  * SOFTWARE.
  */
 
-package central.dashboard;
+package central.security.core.attribute;
 
-import central.starter.graphql.stub.EnableGraphQLStub;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import central.lang.Attribute;
+import central.security.core.CookieManager;
+
+import java.time.Duration;
 
 /**
- * Dashboard Application
+ * 验证码配置
  *
  * @author Alan Yeh
- * @since 2022/11/17
+ * @since 2023/02/15
  */
-@SpringBootApplication
-public class DashboardApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DashboardApplication.class, args);
-    }
+public interface CaptchaAttributes {
+    /**
+     * 是否禁用
+     */
+    Attribute<Boolean> ENABLED = Attribute.of("captcha.enabled", Boolean.FALSE);
+    /**
+     * 验证码是否大小写敏感
+     */
+    Attribute<Boolean> CASE_SENSITIVE = Attribute.of("captcha.case_sensitive", Boolean.FALSE);
+    /**
+     * 验证码 Cookie
+     */
+    Attribute<CookieManager> COOKIE = Attribute.of("captcha.cookie", () -> new CookieManager("X-Auth-Captcha"));
+    /**
+     * 验证码有效期
+     */
+    Attribute<Duration> TIMEOUT = Attribute.of("captcha.timeout", () -> Duration.ofMinutes(3));
 }

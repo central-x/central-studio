@@ -36,7 +36,8 @@ import central.security.controller.sso.oauth.option.GrantScope;
 import central.security.controller.sso.oauth.support.OAuthSession;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.OAuthAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.JsonBody;
 import central.security.core.request.Request;
 import com.auth0.jwt.JWT;
@@ -95,7 +96,7 @@ public class GetScopesRequest extends Request {
 
         @Override
         public void execute(SecurityExchange exchange) {
-            var sessionCookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
+            var sessionCookie = exchange.getRequiredAttribute(SessionAttributes.COOKIE);
             var session = sessionCookie.get(exchange);
             if (!verifier.verify(session)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "未登录");
@@ -104,7 +105,7 @@ public class GetScopesRequest extends Request {
             var sessionJwt = JWT.decode(session);
 
             // 查找待授权事务
-            var transCookie = exchange.getRequiredAttribute(ExchangeAttributes.OAuth.GRANTING_TRANS_COOKIE);
+            var transCookie = exchange.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_COOKIE);
             var transId = transCookie.get(exchange);
 
             if (Stringx.isNullOrEmpty(transId)) {

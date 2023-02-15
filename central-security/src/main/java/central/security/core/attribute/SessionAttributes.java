@@ -22,21 +22,30 @@
  * SOFTWARE.
  */
 
-package central.dashboard;
+package central.security.core.attribute;
 
-import central.starter.graphql.stub.EnableGraphQLStub;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import central.lang.Attribute;
+import central.security.core.CookieManager;
+
+import java.time.Duration;
 
 /**
- * Dashboard Application
+ * 会话配置
  *
  * @author Alan Yeh
- * @since 2022/11/17
+ * @since 2023/02/15
  */
-@SpringBootApplication
-public class DashboardApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DashboardApplication.class, args);
-    }
+public interface SessionAttributes {
+    /**
+     * 会话超时时间
+     */
+    Attribute<Long> TIMEOUT = Attribute.of("session.timeout", () -> Duration.ofMinutes(30).toMillis());
+    /**
+     * 会话颁发者
+     */
+    Attribute<String> ISSUER = Attribute.of("session.issuer", "com.central-x.security");
+    /**
+     * 会话 Cookie
+     */
+    Attribute<CookieManager> COOKIE = Attribute.of("session.cookie", () -> new CookieManager("Authorization", null, true, false));
 }

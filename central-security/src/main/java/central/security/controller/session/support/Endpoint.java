@@ -28,7 +28,7 @@ import central.bean.OptionalEnum;
 import central.lang.Arrayx;
 import central.lang.Attribute;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.EndpointAttributes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -44,10 +44,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public enum Endpoint implements OptionalEnum<String> {
 
-    WEB("网页端（Web）", "web", ExchangeAttributes.Endpoint.WEB),
-    PC("电脑客户端（PC）", "pc", ExchangeAttributes.Endpoint.PC),
-    PHONE("手机客户端（Phone）", "phone", ExchangeAttributes.Endpoint.PHONE),
-    PAD("平板客户端（Pad）", "pad", ExchangeAttributes.Endpoint.PAD);
+    WEB("网页端（Web）", "web", EndpointAttributes.WEB),
+    PC("电脑客户端（PC）", "pc", EndpointAttributes.PC),
+    PHONE("手机客户端（Phone）", "phone", EndpointAttributes.PHONE),
+    PAD("平板客户端（Pad）", "pad", EndpointAttributes.PAD);
 
     private final String name;
     private final String value;

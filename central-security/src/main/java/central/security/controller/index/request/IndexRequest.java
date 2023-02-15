@@ -30,7 +30,7 @@ import central.lang.Stringx;
 import central.security.controller.index.IndexController;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.InputStreamBody;
 import central.security.core.body.RedirectBody;
 import central.security.core.request.Request;
@@ -45,7 +45,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -111,7 +110,7 @@ public class IndexRequest extends Request {
                 }
 
                 // 如果当前会话有效，则直接重定向到指定的地址
-                var cookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
+                var cookie = exchange.getRequiredAttribute(SessionAttributes.COOKIE);
                 var token = cookie.get(exchange);
 
                 if (this.verifier.verify(token)) {

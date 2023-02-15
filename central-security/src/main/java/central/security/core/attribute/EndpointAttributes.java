@@ -22,21 +22,33 @@
  * SOFTWARE.
  */
 
-package central.dashboard;
+package central.security.core.attribute;
 
-import central.starter.graphql.stub.EnableGraphQLStub;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import central.lang.Attribute;
+import central.security.controller.session.support.EndpointConfig;
 
 /**
- * Dashboard Application
+ * 终端配置
  *
  * @author Alan Yeh
- * @since 2022/11/17
+ * @since 2023/02/15
  */
-@SpringBootApplication
-public class DashboardApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DashboardApplication.class, args);
-    }
+public interface EndpointAttributes {
+    /**
+     * Web 端配置
+     */
+    Attribute<EndpointConfig> WEB = Attribute.of("endpoint.web", () -> new EndpointConfig("lLS4p6skBbBVZX30zR5", -1));
+    /**
+     * PC 客户端配置
+     */
+    Attribute<EndpointConfig> PC = Attribute.of("endpoint.pc", () -> new EndpointConfig("GGp5Zc4NwUkdPvgka6M", -1));
+    /**
+     * 手机客户端配置
+     */
+    Attribute<EndpointConfig> PHONE = Attribute.of("endpoint.phone", () -> new EndpointConfig("Dul8CRGeVLcmi0yM8f7", -1));
+    /**
+     * 平板客户端配置
+     */
+    Attribute<EndpointConfig> PAD = Attribute.of("endpoint.pad", () -> new EndpointConfig("Jrsy8odZ0orSXkKXR2U", -1));
+
 }

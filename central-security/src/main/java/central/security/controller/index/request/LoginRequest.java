@@ -29,7 +29,7 @@ import central.security.controller.index.IndexController;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
 import central.security.core.ability.CaptchableRequest;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.StringBody;
 import central.security.core.request.Request;
 import central.validation.Label;
@@ -116,7 +116,7 @@ public class LoginRequest extends Request implements CaptchableRequest {
                 var session = this.client.login(params.getAccount(), params.getPassword(), params.getSecret(), null);
 
                 // 把会话放到 Cookie 里
-                exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE).set(exchange, session);
+                exchange.getRequiredAttribute(SessionAttributes.COOKIE).set(exchange, session);
                 exchange.getResponse().setBody(new StringBody("true"));
             } catch (Exception ex) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "帐号或密码错误");

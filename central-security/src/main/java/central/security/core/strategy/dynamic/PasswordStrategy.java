@@ -27,7 +27,7 @@ package central.security.core.strategy.dynamic;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.PasswordAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
 import central.validation.Label;
@@ -106,13 +106,13 @@ public class PasswordStrategy implements Strategy, InitializingBean {
 
     @Override
     public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(ExchangeAttributes.Password.MIN, this.min);
-        exchange.setAttribute(ExchangeAttributes.Password.MAX, this.max);
-        exchange.setAttribute(ExchangeAttributes.Password.UPPERCASE, this.uppercase);
-        exchange.setAttribute(ExchangeAttributes.Password.LOWERCASE, this.lowercase);
-        exchange.setAttribute(ExchangeAttributes.Password.NUMBER, this.number);
-        exchange.setAttribute(ExchangeAttributes.Password.SYMBOL, this.symbol);
-        exchange.setAttribute(ExchangeAttributes.Password.SYMBOLS, this.characters);
+        exchange.setAttribute(PasswordAttributes.MIN, this.min);
+        exchange.setAttribute(PasswordAttributes.MAX, this.max);
+        exchange.setAttribute(PasswordAttributes.UPPERCASE, this.uppercase);
+        exchange.setAttribute(PasswordAttributes.LOWERCASE, this.lowercase);
+        exchange.setAttribute(PasswordAttributes.NUMBER, this.number);
+        exchange.setAttribute(PasswordAttributes.SYMBOL, this.symbol);
+        exchange.setAttribute(PasswordAttributes.SYMBOLS, this.characters);
         chain.execute(exchange);
     }
 }

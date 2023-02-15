@@ -30,6 +30,7 @@ import java.io.IOException;
 
 /**
  * 应用过滤器
+ * 在此过滤器中注入安全策略
  *
  * @author Alan Yeh
  * @since 2022/10/19

@@ -42,6 +42,11 @@
             <artifactId>java-jwt</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-starter-security</artifactId>
+        </dependency>
+
         <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

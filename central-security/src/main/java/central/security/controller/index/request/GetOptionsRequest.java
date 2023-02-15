@@ -25,22 +25,21 @@
 package central.security.controller.index.request;
 
 import central.bean.OptionalEnum;
-import central.lang.Attribute;
 import central.security.controller.index.IndexController;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.CaptchaAttributes;
+import central.security.core.attribute.EndpointAttributes;
+import central.security.core.attribute.PasswordAttributes;
 import central.security.core.body.JsonBody;
 import central.security.core.request.Request;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.apache.bcel.generic.RET;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -84,23 +83,23 @@ public class GetOptionsRequest extends Request {
     @RequiredArgsConstructor
     public enum Options implements OptionalEnum<Function<?, ?>> {
         // 终端密钥配置
-        ENDPOINT_WEB("endpoint.web", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Endpoint.WEB).getSecret()),
-        ENDPOINT_PC("endpoint.pc", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Endpoint.PC).getSecret()),
-        ENDPOINT_PHONE("endpoint.phone", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Endpoint.PHONE).getSecret()),
-        ENDPOINT_PAD("endpoint.pad", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Endpoint.PAD).getSecret()),
+        ENDPOINT_WEB("endpoint.web", exchange -> exchange.getRequiredAttribute(EndpointAttributes.WEB).getSecret()),
+        ENDPOINT_PC("endpoint.pc", exchange -> exchange.getRequiredAttribute(EndpointAttributes.PC).getSecret()),
+        ENDPOINT_PHONE("endpoint.phone", exchange -> exchange.getRequiredAttribute(EndpointAttributes.PHONE).getSecret()),
+        ENDPOINT_PAD("endpoint.pad", exchange -> exchange.getRequiredAttribute(EndpointAttributes.PAD).getSecret()),
 
         // 验证码配置
-        CAPTCHA("captcha.enabled", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Captcha.ENABLED)),
-        CAPTCHA_TIMEOUT("captcha.timeout", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Captcha.TIMEOUT).toMillis()),
+        CAPTCHA("captcha.enabled", exchange -> exchange.getRequiredAttribute(CaptchaAttributes.ENABLED)),
+        CAPTCHA_TIMEOUT("captcha.timeout", exchange -> exchange.getRequiredAttribute(CaptchaAttributes.TIMEOUT).toMillis()),
 
         // 密码配置
-        PASSWORD_MIN("password.min", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.MIN)),
-        PASSWORD_MAX("password.max", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.MAX)),
-        PASSWORD_UPPERCASE("password.uppercase", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.UPPERCASE)),
-        PASSWORD_LOWERCASE("password.lowercase", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.LOWERCASE)),
-        PASSWORD_NUMBER("password.number", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.NUMBER)),
-        PASSWORD_SYMBOL("password.symbol", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.SYMBOL)),
-        PASSWORD_SYMBOLS("password.symbols", exchange -> exchange.getRequiredAttribute(ExchangeAttributes.Password.SYMBOLS).stream().map(Object::toString).collect(Collectors.joining()));
+        PASSWORD_MIN("password.min", exchange -> exchange.getRequiredAttribute(PasswordAttributes.MIN)),
+        PASSWORD_MAX("password.max", exchange -> exchange.getRequiredAttribute(PasswordAttributes.MAX)),
+        PASSWORD_UPPERCASE("password.uppercase", exchange -> exchange.getRequiredAttribute(PasswordAttributes.UPPERCASE)),
+        PASSWORD_LOWERCASE("password.lowercase", exchange -> exchange.getRequiredAttribute(PasswordAttributes.LOWERCASE)),
+        PASSWORD_NUMBER("password.number", exchange -> exchange.getRequiredAttribute(PasswordAttributes.NUMBER)),
+        PASSWORD_SYMBOL("password.symbol", exchange -> exchange.getRequiredAttribute(PasswordAttributes.SYMBOL)),
+        PASSWORD_SYMBOLS("password.symbols", exchange -> exchange.getRequiredAttribute(PasswordAttributes.SYMBOLS).stream().map(Object::toString).collect(Collectors.joining()));
 
         private final String name;
         private final Function<SecurityExchange, Object> value;

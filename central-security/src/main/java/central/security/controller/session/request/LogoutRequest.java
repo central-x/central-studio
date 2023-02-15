@@ -29,7 +29,7 @@ import central.security.controller.session.SessionController;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
 import central.security.core.SecuritySession;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.JsonBody;
 import central.security.core.request.Request;
 import central.security.signer.KeyPair;
@@ -107,7 +107,7 @@ public class LogoutRequest extends Request {
 
             try {
                 var session = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
-                        .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))
+                        .withIssuer(exchange.getRequiredAttribute(SessionAttributes.ISSUER))
                         .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode())
                         .build()
                         .verify(request.getParams().getToken());

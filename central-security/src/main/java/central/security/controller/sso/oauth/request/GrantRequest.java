@@ -31,7 +31,8 @@ import central.security.controller.sso.oauth.option.GrantScope;
 import central.security.controller.sso.oauth.support.OAuthSession;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.OAuthAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.JsonBody;
 import central.security.core.request.Request;
 import central.validation.Enums;
@@ -105,7 +106,7 @@ public class GrantRequest extends Request {
             var request = (GrantRequest) exchange.getRequest();
 
             // 验证会话
-            var sessionCookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
+            var sessionCookie = exchange.getRequiredAttribute(SessionAttributes.COOKIE);
             var session = sessionCookie.get(exchange);
             if (!verifier.verify(session)) {
                 // 一般情况下不会出现这种情况，因为只有登录之后才有授权界面，除非是直接调接口
@@ -113,7 +114,7 @@ public class GrantRequest extends Request {
             }
 
             // 查找授权事务
-            var transCookie = exchange.getRequiredAttribute(ExchangeAttributes.OAuth.GRANTING_TRANS_COOKIE);
+            var transCookie = exchange.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_COOKIE);
             var transId = transCookie.get(exchange);
 
             if (Stringx.isNullOrBlank(transId)) {
@@ -135,7 +136,7 @@ public class GrantRequest extends Request {
             }
 
             // 更新事务
-            transaction.setExpires(exchange.getRequiredAttribute(ExchangeAttributes.OAuth.GRANTING_TRANS_TIMEOUT));
+            transaction.setExpires(exchange.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_TIMEOUT));
             transaction.setGranted(true);
             transaction.setGrantedScope(request.getParams().getScope());
             transaction.setSession(session);

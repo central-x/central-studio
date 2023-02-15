@@ -37,7 +37,8 @@ import central.security.controller.sso.oauth.support.OAuthSession;
 import central.security.controller.sso.oauth.support.AuthorizationTransaction;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.OAuthAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.RedirectBody;
 import central.security.core.request.Request;
 import central.util.Guidx;
@@ -176,7 +177,7 @@ public class AuthorizeRequest extends Request {
 
         @Override
         public void execute(SecurityExchange exchange) {
-            if (!exchange.getRequiredAttribute(ExchangeAttributes.OAuth.ENABLED)) {
+            if (!exchange.getRequiredAttribute(OAuthAttributes.ENABLED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "OAuth 2.0 认证服务已禁用");
             }
 
@@ -196,7 +197,7 @@ public class AuthorizeRequest extends Request {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "回调地址[redirect_uri]与应用不符");
             }
 
-            if (exchange.getRequiredAttribute(ExchangeAttributes.OAuth.AUTO_GRANTING)) {
+            if (exchange.getRequiredAttribute(OAuthAttributes.AUTO_GRANTING)) {
                 this.autoGranting(exchange);
             } else {
                 this.granting(exchange);
@@ -210,7 +211,7 @@ public class AuthorizeRequest extends Request {
             var request = (AuthorizeRequest) exchange.getRequest();
 
             // 获取会话信息
-            var cookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
+            var cookie = exchange.getRequiredAttribute(SessionAttributes.COOKIE);
             var session = cookie.get(exchange);
 
             if (!this.verifier.verify(session)) {
@@ -226,7 +227,7 @@ public class AuthorizeRequest extends Request {
             } else {
                 // 会话有效，则生成一次性授权码（Authorization Code）
                 var code = AuthorizationCode.builder()
-                        .expires(exchange.getRequiredAttribute(ExchangeAttributes.OAuth.AUTHORIZATION_CODE_TIMEOUT))
+                        .expires(exchange.getRequiredAttribute(OAuthAttributes.AUTHORIZATION_CODE_TIMEOUT))
                         .code("OC-" + getSerial() + "-" + Guidx.nextID())
                         .clientId(request.getParams().getClientId())
                         .redirectUri(request.getParams().getRedirectUri())
@@ -254,13 +255,13 @@ public class AuthorizeRequest extends Request {
         private void granting(SecurityExchange exchange) {
             var request = (AuthorizeRequest) exchange.getRequest();
 
-            var transCookie = exchange.getRequiredAttribute(ExchangeAttributes.OAuth.GRANTING_TRANS_COOKIE);
+            var transCookie = exchange.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_COOKIE);
             var transId = transCookie.get(exchange);
 
             if (Stringx.isNullOrBlank(transId)) {
                 // 如果没有授权事务，则开始新的授权事务
                 var transaction = AuthorizationTransaction.builder()
-                        .expires(exchange.getRequiredAttribute(ExchangeAttributes.OAuth.GRANTING_TRANS_TIMEOUT))
+                        .expires(exchange.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_TIMEOUT))
                         .id(Guidx.nextID())
                         .clientId(request.getParams().getClientId())
                         .scopes(request.getParams().getScope())
@@ -299,7 +300,7 @@ public class AuthorizeRequest extends Request {
                 } else {
                     // 用户已授权，则生成一次性授权码
                     var code = AuthorizationCode.builder()
-                            .expires(exchange.getRequiredAttribute(ExchangeAttributes.OAuth.AUTHORIZATION_CODE_TIMEOUT))
+                            .expires(exchange.getRequiredAttribute(OAuthAttributes.AUTHORIZATION_CODE_TIMEOUT))
                             .code("OC-" + getSerial() + "-" + Guidx.nextID())
                             .clientId(request.getParams().getClientId())
                             .redirectUri(request.getParams().getRedirectUri())

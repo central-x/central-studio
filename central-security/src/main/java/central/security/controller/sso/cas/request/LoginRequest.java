@@ -33,7 +33,8 @@ import central.security.controller.sso.cas.support.ServiceTicket;
 import central.security.controller.sso.cas.support.CasSession;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.CasAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.RedirectBody;
 import central.security.core.request.Request;
 import central.util.Guidx;
@@ -142,7 +143,7 @@ public class LoginRequest extends Request {
 
         @Override
         public void execute(SecurityExchange exchange) {
-            if (!exchange.getRequiredAttribute(ExchangeAttributes.Cas.ENABLED)) {
+            if (!exchange.getRequiredAttribute(CasAttributes.ENABLED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "中央认证服务（CAS）已禁用");
             }
 
@@ -154,7 +155,7 @@ public class LoginRequest extends Request {
                     .path("/")
                     .replaceQuery(null);
 
-            var cookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
+            var cookie = exchange.getRequiredAttribute(SessionAttributes.COOKIE);
 
             // 如果没有传递 service，则无法重定向到应用系统，直接跳转登录界面
             if (Stringx.isNullOrBlank(request.getParams().getService())) {
@@ -199,7 +200,7 @@ public class LoginRequest extends Request {
                 // 应用系统在接收到 ST 之后，需要通过 /security/sso/cas/p3/serviceValidate 验证并拿到用户信息
 
                 var ticket = ServiceTicket.builder()
-                        .expires(exchange.getRequiredAttribute(ExchangeAttributes.Cas.TIMEOUT))
+                        .expires(exchange.getRequiredAttribute(CasAttributes.TIMEOUT))
                         .code(application.getCode())
                         .ticket("ST-" + getSerial() + "-" + Guidx.nextID())
                         .session(session)

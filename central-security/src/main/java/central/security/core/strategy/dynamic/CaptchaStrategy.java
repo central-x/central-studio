@@ -31,7 +31,7 @@ import central.pluglet.control.ControlType;
 import central.security.core.CookieManager;
 import central.security.core.SecurityExchange;
 import central.security.core.ability.CaptchableRequest;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.CaptchaAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
 import central.security.support.captcha.CaptchaContainer;
@@ -82,9 +82,9 @@ public class CaptchaStrategy implements Strategy {
     @Override
     public void execute(SecurityExchange exchange, StrategyChain chain) {
         // 设置请求属性
-        exchange.setAttribute(ExchangeAttributes.Captcha.ENABLED, this.enabled.getJValue());
-        exchange.setAttribute(ExchangeAttributes.Captcha.CASE_SENSITIVE, this.caseSensitive.getJValue());
-        exchange.setAttribute(ExchangeAttributes.Captcha.COOKIE, new CookieManager(this.cookie));
+        exchange.setAttribute(CaptchaAttributes.ENABLED, this.enabled.getJValue());
+        exchange.setAttribute(CaptchaAttributes.CASE_SENSITIVE, this.caseSensitive.getJValue());
+        exchange.setAttribute(CaptchaAttributes.COOKIE, new CookieManager(this.cookie));
 
         if (BooleanEnum.TRUE.isCompatibleWith(this.enabled)) {
 
@@ -104,7 +104,7 @@ public class CaptchaStrategy implements Strategy {
      * 验证验证码
      */
     private void validateCaptcha(SecurityExchange exchange) {
-        var cookieManager = exchange.getRequiredAttribute(ExchangeAttributes.Captcha.COOKIE);
+        var cookieManager = exchange.getRequiredAttribute(CaptchaAttributes.COOKIE);
         var captchaKey = cookieManager.get(exchange);
 
         if (Stringx.isNullOrBlank(captchaKey)) {
@@ -125,7 +125,7 @@ public class CaptchaStrategy implements Strategy {
         }
 
         // 验证
-        if (exchange.getRequiredAttribute(ExchangeAttributes.Captcha.CASE_SENSITIVE)) {
+        if (exchange.getRequiredAttribute(CaptchaAttributes.CASE_SENSITIVE)) {
             if (!captcha.equals(value)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码错误");
             }

@@ -34,7 +34,9 @@ import central.net.http.processor.impl.SetHeaderProcessor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
+import central.starter.graphql.stub.EnableGraphQLStub;
 import central.starter.graphql.stub.ProviderClient;
+import central.starter.security.EnableSecurity;
 import central.web.XForwardedHeaders;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -48,6 +50,8 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/11/17
  */
 @Configuration
+@EnableSecurity
+@EnableGraphQLStub(packages = "central.api")
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
     /**

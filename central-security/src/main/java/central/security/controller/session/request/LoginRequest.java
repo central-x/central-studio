@@ -36,7 +36,7 @@ import central.security.controller.session.support.Endpoint;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
 import central.security.core.SecuritySession;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.StringBody;
 import central.security.core.request.Request;
 import central.security.signer.KeyPair;
@@ -221,9 +221,9 @@ public class LoginRequest extends Request {
                     // 终端类型
                     .withClaim(SessionClaims.ENDPOINT, endpoint.getValue())
                     // 颁发者
-                    .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))
+                    .withIssuer(exchange.getRequiredAttribute(SessionAttributes.ISSUER))
                     // 会话有效时间
-                    .withClaim(SessionClaims.TIMEOUT, exchange.getRequiredAttribute(ExchangeAttributes.Session.TIMEOUT))
+                    .withClaim(SessionClaims.TIMEOUT, exchange.getRequiredAttribute(SessionAttributes.TIMEOUT))
                     // 租户标识
                     .withClaim(SessionClaims.TENANT_CODE, exchange.getRequest().getTenantCode());
 

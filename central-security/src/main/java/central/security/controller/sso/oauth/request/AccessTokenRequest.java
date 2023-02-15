@@ -33,7 +33,8 @@ import central.security.controller.sso.oauth.option.GrantScope;
 import central.security.controller.sso.oauth.support.OAuthSession;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.OAuthAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.JsonBody;
 import central.security.core.body.StringBody;
 import central.security.core.body.XmlBody;
@@ -164,7 +165,7 @@ public class AccessTokenRequest extends Request {
 
         @Override
         public void execute(SecurityExchange exchange) {
-            if (!exchange.getRequiredAttribute(ExchangeAttributes.OAuth.ENABLED)) {
+            if (!exchange.getRequiredAttribute(OAuthAttributes.ENABLED)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "OAuth 2.0 认证服务已禁用");
             }
 
@@ -204,20 +205,20 @@ public class AccessTokenRequest extends Request {
                     .withHeader(Map.of("typ", "access_token"))
                     .withJWTId(Guidx.nextID())
                     .withSubject(code.getSessionJwt().getSubject())
-                    .withIssuer(exchange.getRequiredAttribute(ExchangeAttributes.Session.ISSUER))
+                    .withIssuer(exchange.getRequiredAttribute(SessionAttributes.ISSUER))
                     // 被授权的应用
                     .withAudience(application.getCode())
                     // 限定范围
                     .withArrayClaim("scope", scopes.stream().map(GrantScope::getValue).toArray(String[]::new))
                     // 指定过期时间
-                    .withExpiresAt(new Date(System.currentTimeMillis() + exchange.getRequiredAttribute(ExchangeAttributes.OAuth.ACCESS_TOKEN_TIMEOUT).toMillis()))
+                    .withExpiresAt(new Date(System.currentTimeMillis() + exchange.getRequiredAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT).toMillis()))
                     .sign(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey(), (RSAPrivateKey) keyPair.getSignKey()));
 
             // 返回响应
             var body = Map.of(
                     "access_token", token,
                     "token_type", "bearer",
-                    "expires_in", exchange.getRequiredAttribute(ExchangeAttributes.OAuth.ACCESS_TOKEN_TIMEOUT).toSeconds(),
+                    "expires_in", exchange.getRequiredAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT).toSeconds(),
                     "account_id", code.getSessionJwt().getSubject(),
                     "username", code.getSessionJwt().getClaim(SessionClaims.USERNAME).asString(),
                     "scope", String.join(",", scopes.stream().map(GrantScope::getValue).toList())

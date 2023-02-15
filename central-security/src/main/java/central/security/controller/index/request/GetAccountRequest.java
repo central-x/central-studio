@@ -30,7 +30,7 @@ import central.lang.Stringx;
 import central.security.controller.index.IndexController;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.attribute.ExchangeAttributes;
+import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.JsonBody;
 import central.security.core.request.Request;
 import com.auth0.jwt.JWT;
@@ -75,7 +75,7 @@ public class GetAccountRequest extends Request {
 
         @Override
         public void execute(SecurityExchange exchange) {
-            var cookie = exchange.getRequiredAttribute(ExchangeAttributes.Session.COOKIE);
+            var cookie = exchange.getRequiredAttribute(SessionAttributes.COOKIE);
             var token = cookie.get(exchange);
 
             if (Stringx.isNotBlank(token)) {
