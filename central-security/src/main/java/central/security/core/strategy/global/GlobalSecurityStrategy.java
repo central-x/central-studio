@@ -25,7 +25,7 @@
 package central.security.core.strategy.global;
 
 import central.security.core.SecurityExchange;
-import central.security.core.strategy.Container;
+import central.security.core.strategy.StrategyContainer;
 import central.security.core.strategy.GlobalStrategy;
 import central.security.core.strategy.StandardStrategyChain;
 import central.security.core.strategy.StrategyChain;
@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
 public class GlobalSecurityStrategy implements GlobalStrategy {
 
     @Setter(onMethod_ = @Autowired)
-    private Container container;
+    private StrategyContainer container;
 
     @Override
     public void execute(SecurityExchange exchange, StrategyChain chain) {

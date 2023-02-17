@@ -51,7 +51,7 @@ import java.util.*;
  * @since 2022/11/05
  */
 @Component
-public class Container implements DisposableBean, GenericApplicationListener {
+public class StrategyContainer implements DisposableBean, GenericApplicationListener {
     @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;
 

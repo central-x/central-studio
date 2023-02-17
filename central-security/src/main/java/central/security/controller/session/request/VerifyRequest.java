@@ -28,7 +28,7 @@ import central.api.client.security.SessionClaims;
 import central.security.controller.session.SessionController;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.SecuritySession;
+import central.security.support.session.SessionContainer;
 import central.security.core.attribute.SessionAttributes;
 import central.security.core.body.StringBody;
 import central.security.core.request.Request;
@@ -101,12 +101,12 @@ public class VerifyRequest extends Request {
     private static class VerifyAction extends SecurityAction implements InitializingBean {
         private KeyPair keyPair;
 
-        private SecuritySession session;
+        private SessionContainer session;
 
         @Override
         public void afterPropertiesSet() throws Exception {
             this.keyPair = this.getBean(KeyPair.class);
-            this.session = this.getBean(SecuritySession.class);
+            this.session = this.getBean(SessionContainer.class);
         }
 
         @Override

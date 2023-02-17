@@ -30,7 +30,7 @@ import central.security.controller.session.SessionController;
 import central.security.controller.session.support.Endpoint;
 import central.security.core.SecurityAction;
 import central.security.core.SecurityExchange;
-import central.security.core.SecuritySession;
+import central.security.support.session.SessionContainer;
 import central.security.core.attribute.SessionAttributes;
 import central.security.core.request.Request;
 import central.security.signer.KeyPair;
@@ -74,12 +74,12 @@ public class LoginByCredentialRequest extends Request {
 
         private KeyPair keyPair;
 
-        private SecuritySession session;
+        private SessionContainer session;
 
         @Override
         public void afterPropertiesSet() throws Exception {
             this.keyPair = this.getBean(KeyPair.class);
-            this.session = this.getBean(SecuritySession.class);
+            this.session = this.getBean(SessionContainer.class);
         }
 
         @Override

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.security.core;
+package central.security.support.session;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
@@ -33,7 +33,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
  * @author Alan Yeh
  * @since 2022/10/20
  */
-public interface SecuritySession {
+public interface SessionContainer {
 
     /**
      * 保存会话
