@@ -25,6 +25,8 @@
 package central.security.controller.index;
 
 import central.api.client.security.SessionVerifier;
+import central.api.provider.organization.AccountProvider;
+import central.data.organization.Account;
 import central.lang.Stringx;
 import central.security.controller.index.param.IndexParams;
 import central.security.controller.index.request.*;
@@ -33,14 +35,18 @@ import central.security.core.SecurityDispatcher;
 import central.security.core.SecurityExchange;
 import central.security.core.SecurityResponse;
 import central.security.core.attribute.SessionAttributes;
+import com.auth0.jwt.JWT;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -94,8 +100,33 @@ public class IndexController {
      * 获取当前已登录的用户信息
      */
     @GetMapping("/api/account")
-    public void getAccount(HttpServletRequest request, HttpServletResponse response) {
-        this.dispatcher.dispatch(SecurityExchange.of(GetAccountRequest.of(request), SecurityResponse.of(response)));
+    @ResponseBody
+    public Account getAccount(@Autowired AccountProvider provider,
+                              @Autowired SessionVerifier verifier,
+                              HttpServletRequest request) {
+        // 检测会话有效性
+        var cookieManager = (CookieManager) request.getAttribute(SessionAttributes.COOKIE.getCode());
+        var token = cookieManager.get(request);
+
+        if (Stringx.isNotBlank(token)) {
+            if (!verifier.verify(token)) {
+                token = null;
+            }
+        }
+
+        if (token == null) {
+            // 未登录或会话无效
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "未登录");
+        }
+
+        var decodedJwt = JWT.decode(token);
+
+        var account = provider.findById(decodedJwt.getSubject());
+        if (account == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, Stringx.format("用户[id={}]不存在", decodedJwt.getSubject()));
+        }
+
+        return account;
     }
 
     /**
