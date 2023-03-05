@@ -30,10 +30,7 @@ import central.data.organization.Account;
 import central.lang.Stringx;
 import central.security.controller.index.param.IndexParams;
 import central.security.controller.index.request.*;
-import central.security.core.CookieManager;
-import central.security.core.SecurityDispatcher;
-import central.security.core.SecurityExchange;
-import central.security.core.SecurityResponse;
+import central.security.core.*;
 import central.security.core.attribute.SessionAttributes;
 import com.auth0.jwt.JWT;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,7 +67,7 @@ public class IndexController {
     @GetMapping("/")
     public View index(@Validated IndexParams params,
                       @Autowired SessionVerifier verifier,
-                      HttpServletRequest request) {
+                      SecurityHttpServletRequest request) {
 
         if (Stringx.isNotBlank(params.getRedirectUri())) {
             // 检测 redirectUrl 是否跨域
@@ -84,8 +81,8 @@ public class IndexController {
 
             // 检测会话有效性
             // 如果当前会话有效，则直接重定向到指定的地址
-            var cookieManager = (CookieManager) request.getAttribute(SessionAttributes.COOKIE.getCode());
-            var token = cookieManager.get(request);
+            var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
+            var token = cookie.get(request);
 
             if (verifier.verify(token)) {
                 return new RedirectView(params.getRedirectUri());
@@ -103,10 +100,10 @@ public class IndexController {
     @ResponseBody
     public Account getAccount(@Autowired AccountProvider provider,
                               @Autowired SessionVerifier verifier,
-                              HttpServletRequest request) {
+                              SecurityHttpServletRequest request) {
         // 检测会话有效性
-        var cookieManager = (CookieManager) request.getAttribute(SessionAttributes.COOKIE.getCode());
-        var token = cookieManager.get(request);
+        var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
+        var token = cookie.get(request);
 
         if (Stringx.isNotBlank(token)) {
             if (!verifier.verify(token)) {
