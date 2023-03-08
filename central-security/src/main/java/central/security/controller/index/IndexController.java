@@ -32,6 +32,7 @@ import central.security.controller.index.param.IndexParams;
 import central.security.controller.index.request.*;
 import central.security.core.*;
 import central.security.core.attribute.SessionAttributes;
+import central.starter.webmvc.servlet.WebMvcRequest;
 import com.auth0.jwt.JWT;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -67,7 +68,7 @@ public class IndexController {
     @GetMapping("/")
     public View index(@Validated IndexParams params,
                       @Autowired SessionVerifier verifier,
-                      SecurityHttpServletRequest request) {
+                      WebMvcRequest request) {
 
         if (Stringx.isNotBlank(params.getRedirectUri())) {
             // 检测 redirectUrl 是否跨域
@@ -100,7 +101,7 @@ public class IndexController {
     @ResponseBody
     public Account getAccount(@Autowired AccountProvider provider,
                               @Autowired SessionVerifier verifier,
-                              SecurityHttpServletRequest request) {
+                              WebMvcRequest request) {
         // 检测会话有效性
         var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
         var token = cookie.get(request);

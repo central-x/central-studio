@@ -24,10 +24,7 @@
 
 package central.security;
 
-import central.security.core.DefaultSecurityHttpServletRequest;
 import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -38,11 +35,10 @@ import java.io.IOException;
  * @author Alan Yeh
  * @since 2022/10/19
  */
-@Component
 public class ApplicationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(DefaultSecurityHttpServletRequest.of((HttpServletRequest) request), response);
+        chain.doFilter(request, response);
     }
 }
