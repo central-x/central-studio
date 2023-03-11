@@ -29,8 +29,13 @@ import central.api.provider.organization.AccountProvider;
 import central.data.organization.Account;
 import central.lang.Stringx;
 import central.security.controller.index.param.IndexParams;
-import central.security.controller.index.request.*;
-import central.security.core.*;
+import central.security.controller.index.request.GetCaptchaRequest;
+import central.security.controller.index.request.LoginRequest;
+import central.security.controller.index.request.LogoutRequest;
+import central.security.controller.index.support.LoginOptions;
+import central.security.core.SecurityDispatcher;
+import central.security.core.SecurityExchange;
+import central.security.core.SecurityResponse;
 import central.security.core.attribute.SessionAttributes;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import com.auth0.jwt.JWT;
@@ -50,6 +55,9 @@ import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 首页
  *
@@ -62,12 +70,17 @@ public class IndexController {
     @Setter(onMethod_ = @Autowired)
     private SecurityDispatcher dispatcher;
 
+    @Setter(onMethod_ = @Autowired)
+    private SessionVerifier verifier;
+
+    @Setter(onMethod_ = @Autowired)
+    private AccountProvider provider;
+
     /**
      * 获取首页
      */
     @GetMapping("/")
     public View index(@Validated IndexParams params,
-                      @Autowired SessionVerifier verifier,
                       WebMvcRequest request) {
 
         if (Stringx.isNotBlank(params.getRedirectUri())) {
@@ -99,9 +112,7 @@ public class IndexController {
      */
     @GetMapping("/api/account")
     @ResponseBody
-    public Account getAccount(@Autowired AccountProvider provider,
-                              @Autowired SessionVerifier verifier,
-                              WebMvcRequest request) {
+    public Account getAccount(WebMvcRequest request) {
         // 检测会话有效性
         var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
         var token = cookie.get(request);
@@ -131,8 +142,17 @@ public class IndexController {
      * 获取登录选项
      */
     @GetMapping("/api/options")
-    public void getOptions(HttpServletRequest request, HttpServletResponse response) {
-        this.dispatcher.dispatch(SecurityExchange.of(GetOptionsRequest.of(request), SecurityResponse.of(response)));
+    @ResponseBody
+    public HashMap<String, Map<String, Object>> getOptions(WebMvcRequest request) {
+        var result = new HashMap<String, Map<String, Object>>();
+
+        for (var option : LoginOptions.values()) {
+            var parts = option.getName().split("[.]");
+            result.computeIfAbsent(parts[0], key -> new HashMap<>())
+                    .put(parts[1], option.getValue().apply(request));
+        }
+
+        return result;
     }
 
     /**
