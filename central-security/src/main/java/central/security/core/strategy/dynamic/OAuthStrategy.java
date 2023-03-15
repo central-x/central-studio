@@ -28,17 +28,20 @@ import central.lang.BooleanEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.security.controller.sso.oauth.option.GrantScope;
-import central.security.core.SecurityExchange;
 import central.security.core.attribute.OAuthAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
+import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
@@ -85,12 +88,12 @@ public class OAuthStrategy implements Strategy {
     private Long timeout;
 
     @Override
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(OAuthAttributes.ENABLED, this.enabled.getJValue());
-        exchange.setAttribute(OAuthAttributes.SCOPES, new HashSet<>(this.scopes));
-        exchange.setAttribute(OAuthAttributes.AUTO_GRANTING, this.authGranting.getJValue());
-        exchange.setAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT, Duration.ofMillis(this.timeout));
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws IOException, ServletException {
+        request.setAttribute(OAuthAttributes.ENABLED, this.enabled.getJValue());
+        request.setAttribute(OAuthAttributes.SCOPES, new HashSet<>(this.scopes));
+        request.setAttribute(OAuthAttributes.AUTO_GRANTING, this.authGranting.getJValue());
+        request.setAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT, Duration.ofMillis(this.timeout));
 
-        chain.execute(exchange);
+        chain.execute(request, response);
     }
 }

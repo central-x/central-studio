@@ -24,10 +24,15 @@
 
 package central.security.core.strategy;
 
-import central.security.core.SecurityExchange;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
+import jakarta.servlet.ServletException;
+
+import java.io.IOException;
 
 /**
  * Strategy Chain
+ * <p>
  * 策略执行链
  *
  * @author Alan Yeh
@@ -38,7 +43,8 @@ public interface StrategyChain {
     /**
      * 执行下一策略
      *
-     * @param exchange Current Exchange
+     * @param request  Current request
+     * @param response Current response
      */
-    void execute(SecurityExchange exchange);
+    void execute(WebMvcRequest request, WebMvcResponse response) throws IOException, ServletException;
 }

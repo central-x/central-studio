@@ -24,21 +24,42 @@
 
 package central.security;
 
+import central.security.core.strategy.GlobalStrategy;
+import central.security.core.strategy.StandardStrategyChain;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import jakarta.servlet.*;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 应用过滤器
+ * <p>
  * 在此过滤器中注入安全策略
  *
  * @author Alan Yeh
  * @since 2022/10/19
  */
+@Component
 public class ApplicationFilter implements Filter {
 
+    /**
+     * 全局安全策略
+     */
+    @Setter(onMethod_ = @Autowired)
+    private List<GlobalStrategy> strategies;
+
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(request, response);
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        if (servletRequest instanceof WebMvcRequest request && servletResponse instanceof WebMvcResponse response) {
+            new StandardStrategyChain(strategies)
+                    .addStrategy((req, resp, chain) -> {
+                        filterChain.doFilter(req, resp);
+                    }).execute(request, response);
+        }
     }
 }

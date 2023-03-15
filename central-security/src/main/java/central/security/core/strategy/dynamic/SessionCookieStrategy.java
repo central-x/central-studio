@@ -28,15 +28,19 @@ import central.lang.BooleanEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.security.core.CookieManager;
-import central.security.core.SecurityExchange;
 import central.security.core.attribute.SessionAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
+import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.io.IOException;
 
 /**
  * 会话 Cookie 策略
@@ -77,8 +81,8 @@ public class SessionCookieStrategy implements Strategy, InitializingBean {
     }
 
     @Override
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(SessionAttributes.COOKIE, this.cookie);
-        chain.execute(exchange);
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws IOException, ServletException {
+        request.setAttribute(SessionAttributes.COOKIE, this.cookie);
+        chain.execute(request, response);
     }
 }

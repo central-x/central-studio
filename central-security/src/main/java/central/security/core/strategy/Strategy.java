@@ -24,7 +24,11 @@
 
 package central.security.core.strategy;
 
-import central.security.core.SecurityExchange;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
+import jakarta.servlet.ServletException;
+
+import java.io.IOException;
 
 /**
  * 安全策略
@@ -37,17 +41,19 @@ public interface Strategy {
     /**
      * 用于判断是否执行当前策略
      *
-     * @param exchange Current Exchange
+     * @param request  Current request
+     * @param response Current response
      */
-    default boolean predicate(SecurityExchange exchange) {
+    default boolean predicate(WebMvcRequest request, WebMvcResponse response) {
         return true;
     }
 
     /**
      * 执行安全策略
      *
-     * @param exchange Current Exchange
+     * @param request  Current request
+     * @param response Current response
      * @param chain    Next strategy
      */
-    void execute(SecurityExchange exchange, StrategyChain chain);
+    void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws ServletException, IOException;
 }

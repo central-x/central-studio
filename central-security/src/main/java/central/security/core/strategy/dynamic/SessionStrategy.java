@@ -26,12 +26,16 @@ package central.security.core.strategy.dynamic;
 
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
-import central.security.core.SecurityExchange;
 import central.security.core.attribute.SessionAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
+import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.*;
+
+import java.io.IOException;
 
 /**
  * 会话策略
@@ -57,9 +61,9 @@ public class SessionStrategy implements Strategy {
     private String issuer;
 
     @Override
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(SessionAttributes.TIMEOUT, this.timeout);
-        exchange.setAttribute(SessionAttributes.ISSUER, this.issuer);
-        chain.execute(exchange);
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws IOException, ServletException {
+        request.setAttribute(SessionAttributes.TIMEOUT, this.timeout);
+        request.setAttribute(SessionAttributes.ISSUER, this.issuer);
+        chain.execute(request, response);
     }
 }

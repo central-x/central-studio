@@ -35,7 +35,10 @@ import central.security.core.attribute.CaptchaAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
 import central.security.support.captcha.CaptchaContainer;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
+import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -43,6 +46,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
 
 /**
  * 验证码策略
@@ -80,21 +85,13 @@ public class CaptchaStrategy implements Strategy {
     private String cookie;
 
     @Override
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws IOException, ServletException {
         // 设置请求属性
-        exchange.setAttribute(CaptchaAttributes.ENABLED, this.enabled.getJValue());
-        exchange.setAttribute(CaptchaAttributes.CASE_SENSITIVE, this.caseSensitive.getJValue());
-        exchange.setAttribute(CaptchaAttributes.COOKIE, new CookieManager(this.cookie));
+        request.setAttribute(CaptchaAttributes.ENABLED, this.enabled.getJValue());
+        request.setAttribute(CaptchaAttributes.CASE_SENSITIVE, this.caseSensitive.getJValue());
+        request.setAttribute(CaptchaAttributes.COOKIE, new CookieManager(this.cookie));
 
-        if (BooleanEnum.TRUE.isCompatibleWith(this.enabled)) {
-
-            if (exchange.getRequest() instanceof CaptchableRequest) {
-                // 需要处理验证码
-                this.validateCaptcha(exchange);
-            }
-        }
-
-        chain.execute(exchange);
+        chain.execute(request, response);
     }
 
     @Setter(onMethod_ = @Autowired)

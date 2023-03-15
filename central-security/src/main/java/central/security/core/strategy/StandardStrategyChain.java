@@ -24,13 +24,18 @@
 
 package central.security.core.strategy;
 
-import central.security.core.SecurityExchange;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
+import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Standard Security Strategy Chain
+ * <p>
  * 标准安全认证链
  *
  * @author Alan Yeh
@@ -47,7 +52,7 @@ public class StandardStrategyChain implements StrategyChain {
     /**
      * 策略列表
      */
-    private final List<? extends Strategy> strategies;
+    private final List<Strategy> strategies;
 
     /**
      * 下一调用链
@@ -57,18 +62,26 @@ public class StandardStrategyChain implements StrategyChain {
     }
 
     public StandardStrategyChain(List<? extends Strategy> strategies) {
-        this.strategies = strategies;
+        this.strategies = new ArrayList<>(strategies);
         this.index = 0;
     }
 
+    /**
+     * 在末端添加新的策略
+     */
+    public StandardStrategyChain addStrategy(Strategy strategy) {
+        this.strategies.add(strategy);
+        return this;
+    }
+
     @Override
-    public void execute(SecurityExchange exchange) {
+    public void execute(WebMvcRequest request, WebMvcResponse response) throws IOException, ServletException {
         if (this.index < strategies.size()) {
             var strategy = this.strategies.get(index);
-            if (strategy.predicate(exchange)) {
-                strategy.execute(exchange, next());
+            if (strategy.predicate(request, response)) {
+                strategy.execute(request, response, next());
             } else {
-                this.next().execute(exchange);
+                this.next().execute(request, response);
             }
         }
     }

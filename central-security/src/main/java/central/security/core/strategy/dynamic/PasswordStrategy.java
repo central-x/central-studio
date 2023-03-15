@@ -26,11 +26,13 @@ package central.security.core.strategy.dynamic;
 
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
-import central.security.core.SecurityExchange;
 import central.security.core.attribute.PasswordAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
+import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -38,6 +40,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Setter;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -105,14 +108,14 @@ public class PasswordStrategy implements Strategy, InitializingBean {
     }
 
     @Override
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(PasswordAttributes.MIN, this.min);
-        exchange.setAttribute(PasswordAttributes.MAX, this.max);
-        exchange.setAttribute(PasswordAttributes.UPPERCASE, this.uppercase);
-        exchange.setAttribute(PasswordAttributes.LOWERCASE, this.lowercase);
-        exchange.setAttribute(PasswordAttributes.NUMBER, this.number);
-        exchange.setAttribute(PasswordAttributes.SYMBOL, this.symbol);
-        exchange.setAttribute(PasswordAttributes.SYMBOLS, this.characters);
-        chain.execute(exchange);
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws IOException, ServletException {
+        request.setAttribute(PasswordAttributes.MIN, this.min);
+        request.setAttribute(PasswordAttributes.MAX, this.max);
+        request.setAttribute(PasswordAttributes.UPPERCASE, this.uppercase);
+        request.setAttribute(PasswordAttributes.LOWERCASE, this.lowercase);
+        request.setAttribute(PasswordAttributes.NUMBER, this.number);
+        request.setAttribute(PasswordAttributes.SYMBOL, this.symbol);
+        request.setAttribute(PasswordAttributes.SYMBOLS, this.characters);
+        chain.execute(request, response);
     }
 }

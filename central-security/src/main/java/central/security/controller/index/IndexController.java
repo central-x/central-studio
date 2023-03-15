@@ -29,7 +29,6 @@ import central.api.provider.organization.AccountProvider;
 import central.data.organization.Account;
 import central.lang.Stringx;
 import central.security.controller.index.param.IndexParams;
-import central.security.controller.index.request.GetCaptchaRequest;
 import central.security.controller.index.request.LoginRequest;
 import central.security.controller.index.request.LogoutRequest;
 import central.security.controller.index.support.LoginOptions;
@@ -160,7 +159,7 @@ public class IndexController {
      */
     @GetMapping("/api/captcha")
     public void getCaptcha(HttpServletRequest request, HttpServletResponse response) {
-        this.dispatcher.dispatch(SecurityExchange.of(GetCaptchaRequest.of(request), SecurityResponse.of(response)));
+//        this.dispatcher.dispatch(SecurityExchange.of(GetCaptchaRequest.of(request), SecurityResponse.of(response)));
     }
 
     /**

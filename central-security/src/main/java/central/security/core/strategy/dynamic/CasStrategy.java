@@ -28,15 +28,18 @@ import central.lang.BooleanEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.security.controller.sso.cas.option.Scope;
-import central.security.core.SecurityExchange;
 import central.security.core.attribute.CasAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
+import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
@@ -74,11 +77,11 @@ public class CasStrategy implements Strategy {
     private BooleanEnum singleLogout;
 
     @Override
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
-        exchange.setAttribute(CasAttributes.ENABLED, this.enabled.getJValue());
-        exchange.setAttribute(CasAttributes.SCOPES, new HashSet<>(this.scopes));
-        exchange.setAttribute(CasAttributes.SINGLE_LOGOUT_ENABLED, this.singleLogout.getJValue());
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws IOException, ServletException {
+        request.setAttribute(CasAttributes.ENABLED, this.enabled.getJValue());
+        request.setAttribute(CasAttributes.SCOPES, new HashSet<>(this.scopes));
+        request.setAttribute(CasAttributes.SINGLE_LOGOUT_ENABLED, this.singleLogout.getJValue());
 
-        chain.execute(exchange);
+        chain.execute(request, response);
     }
 }

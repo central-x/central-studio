@@ -25,7 +25,6 @@
 package central.security.core;
 
 import central.security.core.strategy.GlobalStrategy;
-import central.security.core.strategy.StandardStrategyChain;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +47,6 @@ public class SecurityDispatcher {
     private List<GlobalStrategy> strategies;
 
     public void dispatch(SecurityExchange exchange) {
-        new StandardStrategyChain(strategies).execute(exchange);
+//        new StandardStrategyChain(strategies).execute(exchange);
     }
 }

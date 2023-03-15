@@ -24,10 +24,10 @@
 
 package central.security.core.strategy.global;
 
-import central.security.core.SecurityExchange;
-import central.security.core.body.ErrorBody;
 import central.security.core.strategy.GlobalStrategy;
 import central.security.core.strategy.StrategyChain;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import lombok.SneakyThrows;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -48,17 +48,17 @@ public class ResponseWritingStrategy implements GlobalStrategy {
 
     @Override
     @SneakyThrows
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) {
         try {
-            chain.execute(exchange);
+            chain.execute(request, response);
         } catch (Throwable throwable) {
             if (throwable instanceof ResponseStatusException ex) {
-                exchange.getResponse().setStatus(ex.getStatusCode());
+                response.setStatus(ex.getStatusCode().value());
             } else {
-                exchange.getResponse().setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
-            exchange.getResponse().setBody(new ErrorBody(throwable));
+//            response.setBody(new ErrorBody(throwable));
         }
-        exchange.getResponse().write(exchange);
+//        exchange.getResponse().write(exchange);
     }
 }

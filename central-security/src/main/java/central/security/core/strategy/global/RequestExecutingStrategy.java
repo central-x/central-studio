@@ -24,18 +24,15 @@
 
 package central.security.core.strategy.global;
 
-import central.lang.Stringx;
-import central.security.core.SecurityExchange;
 import central.security.core.strategy.GlobalStrategy;
 import central.security.core.strategy.StrategyChain;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,17 +53,17 @@ public class RequestExecutingStrategy implements GlobalStrategy, ApplicationCont
     private final Map<String, Object> beanCache = new ConcurrentHashMap<>();
 
     @Override
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
-        var action = exchange.getRequest().getAction();
-        action.setBeanCache(this.beanCache);
-        action.setApplicationContext(applicationContext);
-        if (action instanceof InitializingBean bean) {
-            try {
-                bean.afterPropertiesSet();
-            } catch (Exception ex) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, Stringx.format("初始化执行器[{}]出异常: " + ex.getLocalizedMessage(), action.getClass().getSimpleName()), ex);
-            }
-        }
-        action.execute(exchange);
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) {
+//        var action = exchange.getRequest().getAction();
+//        action.setBeanCache(this.beanCache);
+//        action.setApplicationContext(applicationContext);
+//        if (action instanceof InitializingBean bean) {
+//            try {
+//                bean.afterPropertiesSet();
+//            } catch (Exception ex) {
+//                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, Stringx.format("初始化执行器[{}]出异常: " + ex.getLocalizedMessage(), action.getClass().getSimpleName()), ex);
+//            }
+//        }
+//        action.execute(exchange);
     }
 }

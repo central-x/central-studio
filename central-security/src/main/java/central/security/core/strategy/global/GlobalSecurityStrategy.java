@@ -24,15 +24,19 @@
 
 package central.security.core.strategy.global;
 
-import central.security.core.SecurityExchange;
-import central.security.core.strategy.StrategyContainer;
 import central.security.core.strategy.GlobalStrategy;
 import central.security.core.strategy.StandardStrategyChain;
 import central.security.core.strategy.StrategyChain;
+import central.security.core.strategy.StrategyContainer;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.util.Listx;
+import jakarta.servlet.ServletException;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 /**
  * 用于处理用户定义的动态策略
@@ -47,16 +51,16 @@ public class GlobalSecurityStrategy implements GlobalStrategy {
     private StrategyContainer container;
 
     @Override
-    public void execute(SecurityExchange exchange, StrategyChain chain) {
-        var tenant = exchange.getRequest().getTenantCode();
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws IOException, ServletException {
+        var tenant = request.getTenantCode();
 
         var strategies = container.getStrategies(tenant);
 
-        if (Listx.isNullOrEmpty(strategies)){
-            chain.execute(exchange);
+        if (Listx.isNullOrEmpty(strategies)) {
+            chain.execute(request, response);
         }
 
         // 执行用户自定义的动态策略
-        new StandardStrategyChain(strategies).execute(exchange);
+        new StandardStrategyChain(strategies).execute(request, response);
     }
 }
