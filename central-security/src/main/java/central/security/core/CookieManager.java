@@ -26,9 +26,12 @@ package central.security.core;
 
 import central.lang.Arrayx;
 import central.lang.Stringx;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 
 import java.util.Objects;
@@ -72,10 +75,35 @@ public class CookieManager {
     }
 
     /**
+     * 设置 Cookie
+     */
+    public void set(WebMvcRequest request, WebMvcResponse response, String value) {
+        var builder = ResponseCookie.from(this.name, value)
+                .path(request.getTenantPath())
+                .maxAge(0)
+                .httpOnly(this.httpOnly)
+                .secure(this.secure);
+        if (Stringx.isNotBlank(this.domain)) {
+            builder.domain(this.domain);
+        }
+
+        var cookie = builder.build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+    /**
      * 获取 Cookie
      */
     public String get(SecurityExchange exchange) {
         return exchange.getRequest().getCookie(this.name);
+    }
+
+    /**
+     * 获取 Cookie
+     */
+    public String get(WebMvcRequest request, WebMvcResponse response) {
+        return request.getCookie(this.name);
     }
 
     /**
@@ -102,5 +130,23 @@ public class CookieManager {
             cookie.domain(domain);
         }
         exchange.getResponse().getCookies().add(cookie.build());
+    }
+
+    /**
+     * 删除客户端的 Cookie
+     */
+    public void remove(WebMvcRequest request, WebMvcResponse response) {
+        var builder = ResponseCookie.from(this.name, "deleteMe")
+                .path(request.getTenantPath())
+                .maxAge(0)
+                .httpOnly(this.httpOnly)
+                .secure(this.secure);
+        if (Stringx.isNotBlank(this.domain)) {
+            builder.domain(this.domain);
+        }
+
+        var cookie = builder.build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
