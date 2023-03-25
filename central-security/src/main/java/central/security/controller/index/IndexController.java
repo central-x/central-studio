@@ -31,17 +31,12 @@ import central.data.organization.Account;
 import central.lang.Stringx;
 import central.security.controller.index.param.IndexParams;
 import central.security.controller.index.param.LoginParams;
-import central.security.controller.index.request.LogoutRequest;
 import central.security.controller.index.support.LoginOptions;
 import central.security.core.SecurityDispatcher;
-import central.security.core.SecurityExchange;
-import central.security.core.SecurityResponse;
 import central.security.core.attribute.SessionAttributes;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import com.auth0.jwt.JWT;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -192,7 +187,18 @@ public class IndexController {
      * 退出登录
      */
     @GetMapping("/api/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        this.dispatcher.dispatch(SecurityExchange.of(LogoutRequest.of(request), SecurityResponse.of(response)));
+    @ResponseBody
+    public boolean logout(WebMvcRequest request, WebMvcResponse response) {
+        // 把会话放到 Cookie 里
+        var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
+        var token = cookie.get(request, response);
+        if (Stringx.isNotBlank(token)) {
+            this.verifier.invalid(token);
+        }
+        
+        // 移除 Cookie
+        cookie.remove(request, response);
+
+        return true;
     }
 }
