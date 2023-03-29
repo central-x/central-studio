@@ -32,7 +32,6 @@ import central.lang.Stringx;
 import central.security.controller.index.param.IndexParams;
 import central.security.controller.index.param.LoginParams;
 import central.security.controller.index.support.LoginOptions;
-import central.security.core.SecurityDispatcher;
 import central.security.core.attribute.SessionAttributes;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
@@ -63,9 +62,6 @@ import java.util.Map;
  */
 @Controller
 public class IndexController {
-
-    @Setter(onMethod_ = @Autowired)
-    private SecurityDispatcher dispatcher;
 
     @Setter(onMethod_ = @Autowired)
     private SessionVerifier verifier;
@@ -195,7 +191,7 @@ public class IndexController {
         if (Stringx.isNotBlank(token)) {
             this.verifier.invalid(token);
         }
-        
+
         // 移除 Cookie
         cookie.remove(request, response);
 

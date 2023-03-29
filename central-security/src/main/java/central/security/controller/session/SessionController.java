@@ -28,6 +28,7 @@ import central.security.controller.session.request.*;
 import central.security.core.SecurityDispatcher;
 import central.security.core.SecurityExchange;
 import central.security.core.SecurityResponse;
+import central.security.signer.KeyPair;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
@@ -36,6 +37,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Base64;
 
 /**
  * Session
@@ -51,12 +54,15 @@ public class SessionController {
     @Setter(onMethod_ = @Autowired)
     private SecurityDispatcher dispatcher;
 
+    @Setter(onMethod_ = @Autowired)
+    private KeyPair keyPair;
+
     /**
      * 用于客户端自行验证会话有效性
      */
     @GetMapping("/pubkey")
-    public void getPublicKey(HttpServletRequest request, HttpServletResponse response) {
-        dispatcher.dispatch(SecurityExchange.of(GetPublicKeyRequest.of(request), SecurityResponse.of(response)));
+    public String getPublicKey() {
+        return Base64.getEncoder().encodeToString(this.keyPair.getVerifyKey().getEncoded());
     }
 
     /**
