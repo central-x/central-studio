@@ -24,21 +24,48 @@
 
 package central.security.controller.session;
 
+import central.api.client.security.SessionClaims;
+import central.api.provider.organization.AccountProvider;
+import central.api.provider.security.SecurityPasswordProvider;
+import central.data.organization.Account;
+import central.data.security.SecurityPassword;
+import central.lang.Stringx;
+import central.security.Passwordx;
+import central.security.controller.session.param.LoginParams;
 import central.security.controller.session.request.*;
+import central.security.controller.session.support.Endpoint;
 import central.security.core.SecurityDispatcher;
 import central.security.core.SecurityExchange;
 import central.security.core.SecurityResponse;
+import central.security.core.attribute.SessionAttributes;
 import central.security.signer.KeyPair;
+import central.security.support.session.SessionContainer;
+import central.sql.query.Conditions;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
+import central.util.Guidx;
+import central.util.Listx;
+import central.util.Mapx;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Session
@@ -57,12 +84,68 @@ public class SessionController {
     @Setter(onMethod_ = @Autowired)
     private KeyPair keyPair;
 
+    @Setter(onMethod_ = @Autowired)
+    private AccountProvider accountProvider;
+
+    @Setter(onMethod_ = @Autowired)
+    private SecurityPasswordProvider passwordProvider;
+
+    @Setter(onMethod_ = @Autowired)
+    private SessionContainer sessionContainer;
+
     /**
      * 用于客户端自行验证会话有效性
      */
     @GetMapping("/pubkey")
     public String getPublicKey() {
         return Base64.getEncoder().encodeToString(this.keyPair.getVerifyKey().getEncoded());
+    }
+
+    /**
+     * 颁发会话
+     */
+    private String issue(WebMvcRequest request, WebMvcResponse response, Account account, Endpoint endpoint, Map<String, Object> claims) {
+        var jwt = JWT.create()
+                // JWT 唯一标识
+                .withJWTId(Guidx.nextID())
+                // 用户主键
+                .withSubject(account.getId())
+                // 用户帐号
+                .withClaim(SessionClaims.USERNAME, account.getUsername())
+                // 是否管理员
+                .withClaim(SessionClaims.ADMIN, account.getAdmin())
+                // 是否超级管理员
+                .withClaim(SessionClaims.SUPERVISOR, account.getSupervisor())
+                // 颁发时间
+                .withClaim(SessionClaims.ISSUE_TIME, new Date())
+                // 终端类型
+                .withClaim(SessionClaims.ENDPOINT, endpoint.getValue())
+                // 颁发者
+                .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
+                // 会话有效时间
+                .withClaim(SessionClaims.TIMEOUT, request.getRequiredAttribute(SessionAttributes.TIMEOUT))
+                // 租户标识
+                .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode());
+
+        // 附加用户指定的 Claims
+        if (Mapx.isNotEmpty(claims)) {
+            for (var entry : claims.entrySet()) {
+                if (entry.getValue() instanceof Boolean b) {
+                    jwt.withClaim(entry.getKey(), b);
+                } else if (entry.getValue() instanceof Integer i) {
+                    jwt.withClaim(entry.getKey(), i);
+                } else if (entry.getValue() instanceof Long l) {
+                    jwt.withClaim(entry.getKey(), l);
+                } else if (entry.getValue() instanceof Double d) {
+                    jwt.withClaim(entry.getKey(), d);
+                } else if (entry.getValue() instanceof String s) {
+                    jwt.withClaim(entry.getKey(), s);
+                } else if (entry.getValue() instanceof Date d) {
+                    jwt.withClaim(entry.getKey(), d);
+                }
+            }
+        }
+        return jwt.sign(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey(), (RSAPrivateKey) keyPair.getSignKey()));
     }
 
     /**
@@ -74,8 +157,71 @@ public class SessionController {
      * 认证信息只能通过服务器的验证接口 {@link #verify} 来校验是否有效
      */
     @PostMapping("/login")
-    public void login(HttpServletRequest request, HttpServletResponse response) {
-        dispatcher.dispatch(SecurityExchange.of(LoginRequest.of(request), SecurityResponse.of(response)));
+    public String login(@RequestBody @Validated LoginParams params,
+                        WebMvcRequest request, WebMvcResponse response) {
+        // 检查终端密钥
+        var endpoint = Endpoint.resolve(request, params.getSecret());
+        if (endpoint == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "终端密钥[secret]错误");
+        }
+
+        // 查询超级管理员
+        // 超级管理员才可以通过主键来查询
+        Account account = this.accountProvider.findById(params.getAccount());
+        if (account != null) {
+            if (!account.getSupervisor()) {
+                account = null;
+            }
+        }
+        if (account == null) {
+            // 查询普通用户
+            var accounts = this.accountProvider.findBy(1L, 1L, Conditions.of(Account.class)
+                    .eq(Account::getUsername, params.getAccount())
+                    .or()
+                    .eq(Account::getMobile, params.getAccount())
+                    .or()
+                    .eq(Account::getEmail, params.getAccount()), null);
+            account = Listx.getFirstOrNull(accounts);
+        }
+
+        if (account == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]不存在", params.getAccount()));
+        }
+
+        if (!account.getEnabled()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已禁用", params.getAccount()));
+        }
+
+        if (account.getDeleted()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已删除", params.getAccount()));
+        }
+
+        // 查找用户密码
+        SecurityPassword password;
+        if (account.getSupervisor()) {
+            // 超级管理员
+            password = this.passwordProvider.findById(account.getId());
+        } else {
+            var passwords = this.passwordProvider.findBy(null, null, Conditions.of(SecurityPassword.class).eq(SecurityPassword::getAccountId, account.getId()), null);
+            password = Listx.getFirstOrNull(passwords);
+        }
+
+        if (password == null) {
+            // 当前用户没有设置初始密码
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, Stringx.format("用户[account={}]未设置密码", params.getAccount()));
+        }
+
+        // 验证密码正确性
+        if (!Passwordx.verify(params.getPassword(), password.getValue())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]密码错误", params.getAccount()));
+        }
+
+        var token = this.issue(request, response, account, endpoint, params.getClaims());
+        var limit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
+
+        this.sessionContainer.save(JWT.decode(token), limit);
+
+        return token;
     }
 
     /**

@@ -27,8 +27,8 @@ package central.security.controller.session.support;
 import central.bean.OptionalEnum;
 import central.lang.Arrayx;
 import central.lang.Attribute;
-import central.security.core.SecurityExchange;
 import central.security.core.attribute.EndpointAttributes;
+import central.starter.webmvc.servlet.WebMvcRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -57,8 +57,8 @@ public enum Endpoint implements OptionalEnum<String> {
         return Arrayx.asStream(Endpoint.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
     }
 
-    public static Endpoint resolve(SecurityExchange exchange, String secret) {
-        return Arrayx.asStream(Endpoint.values()).filter(it -> Objects.equals(exchange.getRequiredAttribute(it.getAttribute()).getSecret(), secret)).findFirst().orElse(null);
+    public static Endpoint resolve(WebMvcRequest request, String secret) {
+        return Arrayx.asStream(Endpoint.values()).filter(it -> Objects.equals(request.getRequiredAttribute(it.getAttribute()).getSecret(), secret)).findFirst().orElse(null);
     }
 
     @Override
