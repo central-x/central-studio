@@ -31,8 +31,11 @@ import central.data.organization.Account;
 import central.data.security.SecurityPassword;
 import central.lang.Stringx;
 import central.security.Passwordx;
+import central.security.controller.session.param.LoginByTokenParams;
 import central.security.controller.session.param.LoginParams;
-import central.security.controller.session.request.*;
+import central.security.controller.session.request.InvalidRequest;
+import central.security.controller.session.request.LogoutRequest;
+import central.security.controller.session.request.VerifyRequest;
 import central.security.controller.session.support.Endpoint;
 import central.security.core.SecurityDispatcher;
 import central.security.core.SecurityExchange;
@@ -48,17 +51,15 @@ import central.util.Listx;
 import central.util.Mapx;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -74,7 +75,7 @@ import java.util.Map;
  * @author Alan Yeh
  * @since 2022/10/19
  */
-@Controller
+@RestController
 @RequestMapping("/api/sessions")
 public class SessionController {
 
@@ -104,7 +105,7 @@ public class SessionController {
     /**
      * 颁发会话
      */
-    private String issue(WebMvcRequest request, WebMvcResponse response, Account account, Endpoint endpoint, Map<String, Object> claims) {
+    private String issue(WebMvcRequest request, WebMvcResponse response, DecodedJWT source, Account account, Endpoint endpoint, Map<String, Object> claims) {
         var jwt = JWT.create()
                 // JWT 唯一标识
                 .withJWTId(Guidx.nextID())
@@ -126,6 +127,11 @@ public class SessionController {
                 .withClaim(SessionClaims.TIMEOUT, request.getRequiredAttribute(SessionAttributes.TIMEOUT))
                 // 租户标识
                 .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode());
+
+        if (source != null) {
+            // 记录颁发当前会话的会话标识
+            jwt.withClaim(SessionClaims.SOURCE, source.getId());
+        }
 
         // 附加用户指定的 Claims
         if (Mapx.isNotEmpty(claims)) {
@@ -216,7 +222,7 @@ public class SessionController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]密码错误", params.getAccount()));
         }
 
-        var token = this.issue(request, response, account, endpoint, params.getClaims());
+        var token = this.issue(request, response, null, account, endpoint, params.getClaims());
         var limit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
 
         this.sessionContainer.save(JWT.decode(token), limit);
@@ -233,8 +239,8 @@ public class SessionController {
      * 认证信息只能通过服务器的验证接口 {@link #verify} 来校验是否有效
      */
     @PostMapping("/login/credentials")
-    public void loginByCredential(HttpServletRequest request, HttpServletResponse response) {
-        dispatcher.dispatch(SecurityExchange.of(LoginByCredentialRequest.of(request), SecurityResponse.of(response)));
+    public void loginByCredential(WebMvcRequest request, WebMvcResponse response) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, HttpStatus.NOT_IMPLEMENTED.getReasonPhrase());
     }
 
     /**
@@ -247,8 +253,49 @@ public class SessionController {
      * 认证信息只能通过服务器的验证接口 {@link #verify} 来校验是否有效
      */
     @PostMapping("/login/token")
-    public void loginByToken(HttpServletRequest request, HttpServletResponse response) {
-        dispatcher.dispatch(SecurityExchange.of(LoginByTokenRequest.of(request), SecurityResponse.of(response)));
+    public String loginByToken(@RequestBody @Validated LoginByTokenParams params,
+                               WebMvcRequest request, WebMvcResponse response) {
+        // 检查终端密钥
+        var endpoint = Endpoint.resolve(request, params.getSecret());
+        if (endpoint == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "终端密钥[secret]错误");
+        }
+
+        DecodedJWT token;
+        try {
+            token = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
+                    .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode())
+                    .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
+                    .build().verify(params.getToken());
+        } catch (JWTVerificationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是有效会话凭证");
+        }
+
+        if (!token.getClaim(SessionClaims.SOURCE).isMissing()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不允许二次颁发会话");
+        }
+
+        if (!this.sessionContainer.verify(token)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "会话已过期");
+        }
+
+        var account = this.accountProvider.findById(token.getSubject());
+        if (account == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("帐户[account={}]不存在", token.getClaim(SessionClaims.USERNAME).asString()));
+        }
+        if (!account.getEnabled()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已禁用", token.getClaim(SessionClaims.USERNAME).asString()));
+        }
+        if (account.getDeleted()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已删除", token.getClaim(SessionClaims.USERNAME).asString()));
+        }
+
+        var issued = this.issue(request, response, token, account, endpoint, params.getClaims());
+        var limit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
+
+        sessionContainer.save(JWT.decode(issued), limit);
+
+        return issued;
     }
 
     /**
