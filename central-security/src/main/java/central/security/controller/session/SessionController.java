@@ -33,9 +33,9 @@ import central.lang.Stringx;
 import central.security.Passwordx;
 import central.security.controller.session.param.LoginByTokenParams;
 import central.security.controller.session.param.LoginParams;
+import central.security.controller.session.param.VerifyParams;
 import central.security.controller.session.request.InvalidRequest;
 import central.security.controller.session.request.LogoutRequest;
-import central.security.controller.session.request.VerifyRequest;
 import central.security.controller.session.support.Endpoint;
 import central.security.core.SecurityDispatcher;
 import central.security.core.SecurityExchange;
@@ -56,6 +56,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -67,6 +68,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Session
@@ -75,6 +77,7 @@ import java.util.Map;
  * @author Alan Yeh
  * @since 2022/10/19
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/sessions")
 public class SessionController {
@@ -304,8 +307,47 @@ public class SessionController {
      * 由于会话可能因为超时、被踢、主动退出等原因变为无效，因此客户端必须通过服务端的接口进行验证
      */
     @PostMapping("/verify")
-    public void verify(HttpServletRequest request, HttpServletResponse response) {
-        dispatcher.dispatch(SecurityExchange.of(VerifyRequest.of(request), SecurityResponse.of(response)));
+    public boolean verify(@RequestBody @Validated VerifyParams params,
+                          WebMvcRequest request, WebMvcResponse response) {
+        DecodedJWT token;
+        try {
+            token = JWT.decode(params.getToken());
+        } catch (Exception ex) {
+            log.info("不是有效的会话凭证");
+            return false;
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是有效的会话凭证");
+        }
+
+        if (!Objects.equals(token.getIssuer(), request.getRequiredAttribute(SessionAttributes.ISSUER))) {
+            log.info("不是本系统颁发的会话凭证");
+            return false;
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是本系统颁发的会话凭证");
+        }
+
+        if (!Objects.equals(token.getClaim(SessionClaims.TENANT_CODE).asString(), request.getTenantCode())) {
+            log.info("租户不匹配");
+            return false;
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "租户不匹配");
+        }
+
+        try {
+            JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
+                    .build()
+                    .verify(token);
+        } catch (JWTVerificationException ex) {
+            log.info("密钥不匹配");
+            return false;
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "密钥不匹配");
+        }
+
+        // 验证会主知是否过期
+        if (!this.sessionContainer.verify(token)) {
+            log.info("会话不存在");
+            return false;
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "会话不存在");
+        }
+
+        return true;
     }
 
     /**
