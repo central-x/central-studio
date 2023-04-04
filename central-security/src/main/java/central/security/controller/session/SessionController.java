@@ -33,9 +33,9 @@ import central.lang.Stringx;
 import central.security.Passwordx;
 import central.security.controller.session.param.LoginByTokenParams;
 import central.security.controller.session.param.LoginParams;
+import central.security.controller.session.param.LogoutParams;
 import central.security.controller.session.param.VerifyParams;
 import central.security.controller.session.request.InvalidRequest;
-import central.security.controller.session.request.LogoutRequest;
 import central.security.controller.session.support.Endpoint;
 import central.security.core.SecurityDispatcher;
 import central.security.core.SecurityExchange;
@@ -308,7 +308,7 @@ public class SessionController {
      */
     @PostMapping("/verify")
     public boolean verify(@RequestBody @Validated VerifyParams params,
-                          WebMvcRequest request, WebMvcResponse response) {
+                          WebMvcRequest request) {
         DecodedJWT token;
         try {
             token = JWT.decode(params.getToken());
@@ -354,8 +354,18 @@ public class SessionController {
      * 退出登录，将指定凭证置为无效
      */
     @GetMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        dispatcher.dispatch(SecurityExchange.of(LogoutRequest.of(request), SecurityResponse.of(response)));
+    public void logout(@Validated LogoutParams params,
+                          WebMvcRequest request) {
+        try {
+            var session = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
+                    .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
+                    .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode())
+                    .build()
+                    .verify(params.getToken());
+            this.sessionContainer.invalid(session);
+        } catch (JWTVerificationException ignored) {
+
+        }
     }
 
     /**
