@@ -31,15 +31,8 @@ import central.data.organization.Account;
 import central.data.security.SecurityPassword;
 import central.lang.Stringx;
 import central.security.Passwordx;
-import central.security.controller.session.param.LoginByTokenParams;
-import central.security.controller.session.param.LoginParams;
-import central.security.controller.session.param.LogoutParams;
-import central.security.controller.session.param.VerifyParams;
-import central.security.controller.session.request.InvalidRequest;
+import central.security.controller.session.param.*;
 import central.security.controller.session.support.Endpoint;
-import central.security.core.SecurityDispatcher;
-import central.security.core.SecurityExchange;
-import central.security.core.SecurityResponse;
 import central.security.core.attribute.SessionAttributes;
 import central.security.signer.KeyPair;
 import central.security.support.session.SessionContainer;
@@ -53,8 +46,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,9 +72,6 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/sessions")
 public class SessionController {
-
-    @Setter(onMethod_ = @Autowired)
-    private SecurityDispatcher dispatcher;
 
     @Setter(onMethod_ = @Autowired)
     private KeyPair keyPair;
@@ -355,7 +343,7 @@ public class SessionController {
      */
     @GetMapping("/logout")
     public void logout(@Validated LogoutParams params,
-                          WebMvcRequest request) {
+                       WebMvcRequest request) {
         try {
             var session = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
                     .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
@@ -372,7 +360,8 @@ public class SessionController {
      * 清除指定帐户的所有会话
      */
     @PostMapping("/invalid")
-    public void invalid(HttpServletRequest request, HttpServletResponse response) {
-        dispatcher.dispatch(SecurityExchange.of(InvalidRequest.of(request), SecurityResponse.of(response)));
+    public void invalid(@RequestBody @Validated InvalidParams params,
+                        WebMvcRequest request) {
+        this.sessionContainer.clear(request.getTenantCode(), params.getAccountId());
     }
 }
