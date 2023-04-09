@@ -25,12 +25,16 @@
 package central.security.controller.sso.cas;
 
 import central.api.client.security.SessionVerifier;
+import central.api.provider.organization.AccountProvider;
 import central.api.scheduled.DataContext;
 import central.api.scheduled.fetcher.DataFetcherType;
+import central.bean.OptionalEnum;
+import central.data.organization.Account;
 import central.lang.Stringx;
+import central.security.controller.sso.cas.option.Format;
 import central.security.controller.sso.cas.param.LoginParams;
+import central.security.controller.sso.cas.param.ValidateParams;
 import central.security.controller.sso.cas.request.LogoutRequest;
-import central.security.controller.sso.cas.request.ValidateRequest;
 import central.security.controller.sso.cas.support.CasSession;
 import central.security.controller.sso.cas.support.ServiceTicket;
 import central.security.core.SecurityDispatcher;
@@ -38,14 +42,20 @@ import central.security.core.SecurityExchange;
 import central.security.core.SecurityResponse;
 import central.security.core.attribute.CasAttributes;
 import central.security.core.attribute.SessionAttributes;
+import central.starter.webmvc.render.TextRender;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import central.util.Guidx;
+import central.util.Jsonx;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +67,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -82,6 +95,9 @@ public class CasController {
 
     @Setter(onMethod_ = @Autowired)
     private SessionVerifier verifier;
+
+    @Setter(onMethod_ = @Autowired)
+    private AccountProvider accountProvider;
 
     private static final AtomicInteger serial = new AtomicInteger(1000);
 
@@ -170,12 +186,141 @@ public class CasController {
         }
     }
 
+    @Getter
+    @RequiredArgsConstructor
+    private enum ErrorCode implements OptionalEnum<HttpStatus> {
+        INVALID_REQUEST("INVALID_REQUEST", HttpStatus.BAD_REQUEST),
+        INVALID_TICKET_SPEC("INVALID_TICKET_SPEC", HttpStatus.BAD_REQUEST),
+        UNAUTHORIZED_SERVICE_PROXY("UNAUTHORIZED_SERVICE_PROXY", HttpStatus.BAD_REQUEST),
+        INVALID_PROXY_CALLBACK("INVALID_PROXY_CALLBACK", HttpStatus.BAD_REQUEST),
+        INVALID_TICKET("INVALID_TICKET", HttpStatus.BAD_REQUEST),
+        INVALID_SERVICE("INVALID_SERVICE", HttpStatus.BAD_REQUEST),
+        INTERNAL_ERROR("INTERNAL_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        private final String name;
+        private final HttpStatus value;
+    }
+
     /**
      * ST 认证
      */
     @PostMapping({"/serviceValidate", "/p3/serviceValidate"})
-    public void validate(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        this.dispatcher.dispatch(SecurityExchange.of(ValidateRequest.of(request), SecurityResponse.of(response)));
+    public void validate(@Validated ValidateParams params,
+                         WebMvcRequest request, WebMvcResponse response) throws IOException {
+        if (!request.getRequiredAttribute(CasAttributes.ENABLED)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "中央认证服务（CAS）已禁用");
+        }
+
+        // 验证 service 是否可信
+        var application = this.context.getData(DataFetcherType.SAAS).getApplications().stream()
+                .filter(it -> Stringx.addSuffix(params.getService(), "/").startsWith(Stringx.addSuffix(it.getUrl() + it.getContextPath(), "/")))
+                .findFirst().orElse(null);
+        if (application == null) {
+            // 此应用不是已登记的应用，属于非法接入
+            sendError(request, response, ErrorCode.INVALID_SERVICE, "服务[service]未登记: " + params.getService(), params.getFormat());
+            return;
+        }
+        if (!application.getEnabled()) {
+            // 此应用已禁用
+            sendError(request, response, ErrorCode.INVALID_SERVICE, "服务[service]已禁用: " + params.getService(), params.getFormat());
+            return;
+        }
+
+        // 获取会话
+        var ticket = this.tickets.remove(request.getTenantCode(), params.getTicket());
+        if (ticket == null) {
+            // 找不找指定服务凭证
+            sendError(request, response, ErrorCode.INVALID_TICKET, "票据[ticket]无效: " + params.getTicket(), params.getFormat());
+            return;
+        }
+
+        if (!application.getCode().equals(ticket.getCode())) {
+            // 应用与票据不匹配
+            sendError(request, response, ErrorCode.INVALID_TICKET, "票据[ticket]与服务[service]不符: " + params.getTicket(), params.getFormat());
+            return;
+        }
+
+        // 验证会话有效性
+        var session = ticket.getSession();
+        if (!this.verifier.verify(session)) {
+            sendError(request, response, ErrorCode.INVALID_TICKET_SPEC, "票据[ticket]所在会话已过期: " + params.getTicket(), params.getFormat());
+            return;
+        }
+
+        // 解析会话
+        var account = this.accountProvider.findById(ticket.getSessionJwt().getSubject(), request.getTenantCode());
+        sendSuccess(request, response, account, null, params.getFormat());
+
+        this.tickets.bindTicket(request.getTenantCode(), ticket);
+
+    }
+
+    private void sendError(WebMvcRequest request, WebMvcResponse response, ErrorCode code, String message, String format) throws IOException {
+        if (Format.XML.isCompatibleWith(format)) {
+            var content = """
+                    <cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+                        <cas:authenticationFailure code="{}">{}</cas:authenticationFailure>
+                    </cas:serviceResponse>
+                    """;
+            new TextRender(request, response)
+                    .setStatus(code.getValue())
+                    .setHeader(HttpHeaders.CONTENT_TYPE, new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8).toString())
+                    .setText(Stringx.format(content, code.getName(), message))
+                    .render();
+        } else {
+            var content = Jsonx.Default().serialize(Map.of(
+                    "code", code.getName(),
+                    "description", message
+            ));
+            new TextRender(request, response)
+                    .setStatus(code.getValue())
+                    .setHeader(HttpHeaders.CONTENT_TYPE, new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8).toString())
+                    .setText(content)
+                    .render();
+        }
+    }
+
+    private void sendSuccess(WebMvcRequest request, WebMvcResponse response, Account account, String pgt, String format) throws IOException {
+        var attrs = new HashMap<String, Object>();
+        for (var attr : request.getRequiredAttribute(CasAttributes.SCOPES)) {
+            for (var fetcher : attr.getFetchers()) {
+                attrs.put(fetcher.field(), fetcher.getter().apply(account));
+            }
+        }
+
+        if (Format.JSON.isCompatibleWith(format)) {
+            var content = Jsonx.Default().serialize(Map.of(
+                    "user", account.getUsername(),
+                    "attributes", attrs
+            ));
+
+            new TextRender(request, response)
+                    .setStatus(HttpStatus.OK)
+                    .setHeader(HttpHeaders.CONTENT_TYPE, new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8).toString())
+                    .setText(content)
+                    .render();
+        } else {
+            var content = """
+                    <cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+                        <cas:authenticationSuccess>
+                            <cas:user>{}</cas:user>
+                            {}
+                        </cas:authenticationSuccess>
+                    </cas:serviceResponse>
+                    """;
+
+            var attrsContent = new StringBuilder("<cas:attributes>\n");
+            for (var attr : attrs.entrySet()) {
+                attrsContent.append("            <cas:").append(attr.getKey()).append(">").append(attr.getValue()).append("</cas:").append(attr.getKey()).append(">\n");
+            }
+            attrsContent.append("        </cas:attributes>");
+
+            new TextRender(request, response)
+                    .setStatus(HttpStatus.OK)
+                    .setHeader(HttpHeaders.CONTENT_TYPE, new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8).toString())
+                    .setText(Stringx.format(content, account.getUsername(), attrsContent))
+                    .render();
+        }
     }
 
     /**
