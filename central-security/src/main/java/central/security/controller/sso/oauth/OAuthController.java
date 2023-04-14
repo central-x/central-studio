@@ -24,20 +24,49 @@
 
 package central.security.controller.sso.oauth;
 
-import central.security.controller.sso.oauth.request.*;
+import central.api.client.security.SessionVerifier;
+import central.api.scheduled.ScheduledDataContext;
+import central.api.scheduled.fetcher.DataFetcherType;
+import central.lang.Stringx;
+import central.security.Digestx;
+import central.security.controller.sso.oauth.option.GrantScope;
+import central.security.controller.sso.oauth.param.AuthorizeParams;
+import central.security.controller.sso.oauth.request.AccessTokenRequest;
+import central.security.controller.sso.oauth.request.GetScopesRequest;
+import central.security.controller.sso.oauth.request.GetUserRequest;
+import central.security.controller.sso.oauth.request.GrantRequest;
+import central.security.controller.sso.oauth.support.AuthorizationCode;
+import central.security.controller.sso.oauth.support.AuthorizationTransaction;
+import central.security.controller.sso.oauth.support.OAuthSession;
 import central.security.core.SecurityDispatcher;
 import central.security.core.SecurityExchange;
 import central.security.core.SecurityResponse;
+import central.security.core.attribute.OAuthAttributes;
+import central.security.core.attribute.SessionAttributes;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
+import central.util.Guidx;
+import central.util.Setx;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * OAuth2.0
@@ -57,6 +86,27 @@ public class OAuthController {
     @Setter(onMethod_ = @Autowired)
     private SecurityDispatcher dispatcher;
 
+    @Setter(onMethod_ = @Autowired)
+    private SessionVerifier verifier;
+
+    @Setter(onMethod_ = @Autowired)
+    private ScheduledDataContext context;
+
+    @Setter(onMethod_ = @Autowired)
+    private OAuthSession session;
+
+    private static final AtomicInteger serial = new AtomicInteger(1000);
+
+    private static synchronized int getSerial() {
+        return serial.updateAndGet(value -> {
+            if (value > 9999) {
+                return 1000;
+            } else {
+                return value + 1;
+            }
+        });
+    }
+
     /**
      * OAuth 2.0 认证
      * <p>
@@ -70,8 +120,141 @@ public class OAuthController {
      * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2">Authorization Response</a>
      */
     @GetMapping("/authorize")
-    public void authorize(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        this.dispatcher.dispatch(SecurityExchange.of(AuthorizeRequest.of(request), SecurityResponse.of(response)));
+    public View authorize(@Validated AuthorizeParams params,
+                          WebMvcRequest request, WebMvcResponse response) throws IOException {
+        if (!request.getRequiredAttribute(OAuthAttributes.ENABLED)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "OAuth 2.0 认证服务已禁用");
+        }
+
+
+        var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(params.getClientId());
+        if (application == null) {
+            // 此应用不是已登记的应用
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用标识[client_id]无效");
+        }
+        if (!application.getEnabled()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用标识[client_id]无效: 已禁用");
+        }
+
+        if (!params.getRedirectUri().toLowerCase().startsWith(application.getUrl() + application.getContextPath())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "回调地址[redirect_uri]与应用不符");
+        }
+
+        if (request.getRequiredAttribute(OAuthAttributes.AUTO_GRANTING)) {
+            return this.autoGranting(params, request, response);
+        } else {
+            return this.granting(params, request, response);
+        }
+    }
+
+
+    /**
+     * 如果发现当前用户已登录，则直接重定向到业务系统，不需要用户手动确认
+     */
+    private View autoGranting(AuthorizeParams params, WebMvcRequest request, WebMvcResponse response) {
+        // 获取会话信息
+        var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
+        var session = cookie.get(request, response);
+
+        if (!this.verifier.verify(session)) {
+            // 如果找不到会话，则重定向到登录界面
+            var loginUrl = UriComponentsBuilder.fromUri(request.getUri())
+                    .replacePath(request.getTenantPath())
+                    .path("/security/")
+                    .replaceQuery(null)
+                    .queryParam("redirect_uri", Stringx.encodeUrl(request.getUri().toString()))
+                    .build().toString();
+
+            return new RedirectView(loginUrl);
+        } else {
+            // 会话有效，则生成一次性授权码（Authorization Code）
+            var code = AuthorizationCode.builder()
+                    .expires(request.getRequiredAttribute(OAuthAttributes.AUTHORIZATION_CODE_TIMEOUT))
+                    .code("OC-" + getSerial() + "-" + Guidx.nextID())
+                    .clientId(params.getClientId())
+                    .redirectUri(params.getRedirectUri())
+                    .session(session)
+                    .scope(params.getScope())
+                    .build();
+
+            // 保存一次性授权
+            this.session.saveCode(request.getTenantCode(), code);
+
+            var redirectUri = UriComponentsBuilder.fromUriString(params.getRedirectUri())
+                    .queryParam("state", params.getState())
+                    .queryParam("code", code.getCode())
+                    .build().toString();
+
+            return new RedirectView(redirectUri);
+        }
+    }
+
+    /**
+     * 用户手动授权
+     * 无论用户是否已经登录了，都需要跳转到登录界面上，引导用户完成授权
+     */
+    private View granting(AuthorizeParams params, WebMvcRequest request, WebMvcResponse response) {
+        var transCookie = request.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_COOKIE);
+        var transId = transCookie.get(request, response);
+
+        if (Stringx.isNullOrBlank(transId)) {
+            // 如果没有授权事务，则开始新的授权事务
+            var transaction = AuthorizationTransaction.builder()
+                    .expires(request.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_TIMEOUT))
+                    .id(Guidx.nextID())
+                    .clientId(params.getClientId())
+                    .scopes(params.getScope())
+                    // 保存摘要，等完成授权后进行对比，保证没有人篡改过
+                    .digest(Digestx.SHA256.digest(request.getUri().toString(), StandardCharsets.UTF_8))
+                    // 标记为未授权
+                    .granted(false)
+                    .build();
+
+            this.session.saveTransaction(request.getTenantCode(), transaction);
+            // 通过 Cookie 跟踪事务
+            transCookie.set(request, response, transaction.getId());
+
+            // 用户完成授权之后，会重新重定向回本接口，就会走到 else 的逻辑了
+            var loginUrl = UriComponentsBuilder.fromUri(request.getUri())
+                    .replacePath(request.getTenantPath()).path("/security/")
+                    .replaceQuery(null)
+                    .queryParam("redirect_uri", Stringx.encodeUrl(request.getUri().toString()))
+                    .build().toString();
+            return new RedirectView(loginUrl);
+        } else {
+            // 取出事务，进行摘要对比，如果发现摘要不匹配，则说明有人篡改了参数
+            var transaction = this.session.getAndRemoveTransaction(request.getTenantCode(), transId);
+            // 事务是一次性的，因此删除 Cookie
+            transCookie.remove(request, response);
+
+            if (!Objects.equals(transaction.getDigest(), Digestx.SHA256.digest(request.getUri().toString(), StandardCharsets.UTF_8))) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "参数被篡改，请重新发起登录请求");
+            }
+
+            if (!transaction.isGranted()) {
+                // 用户未授权，则直接跳回业务系统，不携带 code，代表用户拒绝授梳
+                return new RedirectView(params.getRedirectUri());
+            } else {
+                // 用户已授权，则生成一次性授权码
+                var code = AuthorizationCode.builder()
+                        .expires(request.getRequiredAttribute(OAuthAttributes.AUTHORIZATION_CODE_TIMEOUT))
+                        .code("OC-" + getSerial() + "-" + Guidx.nextID())
+                        .clientId(params.getClientId())
+                        .redirectUri(params.getRedirectUri())
+                        .session(transaction.getSession())
+                        .scope(Setx.asStream(transaction.getGrantedScope()).map(GrantScope::resolve).collect(Collectors.toSet()))
+                        .build();
+
+                this.session.saveCode(request.getTenantCode(), code);
+
+                var redirectUri = UriComponentsBuilder.fromUriString(params.getRedirectUri())
+                        .queryParam("state", params.getState())
+                        .queryParam("code", code.getCode())
+                        .build().toString();
+
+                return new RedirectView(params.getRedirectUri());
+            }
+        }
     }
 
     /**
