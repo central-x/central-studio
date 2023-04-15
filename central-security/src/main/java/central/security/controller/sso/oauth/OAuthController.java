@@ -25,14 +25,16 @@
 package central.security.controller.sso.oauth;
 
 import central.api.client.security.SessionVerifier;
+import central.api.provider.organization.AccountProvider;
 import central.api.scheduled.ScheduledDataContext;
 import central.api.scheduled.fetcher.DataFetcherType;
+import central.data.organization.Account;
+import central.data.saas.Application;
 import central.lang.Stringx;
 import central.security.Digestx;
 import central.security.controller.sso.oauth.option.GrantScope;
 import central.security.controller.sso.oauth.param.AuthorizeParams;
 import central.security.controller.sso.oauth.request.AccessTokenRequest;
-import central.security.controller.sso.oauth.request.GetScopesRequest;
 import central.security.controller.sso.oauth.request.GetUserRequest;
 import central.security.controller.sso.oauth.request.GrantRequest;
 import central.security.controller.sso.oauth.support.AuthorizationCode;
@@ -47,9 +49,10 @@ import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import central.util.Guidx;
 import central.util.Setx;
+import com.auth0.jwt.JWT;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -57,13 +60,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -94,6 +102,9 @@ public class OAuthController {
 
     @Setter(onMethod_ = @Autowired)
     private OAuthSession session;
+
+    @Setter(onMethod_ = @Autowired)
+    private AccountProvider provider;
 
     private static final AtomicInteger serial = new AtomicInteger(1000);
 
@@ -257,12 +268,97 @@ public class OAuthController {
         }
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class GetScopeVO implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 1099644431930255452L;
+
+        private Account account = new Account();
+
+        private Application application = new Application();
+
+        private List<Scope> scopes = new ArrayList<>();
+    }
+
+    /**
+     * 待授权项
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class Scope implements Serializable {
+        @Serial
+        private static final long serialVersionUID = -2194870315185874029L;
+
+        /**
+         * 名称
+         */
+        private String name;
+        /**
+         * 值
+         */
+        private String value;
+        /**
+         * 是否默认选中
+         */
+        private boolean checked;
+        /**
+         * 是否必要授权（必要授权不可取消）
+         */
+        private boolean required;
+    }
+
     /**
      * 获取待授权范围列表
      */
     @GetMapping("/scopes")
-    public void getScopes(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        this.dispatcher.dispatch(SecurityExchange.of(GetScopesRequest.of(request), SecurityResponse.of(response)));
+    @ResponseBody
+    public GetScopeVO getScopes(WebMvcRequest request, WebMvcResponse response) throws IOException {
+        var sessionCookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
+        var session = sessionCookie.get(request, response);
+        if (!verifier.verify(session)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "未登录");
+        }
+
+        var sessionJwt = JWT.decode(session);
+
+        // 查找待授权事务
+        var transCookie = request.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_COOKIE);
+        var transId = transCookie.get(request, response);
+
+        if (Stringx.isNullOrEmpty(transId)) {
+            // 没有找到待授权事务
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到待授权事务");
+        }
+
+        var transaction = this.session.getAndRemoveTransaction(request.getTenantCode(), transId);
+        if (transaction == null) {
+            // 事务过期了
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到待授权事务");
+        }
+
+        // 组装授权信息
+        var account = this.provider.findById(sessionJwt.getSubject());
+        var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(transaction.getClientId());
+        var scopes = transaction.getScopes();
+
+        var vo = new GetScopeVO();
+        vo.getAccount().setId(account.getId());
+        vo.getAccount().setUsername(account.getUsername());
+        vo.getAccount().setName(account.getName());
+        vo.getAccount().setAvatar(account.getAvatar());
+
+        vo.getApplication().setCode(application.getCode());
+        vo.getApplication().setName(application.getName());
+        vo.getApplication().setLogo(application.getLogo());
+
+        vo.getScopes().addAll(scopes.stream().map(it -> new Scope(it.getName(), it.getValue(), true, it == GrantScope.BASIC)).toList());
+
+        return vo;
     }
 
     /**
