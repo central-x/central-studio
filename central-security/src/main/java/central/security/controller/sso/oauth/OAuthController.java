@@ -34,9 +34,9 @@ import central.lang.Stringx;
 import central.security.Digestx;
 import central.security.controller.sso.oauth.option.GrantScope;
 import central.security.controller.sso.oauth.param.AuthorizeParams;
+import central.security.controller.sso.oauth.param.GrantParams;
 import central.security.controller.sso.oauth.request.AccessTokenRequest;
 import central.security.controller.sso.oauth.request.GetUserRequest;
-import central.security.controller.sso.oauth.request.GrantRequest;
 import central.security.controller.sso.oauth.support.AuthorizationCode;
 import central.security.controller.sso.oauth.support.AuthorizationTransaction;
 import central.security.controller.sso.oauth.support.OAuthSession;
@@ -57,10 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
@@ -72,6 +69,7 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -365,8 +363,50 @@ public class OAuthController {
      * 授权
      */
     @PostMapping("/scopes")
-    public void grant(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        this.dispatcher.dispatch(SecurityExchange.of(GrantRequest.of(request), SecurityResponse.of(response)));
+    @ResponseBody
+    public Map<String, String> grant(@RequestBody @Validated GrantParams params,
+                                     WebMvcRequest request, WebMvcResponse response) throws IOException {
+        // 验证会话
+        var sessionCookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
+        var session = sessionCookie.get(request, response);
+        if (!verifier.verify(session)) {
+            // 一般情况下不会出现这种情况，因为只有登录之后才有授权界面，除非是直接调接口
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "未登录");
+        }
+
+        // 查找授权事务
+        var transCookie = request.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_COOKIE);
+        var transId = transCookie.get(request, response);
+
+        if (Stringx.isNullOrBlank(transId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权错误: 找不到待授权请求");
+        }
+
+        var transaction = this.session.getAndRemoveTransaction(request.getTenantCode(), transId);
+        if (transaction == null) {
+            // 过期了
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权错误: 找不到待授权请求");
+        }
+        // 开发者申请的范围
+        var requestedScopes = transaction.getScopes();
+        // 用户授权的范围
+        var grantedScopes = params.getScope().stream().map(GrantScope::resolve).collect(Collectors.toSet());
+
+        if (grantedScopes.size() > requestedScopes.size() || !requestedScopes.containsAll(grantedScopes)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权错误: 用户授权超出范围");
+        }
+
+        // 更新事务
+        transaction.setExpires(request.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_TIMEOUT));
+        transaction.setGranted(true);
+        transaction.setGrantedScope(params.getScope());
+        transaction.setSession(session);
+
+        this.session.saveTransaction(request.getTenantCode(), transaction);
+
+        return Map.of(
+                "message", "授权成功"
+        );
     }
 
     /**
