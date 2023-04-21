@@ -40,7 +40,6 @@ import central.security.controller.sso.cas.param.LogoutParams;
 import central.security.controller.sso.cas.param.ValidateParams;
 import central.security.controller.sso.cas.support.CasSession;
 import central.security.controller.sso.cas.support.ServiceTicket;
-import central.security.core.SecurityDispatcher;
 import central.security.core.attribute.CasAttributes;
 import central.security.core.attribute.SessionAttributes;
 import central.starter.webmvc.render.TextRender;
@@ -54,7 +53,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
@@ -90,8 +88,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Controller
 @RequestMapping("/sso/cas")
 public class CasController {
-    @Setter(onMethod_ = @Autowired)
-    private SecurityDispatcher dispatcher;
 
     @Setter(onMethod_ = @Autowired)
     private DataContext context;
@@ -270,7 +266,7 @@ public class CasController {
                     """;
             new TextRender(request, response)
                     .setStatus(code.getValue())
-                    .setHeader(HttpHeaders.CONTENT_TYPE, new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8).toString())
+                    .setContentType(new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8))
                     .setText(Stringx.format(content, code.getName(), message))
                     .render();
         } else {
@@ -280,7 +276,7 @@ public class CasController {
             ));
             new TextRender(request, response)
                     .setStatus(code.getValue())
-                    .setHeader(HttpHeaders.CONTENT_TYPE, new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8).toString())
+                    .setContentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
                     .setText(content)
                     .render();
         }
@@ -302,7 +298,7 @@ public class CasController {
 
             new TextRender(request, response)
                     .setStatus(HttpStatus.OK)
-                    .setHeader(HttpHeaders.CONTENT_TYPE, new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8).toString())
+                    .setContentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
                     .setText(content)
                     .render();
         } else {
@@ -323,7 +319,7 @@ public class CasController {
 
             new TextRender(request, response)
                     .setStatus(HttpStatus.OK)
-                    .setHeader(HttpHeaders.CONTENT_TYPE, new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8).toString())
+                    .setContentType(new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8))
                     .setText(Stringx.format(content, account.getUsername(), attrsContent))
                     .render();
         }

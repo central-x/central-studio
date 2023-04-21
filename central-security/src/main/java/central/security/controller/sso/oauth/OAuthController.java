@@ -24,6 +24,7 @@
 
 package central.security.controller.sso.oauth;
 
+import central.api.client.security.SessionClaims;
 import central.api.client.security.SessionVerifier;
 import central.api.provider.organization.AccountProvider;
 import central.api.scheduled.ScheduledDataContext;
@@ -33,9 +34,9 @@ import central.data.saas.Application;
 import central.lang.Stringx;
 import central.security.Digestx;
 import central.security.controller.sso.oauth.option.GrantScope;
+import central.security.controller.sso.oauth.param.AccessTokenParams;
 import central.security.controller.sso.oauth.param.AuthorizeParams;
 import central.security.controller.sso.oauth.param.GrantParams;
-import central.security.controller.sso.oauth.request.AccessTokenRequest;
 import central.security.controller.sso.oauth.request.GetUserRequest;
 import central.security.controller.sso.oauth.support.AuthorizationCode;
 import central.security.controller.sso.oauth.support.AuthorizationTransaction;
@@ -45,16 +46,21 @@ import central.security.core.SecurityExchange;
 import central.security.core.SecurityResponse;
 import central.security.core.attribute.OAuthAttributes;
 import central.security.core.attribute.SessionAttributes;
+import central.security.signer.KeyPair;
+import central.starter.webmvc.render.TextRender;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import central.util.Guidx;
+import central.util.Jsonx;
 import central.util.Setx;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -67,10 +73,9 @@ import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -103,6 +108,9 @@ public class OAuthController {
 
     @Setter(onMethod_ = @Autowired)
     private AccountProvider provider;
+
+    @Setter(onMethod_ = @Autowired)
+    private KeyPair keyPair;
 
     private static final AtomicInteger serial = new AtomicInteger(1000);
 
@@ -417,8 +425,94 @@ public class OAuthController {
      * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.4">Access Token Response</a>
      */
     @PostMapping("/access_token")
-    public void getAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        this.dispatcher.dispatch(SecurityExchange.of(AccessTokenRequest.of(request), SecurityResponse.of(response)));
+    public void getAccessToken(@RequestBody @Validated AccessTokenParams params,
+                               WebMvcRequest request, WebMvcResponse response) throws IOException {
+        if (!request.getRequiredAttribute(OAuthAttributes.ENABLED)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "OAuth 2.0 认证服务已禁用");
+        }
+
+        var code = session.getCode(request.getTenantCode(), params.getCode());
+        if (code == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权码[code]已过期");
+        }
+
+        if (!Objects.equals(code.getRedirectUri(), params.getRedirectUri())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权码[code]与重定向地址[redirect_uri]不匹配，请确保重定向地址[redirect_uri]与申请授权码[code]时使用的是相同值");
+        }
+
+        if (!Objects.equals(code.getClientId(), params.getClientId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权码[code]与应用标识[client_id]不符");
+        }
+
+        var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(code.getClientId());
+        if (application == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用标识[client_id]无效");
+        }
+        if (!application.getEnabled()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用标识[client_id]已禁用");
+        }
+        if (!Objects.equals(application.getSecret(), params.getClientSecret())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用密钥[client_secret]错误");
+        }
+
+        var scopes = code.getScope();
+        scopes.add(GrantScope.BASIC);
+
+        // 颁发 access_token
+        // 使用私钥签名，这样客户端那边就没办法伪造，我们也不需要保存这个凭证的信息，日期过了就失效了
+        var token = JWT.create()
+                // 指定本 JWT 为 access_token 类型
+                .withHeader(Map.of("typ", "access_token"))
+                .withJWTId(Guidx.nextID())
+                .withSubject(code.getSessionJwt().getSubject())
+                .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
+                // 被授权的应用
+                .withAudience(application.getCode())
+                // 限定范围
+                .withArrayClaim("scope", scopes.stream().map(GrantScope::getValue).toArray(String[]::new))
+                // 指定过期时间
+                .withExpiresAt(new Date(System.currentTimeMillis() + request.getRequiredAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT).toMillis()))
+                .sign(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey(), (RSAPrivateKey) keyPair.getSignKey()));
+
+        // 返回响应
+        var body = Map.of(
+                "access_token", token,
+                "token_type", "bearer",
+                "expires_in", request.getRequiredAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT).toSeconds(),
+                "account_id", code.getSessionJwt().getSubject(),
+                "username", code.getSessionJwt().getClaim(SessionClaims.USERNAME).asString(),
+                "scope", String.join(",", scopes.stream().map(GrantScope::getValue).toList())
+        );
+
+        if (request.isAcceptContentType(MediaType.APPLICATION_JSON)) {
+            new TextRender(request, response)
+                    .setStatus(HttpStatus.OK)
+                    .setContentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                    .render(Jsonx.Default().serialize(body));
+        } else if (request.isAcceptContentType(MediaType.APPLICATION_XML)) {
+            var content = new StringBuilder("<OAuth>");
+            for (var item : body.entrySet()) {
+                content.append("<").append(item.getKey()).append("?").append(item.getValue()).append("</").append(item.getKey()).append(">");
+            }
+            content.append("</OAuth>");
+
+            new TextRender(request, response)
+                    .setStatus(HttpStatus.OK)
+                    .setContentType(new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8))
+                    .render(content.toString());
+        } else if (request.isAcceptContentType(MediaType.APPLICATION_FORM_URLENCODED)) {
+            var content = body.entrySet().stream().map(it -> it.getKey() + "=" + it.getValue()).collect(Collectors.joining("&"));
+
+            new TextRender(request, response)
+                    .setStatus(HttpStatus.OK)
+                    .setContentType(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8))
+                    .render(content);
+        } else {
+            new TextRender(request, response)
+                    .setStatus(HttpStatus.OK)
+                    .setContentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                    .render(Jsonx.Default().serialize(body));
+        }
     }
 
     /**
