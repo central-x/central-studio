@@ -31,19 +31,16 @@ import central.api.scheduled.ScheduledDataContext;
 import central.api.scheduled.fetcher.DataFetcherType;
 import central.data.organization.Account;
 import central.data.saas.Application;
+import central.lang.Arrayx;
 import central.lang.Stringx;
 import central.security.Digestx;
 import central.security.controller.sso.oauth.option.GrantScope;
 import central.security.controller.sso.oauth.param.AccessTokenParams;
 import central.security.controller.sso.oauth.param.AuthorizeParams;
 import central.security.controller.sso.oauth.param.GrantParams;
-import central.security.controller.sso.oauth.request.GetUserRequest;
 import central.security.controller.sso.oauth.support.AuthorizationCode;
 import central.security.controller.sso.oauth.support.AuthorizationTransaction;
 import central.security.controller.sso.oauth.support.OAuthSession;
-import central.security.core.SecurityDispatcher;
-import central.security.core.SecurityExchange;
-import central.security.core.SecurityResponse;
 import central.security.core.attribute.OAuthAttributes;
 import central.security.core.attribute.SessionAttributes;
 import central.security.signer.KeyPair;
@@ -52,11 +49,14 @@ import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import central.util.Guidx;
 import central.util.Jsonx;
+import central.util.Listx;
 import central.util.Setx;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,9 +93,6 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/sso/oauth2")
 public class OAuthController {
-
-    @Setter(onMethod_ = @Autowired)
-    private SecurityDispatcher dispatcher;
 
     @Setter(onMethod_ = @Autowired)
     private SessionVerifier verifier;
@@ -519,7 +516,78 @@ public class OAuthController {
      * 获取当前用户信息
      */
     @GetMapping("/user")
-    public void getUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        this.dispatcher.dispatch(SecurityExchange.of(GetUserRequest.of(request), SecurityResponse.of(response)));
+    public Map<String, Object> getUser(WebMvcRequest request) {
+        // 获取 access_token
+        var token = this.validate(request);
+
+        var scopes = Arrayx.asStream(token.getClaim("scope").asArray(String.class))
+                .map(GrantScope::resolve)
+                .toList();
+
+        var account = this.provider.findById(token.getSubject());
+        if (account == null) {
+            // 一般情况下不会报这个异常，以防万一吧
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, Stringx.format("User '{}' not found", token.getSubject()));
+        }
+
+        var result = new HashMap<String, Object>();
+        for (var scope : scopes) {
+            for (var fetcher : scope.getFetchers()) {
+                result.put(fetcher.field(), fetcher.getter().apply(account));
+            }
+        }
+
+        return result;
+    }
+
+    private DecodedJWT validate(WebMvcRequest request) {
+        var token = request.getHeader("Authorization");
+        if (Stringx.isNullOrBlank(token)) {
+            // 没有找到请求头
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing required header 'Authorization'");
+        }
+        if (token.toLowerCase().startsWith("bearer ")) {
+            token = token.substring("Bearer ".length());
+        }
+        DecodedJWT accessToken;
+        try {
+            accessToken = JWT.decode(token);
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Bad token");
+        }
+
+        if (!Objects.equals("access_token", accessToken.getType())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Bad token");
+        }
+
+        if (accessToken.getExpiresAt() == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Missing required claim 'exp'");
+        }
+
+        try {
+            // 使用公钥验证
+            JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey(), (RSAPrivateKey) keyPair.getSignKey()))
+                    .build()
+                    .verify(accessToken);
+        } catch (TokenExpiredException ex) {
+            // 过期了
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Bad token");
+        } catch (SignatureVerificationException ex) {
+            // 签名无效
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Invalid signature");
+        } catch (AlgorithmMismatchException ex) {
+            // 签名算法不匹配
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Algorithm mismatch");
+        } catch (Exception ex) {
+            // 其它异常
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: " + ex.getLocalizedMessage());
+        }
+
+        var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(Listx.getFirstOrNull(accessToken.getAudience()));
+        if (application == null || !application.getEnabled()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Invalid client '" + Listx.getFirstOrNull(accessToken.getAudience()) + "'");
+        }
+
+        return accessToken;
     }
 }
