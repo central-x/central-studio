@@ -22,25 +22,29 @@
  * SOFTWARE.
  */
 
-package central.security;
+package central.security.controller.index.param;
 
-import jakarta.servlet.*;
-import org.springframework.stereotype.Component;
+import central.validation.Label;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
- * 应用过滤器
- * 在此过滤器中注入安全策略
+ * 首页入参
  *
  * @author Alan Yeh
- * @since 2022/10/19
+ * @since 2023/02/20
  */
-@Component
-public class ApplicationFilter implements Filter {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class IndexParams implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1966656818836586532L;
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(request, response);
-    }
+    @Label("重定向地址")
+    private String redirectUri;
 }

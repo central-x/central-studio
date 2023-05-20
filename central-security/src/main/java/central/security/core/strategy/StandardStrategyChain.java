@@ -68,7 +68,7 @@ public class StandardStrategyChain implements StrategyChain {
             if (strategy.predicate(exchange)) {
                 strategy.execute(exchange, next());
             } else {
-                next().execute(exchange);
+                this.next().execute(exchange);
             }
         }
     }

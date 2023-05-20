@@ -24,9 +24,14 @@
 
 package central.security.core;
 
+import central.lang.Arrayx;
 import central.lang.Stringx;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
+
+import java.util.Objects;
 
 /**
  * Cookie Manager
@@ -71,6 +76,17 @@ public class CookieManager {
      */
     public String get(SecurityExchange exchange) {
         return exchange.getRequest().getCookie(this.name);
+    }
+
+    /**
+     * 获取 Cookie
+     */
+    public String get(HttpServletRequest request) {
+        return Arrayx.asStream(request.getCookies())
+                .filter(it -> Objects.equals(this.name, it.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
     }
 
     /**
