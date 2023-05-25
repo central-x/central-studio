@@ -22,44 +22,38 @@
  * SOFTWARE.
  */
 
-package central.security.controller.sso.cas.option;
+package central.security.controller.sso.cas.support;
 
 import central.bean.OptionalEnum;
-import central.data.organization.Account;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import java.util.function.Function;
-
 /**
- * 用户属性
+ * 响应格式
  *
  * @author Alan Yeh
  * @since 2022/11/07
  */
 @Getter
 @RequiredArgsConstructor
-public enum Scope implements OptionalEnum<String> {
-    BASIC("用户基本信息（主键、用户名、姓名、头像）", "user:basic", List.of(
-            new DataFetcher("id", Account::getId),
-            new DataFetcher("username", Account::getUsername),
-            new DataFetcher("name", Account::getName),
-            new DataFetcher("avatar", Account::getAvatar)
-    )),
-    CONTRACT("联系方式（邮箱、手机号）", "user:contract", List.of(
-            new DataFetcher("email", Account::getEmail),
-            new DataFetcher("mobile", Account::getMobile)
-    ));
+public enum Format implements OptionalEnum<String> {
+
+    JSON("JSON", "json"),
+    XML("XML", "xml");
 
     private final String name;
     private final String value;
-    private final List<DataFetcher> fetchers;
 
-    public static Scope resolve(String value) {
-        return OptionalEnum.resolve(Scope.class, value);
+    @Override
+    public boolean isCompatibleWith(Object value) {
+        if (value instanceof String string) {
+            return this.getValue().equalsIgnoreCase(string);
+        } else {
+            return OptionalEnum.super.isCompatibleWith(value);
+        }
     }
 
-    public record DataFetcher(String field, Function<Account, Object> getter) {
+    public static Format resolve(String value) {
+        return OptionalEnum.resolve(Format.class, value);
     }
 }

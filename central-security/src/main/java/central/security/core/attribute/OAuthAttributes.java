@@ -25,7 +25,7 @@
 package central.security.core.attribute;
 
 import central.lang.Attribute;
-import central.security.controller.sso.oauth.option.GrantScope;
+import central.security.controller.sso.oauth.support.GrantScope;
 import central.security.core.CookieManager;
 
 import java.time.Duration;

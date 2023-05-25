@@ -24,7 +24,6 @@
 
 package central.security.controller.sso.oauth.support;
 
-import central.security.controller.sso.oauth.option.GrantScope;
 import central.util.concurrent.Expired;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

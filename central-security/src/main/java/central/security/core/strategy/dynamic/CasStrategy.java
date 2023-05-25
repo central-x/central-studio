@@ -27,7 +27,7 @@ package central.security.core.strategy.dynamic;
 import central.lang.BooleanEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
-import central.security.controller.sso.cas.option.Scope;
+import central.security.controller.sso.cas.support.Scope;
 import central.security.core.attribute.CasAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;

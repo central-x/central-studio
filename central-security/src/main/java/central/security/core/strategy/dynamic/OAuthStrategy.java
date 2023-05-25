@@ -27,7 +27,7 @@ package central.security.core.strategy.dynamic;
 import central.lang.BooleanEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
-import central.security.controller.sso.oauth.option.GrantScope;
+import central.security.controller.sso.oauth.support.GrantScope;
 import central.security.core.attribute.OAuthAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;

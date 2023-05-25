@@ -22,34 +22,13 @@
  * SOFTWARE.
  */
 
-package central.security.controller.sso.oauth.param;
-
-import central.security.controller.sso.oauth.support.GrantScope;
-import central.validation.Enums;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.Set;
+package central.security.support.captcha;
 
 /**
- * 授权参数
+ * 验证码校验器
  *
  * @author Alan Yeh
- * @since 2023/04/16
+ * @since 2023/05/26
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class GrantParams implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 3239983781501295240L;
-    
-    /**
-     * 用户同意的授权列表
-     */
-    @Enums(GrantScope.class)
-    private Set<String> scope;
+public interface CaptchaVerifier {
 }

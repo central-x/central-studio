@@ -26,6 +26,8 @@ package central.security.core.attribute;
 
 import central.lang.Attribute;
 import central.security.core.CookieManager;
+import central.security.support.captcha.CaptchaVerifier;
+import central.security.support.captcha.EmptyVerifier;
 
 import java.time.Duration;
 
@@ -52,4 +54,8 @@ public interface CaptchaAttributes {
      * 验证码有效期
      */
     Attribute<Duration> TIMEOUT = Attribute.of("captcha.timeout", () -> Duration.ofMinutes(3));
+    /**
+     * 验证码校验器
+     */
+    Attribute<CaptchaVerifier> VERIFIER = Attribute.of("captcha.verifier", EmptyVerifier::new);
 }

@@ -24,7 +24,7 @@
 
 package central.security.controller.sso.oauth.param;
 
-import central.security.controller.sso.oauth.option.GrantScope;
+import central.security.controller.sso.oauth.support.GrantScope;
 import central.validation.Fix;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;

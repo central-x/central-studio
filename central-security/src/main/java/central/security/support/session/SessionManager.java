@@ -24,66 +24,59 @@
 
 package central.security.support.session;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
+import central.data.organization.Account;
+import central.security.controller.session.support.Endpoint;
 
-import java.time.Duration;
-import java.util.List;
+import java.util.Map;
 
 /**
- * 会话容器
+ * Security Session
+ * 安全会话管理
  *
  * @author Alan Yeh
  * @since 2023/05/13
  */
-public interface SessionContainer {
+public interface SessionManager {
     /**
-     * 保存会话凭证
-     *
-     * @param tenantCode 租户
-     * @param accountId  会话所属帐户
-     * @param token      会话凭证
-     * @param expires    过期时间
+     * 获取公钥
      */
-    void save(String tenantCode, String accountId, DecodedJWT token, Duration expires);
+    String getPublicKey();
 
     /**
-     * 获取指定用户所有会话
+     * 签发会话
      *
      * @param tenantCode 租户
-     * @param accountId  帐户主键
+     * @param issuer     签发组织（一般是域名）
+     * @param timeout    会话超时时间，毫秒。如果为空，则默认为 1800000ms（30分种）
+     * @param account    会话所属帐户
+     * @param endpoint   会话所属终端
+     * @param limit      会话数量上限
+     * @param claims     会话附加属性
+     * @return 已签发的话会
      */
-    List<DecodedJWT> get(String tenantCode, String accountId);
+    String issue(String tenantCode, String issuer, Long timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims);
 
     /**
-     * 判断会话凭证是否存在
+     * 验证会话凭证是否有效
      *
      * @param tenantCode 租户
-     * @param token      会话凭证
+     * @param token      会话凭证证
      */
-    boolean exists(String tenantCode, DecodedJWT token);
+    boolean verify(String tenantCode, String token);
 
     /**
-     * 重新设置会话的过期时间
-     *
-     * @param tenantCode 租户
-     * @param token      会话凭证
-     * @param expires    新的过期时间
-     */
-    void expire(String tenantCode, DecodedJWT token, Duration expires);
-
-    /**
-     * 删除会话
+     * 将指定会话置为无效
      *
      * @param tenantCode 租户
      * @param token      会话凭证
      */
-    void remove(String tenantCode, DecodedJWT token);
+    void invalid(String tenantCode, String token);
 
     /**
-     * 清除指定用户所有登录凭证
+     * 将指定的用户的所有会话都置为无效
      *
      * @param tenantCode 租户
-     * @param accountId  帐户主键
+     * @param accountId  用户
      */
     void clear(String tenantCode, String accountId);
 }

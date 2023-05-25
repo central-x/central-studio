@@ -24,7 +24,6 @@
 
 package central.security.controller.sso.oauth.support;
 
-import central.security.controller.sso.oauth.option.GrantScope;
 import central.util.concurrent.Expired;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;

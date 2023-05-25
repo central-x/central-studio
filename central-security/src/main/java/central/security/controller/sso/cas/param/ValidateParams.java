@@ -24,7 +24,7 @@
 
 package central.security.controller.sso.cas.param;
 
-import central.security.controller.sso.cas.option.Format;
+import central.security.controller.sso.cas.support.Format;
 import central.validation.Enums;
 import central.validation.Label;
 import central.validation.Prefix;

@@ -115,21 +115,15 @@ public class CaptchaStrategy implements Strategy {
         }
 
         // 从容器获取验证码信息
-        var captcha = this.container.get(captchaKey);
+        var captcha = this.container.get(exchange.getRequest().getTenantCode(), captchaKey);
 
-        if (Stringx.isNullOrBlank(captcha)) {
+        if (captcha == null || captcha.isExpired()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码已过期，请重新获取");
         }
 
         // 验证
-        if (exchange.getRequiredAttribute(CaptchaAttributes.CASE_SENSITIVE)) {
-            if (!captcha.equals(value)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码错误");
-            }
-        } else {
-            if (!captcha.equalsIgnoreCase(value)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码错误");
-            }
+        if (captcha.verify(value, exchange.getRequiredAttribute(CaptchaAttributes.CASE_SENSITIVE))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码错误");
         }
 
         // 验证通过

@@ -25,7 +25,7 @@
 package central.security.core.attribute;
 
 import central.lang.Attribute;
-import central.security.controller.sso.cas.option.Scope;
+import central.security.controller.sso.cas.support.Scope;
 
 import java.time.Duration;
 import java.util.Set;

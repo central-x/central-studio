@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-package central.security.controller.sso.oauth.option;
+package central.security.controller.sso.cas.support;
 
 import central.bean.OptionalEnum;
 import central.data.organization.Account;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -34,14 +33,14 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 授权范围
+ * 用户属性
  *
  * @author Alan Yeh
  * @since 2022/11/07
  */
 @Getter
 @RequiredArgsConstructor
-public enum GrantScope implements OptionalEnum<String> {
+public enum Scope implements OptionalEnum<String> {
     BASIC("用户基本信息（主键、用户名、姓名、头像）", "user:basic", List.of(
             new DataFetcher("id", Account::getId),
             new DataFetcher("username", Account::getUsername),
@@ -57,9 +56,8 @@ public enum GrantScope implements OptionalEnum<String> {
     private final String value;
     private final List<DataFetcher> fetchers;
 
-    @JsonCreator
-    public static GrantScope resolve(String value) {
-        return OptionalEnum.resolve(GrantScope.class, value);
+    public static Scope resolve(String value) {
+        return OptionalEnum.resolve(Scope.class, value);
     }
 
     public record DataFetcher(String field, Function<Account, Object> getter) {

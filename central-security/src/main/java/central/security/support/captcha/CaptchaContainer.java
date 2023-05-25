@@ -36,19 +36,21 @@ public interface CaptchaContainer {
     /**
      * 保存验证码
      *
-     * @param key     键
-     * @param value   值
-     * @param timeout 验证码过期时间
+     * @param tenantCode 租户
+     * @param value      值
+     * @param expires    验证码过期时间
+     * @return 验证码键
      */
-    void put(String key, String value, Duration timeout);
+    String put(String tenantCode, String value, Duration expires);
 
     /**
-     * 获取验证码值
+     * 获取验证码
+     * <p>
+     * 获取后该验证码将失效
+     *
+     * @param tenantCode 租户
+     * @param key        键
+     * @return 验证码
      */
-    String get(String key);
-
-    /**
-     * 移除验证码
-     */
-    void remove(String key);
+    Captcha get(String tenantCode, String key);
 }

@@ -34,7 +34,7 @@ import central.data.saas.Application;
 import central.lang.Arrayx;
 import central.lang.Stringx;
 import central.security.Digestx;
-import central.security.controller.sso.oauth.option.GrantScope;
+import central.security.controller.sso.oauth.support.GrantScope;
 import central.security.controller.sso.oauth.param.AccessTokenParams;
 import central.security.controller.sso.oauth.param.AuthorizeParams;
 import central.security.controller.sso.oauth.param.GrantParams;

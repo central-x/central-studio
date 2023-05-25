@@ -34,7 +34,7 @@ import central.lang.Stringx;
 import central.net.http.executor.okhttp.OkHttpExecutor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
-import central.security.controller.sso.cas.option.Format;
+import central.security.controller.sso.cas.support.Format;
 import central.security.controller.sso.cas.param.LoginParams;
 import central.security.controller.sso.cas.param.LogoutParams;
 import central.security.controller.sso.cas.param.ValidateParams;

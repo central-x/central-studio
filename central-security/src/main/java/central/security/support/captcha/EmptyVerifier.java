@@ -22,40 +22,13 @@
  * SOFTWARE.
  */
 
-package central.security.controller.index.request;
-
-import central.security.controller.index.IndexController;
-import central.security.core.SecurityAction;
-import central.security.core.SecurityExchange;
-import central.security.core.request.Request;
-import jakarta.servlet.http.HttpServletRequest;
+package central.security.support.captcha;
 
 /**
- * 获取验证码
+ * 空校验器
  *
  * @author Alan Yeh
- * @see IndexController#getCaptcha
- * @since 2022/10/19
+ * @since 2023/05/26
  */
-public class GetCaptchaRequest extends Request {
-    public GetCaptchaRequest(HttpServletRequest request) {
-        super(request);
-    }
-
-    public static GetCaptchaRequest of(HttpServletRequest request) {
-        return new GetCaptchaRequest(request);
-    }
-
-    @Override
-    public SecurityAction getAction() {
-        return new Action();
-    }
-
-    private static class Action extends SecurityAction {
-
-        @Override
-        public void execute(SecurityExchange exchange) {
-
-        }
-    }
+public class EmptyVerifier implements CaptchaVerifier{
 }

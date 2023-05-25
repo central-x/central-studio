@@ -34,17 +34,12 @@ import central.security.Passwordx;
 import central.security.controller.session.param.*;
 import central.security.controller.session.support.Endpoint;
 import central.security.core.attribute.SessionAttributes;
-import central.security.signer.KeyPair;
-import central.security.support.session.SessionContainer;
+import central.security.support.session.SessionManager;
 import central.sql.query.Conditions;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
-import central.util.Guidx;
 import central.util.Listx;
-import central.util.Mapx;
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -54,12 +49,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
+import java.util.HashMap;
 
 /**
  * Session
@@ -74,75 +64,20 @@ import java.util.Objects;
 public class SessionController {
 
     @Setter(onMethod_ = @Autowired)
-    private KeyPair keyPair;
-
-    @Setter(onMethod_ = @Autowired)
     private AccountProvider accountProvider;
 
     @Setter(onMethod_ = @Autowired)
     private SecurityPasswordProvider passwordProvider;
 
     @Setter(onMethod_ = @Autowired)
-    private SessionContainer sessionContainer;
+    private SessionManager manager;
 
     /**
      * 用于客户端自行验证会话有效性
      */
     @GetMapping("/pubkey")
     public String getPublicKey() {
-        return Base64.getEncoder().encodeToString(this.keyPair.getVerifyKey().getEncoded());
-    }
-
-    /**
-     * 颁发会话
-     */
-    private String issue(WebMvcRequest request, WebMvcResponse response, DecodedJWT source, Account account, Endpoint endpoint, Map<String, Object> claims) {
-        var jwt = JWT.create()
-                // JWT 唯一标识
-                .withJWTId(Guidx.nextID())
-                // 用户主键
-                .withSubject(account.getId())
-                // 用户帐号
-                .withClaim(SessionClaims.USERNAME, account.getUsername())
-                // 是否管理员
-                .withClaim(SessionClaims.ADMIN, account.getAdmin())
-                // 是否超级管理员
-                .withClaim(SessionClaims.SUPERVISOR, account.getSupervisor())
-                // 颁发时间
-                .withClaim(SessionClaims.ISSUE_TIME, new Date())
-                // 终端类型
-                .withClaim(SessionClaims.ENDPOINT, endpoint.getValue())
-                // 颁发者
-                .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
-                // 会话有效时间
-                .withClaim(SessionClaims.TIMEOUT, request.getRequiredAttribute(SessionAttributes.TIMEOUT))
-                // 租户标识
-                .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode());
-
-        if (source != null) {
-            // 记录颁发当前会话的会话标识
-            jwt.withClaim(SessionClaims.SOURCE, source.getId());
-        }
-
-        // 附加用户指定的 Claims
-        if (Mapx.isNotEmpty(claims)) {
-            for (var entry : claims.entrySet()) {
-                if (entry.getValue() instanceof Boolean b) {
-                    jwt.withClaim(entry.getKey(), b);
-                } else if (entry.getValue() instanceof Integer i) {
-                    jwt.withClaim(entry.getKey(), i);
-                } else if (entry.getValue() instanceof Long l) {
-                    jwt.withClaim(entry.getKey(), l);
-                } else if (entry.getValue() instanceof Double d) {
-                    jwt.withClaim(entry.getKey(), d);
-                } else if (entry.getValue() instanceof String s) {
-                    jwt.withClaim(entry.getKey(), s);
-                } else if (entry.getValue() instanceof Date d) {
-                    jwt.withClaim(entry.getKey(), d);
-                }
-            }
-        }
-        return jwt.sign(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey(), (RSAPrivateKey) keyPair.getSignKey()));
+        return manager.getPublicKey();
     }
 
     /**
@@ -172,6 +107,7 @@ public class SessionController {
         }
         if (account == null) {
             // 查询普通用户
+            // TODO，不应该写死通过什么字段查询
             var accounts = this.accountProvider.findBy(1L, 1L, Conditions.of(Account.class)
                     .eq(Account::getUsername, params.getAccount())
                     .or()
@@ -213,12 +149,11 @@ public class SessionController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]密码错误", params.getAccount()));
         }
 
-        var token = this.issue(request, response, null, account, endpoint, params.getClaims());
-        var limit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
-
-        this.sessionContainer.save(JWT.decode(token), limit);
-
-        return token;
+        // 签发会话凭证
+        var issuer = request.getRequiredAttribute(SessionAttributes.ISSUER);
+        var timeout = request.getRequiredAttribute(SessionAttributes.TIMEOUT);
+        var endpointLimit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
+        return this.manager.issue(request.getTenantCode(), issuer, timeout, account, endpoint, endpointLimit, null);
     }
 
     /**
@@ -245,29 +180,21 @@ public class SessionController {
      */
     @PostMapping("/login/token")
     public String loginByToken(@RequestBody @Validated LoginByTokenParams params,
-                               WebMvcRequest request, WebMvcResponse response) {
+                               WebMvcRequest request) {
         // 检查终端密钥
         var endpoint = Endpoint.resolve(request, params.getSecret());
         if (endpoint == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "终端密钥[secret]错误");
         }
 
-        DecodedJWT token;
-        try {
-            token = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
-                    .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode())
-                    .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
-                    .build().verify(params.getToken());
-        } catch (JWTVerificationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是有效会话凭证");
+        if (!this.manager.verify(request.getTenantCode(), params.getToken())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "会话凭证[token]无效");
         }
+
+        DecodedJWT token = JWT.decode(params.getToken());
 
         if (!token.getClaim(SessionClaims.SOURCE).isMissing()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不允许二次颁发会话");
-        }
-
-        if (!this.sessionContainer.verify(token)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "会话已过期");
         }
 
         var account = this.accountProvider.findById(token.getSubject());
@@ -281,12 +208,13 @@ public class SessionController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已删除", token.getClaim(SessionClaims.USERNAME).asString()));
         }
 
-        var issued = this.issue(request, response, token, account, endpoint, params.getClaims());
-        var limit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
+        var issuer = request.getRequiredAttribute(SessionAttributes.ISSUER);
+        var timeout = request.getRequiredAttribute(SessionAttributes.TIMEOUT);
+        var endpointLimit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
+        var claims = new HashMap<>(params.getClaims());
+        claims.put(SessionClaims.SOURCE, token.getId());
 
-        sessionContainer.save(JWT.decode(issued), limit);
-
-        return issued;
+        return this.manager.issue(request.getTenantCode(), issuer, timeout, account, endpoint, endpointLimit, claims);
     }
 
     /**
@@ -297,45 +225,7 @@ public class SessionController {
     @PostMapping("/verify")
     public boolean verify(@RequestBody @Validated VerifyParams params,
                           WebMvcRequest request) {
-        DecodedJWT token;
-        try {
-            token = JWT.decode(params.getToken());
-        } catch (Exception ex) {
-            log.info("不是有效的会话凭证");
-            return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是有效的会话凭证");
-        }
-
-        if (!Objects.equals(token.getIssuer(), request.getRequiredAttribute(SessionAttributes.ISSUER))) {
-            log.info("不是本系统颁发的会话凭证");
-            return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是本系统颁发的会话凭证");
-        }
-
-        if (!Objects.equals(token.getClaim(SessionClaims.TENANT_CODE).asString(), request.getTenantCode())) {
-            log.info("租户不匹配");
-            return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "租户不匹配");
-        }
-
-        try {
-            JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
-                    .build()
-                    .verify(token);
-        } catch (JWTVerificationException ex) {
-            log.info("密钥不匹配");
-            return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "密钥不匹配");
-        }
-
-        // 验证会主知是否过期
-        if (!this.sessionContainer.verify(token)) {
-            log.info("会话不存在");
-            return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "会话不存在");
-        }
-
-        return true;
+        return this.manager.verify(request.getTenantCode(), params.getToken());
     }
 
     /**
@@ -344,16 +234,7 @@ public class SessionController {
     @GetMapping("/logout")
     public void logout(@Validated LogoutParams params,
                        WebMvcRequest request) {
-        try {
-            var session = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
-                    .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
-                    .withClaim(SessionClaims.TENANT_CODE, request.getTenantCode())
-                    .build()
-                    .verify(params.getToken());
-            this.sessionContainer.invalid(session);
-        } catch (JWTVerificationException ignored) {
-
-        }
+        this.manager.invalid(request.getTenantCode(), params.getToken());
     }
 
     /**
@@ -362,6 +243,6 @@ public class SessionController {
     @PostMapping("/invalid")
     public void invalid(@RequestBody @Validated InvalidParams params,
                         WebMvcRequest request) {
-        this.sessionContainer.clear(request.getTenantCode(), params.getAccountId());
+        this.manager.clear(request.getTenantCode(), params.getAccountId());
     }
 }

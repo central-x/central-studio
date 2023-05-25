@@ -22,38 +22,13 @@
  * SOFTWARE.
  */
 
-package central.security.controller.sso.cas.option;
-
-import central.bean.OptionalEnum;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+package central.security.support.session.redis;
 
 /**
- * 响应格式
+ * Redis 会话
  *
  * @author Alan Yeh
- * @since 2022/11/07
+ * @since 2023/05/13
  */
-@Getter
-@RequiredArgsConstructor
-public enum Format implements OptionalEnum<String> {
-
-    JSON("JSON", "json"),
-    XML("XML", "xml");
-
-    private final String name;
-    private final String value;
-
-    @Override
-    public boolean isCompatibleWith(Object value) {
-        if (value instanceof String string) {
-            return this.getValue().equalsIgnoreCase(string);
-        } else {
-            return OptionalEnum.super.isCompatibleWith(value);
-        }
-    }
-
-    public static Format resolve(String value) {
-        return OptionalEnum.resolve(Format.class, value);
-    }
+public class RedisSessionContainer {
 }
