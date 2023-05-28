@@ -22,13 +22,31 @@
  * SOFTWARE.
  */
 
-package central.security.support.captcha;
+package central.security.support.captcha.generator.random;
+
+import central.security.support.captcha.CaptchaGenerator;
+import central.security.support.captcha.CaptchaView;
+
+import java.util.Random;
 
 /**
- * 验证码校验器
+ * 随机验证码生成器
  *
  * @author Alan Yeh
- * @since 2023/05/26
+ * @since 2023/05/29
  */
-public interface CaptchaVerifier {
+public class RandomGenerator implements CaptchaGenerator {
+
+    // 验证码随机字符数组
+    protected static final char[] CHAR_RANGE = "3456789ABCDEFGHJKMNPQRSTUVWXYabcdefghjkmnpqrstuvwxy".toCharArray();
+    protected static final Random RANDOM = new Random(System.nanoTime());
+
+    @Override
+    public CaptchaView generator(String key) {
+        return RandomCaptchaView.of(key, )
+    }
+
+    private String nextRandomString(int length) {
+
+    }
 }

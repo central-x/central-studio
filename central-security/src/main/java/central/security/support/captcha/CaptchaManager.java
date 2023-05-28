@@ -25,10 +25,26 @@
 package central.security.support.captcha;
 
 /**
- * 空校验器
+ * 验证码管理器
  *
  * @author Alan Yeh
- * @since 2023/05/26
+ * @since 2023/05/29
  */
-public class EmptyVerifier implements CaptchaVerifier{
+public interface CaptchaManager {
+    /**
+     * 生成一个新的验证码
+     *
+     * @param tenantCode 租户
+     */
+    Captcha generate(String tenantCode);
+
+    /**
+     * 验证验证码
+     *
+     * @param tenantCode 租户
+     * @param key        二维码键
+     * @param value      二维码值
+     * @return 是否验证成功
+     */
+    boolean verify(String tenantCode, String key, String value);
 }

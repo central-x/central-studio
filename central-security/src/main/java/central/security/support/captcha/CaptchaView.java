@@ -22,38 +22,24 @@
  * SOFTWARE.
  */
 
-package central.security.core.attribute;
+package central.security.support.captcha;
 
-import central.lang.Attribute;
-import central.security.core.CookieManager;
-
-import java.time.Duration;
+import org.springframework.web.servlet.View;
 
 /**
- * 验证码配置
+ * 验证码视图
  *
  * @author Alan Yeh
- * @since 2023/02/15
+ * @since 2023/05/29
  */
-public interface CaptchaAttributes {
+public interface CaptchaView extends View {
     /**
-     * 是否禁用
+     * 获取验证码键
      */
-    Attribute<Boolean> ENABLED = Attribute.of("captcha.enabled", Boolean.FALSE);
+    String getKey();
+
     /**
-     * 验证码是否大小写敏感
+     * 获取验证码值
      */
-    Attribute<Boolean> CASE_SENSITIVE = Attribute.of("captcha.case_sensitive", Boolean.FALSE);
-    /**
-     * 验证码 Cookie
-     */
-    Attribute<CookieManager> COOKIE = Attribute.of("captcha.cookie", () -> new CookieManager("X-Auth-Captcha"));
-    /**
-     * 验证码有效期
-     */
-    Attribute<Duration> TIMEOUT = Attribute.of("captcha.timeout", () -> Duration.ofMinutes(3));
-    /**
-     * 验证码校验器
-     */
-    Attribute<CaptchaVerifier> VERIFIER = Attribute.of("captcha.verifier", EmptyVerifier::new);
+    String getValue();
 }

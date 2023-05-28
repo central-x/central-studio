@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.security.support.captcha.memory;
+package central.security.support.captcha.storage.memory;
 
 import central.security.support.captcha.Captcha;
 import central.security.support.captcha.CaptchaContainer;

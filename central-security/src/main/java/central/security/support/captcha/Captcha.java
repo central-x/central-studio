@@ -24,6 +24,8 @@
 
 package central.security.support.captcha;
 
+import org.springframework.web.servlet.View;
+
 /**
  * 验证码
  *
@@ -31,6 +33,11 @@ package central.security.support.captcha;
  * @since 2023/05/26
  */
 public interface Captcha {
+    /**
+     * 键
+     */
+    String getKey();
+
     /**
      * 值
      */
@@ -48,4 +55,9 @@ public interface Captcha {
      * @param caseSensitive 大小写是否敏感
      */
     boolean verify(String value, boolean caseSensitive);
+
+    /**
+     * 获取视图
+     */
+    View getView();
 }

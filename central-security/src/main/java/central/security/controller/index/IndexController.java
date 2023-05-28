@@ -32,7 +32,11 @@ import central.lang.Stringx;
 import central.security.controller.index.param.IndexParams;
 import central.security.controller.index.param.LoginParams;
 import central.security.controller.index.support.LoginOptions;
+import central.security.core.attribute.CaptchaAttributes;
 import central.security.core.attribute.SessionAttributes;
+import central.security.support.captcha.CaptchaContainer;
+import central.security.support.captcha.CaptchaManager;
+import central.security.support.captcha.DefaultCaptchaManager;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import com.auth0.jwt.JWT;
@@ -71,6 +75,9 @@ public class IndexController {
 
     @Setter(onMethod_ = @Autowired)
     private SessionClient client;
+
+    @Setter(onMethod_ = @Autowired)
+    private CaptchaContainer captchaManager;
 
     /**
      * 获取首页
@@ -155,8 +162,15 @@ public class IndexController {
      * 获取验证码
      */
     @GetMapping("/api/captcha")
-    public void getCaptcha(WebMvcRequest request, WebMvcResponse response) {
-//        this.dispatcher.dispatch(SecurityExchange.of(GetCaptchaRequest.of(request), SecurityResponse.of(response)));
+    public View getCaptcha(WebMvcRequest request, WebMvcResponse response) {
+        CaptchaManager manager = new DefaultCaptchaManager();
+        var captcha = manager.generate();
+
+        // 将 Cookie 写入响应
+        var cookie = request.getRequiredAttribute(CaptchaAttributes.COOKIE);
+        cookie.set(request, response, captcha.getKey());
+
+        return captcha.getView();
     }
 
     /**
@@ -166,6 +180,16 @@ public class IndexController {
     @ResponseBody
     public boolean login(@Validated @RequestBody LoginParams params,
                          WebMvcRequest request, WebMvcResponse response) {
+        if (request.getRequiredAttribute(CaptchaAttributes.ENABLED)) {
+            var cookie = request.getRequiredAttribute(CaptchaAttributes.COOKIE);
+            var key = cookie.get(request);
+
+            var manager = new DefaultCaptchaManager();
+            if (manager.verify(request.getTenantCode(), key, params.getCaptcha())){
+
+            }
+        }
+
         try {
             var session = this.client.login(params.getAccount(), params.getPassword(), params.getSecret(), null);
 

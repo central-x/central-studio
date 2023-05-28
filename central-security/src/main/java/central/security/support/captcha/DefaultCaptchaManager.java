@@ -22,38 +22,22 @@
  * SOFTWARE.
  */
 
-package central.security.core.attribute;
+package central.security.support.captcha;
 
-import central.lang.Attribute;
-import central.security.core.CookieManager;
-
-import java.time.Duration;
+import lombok.RequiredArgsConstructor;
 
 /**
- * 验证码配置
+ * 验证码管理器
  *
  * @author Alan Yeh
- * @since 2023/02/15
+ * @since 2023/05/29
  */
-public interface CaptchaAttributes {
-    /**
-     * 是否禁用
-     */
-    Attribute<Boolean> ENABLED = Attribute.of("captcha.enabled", Boolean.FALSE);
-    /**
-     * 验证码是否大小写敏感
-     */
-    Attribute<Boolean> CASE_SENSITIVE = Attribute.of("captcha.case_sensitive", Boolean.FALSE);
-    /**
-     * 验证码 Cookie
-     */
-    Attribute<CookieManager> COOKIE = Attribute.of("captcha.cookie", () -> new CookieManager("X-Auth-Captcha"));
-    /**
-     * 验证码有效期
-     */
-    Attribute<Duration> TIMEOUT = Attribute.of("captcha.timeout", () -> Duration.ofMinutes(3));
-    /**
-     * 验证码校验器
-     */
-    Attribute<CaptchaVerifier> VERIFIER = Attribute.of("captcha.verifier", EmptyVerifier::new);
+@RequiredArgsConstructor
+public class DefaultCaptchaManager implements CaptchaManager {
+
+    private final CaptchaContainer container;
+
+    private final CaptchaGenerator generator;
+
+
 }
