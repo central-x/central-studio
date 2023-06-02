@@ -24,27 +24,26 @@
 
 package central.security.support.captcha;
 
-import lombok.RequiredArgsConstructor;
+import central.bean.TypeCheckException;
+import central.lang.Stringx;
+import lombok.experimental.StandardException;
+
+import java.io.Serial;
 
 /**
- * 验证码管理器
+ * 验证码异常
  *
  * @author Alan Yeh
- * @since 2023/05/29
+ * @since 2023/06/02
  */
-@RequiredArgsConstructor
-public class DefaultCaptchaManager implements CaptchaManager {
+@StandardException
+public class CaptchaException extends RuntimeException{
+    @Serial
+    private static final long serialVersionUID = 3367332525131620922L;
 
-    private final CaptchaContainer container;
-
-
-    @Override
-    public Captcha generate(String tenantCode, CaptchaGenerator generator) {
-        return null;
-    }
-
-    @Override
-    public void verify(String tenantCode, String key, String value) throws CaptchaException {
-
+    public static void asserts(Class<?> expected, Class<?> actual) {
+        if (actual.isAssignableFrom(expected)) {
+            throw new TypeCheckException(Stringx.format("Type checked failed: Required type '{}' but provides '{}'", expected.getName(), actual.getName()));
+        }
     }
 }

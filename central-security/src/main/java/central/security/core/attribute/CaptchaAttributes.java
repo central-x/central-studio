@@ -26,6 +26,8 @@ package central.security.core.attribute;
 
 import central.lang.Attribute;
 import central.security.core.CookieManager;
+import central.security.support.captcha.CaptchaGenerator;
+import central.security.support.captcha.generator.random.RandomGenerator;
 
 import java.time.Duration;
 
@@ -53,7 +55,7 @@ public interface CaptchaAttributes {
      */
     Attribute<Duration> TIMEOUT = Attribute.of("captcha.timeout", () -> Duration.ofMinutes(3));
     /**
-     * 验证码校验器
+     * 验证码生成器
      */
-    Attribute<CaptchaVerifier> VERIFIER = Attribute.of("captcha.verifier", EmptyVerifier::new);
+    Attribute<CaptchaGenerator> GENERATOR = Attribute.of("captcha.generator", RandomGenerator::new);
 }

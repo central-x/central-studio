@@ -24,6 +24,7 @@
 
 package central.security.support.captcha.generator.random;
 
+import central.security.support.captcha.Captcha;
 import central.security.support.captcha.CaptchaGenerator;
 import central.security.support.captcha.CaptchaView;
 
@@ -42,8 +43,8 @@ public class RandomGenerator implements CaptchaGenerator {
     protected static final Random RANDOM = new Random(System.nanoTime());
 
     @Override
-    public CaptchaView generator(String key) {
-        return RandomCaptchaView.of(key, )
+    public Captcha generator(String code) {
+        return RandomCaptchaView.of(code, )
     }
 
     private String nextRandomString(int length) {

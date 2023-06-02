@@ -35,7 +35,7 @@ import central.security.support.captcha.CaptchaGenerator;
  */
 public class ArithmeticGenerator implements CaptchaGenerator {
     @Override
-    public Captcha generator() {
+    public Captcha generator(String code) {
         return null;
     }
 }

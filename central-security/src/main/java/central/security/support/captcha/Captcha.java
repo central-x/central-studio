@@ -34,9 +34,9 @@ import org.springframework.web.servlet.View;
  */
 public interface Captcha {
     /**
-     * 键
+     * 标识
      */
-    String getKey();
+    String getCode();
 
     /**
      * 值

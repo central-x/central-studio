@@ -34,7 +34,7 @@ public interface CaptchaGenerator {
     /**
      * 生成一个验证码
      *
-     * @param key 验证码标识
+     * @param code 验证码标识
      */
-    CaptchaView generator(String key);
+    Captcha generator(String code);
 }

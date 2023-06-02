@@ -35,8 +35,9 @@ public interface CaptchaManager {
      * 生成一个新的验证码
      *
      * @param tenantCode 租户
+     * @param generator  生成器
      */
-    Captcha generate(String tenantCode);
+    Captcha generate(String tenantCode, CaptchaGenerator generator);
 
     /**
      * 验证验证码
@@ -45,6 +46,7 @@ public interface CaptchaManager {
      * @param key        二维码键
      * @param value      二维码值
      * @return 是否验证成功
+     * @throws CaptchaException 验证失败时将抛出异常
      */
-    boolean verify(String tenantCode, String key, String value);
+    void verify(String tenantCode, String key, String value) throws CaptchaException;
 }
