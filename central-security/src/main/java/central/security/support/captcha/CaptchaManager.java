@@ -33,6 +33,8 @@ package central.security.support.captcha;
 public interface CaptchaManager {
     /**
      * 生成一个新的验证码
+     * <p>
+     * 使用方在生成验证码后，需要将验证码的标识（{@link Captcha#getCode}）写入 Cookie 中，在提交表单时验证需要使用
      *
      * @param tenantCode 租户
      * @param generator  生成器
@@ -42,11 +44,11 @@ public interface CaptchaManager {
     /**
      * 验证验证码
      *
-     * @param tenantCode 租户
-     * @param key        二维码键
-     * @param value      二维码值
-     * @return 是否验证成功
+     * @param tenantCode    租户
+     * @param code          二维码标识
+     * @param value         用户输入的验码证值
+     * @param caseSensitive 是否大小写敏感
      * @throws CaptchaException 验证失败时将抛出异常
      */
-    void verify(String tenantCode, String key, String value) throws CaptchaException;
+    void verify(String tenantCode, String code, String value, boolean caseSensitive) throws CaptchaException;
 }

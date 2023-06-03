@@ -37,11 +37,12 @@ public interface CaptchaContainer {
      * 保存验证码
      *
      * @param tenantCode 租户
+     * @param code       标识
      * @param value      值
      * @param expires    验证码过期时间
      * @return 验证码键
      */
-    String put(String tenantCode, String value, Duration expires);
+    String put(String tenantCode, String code, String value, Duration expires);
 
     /**
      * 获取验证码
@@ -49,8 +50,8 @@ public interface CaptchaContainer {
      * 获取后该验证码将失效
      *
      * @param tenantCode 租户
-     * @param key        键
+     * @param code       标识
      * @return 验证码
      */
-    Captcha get(String tenantCode, String key);
+    Captcha get(String tenantCode, String code);
 }

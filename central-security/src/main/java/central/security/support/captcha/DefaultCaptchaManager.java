@@ -24,7 +24,11 @@
 
 package central.security.support.captcha;
 
+import central.lang.Assertx;
+import central.util.Guidx;
 import lombok.RequiredArgsConstructor;
+
+import java.time.Duration;
 
 /**
  * 验证码管理器
@@ -37,14 +41,22 @@ public class DefaultCaptchaManager implements CaptchaManager {
 
     private final CaptchaContainer container;
 
-
     @Override
     public Captcha generate(String tenantCode, CaptchaGenerator generator) {
-        return null;
+        var captcha = generator.generator(Guidx.nextID());
+        this.container.put(tenantCode, captcha.getCode(), captcha.getValue(), Duration.ofMinutes(3));
+        return captcha;
     }
 
     @Override
-    public void verify(String tenantCode, String key, String value) throws CaptchaException {
-
+    public void verify(String tenantCode, String code, String value, boolean caseSensitive) throws CaptchaException {
+        Assertx.mustNotBlank(value, "验证码不能必为");
+        var captcha = this.container.get(tenantCode, code);
+        Assertx.mustNotNull(captcha, "验证码已过期");
+        if (caseSensitive ) {
+            Assertx.mustTrue(value.equals(captcha), "验证码错误");
+        } else {
+            Assertx.mustTrue(value.equalsIgnoreCase(captcha), "验证码错误");
+        }
     }
 }

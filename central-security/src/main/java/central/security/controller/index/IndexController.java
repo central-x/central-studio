@@ -164,7 +164,7 @@ public class IndexController {
         var generator = request.getRequiredAttribute(CaptchaAttributes.GENERATOR);
         var captcha = this.captchaManager.generate(request.getTenantCode(), generator);
 
-        // 将 Cookie 标识写入响应
+        // 将验证码标识写入 Cookie
         var cookie = request.getRequiredAttribute(CaptchaAttributes.COOKIE);
         cookie.set(request, response, captcha.getCode());
 
@@ -180,9 +180,11 @@ public class IndexController {
     public boolean login(@Validated @RequestBody LoginParams params,
                          WebMvcRequest request, WebMvcResponse response) {
         if (request.getRequiredAttribute(CaptchaAttributes.ENABLED)) {
+            // 获取验证码标识
             var cookie = request.getRequiredAttribute(CaptchaAttributes.COOKIE);
             var code = cookie.get(request);
 
+            // 验证
             this.captchaManager.verify(request.getTenantCode(), code, params.getCaptcha());
         }
 
