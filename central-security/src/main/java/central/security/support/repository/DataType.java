@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.data.organization.option;
+package central.security.support.repository;
 
 import central.bean.OptionalEnum;
 import central.lang.Arrayx;
@@ -34,33 +34,26 @@ import lombok.Getter;
 import java.util.Objects;
 
 /**
- * 区划类型
+ * 数据类型
  *
  * @author Alan Yeh
- * @since 2022/09/24
+ * @since 2023/06/10
  */
 @Getter
 @AllArgsConstructor
-public enum AreaType implements OptionalEnum<String> {
-
-    COUNTRY("国家", "country", 0),
-    PROVINCE("省/自治区/直辖市", "province", 1),
-    CITY("市/州", "city", 2),
-    DISTRICT("区/县/县级市", "district", 3),
-    TOWN("街/镇/乡", "town", 4),
-    VILLAGE("村/居", "village", 5);
+public enum DataType implements OptionalEnum<String> {
+    NONE("不存在", "none"),
+    STRING("字符串", "string"),
+    LIST("列表", "list"),
+    SET("无序集合", "set"),
+    ZSET("有序集合", "zset"),
+    HASH("键值对", "map");
 
     private final String name;
     private final String value;
-    private final Integer priority;
-
-    @Override
-    public String toString() {
-        return this.value;
-    }
 
     @JsonCreator
-    public static @Nullable AreaType resolve(String value) {
-        return Arrayx.asStream(AreaType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
+    public static @Nullable DataType resolve(String value) {
+        return Arrayx.asStream(DataType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
     }
 }

@@ -22,45 +22,13 @@
  * SOFTWARE.
  */
 
-package central.data.organization.option;
-
-import central.bean.OptionalEnum;
-import central.lang.Arrayx;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import java.util.Objects;
+package central.security.support.repository;
 
 /**
- * 区划类型
+ * 缓存集合
  *
  * @author Alan Yeh
- * @since 2022/09/24
+ * @since 2023/06/10
  */
-@Getter
-@AllArgsConstructor
-public enum AreaType implements OptionalEnum<String> {
-
-    COUNTRY("国家", "country", 0),
-    PROVINCE("省/自治区/直辖市", "province", 1),
-    CITY("市/州", "city", 2),
-    DISTRICT("区/县/县级市", "district", 3),
-    TOWN("街/镇/乡", "town", 4),
-    VILLAGE("村/居", "village", 5);
-
-    private final String name;
-    private final String value;
-    private final Integer priority;
-
-    @Override
-    public String toString() {
-        return this.value;
-    }
-
-    @JsonCreator
-    public static @Nullable AreaType resolve(String value) {
-        return Arrayx.asStream(AreaType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
-    }
+public interface CacheSet {
 }

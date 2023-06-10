@@ -27,6 +27,7 @@ package central.security.support.captcha;
 import central.lang.Assertx;
 import central.util.Guidx;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 
 import java.time.Duration;
 
@@ -45,6 +46,7 @@ public class DefaultCaptchaManager implements CaptchaManager {
     public Captcha generate(String tenantCode, CaptchaGenerator generator) {
         var captcha = generator.generator(Guidx.nextID());
         this.container.put(tenantCode, captcha.getCode(), captcha.getValue(), Duration.ofMinutes(3));
+
         return captcha;
     }
 
