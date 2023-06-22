@@ -24,6 +24,10 @@
 
 package central.security.support.repository;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 /**
  * 缓存集合
  *
@@ -31,4 +35,70 @@ package central.security.support.repository;
  * @since 2023/06/10
  */
 public interface CacheSet {
+    /**
+     * 向集合里添加元素
+     *
+     * @param values 待添加元素
+     * @return 被添加的元素数量
+     */
+    long add(String... values);
+
+    /**
+     * 向集合里添加元素
+     *
+     * @param values 待添加元素
+     * @return 被添加的元素数量
+     */
+    long add(Collection<String> values);
+
+    /**
+     * 移除集合里的指定元素
+     *
+     * @param values 待移除元素
+     * @return 被移除的元素数量
+     */
+    long remove(String... values);
+
+    /**
+     * 移除集合里的指定元素
+     *
+     * @param values 待移除元素
+     * @return 被移除的元素数量
+     */
+    long remove(Collection<String> values);
+
+    /**
+     * 随机移除集合中的任一元素
+     *
+     * @return 被移除的元素
+     */
+    String pop();
+
+    /**
+     * 随机移除集合中指定个数的元素
+     *
+     * @param count 移除个数
+     * @return 被移除的元素
+     */
+    List<String> pop(long count);
+
+    /**
+     * 返回当前集合的元素数量
+     *
+     * @return 元素数量
+     */
+    long size();
+
+    /**
+     * 判断当前集合是否包含指定元素
+     *
+     * @param value 元素
+     * @return 是否包含
+     */
+    boolean contains(String value);
+
+    /**
+     * 返回集合中所有的元素
+     */
+    Set<String> values();
 }

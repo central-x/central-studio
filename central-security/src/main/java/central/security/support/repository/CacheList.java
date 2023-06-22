@@ -36,6 +36,11 @@ import java.util.List;
  */
 public interface CacheList {
     /**
+     * 返回列表中所有元素
+     */
+    List<String> values();
+
+    /**
      * 获取指定区间的元素
      *
      * @param start 开始下标（包含）
