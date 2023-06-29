@@ -24,7 +24,6 @@
 
 package central.security.support.repository;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 
@@ -63,68 +62,37 @@ public interface CacheList {
     long size();
 
     /**
-     * 在列表最前端插入元素
+     * 在列表最后添加元素
      *
-     * @param values 待插入元素
-     * @return 插入后列表大小
+     * @param values 待添加元素
+     * @return 插入元数的数量
      */
-    long leftPush(String... values);
+    long add(String... values);
 
     /**
-     * 在列表最前端插入元素
+     * 在列表最后添加元素
      *
-     * @param values 待插入元素
-     * @return 插入后列表大小
+     * @param values 待添加元素
+     * @return 插入元数的数量
      */
-    long leftPush(Collection<String> values);
+    long add(Collection<String> values);
 
     /**
-     * 如果列表存在，则在该列表最前方插入元素
+     * 如果列表存在，则在最后添加元素
      *
-     * @param values 待插入元素
-     * @return 插入后列表大小
+     * @param values 待添加元素
+     * @return 插入元数的数量
      */
-    long leftPushIfPresent(String... values);
+    long addIfPresent(String... values);
 
     /**
-     * 如果列表存在，则在该列表最前方插入元素
+     * 在列表指定下标处插入元素
      *
+     * @param index  下标
      * @param values 待插入元素
-     * @return 插入后列表大小
+     * @return 插入元数的数量
      */
-    long leftPushIfPresent(Collection<String> values);
-
-    /**
-     * 在列表最后端插入元素
-     *
-     * @param values 待插入元素
-     * @return 插入后列表大小
-     */
-    long rightPush(String... values);
-
-    /**
-     * 在列表最后端插入元素
-     *
-     * @param values 待插入元素
-     * @return 插入后列表大小
-     */
-    long rightPush(Collection<String> values);
-
-    /**
-     * 如果列表存在，在列表最后端插入元素
-     *
-     * @param values 待插入元素
-     * @return 插入后列表大小
-     */
-    long rightPushIfPresent(String... values);
-
-    /**
-     * 如果列表存在，在列表最后端插入元素
-     *
-     * @param values 待插入元素
-     * @return 插入后列表大小
-     */
-    long rightPushIfPresent(Collection<String> values);
+    long insert(int index, String... values);
 
     /**
      * 将指定下标的元素替换成指定的值
@@ -165,54 +133,4 @@ public interface CacheList {
      * @return 元素所处下标。返回 -1 时表示元素不存在
      */
     long lastIndexOf(String value);
-
-    /**
-     * 从头向尾，移除并返回第一个元素
-     *
-     * @return 被移除的第一个元素。如果列表为空，则返回空
-     */
-    String leftPop();
-
-    /**
-     * 从头向尾，移除并返回前几个元素
-     *
-     * @param count 指定个数
-     * @return 被移除的前几个元素
-     */
-    List<String> leftPop(long count);
-
-    /**
-     * 从头向尾，移除并返回第一个元素
-     * <p>
-     * 这是一个阻塞方法，该方法会阻塞进程直到超时或列表中有元素返回
-     *
-     * @param timeout 超时时间
-     * @return 被移除的第一个元素。如果列表为空，则返回空
-     */
-    String leftPop(Duration timeout);
-
-    /**
-     * 从尾向头，移除并返回第一个元素
-     *
-     * @return 被移除的第一个元素。如果列表为空，则返回空
-     */
-    String rightPop();
-
-    /**
-     * 从尾向头，移除并返回前几个元素
-     *
-     * @param count 指定个数
-     * @return 被移除的前几个元素
-     */
-    List<String> rightPop(long count);
-
-    /**
-     * 从尾向头，移除并返回第一个元素
-     * <p>
-     * 这是一个阻塞方法，该方法会阻塞进程直到超时或列表中有元素返回
-     *
-     * @param timeout 超时时间
-     * @return 被移除的第一个元素。如果列表为空，则返回空
-     */
-    String rightPop(Duration timeout);
 }
