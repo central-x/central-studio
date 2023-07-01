@@ -118,7 +118,15 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    List<String> opsList(String key);
+    CacheList opsList(String key);
+
+    /**
+     * 获取指定键的缓存，并转换为 Queue 类型
+     *
+     * @param key 缓存键
+     * @return 如果缓存不存在时，将自动创建
+     */
+    CacheQueue opsQueue(String key);
 
     /**
      * 获取指定键的缓存，并转换为 Set 类型
@@ -126,7 +134,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    Set<String> opsSet(String key);
+    CacheSet opsSet(String key);
 
     /**
      * 获取指定键的缓存，并转换为 ZSet 类型
@@ -134,7 +142,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    Set<String> opsZSet(String key);
+    CacheSet opsZSet(String key);
 
     /**
      * 获取指定的键的缓存，并转换为 Map 类型
@@ -142,5 +150,5 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    Map<String, String> opsMap(String key);
+    CacheMap opsMap(String key);
 }
