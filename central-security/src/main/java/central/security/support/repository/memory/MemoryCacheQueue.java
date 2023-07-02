@@ -24,92 +24,50 @@
 
 package central.security.support.repository.memory;
 
-import central.security.support.repository.*;
+import central.security.support.repository.CacheQueue;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
- * 内存缓存仓库
+ * 内存缓存队列
  *
  * @author Alan Yeh
- * @since 2023/06/10
+ * @since 2023/07/02
  */
-public class MemoryCacheRepository implements CacheRepository {
+public class MemoryCacheQueue implements CacheQueue {
     @Override
-    public boolean hasKey(String key) {
+    public List<String> values() {
+        return null;
+    }
+
+    @Override
+    public boolean push(String value) {
         return false;
     }
 
     @Override
-    public boolean delete(String key) {
-        return false;
-    }
-
-    @Override
-    public long delete(Collection<String> keys) {
-        return 0;
-    }
-
-    @Override
-    public DataType type(String key) {
+    public String pop() {
         return null;
     }
 
     @Override
-    public Set<String> keys() {
+    public List<String> pop(long count) {
         return null;
     }
 
     @Override
-    public boolean expire(String key, Duration timeout) {
-        return false;
-    }
-
-    @Override
-    public boolean expireAt(String key, Date date) {
-        return false;
-    }
-
-    @Override
-    public boolean persist(String key) {
-        return false;
-    }
-
-    @Override
-    public Duration getExpire(String key) {
+    public String take(Duration timeout) throws InterruptedException {
         return null;
     }
 
     @Override
-    public CacheValue opsValue(String key) {
+    public String peek() {
         return null;
     }
 
     @Override
-    public CacheList opsList(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheQueue opsQueue(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheSet opsSet(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheSet opsZSet(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheMap opsMap(String key) {
+    public List<String> peek(long count) {
         return null;
     }
 }

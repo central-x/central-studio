@@ -24,92 +24,80 @@
 
 package central.security.support.repository.memory;
 
-import central.security.support.repository.*;
+import central.security.support.repository.CacheList;
 
-import java.time.Duration;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
- * 内存缓存仓库
+ * 内存缓存列表
  *
  * @author Alan Yeh
- * @since 2023/06/10
+ * @since 2023/07/02
  */
-public class MemoryCacheRepository implements CacheRepository {
+public class MemoryCacheList implements CacheList {
     @Override
-    public boolean hasKey(String key) {
-        return false;
+    public List<String> values() {
+        return null;
     }
 
     @Override
-    public boolean delete(String key) {
-        return false;
+    public List<String> range(long start, long end) {
+        return null;
     }
 
     @Override
-    public long delete(Collection<String> keys) {
+    public void trim(long start, long end) {
+
+    }
+
+    @Override
+    public long size() {
         return 0;
     }
 
     @Override
-    public DataType type(String key) {
-        return null;
+    public long add(String... values) {
+        return 0;
     }
 
     @Override
-    public Set<String> keys() {
-        return null;
+    public long add(Collection<String> values) {
+        return 0;
     }
 
     @Override
-    public boolean expire(String key, Duration timeout) {
-        return false;
+    public long addIfPresent(String... values) {
+        return 0;
     }
 
     @Override
-    public boolean expireAt(String key, Date date) {
-        return false;
+    public long insert(int index, String... values) {
+        return 0;
     }
 
     @Override
-    public boolean persist(String key) {
-        return false;
+    public void set(long index, String value) {
+
     }
 
     @Override
-    public Duration getExpire(String key) {
-        return null;
+    public long remove(long count, String value) {
+        return 0;
     }
 
     @Override
-    public CacheValue opsValue(String key) {
-        return null;
+    public long remove(long index) {
+        return 0;
     }
 
     @Override
-    public CacheList opsList(String key) {
-        return null;
+    public long indexOf(String value) {
+        return 0;
     }
 
     @Override
-    public CacheQueue opsQueue(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheSet opsSet(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheSet opsZSet(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheMap opsMap(String key) {
-        return null;
+    public long lastIndexOf(String value) {
+        return 0;
     }
 }

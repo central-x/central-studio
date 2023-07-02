@@ -24,37 +24,42 @@
 
 package central.security.support.repository.memory;
 
-import central.security.support.repository.*;
+import central.security.support.repository.CacheMap;
 
-import java.time.Duration;
 import java.util.Collection;
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * 内存缓存仓库
+ * 内存缓存键值对
  *
  * @author Alan Yeh
- * @since 2023/06/10
+ * @since 2023/07/02
  */
-public class MemoryCacheRepository implements CacheRepository {
+public class MemoryCacheMap implements CacheMap {
+    @Override
+    public long delete(String... keys) {
+        return 0;
+    }
+
     @Override
     public boolean hasKey(String key) {
         return false;
     }
 
     @Override
-    public boolean delete(String key) {
-        return false;
+    public String get(String key) {
+        return null;
     }
 
     @Override
-    public long delete(Collection<String> keys) {
-        return 0;
+    public List<String> get(String... keys) {
+        return null;
     }
 
     @Override
-    public DataType type(String key) {
+    public List<String> get(Collection<String> keys) {
         return null;
     }
 
@@ -64,52 +69,32 @@ public class MemoryCacheRepository implements CacheRepository {
     }
 
     @Override
-    public boolean expire(String key, Duration timeout) {
+    public long size() {
+        return 0;
+    }
+
+    @Override
+    public void put(String key, String value) {
+
+    }
+
+    @Override
+    public void putAll(Map<String, String> values) {
+
+    }
+
+    @Override
+    public boolean putIfAbsent(Map<String, String> map) {
         return false;
     }
 
     @Override
-    public boolean expireAt(String key, Date date) {
-        return false;
-    }
-
-    @Override
-    public boolean persist(String key) {
-        return false;
-    }
-
-    @Override
-    public Duration getExpire(String key) {
+    public Set<String> values() {
         return null;
     }
 
     @Override
-    public CacheValue opsValue(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheList opsList(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheQueue opsQueue(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheSet opsSet(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheSet opsZSet(String key) {
-        return null;
-    }
-
-    @Override
-    public CacheMap opsMap(String key) {
+    public Map<String, String> entries() {
         return null;
     }
 }
