@@ -41,16 +41,41 @@ import java.util.Objects;
  */
 @Getter
 @AllArgsConstructor
-public enum DataType implements OptionalEnum<String> {
-    NONE("不存在", "none"),
-    STRING("字符串", "string"),
-    LIST("列表", "list"),
-    SET("无序集合", "set"),
-    ZSET("有序集合", "zset"),
-    HASH("键值对", "map");
+public enum DataType implements OptionalEnum<Integer> {
+    NONE("不存在", 0),
+    STRING("字符串", 1),
+    LIST("列表", 2),
+    QUEUE("队表", 4),
+    SET("无序集合", 8),
+    ZSET("有序集合", 16),
+    MAP("键值对", 32);
 
     private final String name;
-    private final String value;
+    private final int value;
+
+    public static boolean isString(int value) {
+        return (STRING.getValue() & value) != 0;
+    }
+
+    public static boolean isList(int value) {
+        return (LIST.getValue() & value) != 0;
+    }
+
+    public static boolean isQueue(int value) {
+        return (QUEUE.getValue() & value) != 0;
+    }
+
+    public static boolean isSet(int value) {
+        return (SET.getValue() & value) != 0;
+    }
+
+    public static boolean isZSet(int value) {
+        return (ZSET.getValue() & value) != 0;
+    }
+
+    public static boolean isMap(int value) {
+        return (MAP.getValue() & value) != 0;
+    }
 
     @JsonCreator
     public static @Nullable DataType resolve(String value) {
