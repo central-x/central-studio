@@ -24,6 +24,9 @@
 
 package central.security.support.repository;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.time.Duration;
 import java.util.*;
 
@@ -39,7 +42,7 @@ public interface CacheRepository {
      *
      * @param key 缓存键
      */
-    boolean hasKey(String key);
+    boolean hasKey(@Nonnull String key);
 
     /**
      * 删除指定键的数据
@@ -47,7 +50,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果指定键的缓存数据在，则返回 true，否则返回 false
      */
-    boolean delete(String key);
+    boolean delete(@Nonnull String key);
 
     /**
      * 删除指定键集合的数据
@@ -55,7 +58,7 @@ public interface CacheRepository {
      * @param keys 缓存键集合
      * @return 被删除的缓存数量
      */
-    long delete(Collection<String> keys);
+    long delete(@Nonnull Collection<String> keys);
 
     /**
      * 返回指定键的数据类型
@@ -63,12 +66,12 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 缓存值类型
      */
-    DataType type(String key);
+    @Nonnull DataType type(@Nonnull String key);
 
     /**
      * 获取所有的 Key
      */
-    Set<String> keys();
+    @Nonnull Set<String> keys();
 
     /**
      * 设置指定键的缓存的有效期
@@ -77,7 +80,7 @@ public interface CacheRepository {
      * @param timeout 有效期
      * @return 如果指定键的缓存存在，则返回 true；否则返回 false
      */
-    boolean expire(String key, Duration timeout);
+    boolean expire(@Nonnull String key, @Nonnull Duration timeout);
 
     /**
      * 设置指定键的缓存在指定时间过期
@@ -86,7 +89,7 @@ public interface CacheRepository {
      * @param date 过期时间
      * @return 如果指定键的缓存存在，则返回 true；否则返回 false
      */
-    boolean expireAt(String key, Date date);
+    boolean expireAt(@Nonnull String key, @Nonnull Date date);
 
     /**
      * 移除指定键的过期时间
@@ -94,7 +97,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果指定键的缓存存在，则返回 true；否则返回 false
      */
-    boolean persist(String key);
+    boolean persist(@Nonnull String key);
 
     /**
      * 获取指定键的缓存的剩余有效期
@@ -102,7 +105,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 缓存的有效期。如果缓存没有失效时间，则返回 null
      */
-    Duration getExpire(String key);
+    @Nullable Duration getExpire(@Nonnull String key);
 
     /**
      * 获取指定键的缓存，并转换为 String 类型
@@ -110,7 +113,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    CacheValue opsValue(String key);
+    @Nonnull CacheValue opsValue(@Nonnull String key);
 
     /**
      * 获取指定键的缓存，并转换为 List 类型
@@ -118,7 +121,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    CacheList opsList(String key);
+    @Nonnull CacheList opsList(@Nonnull String key);
 
     /**
      * 获取指定键的缓存，并转换为 Queue 类型
@@ -126,7 +129,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    CacheQueue opsQueue(String key);
+    @Nonnull CacheQueue opsQueue(@Nonnull String key);
 
     /**
      * 获取指定键的缓存，并转换为 Set 类型
@@ -134,7 +137,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    CacheSet opsSet(String key);
+    @Nonnull CacheSet opsSet(@Nonnull String key);
 
     /**
      * 获取指定键的缓存，并转换为 ZSet 类型
@@ -142,7 +145,7 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    CacheSet opsZSet(String key);
+    @Nonnull CacheSet opsZSet(@Nonnull String key);
 
     /**
      * 获取指定的键的缓存，并转换为 Map 类型
@@ -150,5 +153,5 @@ public interface CacheRepository {
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
      */
-    CacheMap opsMap(String key);
+    @Nonnull CacheMap opsMap(@Nonnull String key);
 }
