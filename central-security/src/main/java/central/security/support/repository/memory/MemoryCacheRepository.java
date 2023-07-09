@@ -26,6 +26,8 @@ package central.security.support.repository.memory;
 
 import central.security.support.repository.*;
 import central.util.concurrent.ConsumableQueue;
+import jakarta.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -72,12 +74,12 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public boolean hasKey(String key) {
+    public boolean hasKey(@NotNull String key) {
         return this.caches.containsKey(key);
     }
 
     @Override
-    public boolean delete(String key) {
+    public boolean delete(@NotNull String key) {
         Cache cache = this.caches.remove(key);
         if (cache == null) {
             return false;
@@ -88,7 +90,7 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public long delete(Collection<String> keys) {
+    public long delete(@Nonnull Collection<String> keys) {
         long count = 0;
         for (var key : keys) {
             count += (this.delete(key) ? 1 : 0);
@@ -97,7 +99,7 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public DataType type(String key) {
+    public @Nonnull DataType type(@Nonnull String key) {
         var cache = this.caches.get(key);
         if (cache == null) {
             return DataType.NONE;
@@ -107,12 +109,12 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public Set<String> keys() {
+    public @Nonnull Set<String> keys() {
         return this.caches.keySet();
     }
 
     @Override
-    public boolean expire(String key, Duration timeout) {
+    public boolean expire(@Nonnull String key, @Nonnull Duration timeout) {
         var cache = this.caches.get(key);
         if (cache == null) {
             return false;
@@ -123,7 +125,7 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public boolean expireAt(String key, Date date) {
+    public boolean expireAt(@Nonnull String key, @Nonnull Date date) {
         var cache = this.caches.get(key);
         if (cache == null) {
             return false;
@@ -135,7 +137,7 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public boolean persist(String key) {
+    public boolean persist(@Nonnull String key) {
         var cache = this.caches.get(key);
         if (cache == null) {
             return false;
@@ -145,7 +147,7 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public Duration getExpire(String key) {
+    public Duration getExpire(@Nonnull String key) {
         var cache = this.caches.get(key);
         if (cache == null) {
             return null;
@@ -155,32 +157,32 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public CacheValue opsValue(String key) {
+    public @Nonnull CacheValue opsValue(@Nonnull String key) {
         return null;
     }
 
     @Override
-    public CacheList opsList(String key) {
+    public @Nonnull CacheList opsList(@Nonnull String key) {
         return null;
     }
 
     @Override
-    public CacheQueue opsQueue(String key) {
+    public @Nonnull CacheQueue opsQueue(@Nonnull String key) {
         return null;
     }
 
     @Override
-    public CacheSet opsSet(String key) {
+    public @Nonnull CacheSet opsSet(@Nonnull String key) {
         return null;
     }
 
     @Override
-    public CacheSet opsZSet(String key) {
+    public @Nonnull CacheSet opsZSet(@Nonnull String key) {
         return null;
     }
 
     @Override
-    public CacheMap opsMap(String key) {
+    public @Nonnull CacheMap opsMap(@Nonnull String key) {
         return null;
     }
 }
