@@ -24,6 +24,9 @@
 
 package central.security.support.repository;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +45,7 @@ public interface CacheMap {
      * @param keys 待移除键
      * @return 被删除的元素数量
      */
-    long delete(String... keys);
+    long delete(@Nonnull String... keys);
 
     /**
      * 判断是否包含指定键的元素
@@ -50,7 +53,7 @@ public interface CacheMap {
      * @param key 待判断键
      * @return 是否包含
      */
-    boolean hasKey(String key);
+    boolean hasKey(@Nonnull String key);
 
     /**
      * 获取指定键的元素
@@ -58,7 +61,7 @@ public interface CacheMap {
      * @param key 待取元素键
      * @return 已取出的元素
      */
-    String get(String key);
+    @Nullable String get(@Nonnull String key);
 
     /**
      * 获取指定键的元素
@@ -66,7 +69,7 @@ public interface CacheMap {
      * @param keys 待取元素键集合
      * @return 已取出的元素
      */
-    List<String> get(String... keys);
+    @Nonnull List<String> get(@Nonnull String... keys);
 
     /**
      * 获取指定键的元素
@@ -74,12 +77,12 @@ public interface CacheMap {
      * @param keys 待取元素键集合
      * @return 已取出的元素
      */
-    List<String> get(Collection<String> keys);
+    @Nonnull List<String> get(@Nonnull Collection<String> keys);
 
     /**
      * 获取所有键
      */
-    Set<String> keys();
+    @Nonnull Set<String> keys();
 
     /**
      * 获取所有元素数量
@@ -92,14 +95,14 @@ public interface CacheMap {
      * @param key   键
      * @param value 值
      */
-    void put(String key, String value);
+    void put(@Nonnull String key, @Nonnull String value);
 
     /**
      * 保存指定的键的值
      *
      * @param values 待保存的元素
      */
-    void putAll(Map<String, String> values);
+    void putAll(@Nonnull Map<String, String> values);
 
     /**
      * 如果当前 Map 不存在指定的键，则保存为新值
@@ -107,15 +110,15 @@ public interface CacheMap {
      * @param map 待保存的元素
      * @return 是否保存民功
      */
-    boolean putIfAbsent(Map<String, String> map);
+    boolean putIfAbsent(@Nonnull Map<String, String> map);
 
     /**
      * 获取所有元素
      */
-    Set<String> values();
+    @Nonnull Set<String> values();
 
     /**
      * 获取整个 Map
      */
-    Map<String, String> entries();
+    @Nonnull Map<String, String> entries();
 }

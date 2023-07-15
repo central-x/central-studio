@@ -24,6 +24,9 @@
 
 package central.security.support.repository;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -41,7 +44,7 @@ public interface CacheSet {
      * @param values 待添加元素
      * @return 被添加的元素数量
      */
-    long add(String... values);
+    long add(@Nonnull String... values);
 
     /**
      * 向集合里添加元素
@@ -49,7 +52,7 @@ public interface CacheSet {
      * @param values 待添加元素
      * @return 被添加的元素数量
      */
-    long add(Collection<String> values);
+    long add(@Nonnull Collection<String> values);
 
     /**
      * 移除集合里的指定元素
@@ -57,7 +60,7 @@ public interface CacheSet {
      * @param values 待移除元素
      * @return 被移除的元素数量
      */
-    long remove(String... values);
+    long remove(@Nonnull String... values);
 
     /**
      * 移除集合里的指定元素
@@ -65,14 +68,14 @@ public interface CacheSet {
      * @param values 待移除元素
      * @return 被移除的元素数量
      */
-    long remove(Collection<String> values);
+    long remove(@Nonnull Collection<String> values);
 
     /**
      * 随机移除集合中的任一元素
      *
      * @return 被移除的元素
      */
-    String pop();
+    @Nullable String pop();
 
     /**
      * 随机移除集合中指定个数的元素
@@ -80,7 +83,7 @@ public interface CacheSet {
      * @param count 移除个数
      * @return 被移除的元素
      */
-    List<String> pop(long count);
+    @Nonnull List<String> pop(long count);
 
     /**
      * 返回当前集合的元素数量
@@ -95,10 +98,10 @@ public interface CacheSet {
      * @param value 元素
      * @return 是否包含
      */
-    boolean contains(String value);
+    boolean contains(@Nonnull String value);
 
     /**
      * 返回集合中所有的元素
      */
-    Set<String> values();
+    @Nullable Set<String> values();
 }

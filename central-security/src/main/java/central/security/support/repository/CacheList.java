@@ -24,6 +24,8 @@
 
 package central.security.support.repository;
 
+import jakarta.annotation.Nonnull;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public interface CacheList {
     /**
      * 返回列表中所有元素
      */
+    @Nonnull
     List<String> values();
 
     /**
@@ -46,6 +49,7 @@ public interface CacheList {
      * @param end   结束下标（不包含）
      * @return [start, end)
      */
+    @Nonnull
     List<String> range(long start, long end);
 
     /**
@@ -67,7 +71,7 @@ public interface CacheList {
      * @param values 待添加元素
      * @return 插入元数的数量
      */
-    long add(String... values);
+    long add(@Nonnull String... values);
 
     /**
      * 在列表最后添加元素
@@ -75,7 +79,7 @@ public interface CacheList {
      * @param values 待添加元素
      * @return 插入元数的数量
      */
-    long add(Collection<String> values);
+    long add(@Nonnull Collection<String> values);
 
     /**
      * 如果列表存在，则在最后添加元素
@@ -83,7 +87,7 @@ public interface CacheList {
      * @param values 待添加元素
      * @return 插入元数的数量
      */
-    long addIfPresent(String... values);
+    long addIfPresent(@Nonnull String... values);
 
     /**
      * 在列表指定下标处插入元素
@@ -92,7 +96,7 @@ public interface CacheList {
      * @param values 待插入元素
      * @return 插入元数的数量
      */
-    long insert(int index, String... values);
+    long insert(int index, @Nonnull String... values);
 
     /**
      * 将指定下标的元素替换成指定的值
@@ -100,7 +104,7 @@ public interface CacheList {
      * @param index 下标
      * @param value 值
      */
-    void set(long index, String value);
+    void set(long index, @Nonnull String value);
 
     /**
      * 移除指定元素
@@ -109,7 +113,7 @@ public interface CacheList {
      * @param value 待移除的元素
      * @return 已移除的元素数量
      */
-    long remove(long count, String value);
+    long remove(long count, @Nonnull String value);
 
     /**
      * 移除指定下标的元素
@@ -124,7 +128,7 @@ public interface CacheList {
      * @param value 待定位的元素
      * @return 元素所处下标。返回 -1 时表示元素不存在
      */
-    long indexOf(String value);
+    long indexOf(@Nonnull String value);
 
     /**
      * 从尾向头检索，返回元素第一次出现的下标
@@ -132,5 +136,5 @@ public interface CacheList {
      * @param value 待定位的元素
      * @return 元素所处下标。返回 -1 时表示元素不存在
      */
-    long lastIndexOf(String value);
+    long lastIndexOf(@Nonnull String value);
 }

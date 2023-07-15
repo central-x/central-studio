@@ -24,6 +24,9 @@
 
 package central.security.support.repository;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.time.Duration;
 import java.util.List;
 
@@ -39,7 +42,7 @@ public interface CacheQueue {
      *
      * @return 元素集合
      */
-    List<String> values();
+    @Nonnull List<String> values();
 
     /**
      * 在队列的最后追加一个元素
@@ -47,14 +50,14 @@ public interface CacheQueue {
      * @param value 待添加的元素
      * @return 是否添加成功
      */
-    boolean push(String value);
+    boolean push(@Nonnull String value);
 
     /**
      * 获取并移除队列最前面的元素
      *
      * @return 被移除的元素。如果队列中没有元素，则返回空
      */
-    String pop();
+    @Nullable String pop();
 
     /**
      * 获取并移除队列最前面的几个元素
@@ -62,7 +65,7 @@ public interface CacheQueue {
      * @param count 移除的元素数量
      * @return 被移除的元素
      */
-    List<String> pop(long count);
+    @Nonnull List<String> pop(long count);
 
     /**
      * 获取并移除队列最前面的元素
@@ -71,14 +74,14 @@ public interface CacheQueue {
      * @return 被移除的元素。超时后队列中如果没有元素，则返回空
      * @throws InterruptedException 等待时被中断
      */
-    String take(Duration timeout) throws InterruptedException;
+    @Nullable String take(@Nonnull Duration timeout) throws InterruptedException;
 
     /**
      * 获取队列最前面的元素，不会移除该元素
      *
      * @return 队列最前面的元素。如果队列中没有元素，则返回空
      */
-    String peek();
+    @Nullable String peek();
 
     /**
      * 获取队列最前面的几个元素元素，不会移除该元素
@@ -86,5 +89,5 @@ public interface CacheQueue {
      * @param count 获取元素数量
      * @return 元素集合
      */
-    List<String> peek(long count);
+    @Nonnull List<String> peek(long count);
 }

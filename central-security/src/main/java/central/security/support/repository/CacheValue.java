@@ -24,6 +24,9 @@
 
 package central.security.support.repository;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.time.Duration;
 
 /**
@@ -39,7 +42,7 @@ public interface CacheValue {
      * @param value 缓存值
      * @return 原来的缓存值
      */
-    String set(Object value);
+    @Nullable String set(@Nonnull Object value);
 
     /**
      * 设置值，并设置该值的有效期
@@ -48,7 +51,7 @@ public interface CacheValue {
      * @param timeout 有效期
      * @return 原来的缓存值
      */
-    String set(Object value, Duration timeout);
+    @Nullable String set(@Nonnull Object value, @Nullable Duration timeout);
 
     /**
      * 如果值不存在时，设置值
@@ -56,15 +59,16 @@ public interface CacheValue {
      * @param value 缓存值
      * @return 如果原来有值，则返回 false
      */
-    String setIfAbsent(Object value);
+    boolean setIfAbsent(@Nonnull Object value);
 
     /**
      * 如果值不存在时，设置值，并设置该值的有效期
      *
-     * @param value 缓存值
+     * @param value   缓存值
+     * @param timeout 缓存超时时间
      * @return 如果原来有值，则返回 false
      */
-    boolean setIfAbsent(Object value, Duration timeout);
+    boolean setIfAbsent(@Nonnull Object value, @Nullable Duration timeout);
 
     /**
      * 如果值存在时，覆盖该值为新值
@@ -72,7 +76,7 @@ public interface CacheValue {
      * @param value 缓存值
      * @return 如果原来有值，则返回 true
      */
-    boolean setIfPresent(Object value);
+    boolean setIfPresent(@Nonnull Object value);
 
     /**
      * 如果值存在时，覆盖该值为新值，并设置该值的有效期
@@ -80,45 +84,49 @@ public interface CacheValue {
      * @param value 缓存值
      * @return 如果原来有值，则返回 true
      */
-    boolean setIfPresent(Object value, Duration timeout);
+    boolean setIfPresent(@Nonnull Object value, @Nullable Duration timeout);
 
     /**
      * 获取缓存值
      */
-    String getValue();
+    @Nullable String getValue();
 
     /**
      * 获取缓存值并删除
      */
-    String getAndDelete();
+    @Nullable String getAndDelete();
 
     /**
      * 自增数字
      *
      * @return 自增后数字
+     * @throws NumberFormatException 原来的值不是数字时抛该异常
      */
-    Long increment();
+    @Nonnull Long increment() throws NumberFormatException;
 
     /**
      * 自增数字
      *
      * @param delta 自增量
      * @return 自增后数字
+     * @throws NumberFormatException 原来的值不是数字时抛该异常
      */
-    Long increment(long delta);
+    @Nonnull Long increment(long delta) throws NumberFormatException;
 
     /**
      * 自减数字
      *
      * @return 自减后数字
+     * @throws NumberFormatException 原来的值不是数字时抛该异常
      */
-    Long decrement();
+    @Nonnull Long decrement() throws NumberFormatException;
 
     /**
      * 自减数字
      *
      * @param delta 自减量
      * @return 自减后数字
+     * @throws NumberFormatException 原来的值不是数字时抛该异常
      */
-    Long decrement(long delta);
+    @Nonnull Long decrement(long delta) throws NumberFormatException;
 }
