@@ -24,7 +24,12 @@
 
 package central.security.support.repository.memory;
 
+import central.lang.Stringx;
 import central.security.support.repository.CacheValue;
+import central.security.support.repository.DataType;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 
@@ -34,64 +39,193 @@ import java.time.Duration;
  * @author Alan Yeh
  * @since 2023/07/02
  */
+@RequiredArgsConstructor
 public class MemoryCacheValue implements CacheValue {
+    private final String key;
+
+    private final MemoryCacheRepository repository;
+
+    @Nullable
     @Override
-    public String set(Object value) {
-        return null;
+    public String set(@NotNull String value) {
+        var origin = this.repository.put(this.key, value, DataType.STRING, null);
+        if (origin != null) {
+            return origin.getValue().toString();
+        } else {
+            return null;
+        }
+    }
+
+    @Nullable
+    @Override
+    public String set(@NotNull String value, @Nullable Duration timeout) {
+        var origin = this.repository.put(this.key, value, DataType.STRING, timeout);
+        if (origin != null) {
+            return origin.getValue().toString();
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public String set(Object value, Duration timeout) {
-        return null;
+    public boolean setIfAbsent(@NotNull String value) {
+        var origin = this.repository.get(this.key);
+        if (origin == null) {
+            this.repository.put(this.key, value, DataType.STRING, null);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public String setIfAbsent(Object value) {
-        return null;
+    public boolean setIfAbsent(@NotNull String value, @Nullable Duration timeout) {
+        var origin = this.repository.get(this.key);
+        if (origin == null) {
+            this.repository.put(this.key, value, DataType.STRING, timeout);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public boolean setIfAbsent(Object value, Duration timeout) {
-        return false;
+    public boolean setIfPresent(@NotNull String value) {
+        var origin = this.repository.get(this.key);
+        if (origin != null) {
+            origin.setValue(value);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public boolean setIfPresent(Object value) {
-        return false;
+    public boolean setIfPresent(@NotNull String value, @Nullable Duration timeout) {
+        var origin = this.repository.get(this.key);
+        if (origin != null) {
+            origin.setValue(value);
+            if (timeout != null) {
+                this.repository.expire(this.key, timeout);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    @Override
-    public boolean setIfPresent(Object value, Duration timeout) {
-        return false;
-    }
-
+    @Nullable
     @Override
     public String getValue() {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return null;
+        } else {
+            return cache.getValue().toString();
+        }
     }
 
+    @Nullable
     @Override
     public String getAndDelete() {
-        return null;
+        var cache = this.repository.remove(this.key);
+        if (cache == null) {
+            return null;
+        } else {
+            return cache.getValue().toString();
+        }
     }
 
+    @NotNull
     @Override
-    public Long increment() {
-        return null;
+    public Long increment() throws NumberFormatException {
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            this.repository.put(this.key, 1L, DataType.STRING, null);
+            return 1L;
+        } else {
+            long number;
+            Object value = cache.getValue();
+            if (value instanceof String stringValue) {
+                number = Long.parseLong(stringValue) + 1;
+                cache.setValue(number);
+            } else if (value instanceof Long longValue) {
+                number = longValue + 1;
+                cache.setValue(number);
+            } else {
+                throw new NumberFormatException(Stringx.format("缓存[key={}]的类型为{}({})，无法自增", this.key, cache.getType().getName(), cache.getType().getCode()));
+            }
+            return number;
+        }
     }
 
+    @NotNull
     @Override
-    public Long increment(long delta) {
-        return null;
+    public Long increment(long delta) throws NumberFormatException {
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            this.repository.put(this.key, delta, DataType.STRING, null);
+            return delta;
+        } else {
+            long number;
+            Object value = cache.getValue();
+            if (value instanceof String stringValue) {
+                number = Long.parseLong(stringValue) + delta;
+                cache.setValue(number);
+            } else if (value instanceof Long longValue) {
+                number = longValue + delta;
+                cache.setValue(number);
+            } else {
+                throw new NumberFormatException(Stringx.format("缓存[key={}]的类型为{}({})，无法自增", this.key, cache.getType().getName(), cache.getType().getCode()));
+            }
+            return number;
+        }
     }
 
+    @NotNull
     @Override
-    public Long decrement() {
-        return null;
+    public Long decrement() throws NumberFormatException {
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            this.repository.put(this.key, -1L, DataType.STRING, null);
+            return -1L;
+        } else {
+            long number;
+            Object value = cache.getValue();
+            if (value instanceof String stringValue) {
+                number = Long.parseLong(stringValue) - 1;
+                cache.setValue(number);
+            } else if (value instanceof Long longValue) {
+                number = longValue - 1;
+                cache.setValue(number);
+            } else {
+                throw new NumberFormatException(Stringx.format("缓存[key={}]的类型为{}({})，无法自减", this.key, cache.getType().getName(), cache.getType().getCode()));
+            }
+            return number;
+        }
     }
 
+    @NotNull
     @Override
-    public Long decrement(long delta) {
-        return null;
+    public Long decrement(long delta) throws NumberFormatException {
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            this.repository.put(this.key, delta * -1, DataType.STRING, null);
+            return delta * -1;
+        } else {
+            long number;
+            Object value = cache.getValue();
+            if (value instanceof String stringValue) {
+                number = Long.parseLong(stringValue) - delta;
+                cache.setValue(number);
+            } else if (value instanceof Long longValue) {
+                number = longValue - delta;
+                cache.setValue(number);
+            } else {
+                throw new NumberFormatException(Stringx.format("缓存[key={}]的类型为{}({})，无法自增", this.key, cache.getType().getName(), cache.getType().getCode()));
+            }
+            return number;
+        }
     }
+
 }

@@ -31,8 +31,6 @@ import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Objects;
-
 /**
  * 数据类型
  *
@@ -42,43 +40,35 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 public enum DataType implements OptionalEnum<Integer> {
-    NONE("不存在", 0),
-    STRING("字符串", 1),
-    LIST("列表", 2),
-    QUEUE("队表", 4),
-    SET("无序集合", 8),
-    ZSET("有序集合", 16),
-    MAP("键值对", 32);
+    NONE("none", "不存在", 0),
+    STRING("string", "字符串", 1),
+    LIST("list", "列表", 2),
+    QUEUE("queue", "队表", 4),
+    SET("set", "无序集合", 8),
+    ZSET("zset", "有序集合", 16),
+    MAP("map", "键值对", 32);
 
+    private final String code;
     private final String name;
     private final int value;
 
-    public static boolean isString(int value) {
-        return (STRING.getValue() & value) != 0;
-    }
-
-    public static boolean isList(int value) {
-        return (LIST.getValue() & value) != 0;
-    }
-
-    public static boolean isQueue(int value) {
-        return (QUEUE.getValue() & value) != 0;
-    }
-
-    public static boolean isSet(int value) {
-        return (SET.getValue() & value) != 0;
-    }
-
-    public static boolean isZSet(int value) {
-        return (ZSET.getValue() & value) != 0;
-    }
-
-    public static boolean isMap(int value) {
-        return (MAP.getValue() & value) != 0;
+    @Override
+    public boolean isCompatibleWith(Object value) {
+        if (value instanceof Integer integer) {
+            return (this.value & integer) != 0;
+        } else if (value instanceof DataType type) {
+            if (type == DataType.NONE) {
+                return true;
+            } else {
+                return this.value == type.value;
+            }
+        } else {
+            return false;
+        }
     }
 
     @JsonCreator
-    public static @Nullable DataType resolve(String value) {
-        return Arrayx.asStream(DataType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
+    public static @Nullable DataType resolve(int value) {
+        return Arrayx.asStream(DataType.values()).filter(it -> it.value == value).findFirst().orElse(null);
     }
 }

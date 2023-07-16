@@ -25,6 +25,7 @@
 package central.security.support.repository.memory;
 
 import central.security.support.repository.CacheList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,11 +37,13 @@ import java.util.List;
  * @since 2023/07/02
  */
 public class MemoryCacheList implements CacheList {
+    @NotNull
     @Override
     public List<String> values() {
         return null;
     }
 
+    @NotNull
     @Override
     public List<String> range(long start, long end) {
         return null;
@@ -57,32 +60,32 @@ public class MemoryCacheList implements CacheList {
     }
 
     @Override
-    public long add(String... values) {
+    public long add(@NotNull String... values) {
         return 0;
     }
 
     @Override
-    public long add(Collection<String> values) {
+    public long add(@NotNull Collection<String> values) {
         return 0;
     }
 
     @Override
-    public long addIfPresent(String... values) {
+    public long addIfPresent(@NotNull String... values) {
         return 0;
     }
 
     @Override
-    public long insert(int index, String... values) {
+    public long insert(int index, @NotNull String... values) {
         return 0;
     }
 
     @Override
-    public void set(long index, String value) {
+    public void set(long index, @NotNull String value) {
 
     }
 
     @Override
-    public long remove(long count, String value) {
+    public long remove(long count, @NotNull String value) {
         return 0;
     }
 
@@ -92,12 +95,12 @@ public class MemoryCacheList implements CacheList {
     }
 
     @Override
-    public long indexOf(String value) {
+    public long indexOf(@NotNull String value) {
         return 0;
     }
 
     @Override
-    public long lastIndexOf(String value) {
+    public long lastIndexOf(@NotNull String value) {
         return 0;
     }
 }

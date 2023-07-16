@@ -42,7 +42,7 @@ public interface CacheValue {
      * @param value 缓存值
      * @return 原来的缓存值
      */
-    @Nullable String set(@Nonnull Object value);
+    @Nullable String set(@Nonnull String value);
 
     /**
      * 设置值，并设置该值的有效期
@@ -51,7 +51,7 @@ public interface CacheValue {
      * @param timeout 有效期
      * @return 原来的缓存值
      */
-    @Nullable String set(@Nonnull Object value, @Nullable Duration timeout);
+    @Nullable String set(@Nonnull String value, @Nullable Duration timeout);
 
     /**
      * 如果值不存在时，设置值
@@ -59,7 +59,7 @@ public interface CacheValue {
      * @param value 缓存值
      * @return 如果原来有值，则返回 false
      */
-    boolean setIfAbsent(@Nonnull Object value);
+    boolean setIfAbsent(@Nonnull String value);
 
     /**
      * 如果值不存在时，设置值，并设置该值的有效期
@@ -68,7 +68,7 @@ public interface CacheValue {
      * @param timeout 缓存超时时间
      * @return 如果原来有值，则返回 false
      */
-    boolean setIfAbsent(@Nonnull Object value, @Nullable Duration timeout);
+    boolean setIfAbsent(@Nonnull String value, @Nullable Duration timeout);
 
     /**
      * 如果值存在时，覆盖该值为新值
@@ -76,7 +76,7 @@ public interface CacheValue {
      * @param value 缓存值
      * @return 如果原来有值，则返回 true
      */
-    boolean setIfPresent(@Nonnull Object value);
+    boolean setIfPresent(@Nonnull String value);
 
     /**
      * 如果值存在时，覆盖该值为新值，并设置该值的有效期
@@ -84,7 +84,7 @@ public interface CacheValue {
      * @param value 缓存值
      * @return 如果原来有值，则返回 true
      */
-    boolean setIfPresent(@Nonnull Object value, @Nullable Duration timeout);
+    boolean setIfPresent(@Nonnull String value, @Nullable Duration timeout);
 
     /**
      * 获取缓存值

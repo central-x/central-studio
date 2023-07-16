@@ -25,6 +25,8 @@
 package central.security.support.repository.memory;
 
 import central.security.support.repository.CacheQueue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.List;
@@ -36,36 +38,42 @@ import java.util.List;
  * @since 2023/07/02
  */
 public class MemoryCacheQueue implements CacheQueue {
+    @NotNull
     @Override
     public List<String> values() {
         return null;
     }
 
     @Override
-    public boolean push(String value) {
+    public boolean push(@NotNull String value) {
         return false;
     }
 
+    @Nullable
     @Override
     public String pop() {
         return null;
     }
 
+    @NotNull
     @Override
     public List<String> pop(long count) {
         return null;
     }
 
+    @Nullable
     @Override
-    public String take(Duration timeout) throws InterruptedException {
+    public String take(@NotNull Duration timeout) throws InterruptedException {
         return null;
     }
 
+    @Nullable
     @Override
     public String peek() {
         return null;
     }
 
+    @NotNull
     @Override
     public List<String> peek(long count) {
         return null;

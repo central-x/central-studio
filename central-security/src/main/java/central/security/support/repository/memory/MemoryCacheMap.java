@@ -25,6 +25,8 @@
 package central.security.support.repository.memory;
 
 import central.security.support.repository.CacheMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,30 +41,34 @@ import java.util.Set;
  */
 public class MemoryCacheMap implements CacheMap {
     @Override
-    public long delete(String... keys) {
+    public long delete(@NotNull String... keys) {
         return 0;
     }
 
     @Override
-    public boolean hasKey(String key) {
+    public boolean hasKey(@NotNull String key) {
         return false;
     }
 
+    @Nullable
     @Override
-    public String get(String key) {
+    public String get(@NotNull String key) {
         return null;
     }
 
+    @NotNull
     @Override
-    public List<String> get(String... keys) {
+    public List<String> get(@NotNull String... keys) {
         return null;
     }
 
+    @NotNull
     @Override
-    public List<String> get(Collection<String> keys) {
+    public List<String> get(@NotNull Collection<String> keys) {
         return null;
     }
 
+    @NotNull
     @Override
     public Set<String> keys() {
         return null;
@@ -74,25 +80,27 @@ public class MemoryCacheMap implements CacheMap {
     }
 
     @Override
-    public void put(String key, String value) {
+    public void put(@NotNull String key, @NotNull String value) {
 
     }
 
     @Override
-    public void putAll(Map<String, String> values) {
+    public void putAll(@NotNull Map<String, String> values) {
 
     }
 
     @Override
-    public boolean putIfAbsent(Map<String, String> map) {
+    public boolean putIfAbsent(@NotNull Map<String, String> map) {
         return false;
     }
 
+    @NotNull
     @Override
     public Set<String> values() {
         return null;
     }
 
+    @NotNull
     @Override
     public Map<String, String> entries() {
         return null;

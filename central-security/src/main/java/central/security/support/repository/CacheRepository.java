@@ -112,46 +112,52 @@ public interface CacheRepository {
      *
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
+     * @throws ClassCastException 如果缓存值不兼容 {@link DataType#STRING} 时将抛出此异常
      */
-    @Nonnull CacheValue opsValue(@Nonnull String key);
+    @Nonnull CacheValue opsValue(@Nonnull String key) throws ClassCastException;
 
     /**
      * 获取指定键的缓存，并转换为 List 类型
      *
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
+     * @throws ClassCastException 如果缓存值不兼容 {@link DataType#LIST} 时将抛出此异常
      */
-    @Nonnull CacheList opsList(@Nonnull String key);
+    @Nonnull CacheList opsList(@Nonnull String key) throws ClassCastException;
 
     /**
      * 获取指定键的缓存，并转换为 Queue 类型
      *
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
+     * @throws ClassCastException 如果缓存值不兼容 {@link DataType#QUEUE} 时将抛出此异常
      */
-    @Nonnull CacheQueue opsQueue(@Nonnull String key);
+    @Nonnull CacheQueue opsQueue(@Nonnull String key) throws ClassCastException;
 
     /**
      * 获取指定键的缓存，并转换为 Set 类型
      *
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
+     * @throws ClassCastException 如果缓存值不兼容 {@link DataType#SET} 时将抛出此异常
      */
-    @Nonnull CacheSet opsSet(@Nonnull String key);
+    @Nonnull CacheSet opsSet(@Nonnull String key) throws ClassCastException;
 
     /**
      * 获取指定键的缓存，并转换为 ZSet 类型
      *
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
+     * @throws ClassCastException 如果缓存值不兼容 {@link DataType#ZSET} 时将抛出此异常
      */
-    @Nonnull CacheSet opsZSet(@Nonnull String key);
+    @Nonnull CacheSet opsZSet(@Nonnull String key) throws ClassCastException;
 
     /**
      * 获取指定的键的缓存，并转换为 Map 类型
      *
      * @param key 缓存键
      * @return 如果缓存不存在时，将自动创建
+     * @throws ClassCastException 如果缓存值不兼容 {@link DataType#MAP} 时将抛出此异常
      */
-    @Nonnull CacheMap opsMap(@Nonnull String key);
+    @Nonnull CacheMap opsMap(@Nonnull String key) throws ClassCastException;
 }

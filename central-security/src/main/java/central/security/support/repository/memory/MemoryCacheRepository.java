@@ -24,9 +24,11 @@
 
 package central.security.support.repository.memory;
 
+import central.lang.Assertx;
 import central.security.support.repository.*;
 import central.util.concurrent.ConsumableQueue;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -157,32 +159,60 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
     }
 
     @Override
-    public @Nonnull CacheValue opsValue(@Nonnull String key) {
+    public @Nonnull CacheValue opsValue(@Nonnull String key) throws ClassCastException {
+        var cache = this.caches.get(key);
+        if (cache != null) {
+            Assertx.mustTrue(DataType.STRING.isCompatibleWith(cache.getType()), ClassCastException::new,
+                    "缓存[key={}]的类型为{}({})，不支持转换为{}({})类型",
+                    key, cache.getType().getName(), cache.getType().getCode(), DataType.STRING.getName(), DataType.STRING.getCode());
+        }
+        return new MemoryCacheValue(key, this);
+    }
+
+    @Override
+    public @Nonnull CacheList opsList(@Nonnull String key) throws ClassCastException {
         return null;
     }
 
     @Override
-    public @Nonnull CacheList opsList(@Nonnull String key) {
+    public @Nonnull CacheQueue opsQueue(@Nonnull String key) throws ClassCastException {
         return null;
     }
 
     @Override
-    public @Nonnull CacheQueue opsQueue(@Nonnull String key) {
+    public @Nonnull CacheSet opsSet(@Nonnull String key) throws ClassCastException {
         return null;
     }
 
     @Override
-    public @Nonnull CacheSet opsSet(@Nonnull String key) {
+    public @Nonnull CacheSet opsZSet(@Nonnull String key) throws ClassCastException {
         return null;
     }
 
     @Override
-    public @Nonnull CacheSet opsZSet(@Nonnull String key) {
+    public @Nonnull CacheMap opsMap(@Nonnull String key) throws ClassCastException {
         return null;
     }
 
-    @Override
-    public @Nonnull CacheMap opsMap(@Nonnull String key) {
-        return null;
+    /// internal api
+    @Nullable
+    Cache put(@Nonnull String key, @Nullable Object value, @Nonnull DataType type, @Nullable Duration timeout) {
+        var cache = new Cache(key, value, type);
+        var old = this.caches.put(key, new Cache(key, value, type));
+        if (timeout != null) {
+            cache.setExpire(new Date(System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(timeout)));
+            this.timeoutQueue.offer(cache);
+        }
+        return old;
+    }
+
+    @Nullable
+    Cache get(@Nonnull String key) {
+        return this.caches.get(key);
+    }
+
+    @Nullable
+    Cache remove(@Nonnull String key) {
+        return this.caches.remove(key);
     }
 }

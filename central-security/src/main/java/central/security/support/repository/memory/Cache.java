@@ -26,10 +26,9 @@ package central.security.support.repository.memory;
 
 import central.security.support.repository.DataType;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
@@ -40,9 +39,7 @@ import java.util.concurrent.TimeUnit;
  * @author Alan Yeh
  * @since 2023/07/06
  */
-class Cache implements Serializable, Delayed {
-    @Serial
-    private static final long serialVersionUID = -5768841172399198752L;
+class Cache implements Delayed {
 
     /**
      * 创建时间（时间戳）
@@ -54,12 +51,13 @@ class Cache implements Serializable, Delayed {
      * 键
      */
     @Getter
-    private String key;
+    private final String key;
 
     /**
      * 值
      */
     @Getter
+    @Setter
     private Object value;
 
     /**

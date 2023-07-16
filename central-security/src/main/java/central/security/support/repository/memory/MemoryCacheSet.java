@@ -25,6 +25,8 @@
 package central.security.support.repository.memory;
 
 import central.security.support.repository.CacheSet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,30 +40,32 @@ import java.util.Set;
  */
 public class MemoryCacheSet implements CacheSet {
     @Override
-    public long add(String... values) {
+    public long add(@NotNull String... values) {
         return 0;
     }
 
     @Override
-    public long add(Collection<String> values) {
+    public long add(@NotNull Collection<String> values) {
         return 0;
     }
 
     @Override
-    public long remove(String... values) {
+    public long remove(@NotNull String... values) {
         return 0;
     }
 
     @Override
-    public long remove(Collection<String> values) {
+    public long remove(@NotNull Collection<String> values) {
         return 0;
     }
 
+    @Nullable
     @Override
     public String pop() {
         return null;
     }
 
+    @NotNull
     @Override
     public List<String> pop(long count) {
         return null;
@@ -73,10 +77,11 @@ public class MemoryCacheSet implements CacheSet {
     }
 
     @Override
-    public boolean contains(String value) {
+    public boolean contains(@NotNull String value) {
         return false;
     }
 
+    @Nullable
     @Override
     public Set<String> values() {
         return null;
