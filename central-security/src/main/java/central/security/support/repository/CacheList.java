@@ -95,6 +95,7 @@ public interface CacheList {
      * @param index  下标
      * @param values 待插入元素
      * @return 插入元数的数量
+     * @throws IndexOutOfBoundsException 下标超界时抛出异常
      */
     long insert(int index, @Nonnull String... values);
 
@@ -103,6 +104,7 @@ public interface CacheList {
      *
      * @param index 下标
      * @param value 值
+     * @throws IndexOutOfBoundsException 下标超界时抛出异常
      */
     void set(long index, @Nonnull String value);
 
@@ -119,6 +121,7 @@ public interface CacheList {
      * 移除指定下标的元素
      *
      * @param index 待移除的下标
+     * @throws IndexOutOfBoundsException 下标超界时抛出异常
      */
     long remove(long index);
 
