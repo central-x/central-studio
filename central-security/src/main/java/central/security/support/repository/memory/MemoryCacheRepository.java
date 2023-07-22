@@ -171,7 +171,13 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
 
     @Override
     public @Nonnull CacheList opsList(@Nonnull String key) throws ClassCastException {
-        return null;
+        var cache = this.caches.get(key);
+        if (cache != null) {
+            Assertx.mustTrue(DataType.STRING.isCompatibleWith(cache.getType()), ClassCastException::new,
+                    "缓存[key={}]的类型为{}({})，不支持转换为{}({})类型",
+                    key, cache.getType().getName(), cache.getType().getCode(), DataType.LIST.getName(), DataType.LIST.getCode());
+        }
+        return new MemoryCacheList(key, this);
     }
 
     @Override
@@ -181,7 +187,13 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
 
     @Override
     public @Nonnull CacheSet opsSet(@Nonnull String key) throws ClassCastException {
-        return null;
+        var cache = this.caches.get(key);
+        if (cache != null) {
+            Assertx.mustTrue(DataType.STRING.isCompatibleWith(cache.getType()), ClassCastException::new,
+                    "缓存[key={}]的类型为{}({})，不支持转换为{}({})类型",
+                    key, cache.getType().getName(), cache.getType().getCode(), DataType.SET.getName(), DataType.SET.getCode());
+        }
+        return new MemoryCacheSet(key, this);
     }
 
     @Override

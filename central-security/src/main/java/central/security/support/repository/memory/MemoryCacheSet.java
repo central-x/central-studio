@@ -25,12 +25,12 @@
 package central.security.support.repository.memory;
 
 import central.security.support.repository.CacheSet;
+import central.security.support.repository.DataType;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 内存缓存集合
@@ -38,52 +38,146 @@ import java.util.Set;
  * @author Alan Yeh
  * @since 2023/07/02
  */
+@RequiredArgsConstructor
 public class MemoryCacheSet implements CacheSet {
+
+    private final String key;
+
+    private final MemoryCacheRepository repository;
+
+    @Nullable
+    @Override
+    public Set<String> values() {
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptySet();
+        } else {
+            var set = (Set<String>) cache.getValue();
+            return Collections.unmodifiableSet(set);
+        }
+    }
+
     @Override
     public long add(@NotNull String... values) {
-        return 0;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            this.repository.put(this.key, new HashSet<>(Arrays.asList(values)), DataType.SET, null);
+        } else {
+            var set = (Set<String>) cache.getValue();
+            set.addAll(Arrays.asList(values));
+        }
+        return values.length;
     }
 
     @Override
     public long add(@NotNull Collection<String> values) {
-        return 0;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            this.repository.put(this.key, new HashSet<>(values), DataType.SET, null);
+        } else {
+            var set = (Set<String>) cache.getValue();
+            set.addAll(values);
+        }
+        return values.size();
     }
 
     @Override
     public long remove(@NotNull String... values) {
-        return 0;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return 0L;
+        } else {
+            long removed = 0;
+            var set = (Set<String>) cache.getValue();
+            for (String value : values) {
+                if (set.remove(value)) {
+                    removed++;
+                }
+            }
+            return removed;
+        }
     }
 
     @Override
     public long remove(@NotNull Collection<String> values) {
-        return 0;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return 0L;
+        } else {
+            long removed = 0;
+            var set = (Set<String>) cache.getValue();
+            for (String value : values) {
+                if (set.remove(value)) {
+                    removed++;
+                }
+            }
+            return removed;
+        }
     }
 
     @Nullable
     @Override
     public String pop() {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return null;
+        } else {
+            var set = (Set<String>) cache.getValue();
+
+            var iterator = set.iterator();
+            if (!iterator.hasNext()) {
+                return null;
+            } else {
+                var next = iterator.next();
+                iterator.remove();
+                return next;
+            }
+        }
     }
 
     @NotNull
     @Override
     public List<String> pop(long count) {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptyList();
+        } else {
+            var list = new ArrayList<String>((int) count);
+            var set = (Set<String>) cache.getValue();
+
+            var iterator = set.iterator();
+            for (int i = 0; i < count; i++) {
+                if (!iterator.hasNext()) {
+                    return Collections.emptyList();
+                } else {
+                    var next = iterator.next();
+                    iterator.remove();
+                    list.add(next);
+                }
+            }
+            return Collections.unmodifiableList(list);
+        }
     }
 
     @Override
     public long size() {
-        return 0;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return 0L;
+        } else {
+            var set = (Set<String>) cache.getValue();
+            return set.size();
+        }
     }
 
     @Override
     public boolean contains(@NotNull String value) {
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public Set<String> values() {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return false;
+        } else {
+            var set = (Set<String>) cache.getValue();
+            return set.contains(value);
+        }
     }
 }

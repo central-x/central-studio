@@ -38,6 +38,12 @@ import java.util.Set;
  * @since 2023/06/10
  */
 public interface CacheSet {
+
+    /**
+     * 返回集合中所有的元素
+     */
+    @Nullable Set<String> values();
+
     /**
      * 向集合里添加元素
      *
@@ -99,9 +105,4 @@ public interface CacheSet {
      * @return 是否包含
      */
     boolean contains(@Nonnull String value);
-
-    /**
-     * 返回集合中所有的元素
-     */
-    @Nullable Set<String> values();
 }

@@ -53,8 +53,8 @@ public class MemoryCacheList implements CacheList {
         if (cache == null) {
             return Collections.emptyList();
         } else {
-            var value = (List<String>) cache.getValue();
-            return Collections.unmodifiableList(value);
+            var list = (List<String>) cache.getValue();
+            return Collections.unmodifiableList(list);
         }
     }
 
@@ -65,8 +65,8 @@ public class MemoryCacheList implements CacheList {
         if (cache == null) {
             return Collections.emptyList();
         } else {
-            var value = (List<String>) cache.getValue();
-            return value.subList((int) start, (int) end);
+            var list = (List<String>) cache.getValue();
+            return list.subList((int) start, (int) end);
         }
     }
 
@@ -74,9 +74,9 @@ public class MemoryCacheList implements CacheList {
     public void trim(long start, long end) {
         var cache = this.repository.get(this.key);
         if (cache != null) {
-            var value = (List<String>) cache.getValue();
+            var list = (List<String>) cache.getValue();
             for (var index : Range.of(start, end)) {
-                value.remove(index.intValue());
+                list.remove(index.intValue());
             }
         }
     }
@@ -87,8 +87,8 @@ public class MemoryCacheList implements CacheList {
         if (cache == null) {
             return 0;
         } else {
-            var value = (List<String>) cache.getValue();
-            return value.size();
+            var list = (List<String>) cache.getValue();
+            return list.size();
         }
     }
 
