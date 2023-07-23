@@ -25,11 +25,17 @@
 package central.security.support.repository.memory;
 
 import central.security.support.repository.CacheQueue;
+import central.security.support.repository.DataType;
+import central.util.concurrent.BlockedQueue;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 内存缓存队列
@@ -37,45 +43,114 @@ import java.util.List;
  * @author Alan Yeh
  * @since 2023/07/02
  */
+@RequiredArgsConstructor
 public class MemoryCacheQueue implements CacheQueue {
+    private final String key;
+
+    private final MemoryCacheRepository repository;
+
     @NotNull
     @Override
     public List<String> values() {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptyList();
+        } else {
+            var queue = (BlockedQueue<String>) cache.getValue();
+            return List.copyOf(queue);
+        }
     }
 
     @Override
     public boolean push(@NotNull String value) {
-        return false;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            this.repository.put(this.key, new BlockedQueue<>(List.of(value)), DataType.QUEUE, null);
+            return true;
+        } else {
+            var queue = (BlockedQueue<String>) cache.getValue();
+            return queue.offer(value);
+        }
     }
 
     @Nullable
     @Override
     public String pop() {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return null;
+        } else {
+            var queue = (BlockedQueue<String>) cache.getValue();
+            return queue.poll();
+        }
     }
 
     @NotNull
     @Override
     public List<String> pop(long count) {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptyList();
+        } else {
+            var list = new ArrayList<String>();
+            var queue = (BlockedQueue<String>) cache.getValue();
+
+            for (long i = 0; i < count; i++) {
+                var removed = queue.poll();
+                if (removed != null) {
+                    list.add(removed);
+                }
+            }
+            return Collections.unmodifiableList(list);
+        }
     }
 
     @Nullable
     @Override
     public String take(@NotNull Duration timeout) throws InterruptedException {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            this.repository.put(this.key, new BlockedQueue<>(), DataType.QUEUE, null);
+            cache = this.repository.get(this.key);
+        }
+        if (cache == null) {
+            return null;
+        }
+        var queue = (BlockedQueue<String>) cache.getValue();
+        return queue.poll(TimeUnit.MILLISECONDS.convert(timeout), TimeUnit.MILLISECONDS);
     }
 
     @Nullable
     @Override
     public String peek() {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return null;
+        } else {
+            var queue = (BlockedQueue<String>) cache.getValue();
+            return queue.peek();
+        }
     }
 
     @NotNull
     @Override
     public List<String> peek(long count) {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptyList();
+        } else {
+            var list = new ArrayList<String>();
+            var queue = (BlockedQueue<String>) cache.getValue();
+
+            var it = queue.iterator();
+            for (long i = 0; i < count; i++) {
+                if (it.hasNext()) {
+                    var next = it.next();
+                    list.add(next);
+                }
+            }
+
+            return list;
+        }
     }
 }
