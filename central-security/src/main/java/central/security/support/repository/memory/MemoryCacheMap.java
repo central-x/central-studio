@@ -25,13 +25,12 @@
 package central.security.support.repository.memory;
 
 import central.security.support.repository.CacheMap;
+import central.security.support.repository.DataType;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 内存缓存键值对
@@ -39,70 +38,169 @@ import java.util.Set;
  * @author Alan Yeh
  * @since 2023/07/02
  */
+@RequiredArgsConstructor
 public class MemoryCacheMap implements CacheMap {
+
+    private final String key;
+
+    private final MemoryCacheRepository repository;
+
     @Override
     public long delete(@NotNull String... keys) {
-        return 0;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return 0;
+        } else {
+            long count = 0;
+            var map = (Map<String, String>) cache.getValue();
+            for (var key : keys) {
+                count += (map.remove(key) != null ? 1 : 0);
+            }
+            return count;
+        }
     }
 
     @Override
     public boolean hasKey(@NotNull String key) {
-        return false;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return false;
+        } else {
+            var map = (Map<String, String>) cache.getValue();
+            return map.containsKey(key);
+        }
     }
 
     @Nullable
     @Override
     public String get(@NotNull String key) {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return null;
+        } else {
+            var map = (Map<String, String>) cache.getValue();
+            return map.get(key);
+        }
     }
 
     @NotNull
     @Override
     public List<String> get(@NotNull String... keys) {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptyList();
+        } else {
+            var list = new ArrayList<String>();
+            var map = (Map<String, String>) cache.getValue();
+            for (var key : keys) {
+                var value = map.get(key);
+                if (value != null) {
+                    list.add(value);
+                }
+            }
+            return list;
+        }
     }
 
     @NotNull
     @Override
     public List<String> get(@NotNull Collection<String> keys) {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptyList();
+        } else {
+            var list = new ArrayList<String>();
+            var map = (Map<String, String>) cache.getValue();
+            for (var key : keys) {
+                var value = map.get(key);
+                if (value != null) {
+                    list.add(value);
+                }
+            }
+            return list;
+        }
     }
 
     @NotNull
     @Override
     public Set<String> keys() {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptySet();
+        } else {
+            var map = (Map<String, String>) cache.getValue();
+            return map.keySet();
+        }
     }
 
     @Override
     public long size() {
-        return 0;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return 0;
+        } else {
+            var map = (Map<String, String>) cache.getValue();
+            return map.size();
+        }
     }
 
     @Override
     public void put(@NotNull String key, @NotNull String value) {
-
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            var map = new HashMap<String, String>();
+            map.put(key, value);
+            this.repository.put(this.key, map, DataType.MAP, null);
+        } else {
+            var map = (Map<String, String>) cache.getValue();
+            map.put(key, value);
+        }
     }
 
     @Override
     public void putAll(@NotNull Map<String, String> values) {
-
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            var map = new HashMap<>(values);
+            this.repository.put(this.key, map, DataType.MAP, null);
+        } else {
+            var map = (Map<String, String>) cache.getValue();
+            map.putAll(values);
+        }
     }
 
     @Override
-    public boolean putIfAbsent(@NotNull Map<String, String> map) {
+    public boolean putIfAbsent(@NotNull Map<String, String> values) {
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            var map = new HashMap<>(values);
+            this.repository.put(this.key, map, DataType.MAP, null);
+            return true;
+        }
         return false;
     }
 
     @NotNull
     @Override
-    public Set<String> values() {
-        return null;
+    public List<String> values() {
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptyList();
+        } else {
+            var map = (Map<String, String>) cache.getValue();
+            return List.copyOf(map.values());
+        }
     }
 
     @NotNull
     @Override
     public Map<String, String> entries() {
-        return null;
+        var cache = this.repository.get(this.key);
+        if (cache == null) {
+            return Collections.emptyMap();
+        } else {
+            var map = (Map<String, String>) cache.getValue();
+            return Collections.unmodifiableMap(map);
+        }
     }
 }

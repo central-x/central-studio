@@ -110,12 +110,12 @@ public interface CacheMap {
      * @param map 待保存的元素
      * @return 是否保存民功
      */
-    boolean putIfAbsent(@Nonnull Map<String, String> map);
+    boolean putIfAbsent(@Nonnull Map<String, String> values);
 
     /**
      * 获取所有元素
      */
-    @Nonnull Set<String> values();
+    @Nonnull List<String> values();
 
     /**
      * 获取整个 Map
