@@ -33,14 +33,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 /**
- * 内存缓存集合(HashSet)
+ * 内存缓存集合(TreeSet)
  *
  * @author Alan Yeh
- * @since 2023/07/02
+ * @since 2023/07/27
  */
 @RequiredArgsConstructor
-public class MemoryCacheSet implements CacheSet {
-
+public class MemoryCacheZSet implements CacheSet {
     private final String key;
 
     private final MemoryCacheRepository repository;
@@ -61,7 +60,7 @@ public class MemoryCacheSet implements CacheSet {
     public long add(@NotNull String... values) {
         var cache = this.repository.get(this.key);
         if (cache == null) {
-            this.repository.put(this.key, new HashSet<>(Arrays.asList(values)), DataType.SET, null);
+            this.repository.put(this.key, new TreeSet<>(Arrays.asList(values)), DataType.SET, null);
         } else {
             var set = (Set<String>) cache.getValue();
             set.addAll(Arrays.asList(values));
@@ -73,7 +72,7 @@ public class MemoryCacheSet implements CacheSet {
     public long add(@NotNull Collection<String> values) {
         var cache = this.repository.get(this.key);
         if (cache == null) {
-            this.repository.put(this.key, new HashSet<>(values), DataType.SET, null);
+            this.repository.put(this.key, new TreeSet<>(values), DataType.SET, null);
         } else {
             var set = (Set<String>) cache.getValue();
             set.addAll(values);

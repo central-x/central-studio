@@ -204,7 +204,13 @@ public class MemoryCacheRepository implements CacheRepository, AutoCloseable {
 
     @Override
     public @Nonnull CacheSet opsZSet(@Nonnull String key) throws ClassCastException {
-        return null;
+        var cache = this.caches.get(key);
+        if (cache != null) {
+            Assertx.mustTrue(DataType.STRING.isCompatibleWith(cache.getType()), ClassCastException::new,
+                    "缓存[key={}]的类型为{}({})，不支持转换为{}({})类型",
+                    key, cache.getType().getName(), cache.getType().getCode(), DataType.ZSET.getName(), DataType.ZSET.getCode());
+        }
+        return new MemoryCacheZSet(key, this);
     }
 
     @Override
