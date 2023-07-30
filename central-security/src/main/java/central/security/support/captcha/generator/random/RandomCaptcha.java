@@ -22,36 +22,28 @@
  * SOFTWARE.
  */
 
-package central.security.support.captcha;
+package central.security.support.captcha.generator.random;
 
-import java.time.Duration;
+import central.security.support.captcha.Captcha;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.servlet.View;
 
 /**
- * 验证码容器
+ * 随机验证码
  *
  * @author Alan Yeh
- * @since 2022/11/06
+ * @since 2023/11/17
  */
-public interface CaptchaContainer {
-    /**
-     * 保存验证码
-     *
-     * @param tenantCode 租户
-     * @param code       标识
-     * @param value      值
-     * @param expires    验证码过期时间
-     * @return 验证码键
-     */
-    String put(String tenantCode, String code, String value, Duration expires);
+@Getter
+@RequiredArgsConstructor
+public class RandomCaptcha implements Captcha {
+    private final String code;
 
-    /**
-     * 获取验证码
-     * <p>
-     * 获取后该验证码将失效
-     *
-     * @param tenantCode 租户
-     * @param code       标识
-     * @return 验证码
-     */
-    Captcha get(String tenantCode, String code);
+    private final String value;
+
+    @Override
+    public View getView() {
+        return RandomCaptchaView.of(value);
+    }
 }

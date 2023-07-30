@@ -36,15 +36,19 @@ import central.net.http.processor.impl.SetHeaderProcessor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.processor.impl.TransmitHeaderProcessor;
 import central.net.http.proxy.HttpProxyFactory;
-import central.net.http.proxy.contract.spring.SpringContract;;
+import central.net.http.proxy.contract.spring.SpringContract;
 import central.pluglet.PlugletFactory;
 import central.pluglet.binder.SpringBeanFieldBinder;
 import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.security.signer.KeyPair;
 import central.starter.graphql.stub.ProviderClient;
+import central.util.cache.CacheRepository;
+import central.util.cache.memory.MemoryCacheRepository;
+import central.util.cache.redis.RedisCacheRepository;
 import central.web.XForwardedHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -118,6 +122,24 @@ public class ApplicationConfiguration {
     @Bean
     public SessionVerifier sessionVerifier() {
         return new SessionVerifier();
+    }
+
+    /**
+     * 缓存仓库
+     */
+    @Bean
+    @ConditionalOnMissingBean(CacheRepository.class)
+    public CacheRepository memoryCacheRepository() {
+        return new MemoryCacheRepository();
+    }
+
+    /**
+     * 缓存仓库
+     */
+    @Bean
+    @ConditionalOnProperty(name = "central.security.cache.type", havingValue = "redis")
+    public CacheRepository redisCacheRepository() {
+        return new RedisCacheRepository();
     }
 
     /**

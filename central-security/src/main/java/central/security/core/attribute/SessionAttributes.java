@@ -39,7 +39,7 @@ public interface SessionAttributes {
     /**
      * 会话超时时间
      */
-    Attribute<Long> TIMEOUT = Attribute.of("session.timeout", () -> Duration.ofMinutes(30).toMillis());
+    Attribute<Duration> TIMEOUT = Attribute.of("session.timeout", () -> Duration.ofMinutes(30));
     /**
      * 会话颁发者
      */

@@ -44,6 +44,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 默认的会话
@@ -75,7 +76,7 @@ public class DefaultSessionManager implements SessionManager {
     }
 
     @Override
-    public String issue(String tenantCode, String issuer, Long timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims) {
+    public String issue(String tenantCode, String issuer, Duration timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims) {
         var jwt = JWT.create()
                 // JWT 唯一标识
                 .withJWTId(Guidx.nextID())
@@ -94,7 +95,7 @@ public class DefaultSessionManager implements SessionManager {
                 // 颁发者
                 .withIssuer(issuer)
                 // 会话有效时间
-                .withClaim(SessionClaims.TIMEOUT, timeout)
+                .withClaim(SessionClaims.TIMEOUT, TimeUnit.MILLISECONDS.convert(timeout))
                 // 租户标识
                 .withClaim(SessionClaims.TENANT_CODE, tenantCode);
 
@@ -116,7 +117,11 @@ public class DefaultSessionManager implements SessionManager {
                 }
             }
         }
-        return jwt.sign(Algorithm.RSA256((RSAPublicKey) sessionKey.getVerifyKey(), (RSAPrivateKey) sessionKey.getSignKey()));
+        var token = jwt.sign(Algorithm.RSA256((RSAPublicKey) sessionKey.getVerifyKey(), (RSAPrivateKey) sessionKey.getSignKey()));
+
+        var decodedJwt = JWT.decode(token);
+        this.container.save(tenantCode, account.getId(), decodedJwt, timeout);
+        return token;
     }
 
     @Override

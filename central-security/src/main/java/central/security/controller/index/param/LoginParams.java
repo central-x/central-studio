@@ -50,6 +50,9 @@ public class LoginParams implements Serializable {
     @NotBlank
     private String account;
 
+    /**
+     * 密码需要经过 SHA256 后再提交
+     */
     @Label("密码")
     @NotBlank
     private String password;

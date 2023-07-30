@@ -46,16 +46,14 @@ import java.util.Random;
  */
 @RequiredArgsConstructor
 public class RandomCaptchaView implements CaptchaView {
-    @Getter
-    private final String key;
 
     @Getter
     private final String value;
     private final int width = 108;
     private final int height = 40;
 
-    public static CaptchaView of(String key, String value) {
-        return new RandomCaptchaView(key, value);
+    public static CaptchaView of(String value) {
+        return new RandomCaptchaView(value);
     }
 
     @Override

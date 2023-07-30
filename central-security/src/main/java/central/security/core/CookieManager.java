@@ -80,7 +80,7 @@ public class CookieManager {
     public void set(WebMvcRequest request, WebMvcResponse response, String value) {
         var builder = ResponseCookie.from(this.name, value)
                 .path(request.getTenantPath())
-                .maxAge(0)
+                .maxAge(-1)
                 .httpOnly(this.httpOnly)
                 .secure(this.secure);
         if (Stringx.isNotBlank(this.domain)) {

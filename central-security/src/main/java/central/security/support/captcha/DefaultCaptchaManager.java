@@ -25,9 +25,11 @@
 package central.security.support.captcha;
 
 import central.lang.Assertx;
+import central.lang.Stringx;
 import central.util.Guidx;
+import central.util.cache.CacheRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
@@ -37,15 +39,19 @@ import java.time.Duration;
  * @author Alan Yeh
  * @since 2023/05/29
  */
+@Component
 @RequiredArgsConstructor
 public class DefaultCaptchaManager implements CaptchaManager {
 
-    private final CaptchaContainer container;
+    private final CacheRepository repository;
 
     @Override
     public Captcha generate(String tenantCode, CaptchaGenerator generator) {
         var captcha = generator.generator(Guidx.nextID());
-        this.container.put(tenantCode, captcha.getCode(), captcha.getValue(), Duration.ofMinutes(3));
+
+        // 保存到缓存中
+        var cache = this.repository.opsValue(Stringx.format("{}:{}", tenantCode, captcha.getCode()));
+        cache.set(captcha.getValue(), Duration.ofMinutes(3));
 
         return captcha;
     }
@@ -53,9 +59,12 @@ public class DefaultCaptchaManager implements CaptchaManager {
     @Override
     public void verify(String tenantCode, String code, String value, boolean caseSensitive) throws CaptchaException {
         Assertx.mustNotBlank(value, "验证码不能必为");
-        var captcha = this.container.get(tenantCode, code);
+
+        var cache = this.repository.opsValue(Stringx.format("{}:{}", tenantCode, code));
+        var captcha = cache.getValue();
+
         Assertx.mustNotNull(captcha, "验证码已过期");
-        if (caseSensitive ) {
+        if (caseSensitive) {
             Assertx.mustTrue(value.equals(captcha), "验证码错误");
         } else {
             Assertx.mustTrue(value.equalsIgnoreCase(captcha), "验证码错误");

@@ -26,7 +26,6 @@ package central.security.support.captcha.generator.random;
 
 import central.security.support.captcha.Captcha;
 import central.security.support.captcha.CaptchaGenerator;
-import central.security.support.captcha.CaptchaView;
 
 import java.util.Random;
 
@@ -44,10 +43,12 @@ public class RandomGenerator implements CaptchaGenerator {
 
     @Override
     public Captcha generator(String code) {
-        return RandomCaptchaView.of(code, )
-    }
+        int num = 4;
+        char[] randomChars = new char[num];
+        for (int i = 0; i < randomChars.length; i++) {
+            randomChars[i] = CHAR_RANGE[RANDOM.nextInt(CHAR_RANGE.length)];
+        }
 
-    private String nextRandomString(int length) {
-
+        return new RandomCaptcha(code, String.valueOf(randomChars));
     }
 }

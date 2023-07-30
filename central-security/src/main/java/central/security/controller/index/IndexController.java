@@ -185,7 +185,7 @@ public class IndexController {
             var code = cookie.get(request);
 
             // 验证
-            this.captchaManager.verify(request.getTenantCode(), code, params.getCaptcha());
+            this.captchaManager.verify(request.getTenantCode(), code, params.getCaptcha(), request.getRequiredAttribute(CaptchaAttributes.CASE_SENSITIVE));
         }
 
         try {

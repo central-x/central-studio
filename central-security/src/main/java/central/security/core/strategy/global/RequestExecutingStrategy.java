@@ -32,7 +32,6 @@ import lombok.Setter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Alan Yeh
  * @since 2022/10/19
  */
-@Component
 @Order
 public class RequestExecutingStrategy implements GlobalStrategy, ApplicationContextAware {
 

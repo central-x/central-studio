@@ -27,6 +27,7 @@ package central.security.support.session;
 import central.data.organization.Account;
 import central.security.controller.session.support.Endpoint;
 
+import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -54,7 +55,7 @@ public interface SessionManager {
      * @param claims     会话附加属性
      * @return 已签发的话会
      */
-    String issue(String tenantCode, String issuer, Long timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims);
+    String issue(String tenantCode, String issuer, Duration timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims);
 
     /**
      * 验证会话凭证是否有效

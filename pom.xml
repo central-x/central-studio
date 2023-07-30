@@ -70,12 +70,12 @@
         <repository>
             <id>centralx-releases</id>
             <name>CentralX Release Repository</name>
-            <url>https://deploy.central-x.com/repository/maven-releases/</url>
+            <url>https://mirror.central-x.com/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>centralx-snapshots</id>
             <name>CentralX Snapshot Repository</name>
-            <url>https://deploy.central-x.com/repository/maven-snapshots/</url>
+            <url>https://mirror.central-x.com/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

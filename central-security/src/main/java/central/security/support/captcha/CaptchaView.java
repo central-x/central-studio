@@ -33,10 +33,6 @@ import org.springframework.web.servlet.View;
  * @since 2023/05/29
  */
 public interface CaptchaView extends View {
-    /**
-     * 获取验证码键
-     */
-    String getKey();
 
     /**
      * 获取验证码值

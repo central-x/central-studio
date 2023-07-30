@@ -34,7 +34,6 @@ import central.security.core.ability.CaptchableRequest;
 import central.security.core.attribute.CaptchaAttributes;
 import central.security.core.strategy.Strategy;
 import central.security.core.strategy.StrategyChain;
-import central.security.support.captcha.CaptchaContainer;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
@@ -43,7 +42,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -94,8 +92,8 @@ public class CaptchaStrategy implements Strategy {
         chain.execute(request, response);
     }
 
-    @Setter(onMethod_ = @Autowired)
-    private CaptchaContainer container;
+//    @Setter(onMethod_ = @Autowired)
+//    private CaptchaContainer container;
 
     /**
      * 验证验证码
@@ -114,17 +112,17 @@ public class CaptchaStrategy implements Strategy {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验输入验证码");
         }
 
-        // 从容器获取验证码信息
-        var captcha = this.container.get(exchange.getRequest().getTenantCode(), captchaKey);
-
-        if (captcha == null || captcha.isExpired()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码已过期，请重新获取");
-        }
-
-        // 验证
-        if (captcha.verify(value, exchange.getRequiredAttribute(CaptchaAttributes.CASE_SENSITIVE))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码错误");
-        }
+//        // 从容器获取验证码信息
+//        var captcha = this.container.get(exchange.getRequest().getTenantCode(), captchaKey);
+//
+//        if (captcha == null || captcha.isExpired()) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码已过期，请重新获取");
+//        }
+//
+//        // 验证
+//        if (captcha.verify(value, exchange.getRequiredAttribute(CaptchaAttributes.CASE_SENSITIVE))) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "验证码错误");
+//        }
 
         // 验证通过
         cookieManager.remove(exchange);

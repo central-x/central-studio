@@ -44,19 +44,6 @@ public interface Captcha {
     String getValue();
 
     /**
-     * 是否已过期
-     */
-    boolean isExpired();
-
-    /**
-     * 验证指定的验证码是否匹配
-     *
-     * @param value         验证码值
-     * @param caseSensitive 大小写是否敏感
-     */
-    boolean verify(String value, boolean caseSensitive);
-
-    /**
      * 获取视图
      */
     View getView();

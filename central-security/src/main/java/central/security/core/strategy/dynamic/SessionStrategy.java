@@ -36,6 +36,7 @@ import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.*;
 
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  * 会话策略
@@ -62,7 +63,7 @@ public class SessionStrategy implements Strategy {
 
     @Override
     public void execute(WebMvcRequest request, WebMvcResponse response, StrategyChain chain) throws IOException, ServletException {
-        request.setAttribute(SessionAttributes.TIMEOUT, this.timeout);
+        request.setAttribute(SessionAttributes.TIMEOUT, Duration.ofMillis(this.timeout));
         request.setAttribute(SessionAttributes.ISSUER, this.issuer);
         chain.execute(request, response);
     }

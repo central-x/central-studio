@@ -27,10 +27,8 @@ package central.security.test;
 import central.security.Digestx;
 import central.security.SecurityApplication;
 import central.security.controller.index.IndexController;
-import central.security.controller.index.request.GetOptionsRequest;
+import central.security.controller.index.support.LoginOptions;
 import central.security.test.client.IndexClient;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +58,7 @@ public class TestIndexController {
     @Test
     public void case1() {
         var options = client.getOptions();
-        for (var option : GetOptionsRequest.Options.values()) {
+        for (var option : LoginOptions.values()) {
             assertTrue(options.containsKey(option.getName()));
         }
     }
