@@ -27,7 +27,6 @@ package central.api.client.security;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.security.Signerx;
-import central.util.Collectionx;
 import central.util.Guidx;
 import central.util.Mapx;
 import central.util.Objectx;
@@ -657,15 +656,27 @@ public class Session implements Serializable {
          * 执行校验
          *
          * @param verifyKey 校验密钥
-         * @return 校验结果
          */
-        public boolean verify(String verifyKey) throws InvalidKeyException, RuntimeException {
-            return this.verify(Collectionx.emptyMap(), verifyKey);
+        public void verify(String verifyKey) throws InvalidKeyException, InvalidSessionException {
+            this.verify((RSAPublicKey) Signerx.RSA.getVerifyKey(verifyKey));
         }
 
-
-        public boolean verify(Map<String, Object> claims, String verifyKey) {
-            var verifier = JWT.require(Algorithm.RSA256((RSAPublicKey) Signerx.RSA.getVerifyKey(verifyKey), null));
+        /**
+         * 执行校验
+         *
+         * @param verifyKey 校验密钥
+         */
+        public void verify(Key verifyKey) throws InvalidKeyException, InvalidSessionException {
+            this.verify((RSAPublicKey) verifyKey);
+        }
+        
+        /**
+         * 执行校验
+         *
+         * @param verifyKey 校验密钥
+         */
+        private void verify(RSAPublicKey verifyKey) {
+            var verifier = JWT.require(Algorithm.RSA256(verifyKey, null));
 
             // 租户标识
             if (Stringx.isNotBlank(this.tenantCode)) {
@@ -717,8 +728,8 @@ public class Session implements Serializable {
             }
 
             // 附加用户指定的 Claims
-            if (Mapx.isNotEmpty(claims)) {
-                for (var entry : claims.entrySet()) {
+            if (Mapx.isNotEmpty(this.claims)) {
+                for (var entry : this.claims.entrySet()) {
                     if (entry.getValue() instanceof Boolean b) {
                         verifier.withClaim(entry.getKey(), b);
                     } else if (entry.getValue() instanceof Integer i) {
@@ -737,9 +748,8 @@ public class Session implements Serializable {
 
             try {
                 verifier.build().verify(this.token);
-                return true;
-            } catch (Exception ignored) {
-                return false;
+            } catch (Exception exception) {
+                throw new InvalidSessionException(exception.getLocalizedMessage(), exception);
             }
         }
     }
