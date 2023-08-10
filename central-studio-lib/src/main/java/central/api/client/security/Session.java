@@ -68,6 +68,7 @@ public class Session implements Serializable {
 
     public Session(@Nonnull String token) {
         this.token = token;
+        this.decodedToken = JWT.decode(token);
     }
 
     public static Session of(@Nonnull String token) {
@@ -320,12 +321,12 @@ public class Session implements Serializable {
         private String endpoint;
         private Duration timeout;
         private String tenantCode;
-        private Map<String, Object> claims;
+        private final Map<String, Object> claims = new HashMap<>();
 
         /**
          * 会话主键
          */
-        public SessionBuilder id(String id) {
+        public SessionBuilder id(@Nullable String id) {
             this.id = id;
             return this;
         }
@@ -333,7 +334,7 @@ public class Session implements Serializable {
         /**
          * 用户主键
          */
-        public SessionBuilder accountId(String accountId) {
+        public SessionBuilder accountId(@Nonnull String accountId) {
             this.accountId = accountId;
             return this;
         }
@@ -341,7 +342,7 @@ public class Session implements Serializable {
         /**
          * 用户名
          */
-        public SessionBuilder username(String username) {
+        public SessionBuilder username(@Nonnull String username) {
             this.username = username;
             return this;
         }
@@ -365,7 +366,7 @@ public class Session implements Serializable {
         /**
          * 颁发当前会话的会话主键
          */
-        public SessionBuilder source(String source) {
+        public SessionBuilder source(@Nullable String source) {
             this.source = source;
             return this;
         }
@@ -373,7 +374,7 @@ public class Session implements Serializable {
         /**
          * 申请会话时的客户端 IP
          */
-        public SessionBuilder ip(String ip) {
+        public SessionBuilder ip(@Nonnull String ip) {
             this.ip = ip;
             return this;
         }
@@ -381,7 +382,7 @@ public class Session implements Serializable {
         /**
          * 凭证颁发机构，通常使用域名
          */
-        public SessionBuilder issuer(String issuer) {
+        public SessionBuilder issuer(@Nonnull String issuer) {
             this.issuer = issuer;
             return this;
         }
@@ -389,7 +390,7 @@ public class Session implements Serializable {
         /**
          * 凭证颁发时间
          */
-        public SessionBuilder issueTime(Date issueTime) {
+        public SessionBuilder issueTime(@Nullable Date issueTime) {
             this.issueTime = issueTime;
             return this;
         }
@@ -397,7 +398,7 @@ public class Session implements Serializable {
         /**
          * 终端类型
          */
-        public SessionBuilder endpoint(String endpoint) {
+        public SessionBuilder endpoint(@Nonnull String endpoint) {
             this.endpoint = endpoint;
             return this;
         }
@@ -405,7 +406,7 @@ public class Session implements Serializable {
         /**
          * 会话自动超时时间
          */
-        public SessionBuilder timeout(Duration timeout) {
+        public SessionBuilder timeout(@Nonnull Duration timeout) {
             this.timeout = timeout;
             return this;
         }
@@ -413,16 +414,84 @@ public class Session implements Serializable {
         /**
          * 租户标识
          */
-        public SessionBuilder tenantCode(String tenantCode) {
+        public SessionBuilder tenantCode(@Nonnull String tenantCode) {
             this.tenantCode = tenantCode;
             return this;
         }
 
         /**
          * 附加声明
+         *
+         * @param name  名称
+         * @param value 必须包含的声明值
          */
-        public SessionBuilder claims(Map<String, Object> claims) {
-            this.claims = claims;
+        public SessionBuilder claim(@Nonnull String name, @Nonnull String value) {
+            this.claims.put(name, value);
+            return this;
+        }
+
+        /**
+         * 附加声明
+         *
+         * @param name  名称
+         * @param value 必须包含的声明值
+         */
+        public SessionBuilder claim(@Nonnull String name, @Nonnull Boolean value) {
+            this.claims.put(name, value);
+            return this;
+        }
+
+        /**
+         * 附加声明
+         *
+         * @param name  名称
+         * @param value 必须包含的声明值
+         */
+        public SessionBuilder claim(@Nonnull String name, @Nonnull Integer value) {
+            this.claims.put(name, value);
+            return this;
+        }
+
+        /**
+         * 附加声明
+         *
+         * @param name  名称
+         * @param value 必须包含的声明值
+         */
+        public SessionBuilder claim(@Nonnull String name, @Nonnull Long value) {
+            this.claims.put(name, value);
+            return this;
+        }
+
+        /**
+         * 附加声明
+         *
+         * @param name  名称
+         * @param value 必须包含的声明值
+         */
+        public SessionBuilder claim(@Nonnull String name, @Nonnull Double value) {
+            this.claims.put(name, value);
+            return this;
+        }
+
+        /**
+         * 附加声明
+         *
+         * @param name  名称
+         * @param value 必须包含的声明值
+         */
+        public SessionBuilder claim(@Nonnull String name, @Nonnull Date value) {
+            this.claims.put(name, value);
+            return this;
+        }
+
+        /**
+         * 附加声明
+         */
+        public SessionBuilder claims(@Nullable Map<String, Object> claims) {
+            if (Mapx.isNotEmpty(claims)) {
+                this.claims.putAll(claims);
+            }
             return this;
         }
 
@@ -500,10 +569,16 @@ public class Session implements Serializable {
         }
     }
 
+    /**
+     * 校验会话
+     */
     public SessionVerifier verifier() {
         return new SessionVerifier(this.token);
     }
 
+    /**
+     * 会话校验器
+     */
     public static class SessionVerifier {
         private final String token;
 
@@ -515,7 +590,6 @@ public class Session implements Serializable {
         private String username;
         private Boolean admin;
         private Boolean supervisor;
-        private String source;
         private String ip;
         private String issuer;
         private String endpoint;
@@ -653,6 +727,18 @@ public class Session implements Serializable {
         }
 
         /**
+         * 校验声明
+         *
+         * @param claims 声明
+         */
+        public SessionVerifier claims(@Nullable Map<String, Object> claims) {
+            if (Mapx.isNotEmpty(claims)) {
+                this.claims.putAll(claims);
+            }
+            return this;
+        }
+
+        /**
          * 执行校验
          *
          * @param verifyKey 校验密钥
@@ -669,7 +755,7 @@ public class Session implements Serializable {
         public void verify(Key verifyKey) throws InvalidKeyException, InvalidSessionException {
             this.verify((RSAPublicKey) verifyKey);
         }
-        
+
         /**
          * 执行校验
          *
@@ -710,11 +796,6 @@ public class Session implements Serializable {
             // 颁发者
             if (Stringx.isNotBlank(this.issuer)) {
                 verifier.withIssuer(this.issuer);
-            }
-
-            // 颁发当前会话的会话主键
-            if (Stringx.isNotBlank(this.source)) {
-                verifier.withClaim(SessionClaims.SOURCE, this.source);
             }
 
             // 申请会话时的客户端 IP

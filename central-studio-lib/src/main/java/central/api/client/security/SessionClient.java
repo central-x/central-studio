@@ -65,7 +65,7 @@ public interface SessionClient {
      * <p>
      * 此方法主要用于扫一扫登录之类的场景，通过已登录的会话去颁发一个新一会话。如果原来的会话被注释了，那么本会话也会跟着一起补注销。
      *
-     * @param token  已登录的任话
+     * @param token  已登录的会话凭证
      * @param secret 终端密钥
      * @param claims 会话附加声明
      * @return 会话（JWT）

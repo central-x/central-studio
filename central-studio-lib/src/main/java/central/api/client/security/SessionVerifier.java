@@ -26,27 +26,17 @@ package central.api.client.security;
 
 import central.lang.Stringx;
 import central.security.Signerx;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import central.util.cache.CacheRepository;
+import central.util.cache.memory.MemoryCacheRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Session Verifier
@@ -63,6 +53,16 @@ public class SessionVerifier implements DisposableBean {
     @Setter(onMethod_ = @Autowired)
     private SessionClient client;
 
+
+    /**
+     * 用于保存有效的会话
+     */
+    private final CacheRepository validRepository = new MemoryCacheRepository();
+    /**
+     * 用户保存无效的会话
+     */
+    private final CacheRepository invalidRepository = new MemoryCacheRepository();
+
     /**
      * 公钥
      * 通过 {@link SessionClient#getPublicKey} 方法获取，一般情况下不会更新
@@ -70,55 +70,51 @@ public class SessionVerifier implements DisposableBean {
     private RSAPublicKey publicKey;
 
     /**
-     * 缓存
-     * tenant -> cache
-     */
-    private final Map<String, Cache> caches = new ConcurrentHashMap<>();
-
-    /**
      * 验证会话是否有效
      *
-     * @param session 会话
+     * @param token 会话凭证
      */
-    public boolean verify(String session) {
-        if (Stringx.isNullOrBlank(session)) {
+    public boolean verify(String token) {
+        if (Stringx.isNullOrBlank(token)) {
             return false;
         }
 
-        DecodedJWT sessionJwt;
+        Session session;
 
         try {
-            sessionJwt = JWT.decode(session);
+            session = Session.of(token);
         } catch (Exception ex) {
             // 不是有效会话
             return false;
         }
 
-        var tenant = sessionJwt.getClaim(SessionClaims.TENANT_CODE).asString();
+        var tenant = session.getTenantCode();
         if (Stringx.isNullOrBlank(tenant)) {
             // 如果有没有租户信息，那么这个会话一定是假的
             return false;
         }
 
-        var cache = this.caches.computeIfAbsent(tenant, key -> new Cache());
-        if (cache.containsInvalid(sessionJwt.getId())) {
+        if (invalidRepository.hasKey(Stringx.format("{}:{}", session.getTenantCode(), session.getId()))) {
             // 该会话经校验过是无效的，因此不需要再处理下面的逻辑
             return false;
         }
 
-        if (cache.contains(sessionJwt.getId())) {
-            return this.verify(sessionJwt);
+        if (validRepository.hasKey(Stringx.format("{}:{}", session.getTenantCode(), session.getId()))) {
+            // 本地校验即可
+            return this.verify(session);
         }
 
         // 去服务端校验是否有效
         try {
-            if (this.client.verify(session)) {
+            if (this.client.verify(session.getToken())) {
                 // 校验成功，会话有效
-                cache.put(sessionJwt.getId(), 100);
+                this.validRepository.opsValue(Stringx.format("{}:{}", session.getTenantCode(), session.getId()))
+                        .set("true", Duration.ofSeconds(1));
                 return true;
             } else {
                 // 校验失败，会话无效
-                cache.putInvalid(sessionJwt.getId(), Duration.ofMinutes(30).toMillis());
+                this.invalidRepository.opsValue(Stringx.format("{}:{}", session.getTenantCode(), session.getId()))
+                        .set("true", Duration.ofMillis(30));
                 return false;
             }
         } catch (Throwable throwable) {
@@ -129,35 +125,23 @@ public class SessionVerifier implements DisposableBean {
     /**
      * 保存无效会话
      *
-     * @param session 会话
+     * @param token 会话凭证
      */
-    public void invalid(String session) {
-        if (Stringx.isNullOrBlank(session)) {
-            return;
-        }
-        DecodedJWT sessionJwt;
-
+    public void invalid(String token) {
+        Session session;
         try {
-            sessionJwt = JWT.decode(session);
-        } catch (Exception ex) {
-            // 不是有效会话
+            session = Session.of(token);
+        } catch (Exception ignored) {
+            // 会话解析异常
             return;
         }
 
-        var tenant = sessionJwt.getClaim(SessionClaims.TENANT_CODE).asString();
-        if (Stringx.isNullOrBlank(tenant)) {
-            // 如果有没有租户信息，那么这个会话一定是假的
-            return;
-        }
-
-        var cache = this.caches.computeIfAbsent(tenant, key -> new Cache());
-        if (cache.contains(sessionJwt.getId())) {
-            if (this.verify(sessionJwt)) {
-                // 调用服务器，将会话置为无效
-                this.client.logout(session);
-                // 将该会话保存为无效会话
-                cache.putInvalid(sessionJwt.getId(), Duration.ofMinutes(30).toMillis());
-            }
+        if (this.verify(token)) {
+            // 调用服务器，将会话置为无效
+            this.client.logout(token);
+            // 将该会话保存为无效会话
+            this.invalidRepository.opsValue(Stringx.format("{}:{}", session.getTenantCode(), session.getId()))
+                    .set("true", Duration.ofMinutes(30));
         }
     }
 
@@ -168,14 +152,13 @@ public class SessionVerifier implements DisposableBean {
      *
      * @param session 会话
      */
-    private boolean verify(DecodedJWT session) {
+    private boolean verify(Session session) {
         if (this.publicKey == null) {
             this.publicKey = (RSAPublicKey) Signerx.RSA.getVerifyKey(this.client.getPublicKey());
         }
 
         try {
-            JWT.require(Algorithm.RSA256(this.publicKey)).build()
-                    .verify(session);
+            session.verifier().verify(this.publicKey);
             return true;
         } catch (Exception ignored) {
             // 没有通过公钥验证
@@ -185,108 +168,11 @@ public class SessionVerifier implements DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        var keys = new HashSet<>(this.caches.keySet());
-        for (var key : keys) {
-            var cache = this.caches.remove(key);
-            try {
-                cache.close();
-            } catch (Exception ignored) {
-            }
+        if (this.validRepository instanceof Closeable closeable) {
+            closeable.close();
         }
-    }
-
-    private static class Cache implements Closeable {
-
-        private final ScheduledExecutorService cleaner;
-
-        @Override
-        public void close() throws IOException {
-            this.cleaner.shutdownNow();
-        }
-
-        public Cache() {
-            // 使用定时器主动清除缓存
-            this.cleaner = Executors.newSingleThreadScheduledExecutor(new CustomizableThreadFactory("central-security.session.validator"));
-            this.cleaner.scheduleWithFixedDelay(() -> {
-                var invalidKeys = new ArrayList<String>();
-                var now = System.currentTimeMillis();
-                this.cache.forEach((key, value) -> {
-                    if (value >= now) {
-                        invalidKeys.add(key);
-                    }
-                });
-                invalidKeys.forEach(this.cache::remove);
-
-                invalidKeys.clear();
-                this.invalid.forEach((key, value) -> {
-                    if (value >= now) {
-                        invalidKeys.add(key);
-                    }
-                });
-                invalidKeys.forEach(this.invalid::remove);
-            }, Duration.ofSeconds(5).toMillis(), Duration.ofSeconds(5).toMillis(), TimeUnit.MILLISECONDS);
-        }
-
-        // 保存有效的会话主键
-        private final Map<String, Long> cache = new ConcurrentHashMap<>();
-
-        // 保存已验证的无效会话主键
-        private final Map<String, Long> invalid = new ConcurrentHashMap<>();
-
-        /**
-         * 是否包含指定有效的会话主键
-         *
-         * @param id 会话主键
-         */
-        public boolean contains(String id) {
-            var expires = this.cache.get(id);
-            if (expires == null) {
-                return false;
-            }
-
-            if (expires >= System.currentTimeMillis()) {
-                this.cache.remove(id);
-                return false;
-            }
-            return true;
-        }
-
-        /**
-         * 保存会话，在指定时间前都有效
-         *
-         * @param id      会话主键
-         * @param expires 过期时间
-         */
-        public void put(String id, long expires) {
-            this.cache.put(id, expires);
-        }
-
-        /**
-         * 无效会话是否包含指定会话主键
-         *
-         * @param id 会话主键
-         */
-        public boolean containsInvalid(String id) {
-            var expires = this.invalid.get(id);
-            if (expires == null) {
-                return false;
-            }
-
-            if (expires >= System.currentTimeMillis()) {
-                this.invalid.remove(id);
-                return false;
-            }
-            return true;
-        }
-
-        /**
-         * 保存无效会话，在指定时间内不需要再次验证
-         *
-         * @param id      会话主键
-         * @param expires 过期时间
-         */
-        public void putInvalid(String id, long expires) {
-            this.invalid.put(id, expires);
+        if (this.invalidRepository instanceof Closeable closeable) {
+            closeable.close();
         }
     }
 }
