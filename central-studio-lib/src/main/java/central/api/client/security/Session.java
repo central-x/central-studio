@@ -61,10 +61,12 @@ public class Session implements Serializable {
     private static final long serialVersionUID = -3965567322672268966L;
 
     /**
-     * 任话凭证
+     * 会话凭证
      */
     @Getter
     private final String token;
+
+    private final transient DecodedJWT decodedToken;
 
     public Session(@Nonnull String token) {
         this.token = token;
@@ -75,51 +77,39 @@ public class Session implements Serializable {
         return new Session(token);
     }
 
-    private transient DecodedJWT decodedToken;
-
-    /**
-     * 已解码的凭证
-     */
-    private synchronized @Nonnull DecodedJWT getDecodedToken() {
-        if (this.decodedToken == null) {
-            this.decodedToken = JWT.decode(token);
-        }
-        return this.decodedToken;
-    }
-
     /**
      * 会话主键
      */
     public @Nonnull String getId() {
-        return this.getDecodedToken().getId();
+        return this.decodedToken.getId();
     }
 
     /**
      * 用户主键
      */
     public @Nonnull String getAccountId() {
-        return this.getDecodedToken().getSubject();
+        return this.decodedToken.getSubject();
     }
 
     /**
      * 用户名
      */
     public @Nonnull String getUsername() {
-        return this.getDecodedToken().getClaim(SessionClaims.USERNAME).asString();
+        return this.decodedToken.getClaim(SessionClaims.USERNAME).asString();
     }
 
     /**
      * 是否管理员（系统管理员，安全管理员、安全保密员）
      */
     public boolean isAdmin() {
-        return this.getDecodedToken().getClaim(SessionClaims.ADMIN).asBoolean();
+        return this.decodedToken.getClaim(SessionClaims.ADMIN).asBoolean();
     }
 
     /**
      * 是否是超级管理员
      */
     public boolean isSupervisor() {
-        return this.getDecodedToken().getClaim(SessionClaims.SUPERVISOR).asBoolean();
+        return this.decodedToken.getClaim(SessionClaims.SUPERVISOR).asBoolean();
     }
 
     /**
@@ -127,49 +117,49 @@ public class Session implements Serializable {
      * 主会话失效时，从会话也会跟着失效
      */
     public @Nullable String getSource() {
-        return this.getDecodedToken().getClaim(SessionClaims.SOURCE).asString();
+        return this.decodedToken.getClaim(SessionClaims.SOURCE).asString();
     }
 
     /**
      * 申请会话时的客户端 IP
      */
     public @Nonnull String getIp() {
-        return this.getDecodedToken().getClaim(SessionClaims.IP).asString();
+        return this.decodedToken.getClaim(SessionClaims.IP).asString();
     }
 
     /**
      * 凭证颁发机构，通常使用域名
      */
     public @Nonnull String issuer() {
-        return this.getDecodedToken().getIssuer();
+        return this.decodedToken.getIssuer();
     }
 
     /**
      * 凭证颁发时间
      */
     public @Nonnull Date getIssueTime() {
-        return this.getDecodedToken().getClaim(SessionClaims.ISSUE_TIME).asDate();
+        return this.decodedToken.getClaim(SessionClaims.ISSUE_TIME).asDate();
     }
 
     /**
      * 终端类型
      */
     public @Nonnull String getEndpoint() {
-        return this.getDecodedToken().getClaim(SessionClaims.ENDPOINT).asString();
+        return this.decodedToken.getClaim(SessionClaims.ENDPOINT).asString();
     }
 
     /**
      * 会话自动超时时间
      */
     public @Nonnull Duration getTimeout() {
-        return Duration.ofMillis(this.getDecodedToken().getClaim(SessionClaims.TIMEOUT).asLong());
+        return Duration.ofMillis(this.decodedToken.getClaim(SessionClaims.TIMEOUT).asLong());
     }
 
     /**
      * 租户标识
      */
     public @Nonnull String getTenantCode() {
-        return this.getDecodedToken().getClaim(SessionClaims.TENANT_CODE).asString();
+        return this.decodedToken.getClaim(SessionClaims.TENANT_CODE).asString();
     }
 
     /**
@@ -178,7 +168,7 @@ public class Session implements Serializable {
      * @param name 名称
      */
     public @Nullable String getStringClaim(String name) {
-        return this.getDecodedToken().getClaim(name).asString();
+        return this.decodedToken.getClaim(name).asString();
     }
 
     /**
@@ -197,7 +187,7 @@ public class Session implements Serializable {
      * @param name 名称
      */
     public @Nullable Boolean getBooleanClaim(String name) {
-        return this.getDecodedToken().getClaim(name).asBoolean();
+        return this.decodedToken.getClaim(name).asBoolean();
     }
 
     /**
@@ -216,7 +206,7 @@ public class Session implements Serializable {
      * @param name 名称
      */
     public @Nullable Integer getIntegerClaim(String name) {
-        return this.getDecodedToken().getClaim(name).asInt();
+        return this.decodedToken.getClaim(name).asInt();
     }
 
     /**
@@ -235,7 +225,7 @@ public class Session implements Serializable {
      * @param name 名称
      */
     public @Nullable Long getLongClaim(String name) {
-        return this.getDecodedToken().getClaim(name).asLong();
+        return this.decodedToken.getClaim(name).asLong();
     }
 
     /**
@@ -254,7 +244,7 @@ public class Session implements Serializable {
      * @param name 名称
      */
     public @Nullable Double getDoubleClaim(String name) {
-        return this.getDecodedToken().getClaim(name).asDouble();
+        return this.decodedToken.getClaim(name).asDouble();
     }
 
     /**
@@ -273,7 +263,7 @@ public class Session implements Serializable {
      * @param name 名称
      */
     public @Nullable Date getDateClaim(String name) {
-        return this.getDecodedToken().getClaim(name).asDate();
+        return this.decodedToken.getClaim(name).asDate();
     }
 
     /**
