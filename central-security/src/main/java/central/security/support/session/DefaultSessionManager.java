@@ -24,27 +24,20 @@
 
 package central.security.support.session;
 
-import central.api.client.security.SessionClaims;
+import central.api.client.security.Session;
 import central.data.organization.Account;
+import central.lang.Stringx;
 import central.security.controller.session.support.Endpoint;
 import central.security.signer.KeyPair;
-import central.util.Guidx;
-import central.util.Mapx;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import central.util.cache.CacheRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.Base64;
-import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 默认的会话
@@ -63,11 +56,11 @@ public class DefaultSessionManager implements SessionManager {
     /**
      * 会话容器
      */
-    private final SessionContainer container;
+    private final SessionStorage storage;
 
-    public DefaultSessionManager(KeyPair sessionKey, SessionContainer container) {
+    public DefaultSessionManager(KeyPair sessionKey, CacheRepository repository) {
         this.sessionKey = sessionKey;
-        this.container = container;
+        this.storage = new SessionStorage(repository);
     }
 
     @Override
@@ -76,110 +69,167 @@ public class DefaultSessionManager implements SessionManager {
     }
 
     @Override
-    public String issue(String tenantCode, String issuer, Duration timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims) {
-        var jwt = JWT.create()
-                // JWT 唯一标识
-                .withJWTId(Guidx.nextID())
+    public Session issue(String tenantCode, String issuer, Duration timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims) {
+        var session = Session.builder()
                 // 用户主键
-                .withSubject(account.getId())
+                .accountId(account.getId())
                 // 用户帐号
-                .withClaim(SessionClaims.USERNAME, account.getUsername())
+                .username(account.getUsername())
                 // 是否管理员
-                .withClaim(SessionClaims.ADMIN, account.getAdmin())
+                .admin(account.getAdmin())
                 // 是否超级管理员
-                .withClaim(SessionClaims.SUPERVISOR, account.getSupervisor())
-                // 颁发时间
-                .withClaim(SessionClaims.ISSUE_TIME, new Date())
+                .supervisor(account.getSupervisor())
                 // 终端类型
-                .withClaim(SessionClaims.ENDPOINT, endpoint.getValue())
+                .endpoint(endpoint.getValue())
                 // 颁发者
-                .withIssuer(issuer)
+                .issuer(issuer)
                 // 会话有效时间
-                .withClaim(SessionClaims.TIMEOUT, TimeUnit.MILLISECONDS.convert(timeout))
+                .timeout(timeout)
                 // 租户标识
-                .withClaim(SessionClaims.TENANT_CODE, tenantCode);
+                .tenantCode(tenantCode)
+                // 附加属性
+                .claims(claims)
+                // 签名
+                .build(this.sessionKey.getSignKey());
 
-        // 附加用户指定的 Claims
-        if (Mapx.isNotEmpty(claims)) {
-            for (var entry : claims.entrySet()) {
-                if (entry.getValue() instanceof Boolean b) {
-                    jwt.withClaim(entry.getKey(), b);
-                } else if (entry.getValue() instanceof Integer i) {
-                    jwt.withClaim(entry.getKey(), i);
-                } else if (entry.getValue() instanceof Long l) {
-                    jwt.withClaim(entry.getKey(), l);
-                } else if (entry.getValue() instanceof Double d) {
-                    jwt.withClaim(entry.getKey(), d);
-                } else if (entry.getValue() instanceof String s) {
-                    jwt.withClaim(entry.getKey(), s);
-                } else if (entry.getValue() instanceof Date d) {
-                    jwt.withClaim(entry.getKey(), d);
-                }
-            }
-        }
-        var token = jwt.sign(Algorithm.RSA256((RSAPublicKey) sessionKey.getVerifyKey(), (RSAPrivateKey) sessionKey.getSignKey()));
-
-        var decodedJwt = JWT.decode(token);
-        this.container.save(tenantCode, account.getId(), decodedJwt, timeout);
-        return token;
+        // 保存会话
+        this.storage.save(session, limit);
+        return session;
     }
 
     @Override
-    public boolean verify(String tenantCode, String token) {
-        DecodedJWT session;
-        try {
-            session = JWT.decode(token);
-        } catch (Exception ex) {
-            log.info("不是有效的会话凭证");
-            return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不是有效的会话凭证");
-        }
-
-        if (!Objects.equals(tenantCode, session.getClaim(SessionClaims.TENANT_CODE).asString())) {
+    public boolean verify(String tenantCode, Session session) {
+        if (!Objects.equals(tenantCode, session.getTenantCode())) {
             log.info("租户不匹配");
             return false;
 //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "租户不匹配");
         }
 
         try {
-            JWT.require(Algorithm.RSA256((RSAPublicKey) sessionKey.getVerifyKey()))
-                    .build()
-                    .verify(token);
-        } catch (JWTVerificationException ex) {
-            log.info("密钥不匹配");
+            session.verifier().verify(sessionKey.getVerifyKey());
+        } catch (Exception ex) {
+            log.info("无效会话: " + ex.getLocalizedMessage(), ex);
             return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "密钥不匹配");
         }
 
-        // 验证会主知是否过期
-        if (!this.container.exists(tenantCode, session)) {
+
+        // 验证会话是否过期
+        if (!this.storage.verify(session)) {
             log.info("会话不存在");
             return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "会话不存在");
         }
-
-        var timeout = Duration.ofMillis(session.getClaim(SessionClaims.TIMEOUT).asLong());
-        // 重置设置会话有效期
-        this.container.expire(tenantCode, session, timeout);
 
         return true;
     }
 
     @Override
-    public void invalid(String tenantCode, String token) {
-        try {
-            var session = JWT.require(Algorithm.RSA256((RSAPublicKey) sessionKey.getVerifyKey()))
-                    .withClaim(SessionClaims.TENANT_CODE, tenantCode)
-                    .build()
-                    .verify(token);
-            this.container.remove(tenantCode, session);
-        } catch (JWTVerificationException ignored) {
-
-        }
+    public void invalid(String tenantCode, Session session) {
+        this.storage.invalid(session);
     }
 
     @Override
     public void clear(String tenantCode, String accountId) {
-        this.container.clear(tenantCode, accountId);
+        this.storage.clear(tenantCode, accountId);
+    }
+
+    @RequiredArgsConstructor
+    private static class SessionStorage {
+        private final CacheRepository repository;
+
+        private String getTokenKey(String tenantCode, String accountId, String sessionId) {
+            return Stringx.format("{}:security:session:{}:{}", tenantCode, accountId, sessionId);
+        }
+
+        private String getEndpointKey(String tenantCode, String accountId, String endpoint) {
+            return Stringx.format("{}:security:session:endpoint:{}:{}", tenantCode, accountId, endpoint);
+        }
+
+        /**
+         * 保存会话凭证
+         *
+         * @param session 会话
+         * @param limit   会话限制
+         */
+        public void save(Session session, Integer limit) {
+            // 获取当前用户所有终端会话
+            var list = this.repository.opsList(this.getEndpointKey(session.getTenantCode(), session.getAccountId(), session.getEndpoint()));
+
+            // 如果 limit > 0 则表示需要限制终端的数量
+            if (limit > 0 && list.size() >= limit) {
+                // 如果当前终端会话数量超过限制，则从后往前排查，排查到无效的就删除
+                var ids = list.values();
+
+                String expiredId = null;
+                for (var it : ids) {
+                    if (!this.repository.hasKey(getTokenKey(session.getTenantCode(), session.getAccountId(), it))) {
+                        // 如果这个凭证过期了，那么就删除这个过期的凭证即可
+                        expiredId = it;
+                        break;
+                    }
+                }
+
+                // 如果所有凭证都有效，就删除最早登录的那个会话
+                if (expiredId == null) {
+                    expiredId = list.removeFirst();
+                    this.repository.delete(this.getTokenKey(session.getTenantCode(), session.getAccountId(), expiredId));
+                } else {
+                    // 如果存在着无效 jwt，那么删除该 jwt 即可
+                    list.remove(expiredId);
+                }
+            }
+
+            // 保存新的会话到用户的会话列表里
+            list.add(session.getId());
+
+            var value = this.repository.opsValue(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getId()));
+            value.set(session.getToken(), session.getTimeout());
+        }
+
+        /**
+         * 验证会话是否有效
+         * <p>
+         * 如果会话有效，则延长会话有效期
+         *
+         * @param session 会话
+         * @return 是否有效
+         */
+        public boolean verify(Session session) {
+            // 去会话仓库中查看该会话是否已过期
+            if (this.repository.hasKey(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getId()))) {
+                // 未过期
+                this.repository.expire(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getId()), session.getTimeout());
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * 清除会话
+         *
+         * @param session 会话
+         */
+        public void invalid(Session session) {
+            // 删除会话
+            this.repository.delete(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getId()));
+
+            // 除除用户在该终端的会话
+            this.repository.opsList(this.getEndpointKey(session.getTenantCode(), session.getAccountId(), session.getEndpoint()))
+                    .remove(session.getId());
+        }
+
+        /**
+         * 清除该用户所有会话
+         *
+         * @param tenantCode 租户标识
+         * @param accountId  帐户主键
+         */
+        public void clear(String tenantCode, String accountId) {
+            // TODO MemoryCacheRepository 不支持遍历
+            this.repository.delete(this.getTokenKey(tenantCode, accountId, "*"));
+            for (var endpoint : Endpoint.values()) {
+                this.repository.delete(this.getEndpointKey(tenantCode, accountId, endpoint.getValue()));
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@
 
 package central.security.support.session;
 
+import central.api.client.security.Session;
 import central.data.organization.Account;
 import central.security.controller.session.support.Endpoint;
 
@@ -55,23 +56,23 @@ public interface SessionManager {
      * @param claims     会话附加属性
      * @return 已签发的话会
      */
-    String issue(String tenantCode, String issuer, Duration timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims);
+    Session issue(String tenantCode, String issuer, Duration timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims);
 
     /**
      * 验证会话凭证是否有效
      *
      * @param tenantCode 租户
-     * @param token      会话凭证证
+     * @param session    会话
      */
-    boolean verify(String tenantCode, String token);
+    boolean verify(String tenantCode, Session session);
 
     /**
      * 将指定会话置为无效
      *
      * @param tenantCode 租户
-     * @param token      会话凭证
+     * @param session    会话凭证
      */
-    void invalid(String tenantCode, String token);
+    void invalid(String tenantCode, Session session);
 
     /**
      * 将指定的用户的所有会话都置为无效
