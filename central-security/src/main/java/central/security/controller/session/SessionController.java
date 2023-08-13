@@ -33,6 +33,7 @@ import central.lang.Stringx;
 import central.security.Passwordx;
 import central.security.controller.session.param.*;
 import central.security.controller.session.support.Endpoint;
+import central.security.core.attribute.AuthenticateAttributes;
 import central.security.core.attribute.SessionAttributes;
 import central.security.support.session.SessionManager;
 import central.sql.query.Conditions;
@@ -99,7 +100,7 @@ public class SessionController {
 
         // 查询超级管理员
         // 超级管理员才可以通过主键来查询
-        Account account = this.accountProvider.findById(params.getAccount());
+        var account = this.accountProvider.findById(params.getAccount());
         if (account != null) {
             if (!account.getSupervisor()) {
                 account = null;
@@ -107,13 +108,13 @@ public class SessionController {
         }
         if (account == null) {
             // 查询普通用户
-            // TODO，不应该写死通过什么字段查询
-            var accounts = this.accountProvider.findBy(1L, 1L, Conditions.of(Account.class)
-                    .eq(Account::getUsername, params.getAccount())
-                    .or()
-                    .eq(Account::getMobile, params.getAccount())
-                    .or()
-                    .eq(Account::getEmail, params.getAccount()), null);
+            var loginFields = request.getRequiredAttribute(AuthenticateAttributes.LOGIN_FIELD);
+            var conditions = Conditions.of(Account.class);
+            for (var loginField : loginFields) {
+                loginField.getFilter().accept(account, conditions);
+            }
+
+            var accounts = this.accountProvider.findBy(1L, 1L, conditions, null);
             account = Listx.getFirstOrNull(accounts);
         }
 
