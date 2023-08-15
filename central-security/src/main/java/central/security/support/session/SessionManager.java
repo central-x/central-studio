@@ -27,6 +27,8 @@ package central.security.support.session;
 import central.api.client.security.Session;
 import central.data.organization.Account;
 import central.security.controller.session.support.Endpoint;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.time.Duration;
 import java.util.Map;
@@ -42,21 +44,38 @@ public interface SessionManager {
     /**
      * 获取公钥
      */
+    @Nonnull
     String getPublicKey();
 
     /**
      * 签发会话
      *
-     * @param tenantCode 租户
+     * @param tenantCode 租户标识
      * @param issuer     签发组织（一般是域名）
-     * @param timeout    会话超时时间，毫秒。如果为空，则默认为 1800000ms（30分种）
+     * @param timeout    会话超时时间。如果为空，则默认为 30 分钟
      * @param account    会话所属帐户
      * @param endpoint   会话所属终端
      * @param limit      会话数量上限
      * @param claims     会话附加属性
      * @return 已签发的话会
      */
-    Session issue(String tenantCode, String issuer, Duration timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims);
+    @Nonnull
+    Session issue(@Nonnull String tenantCode, @Nonnull String issuer, @Nonnull Duration timeout, @Nonnull Account account, @Nonnull Endpoint endpoint, @Nonnull Integer limit, @Nullable Map<String, Object> claims);
+
+    /**
+     * 使用已有的会话签发新会话
+     *
+     * @param tenantCode 租户标识
+     * @param source     原会话
+     * @param issuer     签发组织（一般是域名）
+     * @param timeout    会话超时时间。如果为空，则默认为 30 分钟
+     * @param endpoint   会话所属终端
+     * @param limit      会话数量上限
+     * @param claims     会话附加属性
+     * @return 已签发的话会
+     */
+    @Nonnull
+    Session issue(@Nonnull String tenantCode, @Nonnull Session source, @Nonnull String issuer, @Nonnull Duration timeout, @Nonnull Endpoint endpoint, @Nonnull Integer limit, @Nullable Map<String, Object> claims);
 
     /**
      * 验证会话凭证是否有效
@@ -64,7 +83,7 @@ public interface SessionManager {
      * @param tenantCode 租户
      * @param session    会话
      */
-    boolean verify(String tenantCode, Session session);
+    boolean verify(@Nonnull String tenantCode, @Nonnull Session session);
 
     /**
      * 将指定会话置为无效
@@ -72,7 +91,7 @@ public interface SessionManager {
      * @param tenantCode 租户
      * @param session    会话凭证
      */
-    void invalid(String tenantCode, Session session);
+    void invalid(@Nonnull String tenantCode, @Nonnull Session session);
 
     /**
      * 将指定的用户的所有会话都置为无效
@@ -80,5 +99,5 @@ public interface SessionManager {
      * @param tenantCode 租户
      * @param accountId  用户
      */
-    void clear(String tenantCode, String accountId);
+    void clear(@Nonnull String tenantCode, @Nonnull String accountId);
 }

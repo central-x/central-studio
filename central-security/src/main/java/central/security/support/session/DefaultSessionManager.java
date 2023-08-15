@@ -32,6 +32,8 @@ import central.security.signer.KeyPair;
 import central.util.cache.CacheRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -63,13 +65,15 @@ public class DefaultSessionManager implements SessionManager {
         this.storage = new SessionStorage(repository);
     }
 
+    @NotNull
     @Override
     public String getPublicKey() {
         return Base64.getEncoder().encodeToString(this.sessionKey.getVerifyKey().getEncoded());
     }
 
+    @NotNull
     @Override
-    public Session issue(String tenantCode, String issuer, Duration timeout, Account account, Endpoint endpoint, Integer limit, Map<String, Object> claims) {
+    public Session issue(@NotNull String tenantCode, @NotNull String issuer, @NotNull Duration timeout, @NotNull Account account, @NotNull Endpoint endpoint, @NotNull Integer limit, @Nullable Map<String, Object> claims) {
         var session = Session.builder()
                 // 用户主键
                 .accountId(account.getId())
@@ -97,8 +101,29 @@ public class DefaultSessionManager implements SessionManager {
         return session;
     }
 
+    @NotNull
     @Override
-    public boolean verify(String tenantCode, Session session) {
+    public Session issue(@NotNull String tenantCode, @NotNull Session source, @NotNull String issuer, @NotNull Duration timeout, @NotNull Endpoint endpoint, @NotNull Integer limit, @Nullable Map<String, Object> claims) {
+        var session = Session.builder()
+                .accountId(source.getAccountId())
+                .username(source.getUsername())
+                .admin(source.isAdmin())
+                .supervisor(source.isSupervisor())
+                .endpoint(source.getEndpoint())
+                .issuer(issuer)
+                .timeout(timeout)
+                .endpoint(endpoint.getValue())
+                .tenantCode(tenantCode)
+                .claims(claims)
+                .build(this.sessionKey.getSignKey());
+
+        // 保存会话
+        this.storage.save(session, limit);
+        return session;
+    }
+
+    @Override
+    public boolean verify(@NotNull String tenantCode, @NotNull Session session) {
         if (!Objects.equals(tenantCode, session.getTenantCode())) {
             log.info("租户不匹配");
             return false;
@@ -123,12 +148,12 @@ public class DefaultSessionManager implements SessionManager {
     }
 
     @Override
-    public void invalid(String tenantCode, Session session) {
+    public void invalid(@NotNull String tenantCode, @NotNull Session session) {
         this.storage.invalid(session);
     }
 
     @Override
-    public void clear(String tenantCode, String accountId) {
+    public void clear(@NotNull String tenantCode, @NotNull String accountId) {
         this.storage.clear(tenantCode, accountId);
     }
 

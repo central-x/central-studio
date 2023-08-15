@@ -24,7 +24,6 @@
 
 package central.security.controller.sso.oauth;
 
-import central.api.client.security.SessionClaims;
 import central.api.client.security.SessionVerifier;
 import central.api.provider.organization.AccountProvider;
 import central.api.scheduled.ScheduledDataContext;
@@ -34,12 +33,12 @@ import central.data.saas.Application;
 import central.lang.Arrayx;
 import central.lang.Stringx;
 import central.security.Digestx;
-import central.security.controller.sso.oauth.support.GrantScope;
 import central.security.controller.sso.oauth.param.AccessTokenParams;
 import central.security.controller.sso.oauth.param.AuthorizeParams;
 import central.security.controller.sso.oauth.param.GrantParams;
 import central.security.controller.sso.oauth.support.AuthorizationCode;
 import central.security.controller.sso.oauth.support.AuthorizationTransaction;
+import central.security.controller.sso.oauth.support.GrantScope;
 import central.security.controller.sso.oauth.support.OAuthSession;
 import central.security.core.attribute.OAuthAttributes;
 import central.security.core.attribute.SessionAttributes;
@@ -187,7 +186,7 @@ public class OAuthController {
                     .code("OC-" + getSerial() + "-" + Guidx.nextID())
                     .clientId(params.getClientId())
                     .redirectUri(params.getRedirectUri())
-                    .session(session)
+                    .token(session)
                     .scope(params.getScope())
                     .build();
 
@@ -255,7 +254,7 @@ public class OAuthController {
                         .code("OC-" + getSerial() + "-" + Guidx.nextID())
                         .clientId(params.getClientId())
                         .redirectUri(params.getRedirectUri())
-                        .session(transaction.getSession())
+                        .token(transaction.getSession())
                         .scope(Setx.asStream(transaction.getGrantedScope()).map(GrantScope::resolve).collect(Collectors.toSet()))
                         .build();
 
@@ -461,7 +460,7 @@ public class OAuthController {
                 // 指定本 JWT 为 access_token 类型
                 .withHeader(Map.of("typ", "access_token"))
                 .withJWTId(Guidx.nextID())
-                .withSubject(code.getSessionJwt().getSubject())
+                .withSubject(code.getSession().getAccountId())
                 .withIssuer(request.getRequiredAttribute(SessionAttributes.ISSUER))
                 // 被授权的应用
                 .withAudience(application.getCode())
@@ -476,8 +475,8 @@ public class OAuthController {
                 "access_token", token,
                 "token_type", "bearer",
                 "expires_in", request.getRequiredAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT).toSeconds(),
-                "account_id", code.getSessionJwt().getSubject(),
-                "username", code.getSessionJwt().getClaim(SessionClaims.USERNAME).asString(),
+                "account_id", code.getSession().getAccountId(),
+                "username", code.getSession().getUsername(),
                 "scope", String.join(",", scopes.stream().map(GrantScope::getValue).toList())
         );
 

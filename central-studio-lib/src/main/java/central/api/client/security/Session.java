@@ -33,6 +33,7 @@ import central.util.Objectx;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.Getter;
@@ -70,9 +71,14 @@ public class Session implements Serializable {
 
     public Session(@Nonnull String token) {
         this.token = token;
-        this.decodedToken = JWT.decode(token);
+        try {
+            this.decodedToken = JWT.decode(token);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("会话凭证[token]无效");
+        }
     }
 
+    @JsonCreator
     public static Session of(@Nonnull String token) {
         return new Session(token);
     }

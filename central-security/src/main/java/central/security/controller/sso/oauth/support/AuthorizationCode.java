@@ -24,9 +24,8 @@
 
 package central.security.controller.sso.oauth.support;
 
+import central.api.client.security.Session;
 import central.util.concurrent.Expired;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -76,20 +75,20 @@ public class AuthorizationCode implements Expired, Serializable {
      */
     private String redirectUri;
     /**
-     * 会话
+     * 会话凭证
      */
-    private String session;
+    private String token;
     /**
      * 授权范围
      */
     private Set<GrantScope> scope;
 
-    private transient DecodedJWT sessionJwt;
+    private transient Session session;
 
-    public DecodedJWT getSessionJwt() {
-        if (this.sessionJwt == null) {
-            this.sessionJwt = JWT.decode(session);
+    public Session getSession() {
+        if (this.session == null) {
+            this.session = Session.of(this.token);
         }
-        return this.sessionJwt;
+        return this.session;
     }
 }

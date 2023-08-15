@@ -46,25 +46,13 @@ import java.util.function.BiConsumer;
 @AllArgsConstructor
 public enum LoginField implements OptionalEnum<String> {
     USERNAME("用户名", "username", (account, conditions) -> {
-        if (!conditions.isEmpty()) {
-            conditions.or().eq(Account::getUsername, account.getUsername());
-        } else {
-            conditions.eq(Account::getUsername, account.getUsername());
-        }
+        conditions.eq(Account::getUsername, account.getUsername());
     }),
     MOBILE("手机号", "mobile", (account, conditions) -> {
-        if (!conditions.isEmpty()) {
-            conditions.or().eq(Account::getMobile, account.getMobile());
-        } else {
-            conditions.eq(Account::getMobile, account.getMobile());
-        }
+        conditions.eq(Account::getMobile, account.getMobile());
     }),
     EMAIL("邮箱", "email", (account, conditions) -> {
-        if (!conditions.isEmpty()) {
-            conditions.or().eq(Account::getEmail, account.getEmail());
-        } else {
-            conditions.eq(Account::getEmail, account.getEmail());
-        }
+        conditions.eq(Account::getEmail, account.getEmail());
     });
 
     private final String name;

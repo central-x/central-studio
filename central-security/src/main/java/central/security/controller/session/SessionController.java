@@ -24,7 +24,7 @@
 
 package central.security.controller.session;
 
-import central.api.client.security.SessionClaims;
+import central.api.client.security.Session;
 import central.api.provider.organization.AccountProvider;
 import central.api.provider.security.SecurityPasswordProvider;
 import central.data.organization.Account;
@@ -40,8 +40,6 @@ import central.sql.query.Conditions;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import central.util.Listx;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +47,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.HashMap;
 
 /**
  * Session
@@ -90,8 +86,8 @@ public class SessionController {
      * 认证信息只能通过服务器的验证接口 {@link #verify} 来校验是否有效
      */
     @PostMapping("/login")
-    public String login(@RequestBody @Validated LoginParams params,
-                        WebMvcRequest request, WebMvcResponse response) {
+    public Session login(@RequestBody @Validated LoginParams params,
+                         WebMvcRequest request, WebMvcResponse response) {
         // 检查终端密钥
         var endpoint = Endpoint.resolve(request, params.getSecret());
         if (endpoint == null) {
@@ -111,6 +107,9 @@ public class SessionController {
             var loginFields = request.getRequiredAttribute(AuthenticateAttributes.LOGIN_FIELD);
             var conditions = Conditions.of(Account.class);
             for (var loginField : loginFields) {
+                if (!conditions.isEmpty()) {
+                    conditions.or();
+                }
                 loginField.getFilter().accept(account, conditions);
             }
 
@@ -180,42 +179,40 @@ public class SessionController {
      * 认证信息只能通过服务器的验证接口 {@link #verify} 来校验是否有效
      */
     @PostMapping("/login/token")
-    public String loginByToken(@RequestBody @Validated LoginByTokenParams params,
+    public Session loginByToken(@RequestBody @Validated LoginByTokenParams params,
                                WebMvcRequest request) {
         // 检查终端密钥
         var endpoint = Endpoint.resolve(request, params.getSecret());
         if (endpoint == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "终端密钥[secret]错误");
         }
+        Session session = Session.of(params.getToken());
 
-        if (!this.manager.verify(request.getTenantCode(), params.getToken())) {
+        if (!this.manager.verify(request.getTenantCode(), session)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "会话凭证[token]无效");
         }
 
-        DecodedJWT token = JWT.decode(params.getToken());
 
-        if (!token.getClaim(SessionClaims.SOURCE).isMissing()) {
+        if (Stringx.isNotBlank(session.getSource())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "不允许二次颁发会话");
         }
 
-        var account = this.accountProvider.findById(token.getSubject());
+        var account = this.accountProvider.findById(session.getAccountId());
         if (account == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("帐户[account={}]不存在", token.getClaim(SessionClaims.USERNAME).asString()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("帐户[account={}]不存在", session.getUsername()));
         }
         if (!account.getEnabled()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已禁用", token.getClaim(SessionClaims.USERNAME).asString()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已禁用", session.getUsername()));
         }
         if (account.getDeleted()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已删除", token.getClaim(SessionClaims.USERNAME).asString()));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("用户[account={}]已删除", session.getUsername()));
         }
 
         var issuer = request.getRequiredAttribute(SessionAttributes.ISSUER);
         var timeout = request.getRequiredAttribute(SessionAttributes.TIMEOUT);
         var endpointLimit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
-        var claims = new HashMap<>(params.getClaims());
-        claims.put(SessionClaims.SOURCE, token.getId());
 
-        return this.manager.issue(request.getTenantCode(), issuer, timeout, account, endpoint, endpointLimit, claims);
+        return this.manager.issue(request.getTenantCode(), session, issuer, timeout, endpoint, endpointLimit, null);
     }
 
     /**
@@ -226,7 +223,7 @@ public class SessionController {
     @PostMapping("/verify")
     public boolean verify(@RequestBody @Validated VerifyParams params,
                           WebMvcRequest request) {
-        return this.manager.verify(request.getTenantCode(), params.getToken());
+        return this.manager.verify(request.getTenantCode(), Session.of(params.getToken()));
     }
 
     /**
@@ -235,7 +232,7 @@ public class SessionController {
     @GetMapping("/logout")
     public void logout(@Validated LogoutParams params,
                        WebMvcRequest request) {
-        this.manager.invalid(request.getTenantCode(), params.getToken());
+        this.manager.invalid(request.getTenantCode(), Session.of(params.getToken()));
     }
 
     /**
