@@ -86,8 +86,8 @@ public class SessionController {
      * 认证信息只能通过服务器的验证接口 {@link #verify} 来校验是否有效
      */
     @PostMapping("/login")
-    public Session login(@RequestBody @Validated LoginParams params,
-                         WebMvcRequest request, WebMvcResponse response) {
+    public String login(@RequestBody @Validated LoginParams params,
+                        WebMvcRequest request, WebMvcResponse response) {
         // 检查终端密钥
         var endpoint = Endpoint.resolve(request, params.getSecret());
         if (endpoint == null) {
@@ -153,7 +153,8 @@ public class SessionController {
         var issuer = request.getRequiredAttribute(SessionAttributes.ISSUER);
         var timeout = request.getRequiredAttribute(SessionAttributes.TIMEOUT);
         var endpointLimit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
-        return this.manager.issue(request.getTenantCode(), issuer, timeout, account, endpoint, endpointLimit, null);
+        var session = this.manager.issue(request.getTenantCode(), issuer, timeout, account, endpoint, endpointLimit, request.getRemoteAddr(), null);
+        return session.getToken();
     }
 
     /**
@@ -179,7 +180,7 @@ public class SessionController {
      * 认证信息只能通过服务器的验证接口 {@link #verify} 来校验是否有效
      */
     @PostMapping("/login/token")
-    public Session loginByToken(@RequestBody @Validated LoginByTokenParams params,
+    public String loginByToken(@RequestBody @Validated LoginByTokenParams params,
                                WebMvcRequest request) {
         // 检查终端密钥
         var endpoint = Endpoint.resolve(request, params.getSecret());
@@ -212,7 +213,8 @@ public class SessionController {
         var timeout = request.getRequiredAttribute(SessionAttributes.TIMEOUT);
         var endpointLimit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
 
-        return this.manager.issue(request.getTenantCode(), session, issuer, timeout, endpoint, endpointLimit, null);
+        return this.manager.issue(request.getTenantCode(), session, issuer, timeout, endpoint, endpointLimit, request.getRemoteAddr(), null)
+                .getToken();
     }
 
     /**

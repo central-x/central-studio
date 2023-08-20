@@ -30,6 +30,7 @@ import central.lang.Stringx;
 import central.security.controller.session.support.Endpoint;
 import central.security.signer.KeyPair;
 import central.util.cache.CacheRepository;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +74,7 @@ public class DefaultSessionManager implements SessionManager {
 
     @NotNull
     @Override
-    public Session issue(@NotNull String tenantCode, @NotNull String issuer, @NotNull Duration timeout, @NotNull Account account, @NotNull Endpoint endpoint, @NotNull Integer limit, @Nullable Map<String, Object> claims) {
+    public Session issue(@NotNull String tenantCode, @NotNull String issuer, @NotNull Duration timeout, @NotNull Account account, @NotNull Endpoint endpoint, @NotNull Integer limit, @Nonnull String ip, @Nullable Map<String, Object> claims) {
         var session = Session.builder()
                 // 用户主键
                 .accountId(account.getId())
@@ -87,6 +88,8 @@ public class DefaultSessionManager implements SessionManager {
                 .endpoint(endpoint.getValue())
                 // 颁发者
                 .issuer(issuer)
+                // 申请会话的 IP
+                .ip(ip)
                 // 会话有效时间
                 .timeout(timeout)
                 // 租户标识
@@ -103,7 +106,7 @@ public class DefaultSessionManager implements SessionManager {
 
     @NotNull
     @Override
-    public Session issue(@NotNull String tenantCode, @NotNull Session source, @NotNull String issuer, @NotNull Duration timeout, @NotNull Endpoint endpoint, @NotNull Integer limit, @Nullable Map<String, Object> claims) {
+    public Session issue(@NotNull String tenantCode, @NotNull Session source, @NotNull String issuer, @NotNull Duration timeout, @NotNull Endpoint endpoint, @NotNull Integer limit, @Nonnull String ip, @Nullable Map<String, Object> claims) {
         var session = Session.builder()
                 .accountId(source.getAccountId())
                 .username(source.getUsername())
@@ -111,6 +114,7 @@ public class DefaultSessionManager implements SessionManager {
                 .supervisor(source.isSupervisor())
                 .endpoint(source.getEndpoint())
                 .issuer(issuer)
+                .ip(ip)
                 .timeout(timeout)
                 .endpoint(endpoint.getValue())
                 .tenantCode(tenantCode)
