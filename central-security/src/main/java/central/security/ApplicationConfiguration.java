@@ -104,6 +104,9 @@ public class ApplicationConfiguration {
         return context;
     }
 
+    /**
+     * 签发会话时使用的安全密钥
+     */
     @Bean
     public KeyPair keyPair() {
         return Signerx.RSA.generateKeyPair();

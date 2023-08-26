@@ -62,21 +62,6 @@ public class CookieManager {
     /**
      * 设置 Cookie
      */
-    public void set(SecurityExchange exchange, String value) {
-        var cookie = ResponseCookie.from(this.name, value)
-                .path(exchange.getRequest().getTenantPath())
-                .maxAge(-1)
-                .httpOnly(this.httpOnly)
-                .secure(this.secure);
-        if (Stringx.isNotBlank(domain)) {
-            cookie.domain(this.domain);
-        }
-        exchange.getResponse().getCookies().add(cookie.build());
-    }
-
-    /**
-     * 设置 Cookie
-     */
     public void set(WebMvcRequest request, WebMvcResponse response, String value) {
         var builder = ResponseCookie.from(this.name, value)
                 .path(request.getTenantPath())
@@ -95,13 +80,6 @@ public class CookieManager {
     /**
      * 获取 Cookie
      */
-    public String get(SecurityExchange exchange) {
-        return exchange.getRequest().getCookie(this.name);
-    }
-
-    /**
-     * 获取 Cookie
-     */
     public String get(WebMvcRequest request, WebMvcResponse response) {
         return request.getCookie(this.name);
     }
@@ -115,21 +93,6 @@ public class CookieManager {
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
-    }
-
-    /**
-     * 清除 Cookie
-     */
-    public void remove(SecurityExchange exchange) {
-        var cookie = ResponseCookie.from(this.name, "deleteMe")
-                .path(exchange.getRequest().getTenantPath())
-                .maxAge(0)
-                .httpOnly(this.httpOnly)
-                .secure(this.secure);
-        if (Stringx.isNotBlank(domain)) {
-            cookie.domain(domain);
-        }
-        exchange.getResponse().getCookies().add(cookie.build());
     }
 
     /**

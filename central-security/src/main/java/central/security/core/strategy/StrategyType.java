@@ -38,16 +38,16 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StrategyType implements OptionalEnum<String> {
-    CAPTCHA("验证码策略（Captcha）", "captcha", CaptchaStrategy.class),
-    PASSWORD("密码策略（Password）", "password", PasswordStrategy.class),
-    SESSION("会话策略（Session）", "session", SessionStrategy.class),
-    SESSION_COOKIE("会话 Cookie（Session Cookie）", "session_cookie", SessionCookieStrategy.class),
-    CAS("中央认证服务策略（CAS）", "cas", CasStrategy.class),
-    OAUTH("OAuth 2.0（OAuth）", "oauth", OAuthStrategy.class);
+    CAPTCHA("验证码策略（Captcha）", "captcha", CaptchaStrategyFilter.class),
+    PASSWORD("密码策略（Password）", "password", PasswordStrategyFilter.class),
+    SESSION("会话策略（Session）", "session", SessionStrategyFilter.class),
+    SESSION_COOKIE("会话 Cookie（Session Cookie）", "session_cookie", SessionCookieStrategyFilter.class),
+    CAS("中央认证服务策略（CAS）", "cas", CasStrategyFilter.class),
+    OAUTH("OAuth 2.0（OAuth）", "oauth", OAuthStrategyFilter.class);
 
     private final String name;
     private final String value;
-    private final Class<? extends Strategy> type;
+    private final Class<? extends StrategyFilter> type;
 
     public static StrategyType resolve(String value) {
         return OptionalEnum.resolve(StrategyType.class, value);

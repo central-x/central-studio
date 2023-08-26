@@ -60,7 +60,7 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
      * <p>
      * tenant -> code -> strategy
      */
-    private final Map<String, Map<String, DynamicStrategy>> strategies = new HashMap<>();
+    private final Map<String, Map<String, DynamicStrategyFilter>> strategies = new HashMap<>();
 
     /**
      * 根据标识获取安全策略
@@ -68,7 +68,7 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
      * @param tenant 租户标识
      * @param code   标识
      */
-    public @Nullable DynamicStrategy getStrategy(String tenant, String code) {
+    public @Nullable DynamicStrategyFilter getStrategy(String tenant, String code) {
         return this.strategies.computeIfAbsent(tenant, key -> new HashMap<>()).get(code);
     }
 
@@ -77,7 +77,7 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
      *
      * @param tenant 租户标识
      */
-    public @Nonnull List<DynamicStrategy> getStrategies(String tenant) {
+    public @Nonnull List<DynamicStrategyFilter> getStrategies(String tenant) {
         return new ArrayList<>(this.strategies.computeIfAbsent(tenant, key -> new HashMap<>()).values());
     }
 
@@ -87,11 +87,11 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
      * @param tenant 租户标识
      * @param code   标识
      */
-    public @Nonnull DynamicStrategy requireStrategy(String tenant, String code) {
+    public @Nonnull DynamicStrategyFilter requireStrategy(String tenant, String code) {
         return Assertx.requireNotNull(this.getStrategy(tenant, code), () -> new ResponseStatusException(HttpStatus.NOT_FOUND, Stringx.format("安全策略[code={}]不存在", code)));
     }
 
-    private @Nullable DynamicStrategy putStrategy(String tenant, DynamicStrategy strategy) {
+    private @Nullable DynamicStrategyFilter putStrategy(String tenant, DynamicStrategyFilter strategy) {
         return this.strategies.computeIfAbsent(tenant, key -> new HashMap<>()).put(strategy.getData().getCode(), strategy);
     }
 
@@ -116,7 +116,7 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
                         var current = this.getStrategy(tenant.getKey(), data.getCode());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的安全策略
-                            var strategy = new DynamicStrategy(data, this.factory);
+                            var strategy = new DynamicStrategyFilter(data, this.factory);
                             var old = this.putStrategy(tenant.getKey(), strategy);
                             this.factory.destroy(old);
                         }

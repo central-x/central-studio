@@ -22,59 +22,45 @@
  * SOFTWARE.
  */
 
-package central.security;
+package central.security.core.strategy.global;
 
 import central.security.core.strategy.GlobalStrategyFilter;
 import central.security.core.strategy.StandardStrategyChain;
-import central.security.core.strategy.StrategyFilter;
 import central.security.core.strategy.StrategyFilterChain;
+import central.security.core.strategy.StrategyContainer;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
-import jakarta.servlet.*;
-import lombok.RequiredArgsConstructor;
+import central.util.Listx;
+import jakarta.servlet.ServletException;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * 应用过滤器
- * <p>
- * 在此过滤器中注入安全策略
+ * 用于处理用户定义的动态策略
  *
  * @author Alan Yeh
- * @since 2022/10/19
+ * @since 2022/11/06
  */
 @Component
-public class ApplicationFilter implements Filter {
+public class GlobalSecurityStrategyFilter implements GlobalStrategyFilter {
 
-    /**
-     * 全局安全策略
-     */
     @Setter(onMethod_ = @Autowired)
-    private List<GlobalStrategyFilter> strategies;
+    private StrategyContainer container;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if (servletRequest instanceof WebMvcRequest request && servletResponse instanceof WebMvcResponse response) {
-            var strategies = new ArrayList<StrategyFilter>(this.strategies);
-            // 执行完策略后，最后执行 Filter
-            strategies.add(new ServletExecutingStrategyFilter(filterChain));
+    public void execute(WebMvcRequest request, WebMvcResponse response, StrategyFilterChain chain) throws IOException, ServletException {
+        var tenant = request.getTenantCode();
 
-            new StandardStrategyChain(strategies).execute(request, response);
+        var strategies = container.getStrategies(tenant);
+
+        if (Listx.isNullOrEmpty(strategies)) {
+            chain.execute(request, response);
         }
-    }
 
-    @RequiredArgsConstructor
-    private static class ServletExecutingStrategyFilter implements StrategyFilter {
-        private final FilterChain chain;
-
-        @Override
-        public void execute(WebMvcRequest request, WebMvcResponse response, StrategyFilterChain chain) throws ServletException, IOException {
-            this.chain.doFilter(request, response);
-        }
+        // 执行用户自定义的动态策略
+        new StandardStrategyChain(strategies).execute(request, response);
     }
 }

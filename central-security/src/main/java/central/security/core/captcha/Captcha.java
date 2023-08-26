@@ -22,40 +22,29 @@
  * SOFTWARE.
  */
 
-package central.security.core.attribute;
+package central.security.core.captcha;
 
-import central.lang.Attribute;
-import central.security.core.CookieManager;
-import central.security.core.captcha.CaptchaGenerator;
-import central.security.core.captcha.generator.random.RandomGenerator;
-
-import java.time.Duration;
+import org.springframework.web.servlet.View;
 
 /**
- * 验证码配置
+ * 验证码
  *
  * @author Alan Yeh
- * @since 2023/02/15
+ * @since 2023/05/26
  */
-public interface CaptchaAttributes {
+public interface Captcha {
     /**
-     * 是否禁用
+     * 标识
      */
-    Attribute<Boolean> ENABLED = Attribute.of("captcha.enabled", Boolean.FALSE);
+    String getCode();
+
     /**
-     * 验证码是否大小写敏感
+     * 值
      */
-    Attribute<Boolean> CASE_SENSITIVE = Attribute.of("captcha.case_sensitive", Boolean.FALSE);
+    String getValue();
+
     /**
-     * 验证码 Cookie
+     * 获取视图
      */
-    Attribute<CookieManager> COOKIE = Attribute.of("captcha.cookie", () -> new CookieManager("X-Auth-Captcha"));
-    /**
-     * 验证码有效期
-     */
-    Attribute<Duration> TIMEOUT = Attribute.of("captcha.timeout", () -> Duration.ofMinutes(3));
-    /**
-     * 验证码生成器
-     */
-    Attribute<CaptchaGenerator> GENERATOR = Attribute.of("captcha.generator", RandomGenerator::new);
+    View getView();
 }

@@ -34,7 +34,7 @@ import central.security.controller.index.param.LoginParams;
 import central.security.controller.index.support.LoginOptions;
 import central.security.core.attribute.CaptchaAttributes;
 import central.security.core.attribute.SessionAttributes;
-import central.security.support.captcha.CaptchaManager;
+import central.security.core.captcha.CaptchaManager;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import com.auth0.jwt.JWT;

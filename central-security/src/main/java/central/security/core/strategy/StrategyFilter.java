@@ -27,62 +27,33 @@ package central.security.core.strategy;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
 import jakarta.servlet.ServletException;
-import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Standard Security Strategy Chain
- * <p>
- * 标准安全认证链
+ * 安全策略
  *
  * @author Alan Yeh
  * @since 2022/10/19
  */
-@RequiredArgsConstructor
-public class StandardStrategyChain implements StrategyFilterChain {
+public interface StrategyFilter {
 
     /**
-     * 待执行策略下标
+     * 用于判断是否执行当前策略
+     *
+     * @param request  Current request
+     * @param response Current response
      */
-    private final int index;
-
-    /**
-     * 策略列表
-     */
-    private final List<StrategyFilter> strategies;
-
-    /**
-     * 下一调用链
-     */
-    private StandardStrategyChain next() {
-        return new StandardStrategyChain(this.index + 1, this.strategies);
-    }
-
-    public StandardStrategyChain(List<? extends StrategyFilter> strategies) {
-        this.strategies = new ArrayList<>(strategies);
-        this.index = 0;
+    default boolean predicate(WebMvcRequest request, WebMvcResponse response) {
+        return true;
     }
 
     /**
-     * 在末端添加新的策略
+     * 执行安全策略
+     *
+     * @param request  Current request
+     * @param response Current response
+     * @param chain    Next strategy
      */
-    public StandardStrategyChain addStrategy(StrategyFilter strategy) {
-        this.strategies.add(strategy);
-        return this;
-    }
-
-    @Override
-    public void execute(WebMvcRequest request, WebMvcResponse response) throws IOException, ServletException {
-        if (this.index < strategies.size()) {
-            var strategy = this.strategies.get(index);
-            if (strategy.predicate(request, response)) {
-                strategy.execute(request, response, next());
-            } else {
-                this.next().execute(request, response);
-            }
-        }
-    }
+    void execute(WebMvcRequest request, WebMvcResponse response, StrategyFilterChain chain) throws ServletException, IOException;
 }

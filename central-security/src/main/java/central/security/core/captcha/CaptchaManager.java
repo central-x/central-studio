@@ -22,40 +22,33 @@
  * SOFTWARE.
  */
 
-package central.security.core.attribute;
-
-import central.lang.Attribute;
-import central.security.core.CookieManager;
-import central.security.core.captcha.CaptchaGenerator;
-import central.security.core.captcha.generator.random.RandomGenerator;
-
-import java.time.Duration;
+package central.security.core.captcha;
 
 /**
- * 验证码配置
+ * 验证码管理器
  *
  * @author Alan Yeh
- * @since 2023/02/15
+ * @since 2023/05/29
  */
-public interface CaptchaAttributes {
+public interface CaptchaManager {
     /**
-     * 是否禁用
+     * 生成一个新的验证码
+     * <p>
+     * 使用方在生成验证码后，需要将验证码的标识（{@link Captcha#getCode}）写入 Cookie 中，在提交表单时验证需要使用
+     *
+     * @param tenantCode 租户
+     * @param generator  生成器
      */
-    Attribute<Boolean> ENABLED = Attribute.of("captcha.enabled", Boolean.FALSE);
+    Captcha generate(String tenantCode, CaptchaGenerator generator);
+
     /**
-     * 验证码是否大小写敏感
+     * 验证验证码
+     *
+     * @param tenantCode    租户
+     * @param code          二维码标识
+     * @param value         用户输入的验码证值
+     * @param caseSensitive 是否大小写敏感
+     * @throws CaptchaException 验证失败时将抛出异常
      */
-    Attribute<Boolean> CASE_SENSITIVE = Attribute.of("captcha.case_sensitive", Boolean.FALSE);
-    /**
-     * 验证码 Cookie
-     */
-    Attribute<CookieManager> COOKIE = Attribute.of("captcha.cookie", () -> new CookieManager("X-Auth-Captcha"));
-    /**
-     * 验证码有效期
-     */
-    Attribute<Duration> TIMEOUT = Attribute.of("captcha.timeout", () -> Duration.ofMinutes(3));
-    /**
-     * 验证码生成器
-     */
-    Attribute<CaptchaGenerator> GENERATOR = Attribute.of("captcha.generator", RandomGenerator::new);
+    void verify(String tenantCode, String code, String value, boolean caseSensitive) throws CaptchaException;
 }

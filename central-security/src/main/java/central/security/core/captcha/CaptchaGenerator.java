@@ -22,40 +22,19 @@
  * SOFTWARE.
  */
 
-package central.security.core.attribute;
-
-import central.lang.Attribute;
-import central.security.core.CookieManager;
-import central.security.core.captcha.CaptchaGenerator;
-import central.security.core.captcha.generator.random.RandomGenerator;
-
-import java.time.Duration;
+package central.security.core.captcha;
 
 /**
- * 验证码配置
+ * 验证码生成器
  *
  * @author Alan Yeh
- * @since 2023/02/15
+ * @since 2023/05/26
  */
-public interface CaptchaAttributes {
+public interface CaptchaGenerator {
     /**
-     * 是否禁用
+     * 生成一个验证码
+     *
+     * @param code 验证码标识
      */
-    Attribute<Boolean> ENABLED = Attribute.of("captcha.enabled", Boolean.FALSE);
-    /**
-     * 验证码是否大小写敏感
-     */
-    Attribute<Boolean> CASE_SENSITIVE = Attribute.of("captcha.case_sensitive", Boolean.FALSE);
-    /**
-     * 验证码 Cookie
-     */
-    Attribute<CookieManager> COOKIE = Attribute.of("captcha.cookie", () -> new CookieManager("X-Auth-Captcha"));
-    /**
-     * 验证码有效期
-     */
-    Attribute<Duration> TIMEOUT = Attribute.of("captcha.timeout", () -> Duration.ofMinutes(3));
-    /**
-     * 验证码生成器
-     */
-    Attribute<CaptchaGenerator> GENERATOR = Attribute.of("captcha.generator", RandomGenerator::new);
+    Captcha generator(String code);
 }

@@ -35,7 +35,7 @@ import central.security.controller.session.param.*;
 import central.security.controller.session.support.Endpoint;
 import central.security.core.attribute.AuthenticateAttributes;
 import central.security.core.attribute.SessionAttributes;
-import central.security.support.session.SessionManager;
+import central.security.core.session.SessionManager;
 import central.sql.query.Conditions;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
