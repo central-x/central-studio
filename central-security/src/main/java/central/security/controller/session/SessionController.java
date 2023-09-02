@@ -48,6 +48,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
+
 /**
  * Session
  * 会管管理
@@ -153,7 +155,7 @@ public class SessionController {
         var issuer = request.getRequiredAttribute(SessionAttributes.ISSUER);
         var timeout = request.getRequiredAttribute(SessionAttributes.TIMEOUT);
         var endpointLimit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
-        var session = this.manager.issue(request.getTenantCode(), issuer, timeout, account, endpoint, endpointLimit, request.getRemoteAddr(), null);
+        var session = this.manager.issue(request.getTenantCode(), issuer, timeout, account, endpoint, endpointLimit, request.getRemoteAddr(), params.getClaims());
         return session.getToken();
     }
 
@@ -213,7 +215,7 @@ public class SessionController {
         var timeout = request.getRequiredAttribute(SessionAttributes.TIMEOUT);
         var endpointLimit = request.getRequiredAttribute(endpoint.getAttribute()).getLimit();
 
-        return this.manager.issue(request.getTenantCode(), session, issuer, timeout, endpoint, endpointLimit, request.getRemoteAddr(), null)
+        return this.manager.issue(request.getTenantCode(), session, issuer, timeout, endpoint, endpointLimit, request.getRemoteAddr(), params.getClaims())
                 .getToken();
     }
 
@@ -225,7 +227,19 @@ public class SessionController {
     @PostMapping("/verify")
     public boolean verify(@RequestBody @Validated VerifyParams params,
                           WebMvcRequest request) {
-        return this.manager.verify(request.getTenantCode(), Session.of(params.getToken()));
+        var session = Session.of(params.getToken());
+
+        if (!Objects.equals(request.getRequiredAttribute(SessionAttributes.ISSUER), session.getIssuer())){
+            log.info("会话凭证[token]验证不通过: 不是本系统颁发的凭证");
+            return false;
+        }
+
+        if (!Objects.equals(request.getTenantCode(), session.getTenantCode())){
+            log.info("会话凭证[token]验证不通过: 租户不匹配");
+            return false;
+        }
+
+        return this.manager.verify(request.getTenantCode(), session);
     }
 
     /**

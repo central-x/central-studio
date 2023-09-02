@@ -40,7 +40,6 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * 默认的会话
@@ -114,6 +113,7 @@ public class DefaultSessionManager implements SessionManager {
                 .supervisor(source.isSupervisor())
                 .endpoint(source.getEndpoint())
                 .issuer(issuer)
+                .source(source.getId())
                 .ip(ip)
                 .timeout(timeout)
                 .endpoint(endpoint.getValue())
@@ -128,19 +128,12 @@ public class DefaultSessionManager implements SessionManager {
 
     @Override
     public boolean verify(@NotNull String tenantCode, @NotNull Session session) {
-        if (!Objects.equals(tenantCode, session.getTenantCode())) {
-            log.info("租户不匹配");
-            return false;
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "租户不匹配");
-        }
-
         try {
             session.verifier().verify(sessionKey.getVerifyKey());
         } catch (Exception ex) {
             log.info("无效会话: " + ex.getLocalizedMessage(), ex);
             return false;
         }
-
 
         // 验证会话是否过期
         if (!this.storage.verify(session)) {
@@ -225,7 +218,15 @@ public class DefaultSessionManager implements SessionManager {
         public boolean verify(Session session) {
             // 去会话仓库中查看该会话是否已过期
             if (this.repository.hasKey(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getId()))) {
-                // 未过期
+                if (Stringx.isNotBlank(session.getSource())) {
+                    // 如果会话是由别的会话创建的，则需要检测父会话是否还有效
+                    if (!this.repository.hasKey(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getSource()))) {
+                        // 父会话过期了，则当前会话也过期
+                        return false;
+                    }
+                }
+
+                // 未过期，则延长会话有效期
                 this.repository.expire(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getId()), session.getTimeout());
                 return true;
             } else {

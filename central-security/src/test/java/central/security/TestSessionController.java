@@ -22,24 +22,19 @@
  * SOFTWARE.
  */
 
-package central.security.test;
+package central.security;
 
-import central.api.client.security.SessionClaims;
+import central.api.client.security.Session;
 import central.api.client.security.SessionClient;
-import central.security.Digestx;
-import central.security.SecurityApplication;
 import central.security.controller.session.SessionController;
 import central.security.signer.KeyPair;
 import central.util.Mapx;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.charset.StandardCharsets;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @see SessionController
  * @since 2022/10/21
  */
+//@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = SecurityApplication.class)
 public class TestSessionController {
 
@@ -62,13 +58,13 @@ public class TestSessionController {
     private KeyPair keyPair;
 
     /**
+     * 测试获取公钥
      * @see SessionClient#getPublicKey
      */
     @Test
-    public void case1() {
-        var pubkey = client.getPublicKey();
-        var source = Base64.getEncoder().encodeToString(keyPair.getVerifyKey().getEncoded());
-        assertEquals(source, pubkey);
+    public void case1() throws Exception{
+        var token = client.getPublicKey();
+        assertEquals(token, Base64.getEncoder().encodeToString(keyPair.getVerifyKey().getEncoded()));
     }
 
     /**
@@ -78,29 +74,34 @@ public class TestSessionController {
      */
     @Test
     public void case2() {
-        // 登录获取会话
-        var session = client.login("syssa", Digestx.SHA256.digest("x.123456", StandardCharsets.UTF_8), "lLS4p6skBbBVZX30zR5", Mapx.newHashMap("test", "123"));
-        assertNotNull(session);
+        // 登录获取会话凭证
+        var token = client.login("syssa", Digestx.SHA256.digest("x.123456", StandardCharsets.UTF_8), "lLS4p6skBbBVZX30zR5", Mapx.newHashMap("test", "123"));
+        assertNotNull(token);
 
-        // 本地验证
-        JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey()))
-                .withClaim(SessionClaims.TENANT_CODE, "master")
-                .withClaim(SessionClaims.USERNAME, "syssa")
-                .withClaim(SessionClaims.ADMIN, true)
-                .withClaim(SessionClaims.SUPERVISOR, true)
-                .withClaim("test", "123")
-                .build()
-                .verify(session);
+        var session = Session.of(token);
+
+        try {
+            // 本地验证
+            session.verifier()
+                    .tenantCode("master")
+                    .username("syssa")
+                    .admin(true)
+                    .supervisor(true)
+                    .claim("test", "123")
+                    .verify(keyPair.getVerifyKey());
+        } catch (Exception ex) {
+            fail("会话校验不通过: " + ex.getLocalizedMessage());
+        }
 
         // 验证有效性
-        boolean verified = client.verify(session);
+        boolean verified = client.verify(token);
         assertTrue(verified);
 
         // 登录登录
-        client.logout(session);
+        client.logout(token);
 
         // 验证有效性
-        verified = client.verify(session);
+        verified = client.verify(token);
         assertFalse(verified);
     }
 
@@ -143,6 +144,7 @@ public class TestSessionController {
         assertTrue(verified);
 
         // 再次颁发
+        // 新会话是刚才会话的子会话，因此父会话失效时，子会话也要失效
         var token = client.loginByToken(session, "lLS4p6skBbBVZX30zR5", Mapx.newHashMap("test", "123"));
 
         // 验证有效性
@@ -150,6 +152,7 @@ public class TestSessionController {
         assertTrue(verified);
 
         // 退出登录
+        // 子会话也需要检测是否也过期了
         client.logout(session);
 
         // 验证有效性
@@ -157,6 +160,7 @@ public class TestSessionController {
         assertFalse(verified);
 
         // 验证有效性
+        // 父会话过期了，因此子会话也需要过期
         verified = client.verify(token);
         assertFalse(verified);
     }

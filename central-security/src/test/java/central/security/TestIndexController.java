@@ -22,21 +22,23 @@
  * SOFTWARE.
  */
 
-package central.security.test;
+package central.security;
 
-import central.security.Digestx;
-import central.security.SecurityApplication;
 import central.security.controller.index.IndexController;
 import central.security.controller.index.support.LoginOptions;
-import central.security.test.client.IndexClient;
+import central.security.client.IndexClient;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Index Controller Test Cases
@@ -53,13 +55,27 @@ public class TestIndexController {
     private IndexClient client;
 
     /**
+     * 测试是否所有的登录选项都在
+     *
      * @see IndexController#getOptions
      */
     @Test
     public void case1() {
-        var options = client.getOptions();
+        var targetOptions = new HashMap<String, List<String>>();
         for (var option : LoginOptions.values()) {
-            assertTrue(options.containsKey(option.getName()));
+            var parts = option.getName().split("[.]");
+            targetOptions.computeIfAbsent(parts[0], key -> new ArrayList<>())
+                    .add(parts[1]);
+        }
+
+        var options = client.getOptions();
+
+        for (var entries : targetOptions.entrySet()) {
+            var value = options.get(entries.getKey());
+            assertNotNull(value);
+            for (var key : entries.getValue()) {
+                assertNotNull(value.get(key));
+            }
         }
     }
 
@@ -80,7 +96,7 @@ public class TestIndexController {
     }
 
     @Test
-    public void case3(){
+    public void case3() {
 
     }
 }

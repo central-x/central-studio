@@ -22,32 +22,49 @@
  * SOFTWARE.
  */
 
-package central.security.test.configuration;
+package central.security.client;
 
-import central.api.client.security.SessionClient;
-import central.net.http.executor.okhttp.OkHttpExecutor;
-import central.net.http.processor.impl.AddHeaderProcessor;
-import central.net.http.proxy.HttpProxyFactory;
-import central.net.http.proxy.contract.spring.SpringContract;
-import central.web.XForwardedHeaders;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import central.data.organization.Account;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+
+import java.util.Map;
 
 /**
- * 测试配置
+ * 首页客户端
  *
  * @author Alan Yeh
- * @since 2022/10/21
+ * @since 2022/10/23
  */
-@Configuration
-public class ClientConfiguration {
-    @Bean
-    public SessionClient sessionClient(@Value("${server.port}") int port, @Value("${server.servlet.context-path}") String contextPath) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
-                .baseUrl("http://127.0.0.1:" + port + contextPath)
-                .target(SessionClient.class);
-    }
+public interface IndexClient {
+
+    /**
+     * 获取登录选项
+     */
+    @GetMapping("/api/options")
+    Map<String, Map<String, Object>> getOptions();
+
+    /**
+     * 登录
+     *
+     * @param account  帐号
+     * @param password 密码（需将明文密码通过 sha256 摘要）
+     * @param captcha  验证码
+     * @param secret   终端密钥
+     */
+    @PostMapping("/api/login")
+    String login(@RequestPart String account, @RequestPart String password, @RequestPart String captcha, @RequestPart String secret);
+
+    /**
+     * 获取当前登录的用户信息
+     */
+    @GetMapping("/api/account")
+    Account getAccount();
+
+    /**
+     * 退出登录
+     */
+    @GetMapping("/api/logout")
+    String logout();
 }

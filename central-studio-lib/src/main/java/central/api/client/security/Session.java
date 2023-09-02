@@ -136,7 +136,7 @@ public class Session implements Serializable {
     /**
      * 凭证颁发机构，通常使用域名
      */
-    public @Nonnull String issuer() {
+    public @Nonnull String getIssuer() {
         return this.decodedToken.getIssuer();
     }
 
