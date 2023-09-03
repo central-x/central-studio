@@ -66,6 +66,7 @@ public class RandomCaptchaView implements CaptchaView {
         response.setHeader(HttpHeaders.PRAGMA, "no-cache");
         response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
         response.setHeader(HttpHeaders.EXPIRES, "0");
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 
         try (var buffered = new BufferedOutputStream(response.getOutputStream())) {
             var image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);

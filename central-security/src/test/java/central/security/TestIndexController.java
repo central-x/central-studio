@@ -24,21 +24,34 @@
 
 package central.security;
 
+import central.data.organization.Account;
+import central.lang.reflect.TypeRef;
 import central.security.controller.index.IndexController;
 import central.security.controller.index.support.LoginOptions;
-import central.security.client.IndexClient;
-import lombok.Setter;
+import central.security.core.attribute.EndpointAttributes;
+import central.util.Jsonx;
+import central.util.Mapx;
+import central.web.XForwardedHeaders;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Index Controller Test Cases
@@ -48,11 +61,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @see IndexController
  * @since 2022/10/23
  */
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = SecurityApplication.class)
 public class TestIndexController {
-
-    @Setter(onMethod_ = @Autowired)
-    private IndexClient client;
 
     /**
      * 测试是否所有的登录选项都在
@@ -60,15 +71,24 @@ public class TestIndexController {
      * @see IndexController#getOptions
      */
     @Test
-    public void case1() {
+    public void case1(@Autowired MockMvc mvc) throws Exception {
+        var request = MockMvcRequestBuilders.get("/api/options")
+                .header(XForwardedHeaders.TENANT, "master");
+
+        var response = mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        var content = response.getContentAsString();
+        var options = Jsonx.Default().deserialize(content, TypeRef.ofMap(String.class, TypeRef.ofMap(String.class, Object.class)));
+
         var targetOptions = new HashMap<String, List<String>>();
         for (var option : LoginOptions.values()) {
             var parts = option.getName().split("[.]");
             targetOptions.computeIfAbsent(parts[0], key -> new ArrayList<>())
                     .add(parts[1]);
         }
-
-        var options = client.getOptions();
 
         for (var entries : targetOptions.entrySet()) {
             var value = options.get(entries.getKey());
@@ -80,23 +100,78 @@ public class TestIndexController {
     }
 
     /**
+     * 测试获取验证码
+     *
+     * @see IndexController#getCaptcha
+     */
+    @Test
+    public void case2(@Autowired MockMvc mvc) throws Exception {
+        var request = MockMvcRequestBuilders.get("/api/captcha")
+                .header(XForwardedHeaders.TENANT, "master");
+
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG))
+                .andDo(print());
+    }
+
+    /**
+     * 测试登录
+     *
      * @see IndexController#login
      * @see IndexController#getAccount
      */
     @Test
-    public void case2() {
+    public void case3(@Autowired MockMvc mvc) throws Exception {
+        // 未登录时获取用户信息，应该返回 401
+        var unauthorizedRequest = MockMvcRequestBuilders.get("/api/account")
+                .header(XForwardedHeaders.TENANT, "master");
+
+        mvc.perform(unauthorizedRequest)
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(Jsonx.Default().serialize(Map.of("message", "未登录"))));
+
+
         // 登录
-        var login = this.client.login("syssa", Digestx.SHA256.digest("x.123456", StandardCharsets.UTF_8), "1234", "lLS4p6skBbBVZX30zR5");
+        var form = Mapx.of(
+                Mapx.entry("account", "syssa"),
+                Mapx.entry("password", Digestx.SHA256.digest("x.123456", StandardCharsets.UTF_8)),
+                Mapx.entry("captcha", "1234"),
+                Mapx.entry("secret", EndpointAttributes.WEB.getValue().getSecret())
+        );
+
+        var loginRequest = MockMvcRequestBuilders.post("/api/login")
+                .content(Jsonx.Default().serialize(form))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master");
+
+        var loginResponse = mvc.perform(loginRequest)
+                .andExpect(status().isOk())
+                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
+                .andExpect(cookie().exists("Authorization"))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("true"))
+                .andReturn().getResponse();
+
+        // 会话凭证
+        var token = loginResponse.getCookie("Authorization").getValue();
 
         // 获取当前用户信息
-        var account = this.client.getAccount();
+        var getAccountRequest = MockMvcRequestBuilders.get("/api/account")
+                .cookie(new Cookie("Authorization", token))
+                .header(XForwardedHeaders.TENANT, "master");
+
+        var getAccountResponse = mvc.perform(getAccountRequest)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        var account = Jsonx.Default().deserialize(getAccountResponse.getContentAsString(), Account.class);
         assertNotNull(account);
         assertEquals(account.getId(), "syssa");
         assertEquals(account.getUsername(), "syssa");
     }
 
-    @Test
-    public void case3() {
-
-    }
 }

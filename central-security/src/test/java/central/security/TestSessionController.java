@@ -47,7 +47,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * @see SessionController
  * @since 2022/10/21
  */
-//@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = SecurityApplication.class)
 public class TestSessionController {
 
