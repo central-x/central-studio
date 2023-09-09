@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.security.configuration;
+package central.security.controller.session;
 
 import central.api.client.security.SessionClient;
 import central.net.http.executor.okhttp.OkHttpExecutor;
@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/10/21
  */
 @Configuration
-public class ClientConfiguration {
+public class SessionClientConfiguration {
     @Bean
     public SessionClient sessionClient(@Value("${server.port}") int port, @Value("${server.servlet.context-path}") String contextPath) {
         return HttpProxyFactory.builder(OkHttpExecutor.Default())

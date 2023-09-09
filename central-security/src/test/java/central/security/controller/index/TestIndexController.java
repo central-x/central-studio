@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
-package central.security;
+package central.security.controller.index;
 
 import central.data.organization.Account;
 import central.lang.reflect.TypeRef;
-import central.security.controller.index.IndexController;
+import central.security.Digestx;
+import central.security.SecurityApplication;
 import central.security.controller.index.support.LoginOptions;
 import central.security.core.attribute.EndpointAttributes;
 import central.util.Jsonx;
