@@ -121,9 +121,12 @@ public class TestIndexController {
      *
      * @see IndexController#login
      * @see IndexController#getAccount
+     * @see IndexController#logout
      */
     @Test
     public void case3(@Autowired MockMvc mvc) throws Exception {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 未登录
         // 未登录时获取用户信息，应该返回 401
         var unauthorizedRequest = MockMvcRequestBuilders.get("/api/account")
                 .header(XForwardedHeaders.TENANT, "master");
@@ -134,6 +137,7 @@ public class TestIndexController {
                 .andExpect(content().json(Jsonx.Default().serialize(Map.of("message", "未登录"))));
 
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 登录
         var form = Mapx.of(
                 Mapx.entry("account", "syssa"),
@@ -158,7 +162,7 @@ public class TestIndexController {
         // 会话凭证
         var token = loginResponse.getCookie("Authorization").getValue();
 
-        // 获取当前用户信息
+        // 获取当前用户信息，应该能够正常返回用户信息
         var getAccountRequest = MockMvcRequestBuilders.get("/api/account")
                 .cookie(new Cookie("Authorization", token))
                 .header(XForwardedHeaders.TENANT, "master");
@@ -172,6 +176,23 @@ public class TestIndexController {
         assertNotNull(account);
         assertEquals(account.getId(), "syssa");
         assertEquals(account.getUsername(), "syssa");
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 退出登录
+        var logoutRequest = MockMvcRequestBuilders.get("/api/logout")
+                .cookie(new Cookie("Authorization", token))
+                .header(XForwardedHeaders.TENANT, "master");
+        mvc.perform(logoutRequest)
+                .andExpect(status().isOk())
+                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("true"));
+
+        // 退出登录后，原来的会话不可以再次登录
+        mvc.perform(getAccountRequest)
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(Jsonx.Default().serialize(Map.of("message", "未登录"))));
     }
 
 }
