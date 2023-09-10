@@ -51,11 +51,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Index Controller Test Cases
+ * <p>
  * 首页测试
  *
  * @author Alan Yeh
@@ -113,8 +113,7 @@ public class TestIndexController {
         mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(header().exists(HttpHeaders.SET_COOKIE))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG))
-                .andDo(print());
+                .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG));
     }
 
     /**
