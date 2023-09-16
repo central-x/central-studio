@@ -24,7 +24,7 @@
 
 package central.provider.graphql.security;
 
-import central.api.provider.security.SecurityPasswordProvider;
+import central.provider.security.SecurityPasswordProvider;
 import central.bean.Page;
 import central.data.security.SecurityPassword;
 import central.data.security.SecurityPasswordInput;

@@ -24,7 +24,7 @@
 
 package central.provider.graphql.saas.query;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.bean.Page;
 import central.lang.Assertx;
 import central.provider.graphql.saas.dto.TenantApplicationDTO;

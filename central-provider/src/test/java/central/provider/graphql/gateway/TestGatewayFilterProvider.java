@@ -24,7 +24,7 @@
 
 package central.provider.graphql.gateway;
 
-import central.api.provider.gateway.GatewayFilterProvider;
+import central.provider.gateway.GatewayFilterProvider;
 import central.data.gateway.GatewayFilter;
 import central.data.gateway.GatewayFilterInput;
 import central.data.gateway.GatewayPredicate;

@@ -24,7 +24,7 @@
 
 package central.provider.graphql.storage.query;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.bean.Page;
 import central.provider.graphql.storage.dto.StorageFileDTO;
 import central.provider.graphql.storage.entity.StorageFileEntity;

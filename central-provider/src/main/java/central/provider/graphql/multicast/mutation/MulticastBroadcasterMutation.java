@@ -24,7 +24,7 @@
 
 package central.provider.graphql.multicast.mutation;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.data.multicast.MulticastBroadcasterInput;
 import central.lang.Stringx;
 import central.provider.graphql.multicast.dto.MulticastBroadcasterDTO;

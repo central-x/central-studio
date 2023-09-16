@@ -24,7 +24,7 @@
 
 package central.provider.graphql.system.dto;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.data.system.DatabaseProperties;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;

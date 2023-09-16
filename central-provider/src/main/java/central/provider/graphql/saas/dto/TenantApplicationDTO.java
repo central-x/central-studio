@@ -24,7 +24,7 @@
 
 package central.provider.graphql.saas.dto;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.provider.graphql.saas.entity.TenantApplicationEntity;
 import central.starter.graphql.annotation.GraphQLGetter;

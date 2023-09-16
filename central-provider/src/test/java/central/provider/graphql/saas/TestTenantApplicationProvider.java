@@ -24,8 +24,8 @@
 
 package central.provider.graphql.saas;
 
-import central.api.provider.saas.TenantApplicationProvider;
-import central.api.provider.saas.TenantProvider;
+import central.provider.saas.TenantApplicationProvider;
+import central.provider.saas.TenantProvider;
 import central.data.saas.TenantApplication;
 import central.data.saas.TenantApplicationInput;
 import central.data.system.DatabaseProperties;

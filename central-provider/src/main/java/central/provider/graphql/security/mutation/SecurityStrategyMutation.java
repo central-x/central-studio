@@ -24,7 +24,7 @@
 
 package central.provider.graphql.security.mutation;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.data.security.SecurityStrategyInput;
 import central.lang.Stringx;
 import central.provider.graphql.security.dto.SecurityStrategyDTO;

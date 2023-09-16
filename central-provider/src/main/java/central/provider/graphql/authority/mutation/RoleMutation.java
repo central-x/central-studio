@@ -24,7 +24,7 @@
 
 package central.provider.graphql.authority.mutation;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.data.authority.RoleInput;
 import central.lang.Stringx;
 import central.provider.graphql.authority.dto.RoleDTO;

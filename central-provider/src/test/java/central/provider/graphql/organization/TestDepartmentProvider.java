@@ -24,7 +24,7 @@
 
 package central.provider.graphql.organization;
 
-import central.api.provider.organization.DepartmentProvider;
+import central.provider.organization.DepartmentProvider;
 import central.data.organization.Department;
 import central.data.organization.DepartmentInput;
 import central.data.organization.option.AreaType;

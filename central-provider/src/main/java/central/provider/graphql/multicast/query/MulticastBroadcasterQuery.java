@@ -24,7 +24,7 @@
 
 package central.provider.graphql.multicast.query;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.bean.Page;
 import central.provider.graphql.multicast.dto.MulticastBroadcasterDTO;
 import central.provider.graphql.multicast.entity.MulticastBroadcasterEntity;

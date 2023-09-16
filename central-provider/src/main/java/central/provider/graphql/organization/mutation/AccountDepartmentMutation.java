@@ -24,7 +24,7 @@
 
 package central.provider.graphql.organization.mutation;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.data.organization.AccountDepartmentInput;
 import central.provider.graphql.organization.dto.AccountDepartmentDTO;
 import central.provider.graphql.organization.entity.AccountDepartmentEntity;

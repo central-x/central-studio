@@ -24,7 +24,7 @@
 
 package central.provider.graphql.system;
 
-import central.api.provider.system.DictionaryProvider;
+import central.provider.system.DictionaryProvider;
 import central.data.system.Dictionary;
 import central.data.system.DictionaryInput;
 import central.provider.ApplicationProperties;

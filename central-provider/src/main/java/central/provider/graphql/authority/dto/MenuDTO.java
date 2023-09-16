@@ -24,7 +24,7 @@
 
 package central.provider.graphql.authority.dto;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.provider.graphql.authority.entity.MenuEntity;
 import central.provider.graphql.authority.service.MenuService;
 import central.provider.graphql.authority.service.PermissionService;

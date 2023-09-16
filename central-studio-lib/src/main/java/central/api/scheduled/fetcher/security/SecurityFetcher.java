@@ -24,8 +24,8 @@
 
 package central.api.scheduled.fetcher.security;
 
-import central.api.provider.saas.TenantProvider;
-import central.api.provider.security.SecurityStrategyProvider;
+import central.provider.saas.TenantProvider;
+import central.provider.security.SecurityStrategyProvider;
 import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.security.SecurityStrategy;

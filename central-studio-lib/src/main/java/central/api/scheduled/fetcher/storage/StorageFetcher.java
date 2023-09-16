@@ -24,8 +24,8 @@
 
 package central.api.scheduled.fetcher.storage;
 
-import central.api.provider.storage.StorageBucketProvider;
-import central.api.provider.saas.TenantProvider;
+import central.provider.storage.StorageBucketProvider;
+import central.provider.saas.TenantProvider;
 import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.storage.StorageBucket;

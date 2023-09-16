@@ -24,7 +24,7 @@
 
 package central.provider.graphql.log;
 
-import central.api.provider.log.LogStorageProvider;
+import central.provider.log.LogStorageProvider;
 import central.data.log.LogStorage;
 import central.data.log.LogStorageInput;
 import central.lang.reflect.TypeRef;

@@ -24,7 +24,7 @@
 
 package central.provider.graphql.security.query;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.bean.Page;
 import central.provider.ApplicationProperties;
 import central.provider.graphql.security.dto.SecurityPasswordDTO;

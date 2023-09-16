@@ -24,7 +24,7 @@
 
 package central.provider.graphql.storage;
 
-import central.api.provider.storage.StorageBucketProvider;
+import central.provider.storage.StorageBucketProvider;
 import central.api.scheduled.ScheduledDataContext;
 import central.api.scheduled.fetcher.DataFetcherType;
 import central.api.scheduled.fetcher.saas.SaasContainer;

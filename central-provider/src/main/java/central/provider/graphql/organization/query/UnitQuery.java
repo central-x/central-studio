@@ -24,7 +24,7 @@
 
 package central.provider.graphql.organization.query;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.bean.Page;
 import central.provider.graphql.organization.dto.UnitDTO;
 import central.provider.graphql.organization.entity.UnitEntity;

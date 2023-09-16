@@ -24,7 +24,7 @@
 
 package central.provider.graphql.system.query;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.bean.Page;
 import central.provider.graphql.system.dto.DictionaryDTO;
 import central.provider.graphql.system.entity.DictionaryEntity;

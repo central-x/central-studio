@@ -24,8 +24,8 @@
 
 package central.api.scheduled.fetcher.gateway;
 
-import central.api.provider.gateway.GatewayFilterProvider;
-import central.api.provider.saas.TenantProvider;
+import central.provider.gateway.GatewayFilterProvider;
+import central.provider.saas.TenantProvider;
 import central.api.scheduled.BeanSupplier;
 import central.api.scheduled.fetcher.DataFetcher;
 import central.data.gateway.GatewayFilter;

@@ -24,7 +24,7 @@
 
 package central.provider.graphql.security.mutation;
 
-import central.api.DTO;
+import central.provider.DTO;
 import central.data.security.SecurityPasswordInput;
 import central.provider.graphql.security.dto.SecurityPasswordDTO;
 import central.provider.graphql.security.entity.SecurityPasswordEntity;

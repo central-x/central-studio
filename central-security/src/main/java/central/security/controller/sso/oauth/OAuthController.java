@@ -25,7 +25,7 @@
 package central.security.controller.sso.oauth;
 
 import central.api.client.security.SessionVerifier;
-import central.api.provider.organization.AccountProvider;
+import central.provider.organization.AccountProvider;
 import central.api.scheduled.ScheduledDataContext;
 import central.api.scheduled.fetcher.DataFetcherType;
 import central.data.organization.Account;

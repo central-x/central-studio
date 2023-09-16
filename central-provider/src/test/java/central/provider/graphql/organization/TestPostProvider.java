@@ -24,7 +24,7 @@
 
 package central.provider.graphql.organization;
 
-import central.api.provider.organization.PostProvider;
+import central.provider.organization.PostProvider;
 import central.data.organization.Post;
 import central.data.organization.PostInput;
 import central.data.organization.option.AreaType;
