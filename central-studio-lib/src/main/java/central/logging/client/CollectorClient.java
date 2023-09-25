@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.api.client.logging;
+package central.logging.client;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
