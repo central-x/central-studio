@@ -24,7 +24,13 @@
 
 package central.storage;
 
+import central.net.http.executor.okhttp.OkHttpExecutor;
+import central.net.http.processor.impl.TransmitForwardedProcessor;
+import central.net.http.proxy.HttpProxyFactory;
+import central.net.http.proxy.contract.spring.SpringContract;
+import central.storage.client.ObjectClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -38,4 +44,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(StorageProperties.class)
 public class StorageConfiguration {
+
+    /**
+     * 对象存储客户端
+     */
+    @Bean
+    public ObjectClient objectClient(StorageProperties properties) {
+        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+                .contact(new SpringContract())
+                .processor(new TransmitForwardedProcessor())
+                .baseUrl(properties.getUrl())
+                .target(ObjectClient.class);
+    }
 }

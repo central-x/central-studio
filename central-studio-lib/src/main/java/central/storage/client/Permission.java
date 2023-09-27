@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.api.client.storage;
+package central.storage.client;
 
 import central.bean.OptionalEnum;
 import lombok.AllArgsConstructor;

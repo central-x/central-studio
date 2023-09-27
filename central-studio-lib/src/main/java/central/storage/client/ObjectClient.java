@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package central.api.client.storage;
+package central.storage.client;
 
-import central.api.client.storage.data.Multipart;
+import central.storage.client.data.Multipart;
 import central.data.storage.StorageObject;
 import central.lang.Assertx;
 import central.lang.CompareResult;

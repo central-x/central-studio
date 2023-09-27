@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-package central.api.client.storage.data;
+package central.storage.client.data;
 
 import central.util.Guidx;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

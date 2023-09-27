@@ -24,8 +24,8 @@
 
 package central.storage.controller;
 
-import central.api.client.storage.data.Multipart;
-import central.api.client.storage.Permission;
+import central.storage.client.data.Multipart;
+import central.storage.client.Permission;
 import central.provider.storage.StorageObjectProvider;
 import central.data.storage.StorageObject;
 import central.data.storage.StorageObjectInput;

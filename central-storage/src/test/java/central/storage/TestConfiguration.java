@@ -24,7 +24,7 @@
 
 package central.storage;
 
-import central.api.client.storage.ObjectClient;
+import central.storage.client.ObjectClient;
 import central.net.http.executor.okhttp.OkHttpExecutor;
 import central.net.http.processor.impl.ThrowProcessor;
 import central.net.http.proxy.HttpProxyFactory;
