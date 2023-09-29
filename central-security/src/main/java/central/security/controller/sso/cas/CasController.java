@@ -24,7 +24,7 @@
 
 package central.security.controller.sso.cas;
 
-import central.api.client.security.SessionVerifier;
+import central.security.client.SessionVerifier;
 import central.provider.organization.AccountProvider;
 import central.api.scheduled.DataContext;
 import central.api.scheduled.fetcher.DataFetcherType;

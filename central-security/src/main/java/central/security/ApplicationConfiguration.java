@@ -24,8 +24,8 @@
 
 package central.security;
 
-import central.api.client.security.SessionClient;
-import central.api.client.security.SessionVerifier;
+import central.security.client.SessionClient;
+import central.security.client.SessionVerifier;
 import central.api.scheduled.DataContext;
 import central.api.scheduled.ScheduledDataContext;
 import central.api.scheduled.SpringBeanSupplier;

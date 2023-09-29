@@ -24,7 +24,13 @@
 
 package central.security;
 
+import central.net.http.executor.okhttp.OkHttpExecutor;
+import central.net.http.processor.impl.TransmitForwardedProcessor;
+import central.net.http.proxy.HttpProxyFactory;
+import central.net.http.proxy.contract.spring.SpringContract;
+import central.security.client.SessionClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -38,4 +44,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityConfiguration {
+
+    /**
+     * 会话控制客户端
+     */
+    @Bean
+    public SessionClient sessionClient(SecurityProperties properties) {
+        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+                .contact(new SpringContract())
+                .processor(new TransmitForwardedProcessor())
+                .baseUrl(properties.getUrl())
+                .target(SessionClient.class);
+    }
 }

@@ -24,7 +24,7 @@
 
 package central.security.controller.sso.oauth.support;
 
-import central.api.client.security.Session;
+import central.security.client.Session;
 import central.util.concurrent.Expired;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.api.client.security;
+package central.security.client;
 
 import central.lang.Stringx;
 import central.security.Signerx;

@@ -24,7 +24,7 @@
 
 package central.security.controller.session;
 
-import central.api.client.security.SessionClient;
+import central.security.client.SessionClient;
 import central.net.http.executor.okhttp.OkHttpExecutor;
 import central.net.http.processor.impl.AddHeaderProcessor;
 import central.net.http.proxy.HttpProxyFactory;

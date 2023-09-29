@@ -24,7 +24,7 @@
 
 package central.security.core.session;
 
-import central.api.client.security.Session;
+import central.security.client.Session;
 import central.data.organization.Account;
 import central.lang.Stringx;
 import central.security.controller.session.support.Endpoint;

@@ -24,8 +24,8 @@
 
 package central.security.controller.session;
 
-import central.api.client.security.Session;
-import central.api.client.security.SessionClient;
+import central.security.client.Session;
+import central.security.client.SessionClient;
 import central.security.Digestx;
 import central.security.SecurityApplication;
 import central.security.signer.KeyPair;
