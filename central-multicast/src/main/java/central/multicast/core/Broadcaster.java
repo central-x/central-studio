@@ -24,7 +24,7 @@
 
 package central.multicast.core;
 
-import central.api.client.multicast.body.StandardBody;
+import central.multicast.client.body.StandardBody;
 
 /**
  * 广播器

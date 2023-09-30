@@ -24,8 +24,8 @@
 
 package central.multicast.core.impl.email;
 
-import central.api.client.multicast.body.MailBody;
-import central.api.client.multicast.body.StandardBody;
+import central.multicast.client.body.MailBody;
+import central.multicast.client.body.StandardBody;
 import central.multicast.core.Broadcaster;
 import central.multicast.core.impl.email.option.AvailableEnum;
 import central.pluglet.annotation.Control;

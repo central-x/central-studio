@@ -24,7 +24,7 @@
 
 package central.multicast.core;
 
-import central.api.client.multicast.body.StandardBody;
+import central.multicast.client.body.StandardBody;
 import central.data.multicast.MulticastBroadcaster;
 import central.lang.Assertx;
 import central.lang.Stringx;

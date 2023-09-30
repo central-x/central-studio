@@ -24,7 +24,7 @@
 
 package central.multicast;
 
-import central.api.client.multicast.MessageClient;
+import central.multicast.client.MessageClient;
 import central.net.http.executor.okhttp.OkHttpExecutor;
 import central.net.http.processor.impl.ThrowProcessor;
 import central.net.http.proxy.HttpProxyFactory;

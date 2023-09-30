@@ -24,9 +24,9 @@
 
 package central.multicast.controller;
 
-import central.api.client.multicast.MessageClient;
-import central.api.client.multicast.body.Recipient;
-import central.api.client.multicast.body.StandardBody;
+import central.multicast.client.MessageClient;
+import central.multicast.client.body.Recipient;
+import central.multicast.client.body.StandardBody;
 import central.data.multicast.option.PublishMode;
 import central.multicast.MulticastApplication;
 import central.multicast.core.Container;

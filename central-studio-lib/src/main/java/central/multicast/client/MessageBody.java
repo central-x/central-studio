@@ -22,53 +22,15 @@
  * SOFTWARE.
  */
 
-package central.api.client.multicast.body;
+package central.multicast.client;
 
-import central.api.client.multicast.MessageBody;
-import central.validation.Label;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serial;
-import java.util.List;
+import java.io.Serializable;
 
 /**
- * 邮件消息体
+ * 消息体
  *
  * @author Alan Yeh
  * @since 2022/11/04
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class MailBody implements MessageBody {
-    @Serial
-    private static final long serialVersionUID = -8689953012437085820L;
-
-    @Label("主题")
-    private String subject;
-
-    @Label("正文")
-    private String content;
-
-    @Label("发件人姓名")
-    @Size(max = 30)
-    private String from;
-
-    @Label("收件人")
-    @Valid
-    @NotEmpty
-    private List<Recipient> to;
-
-    @Label("抄送人")
-    @Valid
-    private List<Recipient> cc;
-
-    @Label("密送人")
-    @Valid
-    private List<Recipient> bcc;
+public interface MessageBody extends Serializable {
 }

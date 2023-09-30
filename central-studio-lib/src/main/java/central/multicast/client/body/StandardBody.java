@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package central.api.client.multicast.body;
+package central.multicast.client.body;
 
-import central.api.client.multicast.MessageBody;
+import central.multicast.client.MessageBody;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.api.client.multicast;
+package central.multicast.client;
 
 import central.data.multicast.MulticastMessage;
 import central.data.multicast.option.PublishMode;
