@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
-package central.provider;
+package central.provider.scheduled.fetcher.system;
 
-import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import central.provider.scheduled.DataContainer;
+import central.data.system.Dictionary;
+import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serial;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * 系统数据容器
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/10/14
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
-    /**
-     * 访问地址
-     */
-    private String url = "http://127.0.0.1:3300";
+@RequiredArgsConstructor
+public class SysContainer extends DataContainer {
+    @Serial
+    private static final long serialVersionUID = 7527120121005302705L;
 
     /**
-     * 数据
+     * 字典
+     * tenantCode -> applicationCode -> dictionaryCode -> Dictionary
      */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    private final Map<String, Map<String, Map<String, Dictionary>>> dictionaries;
+
+    public SysContainer() {
+        this.dictionaries = new HashMap<>();
+    }
+
+    /**
+     * 获取字典
+     *
+     * @param tenantCode      租户标识
+     * @param applicationCode 应用标识
+     * @param dictionaryCode  字典标识
+     */
+    public Dictionary getDictionary(String tenantCode, String applicationCode, String dictionaryCode) {
+        return this.dictionaries.computeIfAbsent(tenantCode, key -> new HashMap<>())
+                .computeIfAbsent(applicationCode, key -> new HashMap<>())
+                .get(dictionaryCode);
+    }
 }

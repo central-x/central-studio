@@ -29,9 +29,14 @@ import central.net.http.processor.impl.SetHeaderProcessor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.ScheduledDataContext;
+import central.provider.scheduled.SpringBeanSupplier;
+import central.provider.scheduled.event.DataRefreshEvent;
 import central.starter.graphql.stub.ProviderClient;
 import central.web.XForwardedHeaders;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -69,5 +74,23 @@ public class ProviderConfiguration {
                 .processor(new SetHeaderProcessor(XForwardedHeaders.TENANT, "master"))
                 .baseUrl(properties.getUrl())
                 .target(ProviderClient.class);
+    }
+
+    /**
+     * 热数据容器
+     */
+    @Bean(initMethod = "initialized", destroyMethod = "destroy")
+    public DataContext dataContext(ApplicationContext applicationContext, ProviderProperties properties) {
+        var context = new ScheduledDataContext(new SpringBeanSupplier(applicationContext));
+        for (var type : properties.getFetchers()) {
+            // 只获取业务系统需要的数据
+            context.addFetcher(type);
+        }
+        context.addObserver(event -> {
+            if (event instanceof ScheduledDataContext.DataRefreshedEvent refreshed) {
+                applicationContext.publishEvent(new DataRefreshEvent<>(refreshed.getFetcher().getValue(), refreshed.getContainer()));
+            }
+        });
+        return context;
     }
 }

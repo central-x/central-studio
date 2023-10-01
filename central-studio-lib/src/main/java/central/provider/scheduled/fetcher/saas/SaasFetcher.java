@@ -22,33 +22,43 @@
  * SOFTWARE.
  */
 
-package central.provider;
+package central.provider.scheduled.fetcher.saas;
 
-import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import central.provider.saas.ApplicationProvider;
+import central.provider.saas.TenantProvider;
+import central.provider.scheduled.BeanSupplier;
+import central.provider.scheduled.fetcher.DataFetcher;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Duration;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * 租户中心数据获取
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/10/13
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
-    /**
-     * 访问地址
-     */
-    private String url = "http://127.0.0.1:3300";
+public class SaasFetcher implements DataFetcher<SaasContainer> {
 
-    /**
-     * 数据
-     */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    @Setter
+    private BeanSupplier supplier;
+
+    @Getter
+    private final Duration timeout = Duration.ofSeconds(5);
+
+    @Override
+    public SaasContainer get() {
+        if (supplier == null){
+            return new SaasContainer();
+        }
+
+        var tenantProvider = this.supplier.get(TenantProvider.class);
+        var tenants = tenantProvider.findBy(null, null, null, null);
+
+        var applicationProvider = this.supplier.get(ApplicationProvider.class);
+        var applications = applicationProvider.findBy(null, null, null, null);
+
+        return new SaasContainer(tenants, applications);
+    }
 }

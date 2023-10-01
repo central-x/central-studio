@@ -22,33 +22,26 @@
  * SOFTWARE.
  */
 
-package central.provider;
+package central.provider.scheduled.event;
 
-import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.ArrayList;
-import java.util.List;
+import central.provider.scheduled.DataContainer;
+import central.provider.scheduled.DataListener;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * Spring 数据监听
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/10/25
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
-    /**
-     * 访问地址
-     */
-    private String url = "http://127.0.0.1:3300";
+@RequiredArgsConstructor
+public class SpringDataListener<T extends DataContainer> implements DataListener<T> {
 
-    /**
-     * 数据
-     */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    private final ApplicationContext applicationContext;
+
+    @Override
+    public void refresh(String code, T container) {
+        this.applicationContext.publishEvent(new DataRefreshEvent<>(code, container));
+    }
 }

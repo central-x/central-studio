@@ -24,8 +24,8 @@
 
 package central.provider.graphql.storage.dto;
 
-import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.ScheduledDataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
 import central.data.saas.Application;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.provider.graphql.storage.entity.StorageBucketEntity;

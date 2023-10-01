@@ -22,33 +22,20 @@
  * SOFTWARE.
  */
 
-package central.provider;
-
-import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.ArrayList;
-import java.util.List;
+package central.provider.scheduled;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * Provider 获取器
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/10/14
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
+public interface BeanSupplier {
     /**
-     * 访问地址
+     * 根据 Provider 类型获取实例
+     *
+     * @param provider 类型
+     * @return 实例
      */
-    private String url = "http://127.0.0.1:3300";
-
-    /**
-     * 数据
-     */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    <T> T get(Class<T> provider);
 }

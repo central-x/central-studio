@@ -24,9 +24,8 @@
 
 package central.gateway;
 
-import central.api.scheduled.DataContext;
-import central.api.scheduled.fetcher.DataFetcherType;
-import central.api.scheduled.ScheduledDataContext;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
 import central.gateway.core.filter.GlobalFilter;
 import central.gateway.core.filter.StandardFilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;

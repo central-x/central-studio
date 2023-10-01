@@ -22,33 +22,22 @@
  * SOFTWARE.
  */
 
-package central.provider;
-
-import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.ArrayList;
-import java.util.List;
+package central.provider.scheduled;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * 数据更新监听
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/10/25
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
-    /**
-     * 访问地址
-     */
-    private String url = "http://127.0.0.1:3300";
+@FunctionalInterface
+public interface DataListener<T extends DataContainer> {
 
     /**
-     * 数据
+     * 数据刷新
+     *
+     * @param code      租户标识
+     * @param container 被刷新的数据
      */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    void refresh(String code, T container);
 }

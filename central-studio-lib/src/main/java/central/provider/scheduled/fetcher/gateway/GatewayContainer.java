@@ -22,33 +22,48 @@
  * SOFTWARE.
  */
 
-package central.provider;
+package central.provider.scheduled.fetcher.gateway;
 
-import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import central.provider.scheduled.DataContainer;
+import central.data.gateway.GatewayFilter;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * 网关中心数据容器
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/11/08
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
-    /**
-     * 访问地址
-     */
-    private String url = "http://127.0.0.1:3300";
+@NoArgsConstructor
+public class GatewayContainer extends DataContainer {
+    @Serial
+    private static final long serialVersionUID = -6116018017073023899L;
 
     /**
-     * 数据
+     * 过滤器
+     * <p>
+     * tenant -> filters
      */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    @Getter
+    private final Map<String, List<GatewayFilter>> filters = new HashMap<>();
+
+    public GatewayContainer(Map<String, List<GatewayFilter>> filters) {
+        this.filters.putAll(filters);
+    }
+
+    /**
+     * 获取过滤器
+     *
+     * @param tenant 租户标识
+     */
+    public List<GatewayFilter> getFilters(String tenant) {
+        return new ArrayList<>(this.filters.computeIfAbsent(tenant, key -> new ArrayList<>()));
+    }
 }

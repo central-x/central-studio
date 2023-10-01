@@ -22,33 +22,29 @@
  * SOFTWARE.
  */
 
-package central.provider;
+package central.provider.scheduled.fetcher;
 
-import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import central.provider.scheduled.BeanSupplier;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Duration;
+import java.util.function.Supplier;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * 数据获取器
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/10/14
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
-    /**
-     * 访问地址
-     */
-    private String url = "http://127.0.0.1:3300";
+public interface DataFetcher<T> extends Supplier<T> {
 
     /**
-     * 数据
+     * 设置 Provider Supplier
+     * 在设置了 supplier 之后，才可以正常获取数据
      */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    void setSupplier(BeanSupplier supplier);
+
+    /**
+     * 获取数据超时时间
+     */
+    Duration getTimeout();
 }

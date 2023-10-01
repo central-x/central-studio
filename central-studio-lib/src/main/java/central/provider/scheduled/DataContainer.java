@@ -22,33 +22,26 @@
  * SOFTWARE.
  */
 
-package central.provider;
+package central.provider.scheduled;
 
-import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * 数据容器
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/10/13
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
-    /**
-     * 访问地址
-     */
-    private String url = "http://127.0.0.1:3300";
+public abstract class DataContainer implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 3858239352157731175L;
 
     /**
-     * 数据
+     * 容器创建时间
      */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    @Getter
+    private final long timestamp = System.currentTimeMillis();
 }

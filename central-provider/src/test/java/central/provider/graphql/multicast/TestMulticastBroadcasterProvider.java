@@ -25,9 +25,9 @@
 package central.provider.graphql.multicast;
 
 import central.provider.multicast.MulticastBroadcasterProvider;
-import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.fetcher.DataFetcherType;
-import central.api.scheduled.fetcher.saas.SaasContainer;
+import central.provider.scheduled.ScheduledDataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.data.multicast.MulticastBroadcaster;
 import central.data.multicast.MulticastBroadcasterInput;
 import central.lang.reflect.TypeRef;

@@ -22,33 +22,32 @@
  * SOFTWARE.
  */
 
-package central.provider;
+package central.provider.scheduled;
 
+import central.bean.LifeCycle;
 import central.provider.scheduled.fetcher.DataFetcherType;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Provider Properties
- * <p>
- * 数据中心配置
+ * 数据上下文
  *
  * @author Alan Yeh
- * @since 2023/09/10
+ * @since 2022/11/10
  */
-@Data
-@ConfigurationProperties(prefix = "studio.provider")
-public class ProviderProperties {
+public interface DataContext extends LifeCycle {
     /**
-     * 访问地址
+     * 添加数据获取器
+     *
+     * @param fetcher 数据获取器
+     * @param <T>     数据类型
      */
-    private String url = "http://127.0.0.1:3300";
+    <T extends DataContainer> void addFetcher(DataFetcherType fetcher);
 
     /**
-     * 数据
+     * 获取数据
+     *
+     * @param fetcher 数据获取器
+     * @param <T>     数据类型
+     * @return 数据容器
      */
-    private List<DataFetcherType> fetchers = new ArrayList<>();
+    <T extends DataContainer> T getData(DataFetcherType fetcher);
 }

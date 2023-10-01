@@ -24,9 +24,9 @@
 
 package central.security.core.strategy;
 
-import central.api.scheduled.event.DataRefreshEvent;
-import central.api.scheduled.fetcher.DataFetcherType;
-import central.api.scheduled.fetcher.security.SecurityContainer;
+import central.provider.scheduled.event.DataRefreshEvent;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.security.SecurityContainer;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.pluglet.PlugletFactory;
@@ -103,7 +103,7 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
     @Override
     public void onApplicationEvent(@Nonnull ApplicationEvent event) {
         if (event instanceof DataRefreshEvent<?> refreshEvent) {
-            if (!Objects.equals(refreshEvent.getCode(), DataFetcherType.SECURITY.getCode())) {
+            if (!Objects.equals(refreshEvent.getValue(), DataFetcherType.SECURITY.getValue())) {
                 return;
             }
 

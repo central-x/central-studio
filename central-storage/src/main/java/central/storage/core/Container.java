@@ -24,9 +24,9 @@
 
 package central.storage.core;
 
-import central.api.scheduled.event.DataRefreshEvent;
-import central.api.scheduled.fetcher.DataFetcherType;
-import central.api.scheduled.fetcher.storage.StorageContainer;
+import central.provider.scheduled.event.DataRefreshEvent;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.storage.StorageContainer;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.pluglet.PlugletFactory;
@@ -106,7 +106,7 @@ public class Container implements DisposableBean, GenericApplicationListener {
     @Override
     public void onApplicationEvent(@Nonnull ApplicationEvent event) {
         if (event instanceof DataRefreshEvent<?> refreshEvent) {
-            if (!Objects.equals(refreshEvent.getCode(), DataFetcherType.STORAGE.getCode())) {
+            if (!Objects.equals(refreshEvent.getValue(), DataFetcherType.STORAGE.getCode())) {
                 return;
             }
 

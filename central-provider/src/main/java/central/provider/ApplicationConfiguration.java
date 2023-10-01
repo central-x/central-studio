@@ -1,10 +1,10 @@
 package central.provider;
 
-import central.api.scheduled.DataContext;
-import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.SpringBeanSupplier;
-import central.api.scheduled.event.DataRefreshEvent;
-import central.api.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.ScheduledDataContext;
+import central.provider.scheduled.SpringBeanSupplier;
+import central.provider.scheduled.event.DataRefreshEvent;
+import central.provider.scheduled.fetcher.DataFetcherType;
 import central.net.http.executor.okhttp.OkHttpExecutor;
 import central.net.http.processor.impl.AddHeaderProcessor;
 import central.net.http.proxy.HttpProxyFactory;
