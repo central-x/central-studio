@@ -24,7 +24,7 @@
 
 package central.provider.graphql.organization.dto;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.provider.graphql.organization.entity.DepartmentEntity;
 import central.provider.graphql.organization.query.DepartmentQuery;
 import central.sql.query.Conditions;

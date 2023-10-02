@@ -26,7 +26,7 @@ package central.security.controller.index;
 
 import central.security.client.SessionClient;
 import central.security.client.SessionVerifier;
-import central.provider.organization.AccountProvider;
+import central.provider.graphql.organization.AccountProvider;
 import central.data.organization.Account;
 import central.lang.Stringx;
 import central.security.controller.index.param.IndexParams;

@@ -24,8 +24,6 @@
 
 package central.provider.graphql.system;
 
-import central.provider.system.DictionaryItemProvider;
-import central.provider.system.DictionaryProvider;
 import central.data.system.DictionaryItem;
 import central.data.system.DictionaryItemInput;
 import central.provider.ApplicationProperties;

@@ -24,7 +24,6 @@
 
 package central.provider.graphql.system;
 
-import central.provider.system.DatabaseProvider;
 import central.provider.scheduled.ScheduledDataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;

@@ -24,8 +24,8 @@
 
 package central.provider.scheduled.fetcher.gateway;
 
-import central.provider.gateway.GatewayFilterProvider;
-import central.provider.saas.TenantProvider;
+import central.provider.graphql.gateway.GatewayFilterProvider;
+import central.provider.graphql.saas.TenantProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
 import central.data.gateway.GatewayFilter;

@@ -24,8 +24,8 @@
 
 package central.provider.scheduled.fetcher.saas;
 
-import central.provider.saas.ApplicationProvider;
-import central.provider.saas.TenantProvider;
+import central.provider.graphql.saas.ApplicationProvider;
+import central.provider.graphql.saas.TenantProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
 import lombok.Getter;

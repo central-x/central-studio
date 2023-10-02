@@ -24,7 +24,7 @@
 
 package central.provider.graphql.system.mutation;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.data.system.DictionaryInput;
 import central.lang.Stringx;
 import central.provider.graphql.system.dto.DictionaryDTO;

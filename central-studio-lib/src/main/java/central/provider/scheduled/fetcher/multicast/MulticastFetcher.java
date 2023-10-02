@@ -24,8 +24,8 @@
 
 package central.provider.scheduled.fetcher.multicast;
 
-import central.provider.multicast.MulticastBroadcasterProvider;
-import central.provider.saas.TenantProvider;
+import central.provider.graphql.multicast.MulticastBroadcasterProvider;
+import central.provider.graphql.saas.TenantProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
 import central.data.multicast.MulticastBroadcaster;

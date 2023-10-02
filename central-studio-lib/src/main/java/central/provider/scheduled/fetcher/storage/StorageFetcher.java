@@ -25,8 +25,8 @@
 package central.provider.scheduled.fetcher.storage;
 
 import central.provider.scheduled.fetcher.DataFetcher;
-import central.provider.storage.StorageBucketProvider;
-import central.provider.saas.TenantProvider;
+import central.provider.graphql.storage.StorageBucketProvider;
+import central.provider.graphql.saas.TenantProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.data.storage.StorageBucket;
 import lombok.Getter;

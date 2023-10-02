@@ -24,10 +24,10 @@
 
 package central.provider.scheduled.fetcher.security;
 
-import central.provider.saas.TenantProvider;
+import central.provider.graphql.saas.TenantProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
-import central.provider.security.SecurityStrategyProvider;
+import central.provider.graphql.security.SecurityStrategyProvider;
 import central.data.security.SecurityStrategy;
 import lombok.Getter;
 import lombok.Setter;

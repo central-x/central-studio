@@ -24,7 +24,7 @@
 
 package central.provider.graphql.gateway.query;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.bean.Page;
 import central.provider.graphql.gateway.dto.GatewayFilterDTO;
 import central.provider.graphql.gateway.entity.GatewayFilterEntity;

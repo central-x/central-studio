@@ -24,7 +24,7 @@
 
 package central.provider.graphql.organization.mutation;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.data.organization.PostInput;
 import central.lang.Stringx;
 import central.provider.graphql.organization.dto.PostDTO;

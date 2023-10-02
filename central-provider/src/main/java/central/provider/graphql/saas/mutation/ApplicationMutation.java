@@ -24,7 +24,7 @@
 
 package central.provider.graphql.saas.mutation;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.data.saas.ApplicationInput;
 import central.lang.Assertx;
 import central.lang.Stringx;

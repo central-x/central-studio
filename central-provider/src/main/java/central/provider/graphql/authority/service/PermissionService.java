@@ -24,7 +24,7 @@
 
 package central.provider.graphql.authority.service;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.bean.Page;
 import central.lang.Stringx;
 import central.provider.graphql.authority.dto.PermissionDTO;

@@ -25,7 +25,7 @@
 package central.security.controller.sso.cas;
 
 import central.security.client.SessionVerifier;
-import central.provider.organization.AccountProvider;
+import central.provider.graphql.organization.AccountProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.bean.OptionalEnum;

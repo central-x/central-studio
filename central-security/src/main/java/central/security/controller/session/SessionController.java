@@ -25,8 +25,8 @@
 package central.security.controller.session;
 
 import central.security.client.Session;
-import central.provider.organization.AccountProvider;
-import central.provider.security.SecurityPasswordProvider;
+import central.provider.graphql.organization.AccountProvider;
+import central.provider.graphql.security.SecurityPasswordProvider;
 import central.data.organization.Account;
 import central.data.security.SecurityPassword;
 import central.lang.Stringx;

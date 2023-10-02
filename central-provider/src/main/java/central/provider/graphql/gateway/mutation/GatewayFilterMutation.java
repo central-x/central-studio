@@ -24,7 +24,7 @@
 
 package central.provider.graphql.gateway.mutation;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.data.gateway.GatewayFilterInput;
 import central.lang.Stringx;
 import central.provider.graphql.gateway.dto.GatewayFilterDTO;

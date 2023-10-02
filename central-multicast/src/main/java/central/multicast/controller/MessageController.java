@@ -25,7 +25,7 @@
 package central.multicast.controller;
 
 import central.multicast.client.body.StandardBody;
-import central.provider.multicast.MulticastMessageProvider;
+import central.provider.graphql.multicast.MulticastMessageProvider;
 import central.data.multicast.MulticastMessage;
 import central.data.multicast.MulticastMessageInput;
 import central.data.multicast.option.MessageStatus;

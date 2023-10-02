@@ -26,8 +26,8 @@ package central.provider.scheduled.fetcher.system;
 
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
-import central.provider.system.DictionaryProvider;
-import central.provider.saas.TenantProvider;
+import central.provider.graphql.system.DictionaryProvider;
+import central.provider.graphql.saas.TenantProvider;
 import central.data.system.Dictionary;
 import central.sql.query.Conditions;
 import lombok.Getter;

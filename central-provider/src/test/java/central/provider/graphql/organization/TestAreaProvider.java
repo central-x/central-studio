@@ -24,7 +24,6 @@
 
 package central.provider.graphql.organization;
 
-import central.provider.organization.AreaProvider;
 import central.bean.Page;
 import central.data.organization.Area;
 import central.data.organization.AreaInput;

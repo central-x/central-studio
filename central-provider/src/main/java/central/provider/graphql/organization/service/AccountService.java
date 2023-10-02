@@ -24,7 +24,7 @@
 
 package central.provider.graphql.organization.service;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.bean.Page;
 import central.provider.ApplicationProperties;
 import central.provider.graphql.organization.dto.AccountDTO;

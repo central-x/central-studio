@@ -24,7 +24,6 @@
 
 package central.provider.graphql.saas;
 
-import central.provider.saas.ApplicationModuleProvider;
 import central.data.saas.ApplicationModule;
 import central.data.saas.ApplicationModuleInput;
 import central.provider.ApplicationProperties;

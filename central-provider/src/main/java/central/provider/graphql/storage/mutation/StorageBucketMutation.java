@@ -24,7 +24,7 @@
 
 package central.provider.graphql.storage.mutation;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.data.storage.StorageBucketInput;
 import central.lang.Stringx;
 import central.provider.graphql.storage.dto.StorageBucketDTO;

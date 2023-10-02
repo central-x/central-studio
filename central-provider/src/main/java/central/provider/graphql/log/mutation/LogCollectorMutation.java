@@ -24,7 +24,7 @@
 
 package central.provider.graphql.log.mutation;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.data.log.LogCollectorInput;
 import central.lang.Assertx;
 import central.lang.Stringx;

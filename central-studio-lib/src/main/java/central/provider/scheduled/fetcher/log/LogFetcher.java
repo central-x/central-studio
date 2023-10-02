@@ -24,9 +24,9 @@
 
 package central.provider.scheduled.fetcher.log;
 
-import central.provider.log.LogCollectorProvider;
-import central.provider.log.LogFilterProvider;
-import central.provider.log.LogStorageProvider;
+import central.provider.graphql.log.LogCollectorProvider;
+import central.provider.graphql.log.LogFilterProvider;
+import central.provider.graphql.log.LogStorageProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
 import central.data.log.LogCollector;

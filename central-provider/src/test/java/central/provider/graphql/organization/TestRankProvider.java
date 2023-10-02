@@ -24,7 +24,6 @@
 
 package central.provider.graphql.organization;
 
-import central.provider.organization.RankProvider;
 import central.data.organization.Rank;
 import central.data.organization.RankInput;
 import central.data.organization.option.AreaType;

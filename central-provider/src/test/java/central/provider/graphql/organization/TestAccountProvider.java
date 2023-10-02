@@ -24,7 +24,6 @@
 
 package central.provider.graphql.organization;
 
-import central.provider.organization.AccountProvider;
 import central.bean.Page;
 import central.data.organization.Account;
 import central.data.organization.AccountInput;

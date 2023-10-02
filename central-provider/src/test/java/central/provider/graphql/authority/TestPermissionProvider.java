@@ -24,7 +24,6 @@
 
 package central.provider.graphql.authority;
 
-import central.provider.authority.PermissionProvider;
 import central.data.authority.Permission;
 import central.data.authority.PermissionInput;
 import central.data.authority.option.MenuType;

@@ -26,7 +26,7 @@ package central.storage.controller;
 
 import central.storage.client.data.Multipart;
 import central.storage.client.Permission;
-import central.provider.storage.StorageObjectProvider;
+import central.provider.graphql.storage.StorageObjectProvider;
 import central.data.storage.StorageObject;
 import central.data.storage.StorageObjectInput;
 import central.lang.Assertx;

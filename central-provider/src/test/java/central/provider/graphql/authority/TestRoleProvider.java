@@ -24,8 +24,7 @@
 
 package central.provider.graphql.authority;
 
-import central.provider.organization.PostProvider;
-import central.provider.authority.RoleProvider;
+import central.provider.graphql.organization.PostProvider;
 import central.data.organization.option.AreaType;
 import central.data.authority.Role;
 import central.data.authority.RoleInput;

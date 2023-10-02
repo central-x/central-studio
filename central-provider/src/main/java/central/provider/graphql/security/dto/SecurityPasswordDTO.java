@@ -24,7 +24,7 @@
 
 package central.provider.graphql.security.dto;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.provider.graphql.security.entity.SecurityPasswordEntity;
 import central.starter.graphql.annotation.GraphQLGetter;

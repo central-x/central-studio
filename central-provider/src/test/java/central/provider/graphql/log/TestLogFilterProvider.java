@@ -24,7 +24,6 @@
 
 package central.provider.graphql.log;
 
-import central.provider.log.LogFilterProvider;
 import central.data.log.LogFilter;
 import central.data.log.LogFilterInput;
 import central.data.log.LogPredicate;

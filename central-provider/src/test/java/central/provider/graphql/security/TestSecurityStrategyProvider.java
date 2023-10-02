@@ -24,7 +24,6 @@
 
 package central.provider.graphql.security;
 
-import central.provider.security.SecurityStrategyProvider;
 import central.data.security.SecurityStrategy;
 import central.data.security.SecurityStrategyInput;
 import central.lang.reflect.TypeRef;

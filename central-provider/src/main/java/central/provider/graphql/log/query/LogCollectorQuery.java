@@ -24,7 +24,7 @@
 
 package central.provider.graphql.log.query;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.bean.Page;
 import central.lang.Assertx;
 import central.provider.graphql.log.dto.LogCollectorDTO;

@@ -24,7 +24,7 @@
 
 package central.provider.graphql.system.dto;
 
-import central.provider.DTO;
+import central.provider.graphql.DTO;
 import central.provider.graphql.organization.dto.AccountDTO;
 import central.provider.graphql.system.entity.DictionaryItemEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
