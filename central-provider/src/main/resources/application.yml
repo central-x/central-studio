@@ -22,3 +22,6 @@ studio:
   provider:
     code: central-provider
     key: central-provider-key
+    fetchers:
+      - log
+      - saas

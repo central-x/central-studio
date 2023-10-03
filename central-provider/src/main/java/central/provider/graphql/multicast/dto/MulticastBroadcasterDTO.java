@@ -24,11 +24,12 @@
 
 package central.provider.graphql.multicast.dto;
 
-import central.provider.scheduled.ScheduledDataContext;
-import central.provider.scheduled.fetcher.DataFetcherType;
 import central.data.saas.Application;
 import central.provider.graphql.multicast.entity.MulticastBroadcasterEntity;
 import central.provider.graphql.organization.dto.AccountDTO;
+import central.provider.scheduled.ScheduledDataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;
@@ -57,7 +58,7 @@ public class MulticastBroadcasterDTO extends MulticastBroadcasterEntity {
      */
     @GraphQLGetter
     public Application getApplication(@Autowired ScheduledDataContext context) {
-        var container = context.getData(DataFetcherType.SAAS);
+        SaasContainer container = context.getData(DataFetcherType.SAAS);
         if (container == null) {
             return null;
         }
