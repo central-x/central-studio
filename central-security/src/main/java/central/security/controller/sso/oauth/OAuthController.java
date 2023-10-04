@@ -24,6 +24,7 @@
 
 package central.security.controller.sso.oauth;
 
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.security.client.SessionVerifier;
 import central.provider.graphql.organization.AccountProvider;
 import central.provider.scheduled.ScheduledDataContext;
@@ -140,7 +141,8 @@ public class OAuthController {
         }
 
 
-        var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(params.getClientId());
+        SaasContainer container = this.context.getData(DataFetcherType.SAAS);
+        var application = container.getApplicationByCode(params.getClientId());
         if (application == null) {
             // 此应用不是已登记的应用
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用标识[client_id]无效");
@@ -345,7 +347,8 @@ public class OAuthController {
 
         // 组装授权信息
         var account = this.provider.findById(sessionJwt.getSubject());
-        var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(transaction.getClientId());
+        SaasContainer container = this.context.getData(DataFetcherType.SAAS);
+        var application = container.getApplicationByCode(transaction.getClientId());
         var scopes = transaction.getScopes();
 
         var vo = new GetScopeVO();
@@ -440,7 +443,8 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权码[code]与应用标识[client_id]不符");
         }
 
-        var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(code.getClientId());
+        SaasContainer container = this.context.getData(DataFetcherType.SAAS);
+        var application = container.getApplicationByCode(code.getClientId());
         if (application == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用标识[client_id]无效");
         }
@@ -582,7 +586,8 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: " + ex.getLocalizedMessage());
         }
 
-        var application = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(Listx.getFirstOrNull(accessToken.getAudience()));
+        SaasContainer container = this.context.getData(DataFetcherType.SAAS);
+        var application = container.getApplicationByCode(Listx.getFirstOrNull(accessToken.getAudience()));
         if (application == null || !application.getEnabled()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid OAuth access token: Invalid client '" + Listx.getFirstOrNull(accessToken.getAudience()) + "'");
         }

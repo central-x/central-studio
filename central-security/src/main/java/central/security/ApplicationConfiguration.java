@@ -24,29 +24,15 @@
 
 package central.security;
 
-import central.security.client.SessionClient;
-import central.security.client.SessionVerifier;
-import central.provider.scheduled.DataContext;
-import central.provider.scheduled.ScheduledDataContext;
-import central.provider.scheduled.SpringBeanSupplier;
-import central.provider.scheduled.event.DataRefreshEvent;
-import central.provider.scheduled.fetcher.DataFetcherType;
-import central.net.http.executor.okhttp.OkHttpExecutor;
-import central.net.http.processor.impl.SetHeaderProcessor;
-import central.net.http.processor.impl.TransmitForwardedProcessor;
-import central.net.http.processor.impl.TransmitHeaderProcessor;
-import central.net.http.proxy.HttpProxyFactory;
-import central.net.http.proxy.contract.spring.SpringContract;
 import central.pluglet.PlugletFactory;
 import central.pluglet.binder.SpringBeanFieldBinder;
 import central.pluglet.lifecycle.SpringLifeCycleProcess;
+import central.provider.EnableCentralProvider;
+import central.security.client.SessionVerifier;
 import central.security.signer.KeyPair;
-import central.starter.graphql.stub.ProviderClient;
 import central.util.cache.CacheRepository;
 import central.util.cache.memory.MemoryCacheRepository;
 import central.util.cache.redis.RedisCacheRepository;
-import central.web.XForwardedHeaders;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -61,48 +47,10 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/10/19
  */
 @Configuration
+@EnableCentralProvider
+@EnableCentralSecurity
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
-    /**
-     * 其它数据用的 HTTP 客户端
-     */
-    @Bean
-    public ProviderClient providerClient() {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new TransmitForwardedProcessor())
-                .baseUrl("http://127.0.0.1:3200/provider")
-                .target(ProviderClient.class);
-    }
-
-    /**
-     * 租户用的 HTTP 客户端
-     */
-    @Bean
-    public ProviderClient masterProviderClient() {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new TransmitForwardedProcessor())
-                .processor(new SetHeaderProcessor(XForwardedHeaders.TENANT, "master"))
-                .baseUrl("http://127.0.0.1:3200/provider")
-                .target(ProviderClient.class);
-    }
-
-    /**
-     * 热数据容器
-     */
-    @Bean(initMethod = "initialized", destroyMethod = "destroy")
-    public DataContext dataContext(ApplicationContext applicationContext) {
-        var context = new ScheduledDataContext(new SpringBeanSupplier(applicationContext));
-        context.addFetcher(DataFetcherType.SAAS);
-        context.addFetcher(DataFetcherType.SECURITY);
-        context.addObserver(event -> {
-            if (event instanceof ScheduledDataContext.DataRefreshedEvent refreshed) {
-                applicationContext.publishEvent(new DataRefreshEvent<>(refreshed.getFetcher().getCode(), refreshed.getContainer()));
-            }
-        });
-        return context;
-    }
 
     /**
      * 签发会话时使用的安全密钥
@@ -110,16 +58,6 @@ public class ApplicationConfiguration {
     @Bean
     public KeyPair keyPair() {
         return Signerx.RSA.generateKeyPair();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(SessionClient.class)
-    public SessionClient sessionClient(@Value("${server.port}") int port) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new TransmitHeaderProcessor(header -> header.toLowerCase().startsWith("x-forwarded-")))
-                .baseUrl("http://127.0.0.1:" + port + "/security")
-                .target(SessionClient.class);
     }
 
     @Bean

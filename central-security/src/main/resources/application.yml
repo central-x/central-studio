@@ -25,3 +25,7 @@ central:
       path: central
       code: ${spring.application.name}
       secret: ${spring.application.secret}
+  provider:
+    fetchers:
+      - SAAS
+      - SECURITY

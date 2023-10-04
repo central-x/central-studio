@@ -24,6 +24,7 @@
 
 package central.security.controller.sso.cas;
 
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.security.client.SessionVerifier;
 import central.provider.graphql.organization.AccountProvider;
 import central.provider.scheduled.DataContext;
@@ -142,7 +143,8 @@ public class CasController {
         }
 
         // 验证 service 是否可信
-        var application = this.context.getData(DataFetcherType.SAAS).getApplications().stream()
+        SaasContainer container = this.context.getData(DataFetcherType.SAAS);
+        var application = container.getApplications().stream()
                 .filter(it -> Stringx.addSuffix(params.getService(), "/").startsWith(Stringx.addSuffix(it.getUrl() + it.getContextPath(), "/")))
                 .findFirst().orElse(null);
         if (application == null) {
@@ -214,7 +216,8 @@ public class CasController {
         }
 
         // 验证 service 是否可信
-        var application = this.context.getData(DataFetcherType.SAAS).getApplications().stream()
+        SaasContainer container = this.context.getData(DataFetcherType.SAAS);
+        var application = container.getApplications().stream()
                 .filter(it -> Stringx.addSuffix(params.getService(), "/").startsWith(Stringx.addSuffix(it.getUrl() + it.getContextPath(), "/")))
                 .findFirst().orElse(null);
         if (application == null) {
@@ -338,9 +341,9 @@ public class CasController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "中央认证服务（CAS）已禁用");
         }
 
-
         // 验证 service 是否可信
-        var application = this.context.getData(DataFetcherType.SAAS).getApplications().stream()
+        SaasContainer container = this.context.getData(DataFetcherType.SAAS);
+        var application = container.getApplications().stream()
                 .filter(it -> Stringx.addSuffix(params.getService(), "/").startsWith(Stringx.addSuffix(it.getUrl() + it.getContextPath(), "/")))
                 .findFirst().orElse(null);
         if (application == null) {
@@ -384,7 +387,7 @@ public class CasController {
             // 因此这里使用了线程池去发送注销会话的请求
             var tickets = this.tickets.getTicketBySession(request.getTenantCode(), sessionJwt);
             for (var ticket : tickets) {
-                var app = this.context.getData(DataFetcherType.SAAS).getApplicationByCode(ticket.getCode());
+                var app = container.getApplicationByCode(ticket.getCode());
                 if (app == null) {
                     continue;
                 }

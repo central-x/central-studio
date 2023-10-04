@@ -33,6 +33,7 @@ import central.provider.scheduled.DataContext;
 import central.provider.scheduled.ScheduledDataContext;
 import central.provider.scheduled.SpringBeanSupplier;
 import central.provider.scheduled.event.DataRefreshEvent;
+import central.starter.graphql.stub.EnableGraphQLStub;
 import central.starter.graphql.stub.ProviderClient;
 import central.web.XForwardedHeaders;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -49,6 +50,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2023/09/10
  */
 @Configuration
+@EnableGraphQLStub(packages = "central.provider.graphql")
 @EnableConfigurationProperties(ProviderProperties.class)
 public class ProviderConfiguration {
     /**
@@ -59,7 +61,7 @@ public class ProviderConfiguration {
         return HttpProxyFactory.builder(OkHttpExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new TransmitForwardedProcessor())
-                .baseUrl(properties.getUrl())
+                .baseUrl(properties.getUrl() + "/provider")
                 .target(ProviderClient.class);
     }
 
@@ -72,7 +74,7 @@ public class ProviderConfiguration {
                 .contact(new SpringContract())
                 .processor(new TransmitForwardedProcessor())
                 .processor(new SetHeaderProcessor(XForwardedHeaders.TENANT, "master"))
-                .baseUrl(properties.getUrl())
+                .baseUrl(properties.getUrl() + "/provider")
                 .target(ProviderClient.class);
     }
 
