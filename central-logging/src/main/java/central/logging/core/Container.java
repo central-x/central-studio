@@ -122,7 +122,7 @@ public class Container implements ApplicationContextAware, DisposableBean, Gener
     @Override
     public void onApplicationEvent(@Nonnull ApplicationEvent event) {
         if (event instanceof DataRefreshEvent<?> refreshEvent) {
-            if (!Objects.equals(refreshEvent.getValue(), DataFetcherType.LOG.getCode())) {
+            if (!Objects.equals(refreshEvent.getValue(), DataFetcherType.LOG.getValue())) {
                 return;
             }
             var container = (LogContainer) refreshEvent.getContainer();

@@ -7,3 +7,9 @@ spring:
   application:
     name: central-provider
     version: @{ project.version }@
+
+central:
+  provider:
+    fetchers:
+      - SAAS
+      - LOG
