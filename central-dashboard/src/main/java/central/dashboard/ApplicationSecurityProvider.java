@@ -27,6 +27,7 @@ package central.dashboard;
 import central.starter.security.SecurityProvider;
 import lombok.Data;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.springframework.stereotype.Component;
 
 /**
  * Application Security Provider
@@ -37,6 +38,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
  * @since 2023/05/12
  */
 @Data
+@Component
 public class ApplicationSecurityProvider implements SecurityProvider {
     @Override
     public void onReceiveAuthenticationToken(String token) {

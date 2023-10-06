@@ -24,23 +24,11 @@
 
 package central.dashboard;
 
-import central.api.scheduled.DataContext;
-import central.api.scheduled.ScheduledDataContext;
-import central.api.scheduled.SpringBeanSupplier;
-import central.api.scheduled.event.DataRefreshEvent;
-import central.api.scheduled.fetcher.DataFetcherType;
-import central.net.http.executor.okhttp.OkHttpExecutor;
-import central.net.http.processor.impl.SetHeaderProcessor;
-import central.net.http.processor.impl.TransmitForwardedProcessor;
-import central.net.http.proxy.HttpProxyFactory;
-import central.net.http.proxy.contract.spring.SpringContract;
-import central.starter.graphql.stub.EnableGraphQLStub;
-import central.starter.graphql.stub.ProviderClient;
+import central.logging.EnableCentralLogging;
+import central.provider.EnableCentralProvider;
+import central.security.EnableCentralSecurity;
 import central.starter.security.EnableSecurity;
-import central.web.XForwardedHeaders;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -51,47 +39,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableSecurity
-@EnableGraphQLStub(packages = "central.api")
+@EnableCentralLogging
+@EnableCentralProvider
+@EnableCentralSecurity
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
-    /**
-     * 其它数据用的 HTTP 客户端
-     */
-    @Bean
-    public ProviderClient providerClient() {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new TransmitForwardedProcessor())
-                .baseUrl("http://127.0.0.1:3200/provider")
-                .target(ProviderClient.class);
-    }
 
-    /**
-     * 租户用的 HTTP 客户端
-     */
-    @Bean
-    public ProviderClient masterProviderClient() {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new TransmitForwardedProcessor())
-                .processor(new SetHeaderProcessor(XForwardedHeaders.TENANT, "master"))
-                .baseUrl("http://127.0.0.1:3200/provider")
-                .target(ProviderClient.class);
-    }
-
-    /**
-     * 热数据容器
-     */
-    @Bean(initMethod = "initialized", destroyMethod = "destroy")
-    public DataContext dataContext(ApplicationContext applicationContext) {
-        var context = new ScheduledDataContext(new SpringBeanSupplier(applicationContext));
-        context.addFetcher(DataFetcherType.SAAS);
-        context.addFetcher(DataFetcherType.SECURITY);
-        context.addObserver(event -> {
-            if (event instanceof ScheduledDataContext.DataRefreshedEvent refreshed) {
-                applicationContext.publishEvent(new DataRefreshEvent<>(refreshed.getFetcher().getCode(), refreshed.getContainer()));
-            }
-        });
-        return context;
-    }
 }

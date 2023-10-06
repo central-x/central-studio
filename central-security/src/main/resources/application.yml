@@ -27,5 +27,5 @@ central:
       secret: ${spring.application.secret}
   provider:
     fetchers:
-      - SAAS
-      - SECURITY
+      - saas
+      - security
