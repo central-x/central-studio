@@ -106,7 +106,7 @@ public class Container implements DisposableBean, GenericApplicationListener {
     @Override
     public void onApplicationEvent(@Nonnull ApplicationEvent event) {
         if (event instanceof DataRefreshEvent<?> refreshEvent) {
-            if (!Objects.equals(refreshEvent.getValue(), DataFetcherType.MULTICAST.getCode())) {
+            if (!Objects.equals(refreshEvent.getValue(), DataFetcherType.MULTICAST.getValue())) {
                 return;
             }
 
