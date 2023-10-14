@@ -30,6 +30,7 @@ import central.gateway.core.filter.GlobalFilter;
 import central.gateway.core.filter.StandardFilterChain;
 import central.gateway.core.attribute.ExchangeAttributes;
 import central.lang.Stringx;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.web.XForwardedHeaders;
 import central.starter.web.reactive.extension.ServerWebExchangex;
 import central.util.Objectx;
@@ -192,7 +193,8 @@ public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordere
             return Mono.error(ex);
         }
 
-        var tenant = this.dataContext.getData(DataFetcherType.SAAS).getTenantByCode(tenantCode);
+        SaasContainer container = this.dataContext.getData(DataFetcherType.SAAS);
+        var tenant = container.getTenantByCode(tenantCode);
         if (tenant == null) {
             log.info("租户[{}]不存在", tenantCode);
             return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("Invalid tenant '{}'", tenantCode)));

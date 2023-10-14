@@ -1,2 +1,8 @@
 server:
   port: 3000
+
+central:
+  provider:
+    fetchers:
+      - saas
+      - gateway
