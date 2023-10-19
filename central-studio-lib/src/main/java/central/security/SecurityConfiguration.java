@@ -29,6 +29,8 @@ import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
 import central.security.client.SessionClient;
+import central.starter.security.SecurityProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,5 +57,14 @@ public class SecurityConfiguration {
                 .processor(new TransmitForwardedProcessor())
                 .baseUrl(properties.getUrl())
                 .target(SessionClient.class);
+    }
+
+    /**
+     * 应用校验器
+     */
+    @Bean
+    @ConditionalOnClass(SecurityProvider.class)
+    public SecurityProvider securityProvider(){
+        return new DefaultSecurityProvider();
     }
 }
