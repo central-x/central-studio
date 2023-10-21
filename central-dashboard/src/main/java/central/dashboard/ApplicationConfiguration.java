@@ -38,10 +38,10 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/11/17
  */
 @Configuration
-@EnableSecurity
-@EnableCentralLogging
-@EnableCentralProvider
-@EnableCentralSecurity
+@EnableSecurity // 启用 Shiro
+@EnableCentralLogging // 对接日志中心
+@EnableCentralProvider // 对接数据服务中心
+@EnableCentralSecurity // 对接认证中心
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
 

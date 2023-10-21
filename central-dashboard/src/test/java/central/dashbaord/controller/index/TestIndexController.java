@@ -30,7 +30,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Index Controller Test Cases
@@ -48,7 +53,14 @@ public class TestIndexController {
      * @see IndexController#index
      */
     @Test
-    public void testIndex() {
+    public void testIndex(@Autowired MockMvc mvc) throws Exception {
+        // 未登录，重定向到统一认证
+        var request = MockMvcRequestBuilders.get("/");
+
+        mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION));
+
 
     }
 
@@ -56,7 +68,8 @@ public class TestIndexController {
      * @see IndexController#getAccount
      */
     @Test
-    public void testGetAccount(@Autowired MockMvc mvc) {
-
+    public void testGetAccount(@Autowired MockMvc mvc) throws Exception {
+        var loginRequest = MockMvcRequestBuilders.post();
+        mvc.perform(loginRequest);
     }
 }
