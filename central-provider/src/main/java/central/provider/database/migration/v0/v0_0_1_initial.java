@@ -536,6 +536,19 @@ public class v0_0_1_initial extends Migration {
         // 初始化应用信息
         var applicationMapper = executor.getMapper(ApplicationMapper.class);
 
+        // 控制面板
+        var dashboardApp = new ApplicationEntity();
+        dashboardApp.setId("y9llwWofojZAtx71JP1");
+        dashboardApp.setCode("central-dashboard");
+        dashboardApp.setName("控制中心");
+        dashboardApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
+        dashboardApp.setUrl("http://127.0.0.1:3100");
+        dashboardApp.setContextPath("/dashboard");
+        dashboardApp.setSecret("glngxOUCye6fndsaiQI");
+        dashboardApp.setEnabled(Boolean.TRUE);
+        dashboardApp.setRemark("用于提供套件中所有应用的管理界面");
+        dashboardApp.updateCreator("syssa");
+
         // Saas中心
         var saasApp = new ApplicationEntity();
         saasApp.setId("UFQG4uh6DtrT4AgLA4Z");
@@ -555,7 +568,7 @@ public class v0_0_1_initial extends Migration {
         securityApp.setCode("central-security");
         securityApp.setName("认证中心");
         securityApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        securityApp.setUrl("http://127.0.0.1:3100");
+        securityApp.setUrl("http://127.0.0.1:3200");
         securityApp.setContextPath("/security");
         securityApp.setSecret("AkJSi2kmH7vSO5lJcvY");
         securityApp.setEnabled(Boolean.TRUE);
@@ -581,7 +594,6 @@ public class v0_0_1_initial extends Migration {
         multicastApp.setCode("central-multicast");
         multicastApp.setName("广播中心");
         multicastApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        storageApp.setUrl("http://127.0.0.1:3500");
         multicastApp.setUrl("http://127.0.0.1:3600");
         multicastApp.setContextPath("/multicast");
         multicastApp.setSecret("QHO85BzFQq8hqDzREJ");
@@ -595,7 +607,6 @@ public class v0_0_1_initial extends Migration {
         gatewayApp.setCode("central-gateway");
         gatewayApp.setName("网关中心");
         gatewayApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        storageApp.setUrl("http://127.0.0.1:3500");
         gatewayApp.setUrl("http://127.0.0.1:3000");
         gatewayApp.setContextPath("/gateway");
         gatewayApp.setSecret("TT6cdfpHIPastoipuDg");
@@ -603,7 +614,7 @@ public class v0_0_1_initial extends Migration {
         gatewayApp.setRemark("用于统一管理网关");
         gatewayApp.updateCreator("syssa");
 
-        applicationMapper.insertBatch(List.of(saasApp, securityApp, storageApp, multicastApp, gatewayApp));
+        applicationMapper.insertBatch(List.of(dashboardApp, saasApp, securityApp, storageApp, multicastApp, gatewayApp));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 初始化主数据库信息
@@ -645,6 +656,14 @@ public class v0_0_1_initial extends Migration {
         // 初始化主租户的租用关系
         var relMapper = executor.getMapper(TenantApplicationMapper.class);
 
+        var dashboardAppRel = new TenantApplicationEntity();
+        dashboardAppRel.setId("95AELSyhLQy5kDheAxQ");
+        dashboardAppRel.setTenantId(masterTenant.getId());
+        dashboardAppRel.setApplicationId(dashboardApp.getId());
+        dashboardAppRel.setEnabled(Boolean.TRUE);
+        dashboardAppRel.setPrimary(Boolean.FALSE);
+        dashboardAppRel.updateCreator("syssa");
+
         var tenantAppRel = new TenantApplicationEntity();
         tenantAppRel.setId("2B4wrNPDL80tfvSE8ve");
         tenantAppRel.setTenantId(masterTenant.getId());
@@ -685,7 +704,7 @@ public class v0_0_1_initial extends Migration {
         gatewayAppRel.setPrimary(Boolean.FALSE);
         gatewayAppRel.updateCreator("syssa");
 
-        relMapper.insertBatch(List.of(tenantAppRel, securityAppRel, storageAppRel, multicastAppRel, gatewayAppRel));
+        relMapper.insertBatch(List.of(dashboardAppRel, tenantAppRel, securityAppRel, storageAppRel, multicastAppRel, gatewayAppRel));
     }
 
     @Override
