@@ -41,7 +41,7 @@ public interface SessionClient {
      * <p>
      * 客户端可以通过公钥自行验证会话的真实性。同时客户端需要定期通过 {@link #verify} 方法来验证会话是否过期
      */
-    @GetMapping("/api/sessions/pubkey")
+    @GetMapping("/security/api/sessions/pubkey")
     String getPublicKey();
 
     /**
@@ -56,7 +56,7 @@ public interface SessionClient {
      * @param claims   会话附加声明
      * @return 会话（JWT）
      */
-    @PostMapping(value = "/api/sessions/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/security/api/sessions/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     String login(@RequestPart String account, @RequestPart String password, @RequestPart String secret, @RequestPart(required = false) Map<String, Object> claims);
 
 
@@ -70,7 +70,7 @@ public interface SessionClient {
      * @param claims 会话附加声明
      * @return 会话（JWT）
      */
-    @PostMapping(value = "/api/sessions/login/token", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/security/api/sessions/login/token", consumes = MediaType.APPLICATION_JSON_VALUE)
     String loginByToken(@RequestPart String token, @RequestPart String secret, @RequestPart(required = false) Map<String, Object> claims);
 
     /**
@@ -81,7 +81,7 @@ public interface SessionClient {
      * @param token 会话凭证
      * @return 是否有效
      */
-    @PostMapping(value = "/api/sessions/verify", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/security/api/sessions/verify", consumes = MediaType.APPLICATION_JSON_VALUE)
     boolean verify(@RequestPart String token);
 
     /**
@@ -89,7 +89,7 @@ public interface SessionClient {
      *
      * @param token 会话凭证
      */
-    @GetMapping("/api/sessions/logout")
+    @GetMapping("/security/api/sessions/logout")
     void logout(@RequestParam String token);
 
     /**
@@ -97,6 +97,6 @@ public interface SessionClient {
      *
      * @param accountId 用户主键
      */
-    @PostMapping(value = "/api/sessions/invalid", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/security/api/sessions/invalid", consumes = MediaType.APPLICATION_JSON_VALUE)
     void invalid(@RequestPart String accountId);
 }

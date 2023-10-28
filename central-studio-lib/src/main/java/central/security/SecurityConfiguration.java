@@ -59,12 +59,15 @@ public class SecurityConfiguration {
                 .target(SessionClient.class);
     }
 
-    /**
-     * 应用校验器
-     */
-    @Bean
+    @Configuration
     @ConditionalOnClass(SecurityProvider.class)
-    public SecurityProvider securityProvider(){
-        return new DefaultSecurityProvider();
+    public static class SecurityStarterConfiguration {
+        /**
+         * 应用校验器
+         */
+        @Bean
+        public SecurityProvider securityProvider(){
+            return new DefaultSecurityProvider();
+        }
     }
 }
