@@ -24,13 +24,15 @@
 
 package central.dashboard.controller.index;
 
-import central.security.client.Session;
 import central.dashboard.service.organization.AccountService;
 import central.data.organization.Account;
+import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
 
@@ -46,20 +48,24 @@ import org.springframework.web.servlet.view.InternalResourceView;
 @RequiresAuthentication
 public class IndexController {
 
+    @Setter(onMethod_ = @Autowired)
+    private AccountService accountService;
+
     /**
      * 返回首页静态页面
      */
     @GetMapping("/")
-    public View index() {
+    public View index(@RequestAttribute String accountId) {
         return new InternalResourceView("index.html");
     }
 
     /**
      * 获取当前用户信息
      */
+    @ResponseBody
     @GetMapping("/api/account")
-    public Account getAccount(@RequestAttribute Session session, AccountService service) {
-        return service.findById(session.getAccountId());
+    public Account getAccount(@RequestAttribute String accountId) {
+        return accountService.findById(accountId);
     }
 
 }
