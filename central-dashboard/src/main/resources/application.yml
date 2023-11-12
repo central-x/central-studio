@@ -25,6 +25,11 @@ central:
       path: central
       code: ${spring.application.name}
       secret: ${spring.application.secret}
+  security:
+    unauthorized-url: /security/
+    logout-url: /security/logout
+
+studio:
   provider:
     fetchers:
       - saas
