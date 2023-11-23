@@ -42,7 +42,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
 import java.io.Serial;
 
 /**
@@ -102,7 +101,7 @@ public class StorageBucketEntity extends ModifiableEntity implements Codeable, A
     private String remark;
 
     @Label("初始化参数")
-    @Nonnull
+    @NotNull
     @Size(min = 1, max = 5 * 1024 * 1024)
     private String params;
 

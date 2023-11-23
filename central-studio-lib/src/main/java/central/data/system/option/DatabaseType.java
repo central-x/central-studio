@@ -26,10 +26,10 @@ package central.data.system.option;
 
 import central.bean.OptionalEnum;
 import central.lang.Arrayx;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 /**

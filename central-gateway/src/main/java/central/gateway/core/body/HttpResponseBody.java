@@ -24,12 +24,11 @@
 
 package central.gateway.core.body;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Flux;
-
-import javax.annotation.Nonnull;
 
 /**
  * 响应体

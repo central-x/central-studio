@@ -29,9 +29,9 @@ import central.bean.Codeable;
 import central.bean.Remarkable;
 import central.bean.Tenantable;
 import central.data.multicast.MulticastBroadcasterInput;
-import central.data.storage.StorageBucketInput;
 import central.sql.data.ModifiableEntity;
 import central.validation.Label;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -43,7 +43,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
 import java.io.Serial;
 
 /**
@@ -103,7 +102,7 @@ public class MulticastBroadcasterEntity extends ModifiableEntity implements Code
     private String remark;
 
     @Label("初始化参数")
-    @Nonnull
+    @NotNull
     @Size(min = 1, max = 5 * 1024 * 1024)
     private String params;
 
@@ -112,7 +111,7 @@ public class MulticastBroadcasterEntity extends ModifiableEntity implements Code
     @Size(min = 1, max = 32)
     private String tenantCode;
 
-    public void fromInput(MulticastBroadcasterInput input) {
+    public void fromInput(@Nonnull MulticastBroadcasterInput input) {
         this.setId(input.getId());
         this.setApplicationId(input.getApplicationId());
         this.setCode(input.getCode());

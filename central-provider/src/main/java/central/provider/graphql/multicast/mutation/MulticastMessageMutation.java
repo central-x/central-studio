@@ -37,6 +37,7 @@ import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -73,8 +73,8 @@ public class MulticastMessageMutation {
      */
     @GraphQLFetcher
     public @Nonnull MulticastMessageDTO insert(@RequestParam @Validated({Insert.class, Default.class}) MulticastMessageInput input,
-                                                   @RequestParam String operator,
-                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                               @RequestParam String operator,
+                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var entity = new MulticastMessageEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);

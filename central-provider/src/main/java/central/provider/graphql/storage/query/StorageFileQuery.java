@@ -24,8 +24,8 @@
 
 package central.provider.graphql.storage.query;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
+import central.provider.graphql.DTO;
 import central.provider.graphql.storage.dto.StorageFileDTO;
 import central.provider.graphql.storage.entity.StorageFileEntity;
 import central.provider.graphql.storage.mapper.StorageFileMapper;
@@ -35,14 +35,14 @@ import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -69,7 +69,7 @@ public class StorageFileQuery {
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, StorageFileDTO> batchLoader(@RequestParam List<String> ids,
-                                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.mapper.findBy(Conditions.of(StorageFileEntity.class).in(StorageFileEntity::getId, ids).eq(StorageFileEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, StorageFileDTO.class))
@@ -84,7 +84,7 @@ public class StorageFileQuery {
      */
     @GraphQLFetcher
     public @Nullable StorageFileDTO findById(@RequestParam String id,
-                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getId, id).eq(StorageFileEntity::getTenantCode, tenant));
         return DTO.wrap(entity, StorageFileDTO.class);
     }

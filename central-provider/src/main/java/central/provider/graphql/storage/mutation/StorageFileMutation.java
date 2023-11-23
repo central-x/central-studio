@@ -37,6 +37,7 @@ import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,8 +74,8 @@ public class StorageFileMutation {
      */
     @GraphQLFetcher
     public @Nonnull StorageFileDTO insert(@RequestParam @Validated({Insert.class, Default.class}) StorageFileInput input,
-                                            @RequestParam String operator,
-                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                          @RequestParam String operator,
+                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getCode, input.getCode()).eq(StorageFileEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -99,8 +99,8 @@ public class StorageFileMutation {
      */
     @GraphQLFetcher
     public @Nonnull List<StorageFileDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<StorageFileInput> inputs,
-                                                       @RequestParam String operator,
-                                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                     @RequestParam String operator,
+                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -113,8 +113,8 @@ public class StorageFileMutation {
      */
     @GraphQLFetcher
     public @Nonnull StorageFileDTO update(@RequestParam @Validated({Update.class, Default.class}) StorageFileInput input,
-                                            @RequestParam String operator,
-                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                          @RequestParam String operator,
+                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getId, input.getId()).eq(StorageFileEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -144,8 +144,8 @@ public class StorageFileMutation {
      */
     @GraphQLFetcher
     public @Nonnull List<StorageFileDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<StorageFileInput> inputs,
-                                                       @RequestParam String operator,
-                                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                     @RequestParam String operator,
+                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 

@@ -31,6 +31,7 @@ import central.data.log.LogCollectorInput;
 import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.TableRelation;
 import central.validation.Label;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.*;
@@ -39,7 +40,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
 import java.io.Serial;
 
 /**
@@ -93,11 +93,11 @@ public class LogCollectorEntity extends ModifiableEntity implements Codeable, Av
     private String remark;
 
     @Label("初始化参数")
-    @Nonnull
+    @NotNull
     @Size(min = 1, max = 5 * 1024 * 1024)
     private String params;
 
-    public void fromInput(LogCollectorInput input) {
+    public void fromInput(@Nonnull LogCollectorInput input) {
         this.setId(input.getId());
         this.setCode(input.getCode());
         this.setName(input.getName());

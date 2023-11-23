@@ -30,7 +30,6 @@ import central.validation.group.Update;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-import javax.annotation.Nonnull;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -85,7 +84,7 @@ public class LogCollectorInput implements Serializable {
     private String remark;
 
     @Label("初始化参数")
-    @Nonnull
+    @NotNull
     @Size(min = 1, max = 5 * 1024 * 1024)
     private String params;
 }

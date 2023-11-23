@@ -37,6 +37,8 @@ import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +46,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

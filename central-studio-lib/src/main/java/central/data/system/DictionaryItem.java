@@ -25,6 +25,7 @@
 package central.data.system;
 
 import central.bean.Codeable;
+import central.bean.Nonnull;
 import central.bean.Orderable;
 import central.data.organization.Account;
 import central.sql.data.ModifiableEntity;
@@ -34,7 +35,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
 import java.io.Serial;
 
 /**

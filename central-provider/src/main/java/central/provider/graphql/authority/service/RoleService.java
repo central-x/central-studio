@@ -24,9 +24,9 @@
 
 package central.provider.graphql.authority.service;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
 import central.lang.Stringx;
+import central.provider.graphql.DTO;
 import central.provider.graphql.authority.dto.RoleDTO;
 import central.provider.graphql.authority.entity.RoleEntity;
 import central.provider.graphql.authority.mapper.RoleMapper;
@@ -34,12 +34,12 @@ import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.util.Listx;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 

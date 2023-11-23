@@ -30,7 +30,6 @@ import central.validation.group.Update;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-import javax.annotation.Nonnull;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -58,7 +57,7 @@ public class MulticastBroadcasterInput implements Serializable {
     private String id;
 
     @Label("应用主键")
-    @Nonnull
+    @NotNull
     @Size(min = 1, max = 32)
     private String applicationId;
 
@@ -92,7 +91,7 @@ public class MulticastBroadcasterInput implements Serializable {
     private String remark;
 
     @Label("初始化参数")
-    @Nonnull
+    @NotNull
     @Size(min = 1, max = 5 * 1024 * 1024)
     private String params;
 }

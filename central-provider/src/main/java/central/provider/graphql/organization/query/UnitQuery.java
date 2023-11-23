@@ -24,8 +24,8 @@
 
 package central.provider.graphql.organization.query;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
+import central.provider.graphql.DTO;
 import central.provider.graphql.organization.dto.UnitDTO;
 import central.provider.graphql.organization.entity.UnitEntity;
 import central.provider.graphql.organization.mapper.UnitMapper;
@@ -35,14 +35,14 @@ import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

@@ -36,6 +36,7 @@ import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;
 import central.util.Listx;
 import central.validation.group.Insert;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

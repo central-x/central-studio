@@ -37,6 +37,8 @@ import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +46,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,7 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "organization/query", types = {AccountDTO.class, AccountUnitQuery.class})
 public class AccountQuery {
+
     @Setter(onMethod_ = @Autowired)
     private AccountService service;
 
@@ -95,7 +98,6 @@ public class AccountQuery {
     public @Nullable AccountDTO findById(DataFetchingEnvironment environment,
                                          @RequestParam String id,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-
         var columns = Columns.of(AccountDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "findById".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));

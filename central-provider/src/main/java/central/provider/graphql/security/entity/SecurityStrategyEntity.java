@@ -31,6 +31,7 @@ import central.bean.Tenantable;
 import central.data.security.SecurityStrategyInput;
 import central.sql.data.ModifiableEntity;
 import central.validation.Label;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -42,7 +43,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
 import java.io.Serial;
 
 /**
@@ -97,7 +97,7 @@ public class SecurityStrategyEntity extends ModifiableEntity implements Codeable
     private String remark;
 
     @Label("初始化参数")
-    @Nonnull
+    @NotNull
     @Size(min = 1, max = 5 * 1024 * 1024)
     private String params;
 
@@ -106,7 +106,7 @@ public class SecurityStrategyEntity extends ModifiableEntity implements Codeable
     @Size(min = 1, max = 32)
     private String tenantCode;
 
-    public void fromInput(SecurityStrategyInput input) {
+    public void fromInput(@Nonnull SecurityStrategyInput input) {
         this.setId(input.getId());
         this.setCode(input.getCode());
         this.setName(input.getName());

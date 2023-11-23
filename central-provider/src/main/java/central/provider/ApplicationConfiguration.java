@@ -1,8 +1,9 @@
 package central.provider;
 
 import central.sql.datasource.dynamic.lookup.LookupKeyFilter;
-import central.starter.graphql.stub.EnableGraphQLStub;
+import central.starter.graphql.EnableGraphQL;
 import central.starter.logging.EnableLogPoint;
+import central.starter.orm.EnableOrm;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +16,11 @@ import org.springframework.core.Ordered;
  * @author Alan Yeh
  * @since 2022/07/07
  */
-@Configuration
+@EnableOrm
+@EnableGraphQL
 @EnableLogPoint
 @EnableCentralProvider
+@Configuration
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
 

@@ -32,6 +32,7 @@ import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.TableRelation;
 import central.util.Objectx;
 import central.validation.Label;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.*;
@@ -40,7 +41,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nonnull;
 import java.io.Serial;
 
 /**

@@ -31,6 +31,7 @@ import central.logging.core.collector.DynamicCollector;
 import central.logging.core.filter.DynamicFilter;
 import central.logging.core.storage.DynamicStorage;
 import central.pluglet.PlugletFactory;
+import jakarta.annotation.Nonnull;
 import lombok.Setter;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,6 @@ import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

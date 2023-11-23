@@ -38,6 +38,7 @@ import central.starter.web.reactive.support.resolver.ProxyRemoteAddressResolver;
 import central.starter.web.reactive.support.resolver.XForwardedRemoteAddressResolver;
 import central.util.Objectx;
 import central.web.XForwardedHeaders;
+import jakarta.annotation.Nonnull;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,6 @@ import org.springframework.web.server.WebHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.List;

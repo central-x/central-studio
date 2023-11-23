@@ -27,6 +27,7 @@ package central.logging.core.collector.impl.http;
 import central.logging.core.collector.Collector;
 import central.pluglet.annotation.Control;
 import central.validation.Label;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Setter;
@@ -38,7 +39,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**

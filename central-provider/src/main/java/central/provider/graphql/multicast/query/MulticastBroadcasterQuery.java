@@ -24,8 +24,8 @@
 
 package central.provider.graphql.multicast.query;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
+import central.provider.graphql.DTO;
 import central.provider.graphql.multicast.dto.MulticastBroadcasterDTO;
 import central.provider.graphql.multicast.entity.MulticastBroadcasterEntity;
 import central.provider.graphql.multicast.mapper.MulticastBroadcasterMapper;
@@ -35,14 +35,14 @@ import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.web.XForwardedHeaders;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -69,7 +69,7 @@ public class MulticastBroadcasterQuery {
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, MulticastBroadcasterDTO> batchLoader(@RequestParam List<String> ids,
-                                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.mapper.findBy(Conditions.of(MulticastBroadcasterEntity.class).in(MulticastBroadcasterEntity::getId, ids).eq(MulticastBroadcasterEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, MulticastBroadcasterDTO.class))
@@ -84,7 +84,7 @@ public class MulticastBroadcasterQuery {
      */
     @GraphQLFetcher
     public @Nullable MulticastBroadcasterDTO findById(@RequestParam String id,
-                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(MulticastBroadcasterEntity.class).eq(MulticastBroadcasterEntity::getId, id).eq(MulticastBroadcasterEntity::getTenantCode, tenant));
         return DTO.wrap(entity, MulticastBroadcasterDTO.class);
     }
