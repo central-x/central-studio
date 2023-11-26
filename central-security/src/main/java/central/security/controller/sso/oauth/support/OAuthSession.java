@@ -36,7 +36,6 @@ public interface OAuthSession {
      *
      * @param tenant  租户标识
      * @param code    授权码
-     * @param timeout 超时时间
      */
     void saveCode(String tenant, AuthorizationCode code);
 
@@ -53,7 +52,6 @@ public interface OAuthSession {
      *
      * @param tenant      租户标识
      * @param transaction 事务
-     * @param timeout     超时时间
      */
     void saveTransaction(String tenant, AuthorizationTransaction transaction);
 

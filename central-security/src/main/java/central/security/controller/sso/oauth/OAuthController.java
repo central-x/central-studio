@@ -280,10 +280,13 @@ public class OAuthController {
         @Serial
         private static final long serialVersionUID = 1099644431930255452L;
 
+        @Builder.Default
         private Account account = new Account();
 
+        @Builder.Default
         private Application application = new Application();
 
+        @Builder.Default
         private List<Scope> scopes = new ArrayList<>();
     }
 

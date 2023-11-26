@@ -50,32 +50,24 @@
     <!-- 镜像仓库 -->
     <repositories>
         <repository>
-            <id>mirror</id>
-            <name>Mirror Repository</name>
-            <url>https://mirror.central-x.com/repository/maven-public/</url>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>https://repo1.maven.org/maven2/</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
 
     <!-- 插件仓库 -->
     <pluginRepositories>
         <pluginRepository>
-            <id>mirror</id>
-            <name>Mirror Repository</name>
-            <url>https://mirror.central-x.com/repository/maven-public/</url>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>https://repo1.maven.org/maven2/</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
-    <!-- 发布仓库 -->
-    <distributionManagement>
-        <repository>
-            <id>centralx-releases</id>
-            <name>CentralX Release Repository</name>
-            <url>https://mirror.central-x.com/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>centralx-snapshots</id>
-            <name>CentralX Snapshot Repository</name>
-            <url>https://mirror.central-x.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

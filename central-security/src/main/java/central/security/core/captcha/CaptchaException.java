@@ -26,7 +26,6 @@ package central.security.core.captcha;
 
 import central.bean.TypeCheckException;
 import central.lang.Stringx;
-import lombok.experimental.StandardException;
 
 import java.io.Serial;
 
@@ -36,10 +35,17 @@ import java.io.Serial;
  * @author Alan Yeh
  * @since 2023/06/02
  */
-@StandardException
-public class CaptchaException extends RuntimeException{
+public class CaptchaException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 3367332525131620922L;
+
+    public CaptchaException(String message) {
+        super(message);
+    }
+
+    public CaptchaException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
     public static void asserts(Class<?> expected, Class<?> actual) {
         if (actual.isAssignableFrom(expected)) {

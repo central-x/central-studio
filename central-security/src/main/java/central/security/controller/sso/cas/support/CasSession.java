@@ -40,7 +40,6 @@ public interface CasSession {
      *
      * @param tenant  租户标识
      * @param ticket  服务凭证
-     * @param timeout 超时时间
      */
     void save(String tenant, ServiceTicket ticket);
 

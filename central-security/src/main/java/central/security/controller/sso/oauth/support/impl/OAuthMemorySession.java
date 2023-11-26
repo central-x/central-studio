@@ -29,7 +29,6 @@ import central.security.controller.sso.oauth.support.AuthorizationTransaction;
 import central.security.controller.sso.oauth.support.OAuthSession;
 import central.util.concurrent.ExpiredMap;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
 import java.io.Closeable;

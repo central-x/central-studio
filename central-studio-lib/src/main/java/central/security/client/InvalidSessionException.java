@@ -24,8 +24,6 @@
 
 package central.security.client;
 
-import lombok.experimental.StandardException;
-
 import java.io.Serial;
 
 /**
@@ -34,8 +32,16 @@ import java.io.Serial;
  * @author Alan Yeh
  * @since 2023/11/20
  */
-@StandardException
 public class InvalidSessionException extends RuntimeException{
     @Serial
     private static final long serialVersionUID = 382917480144936713L;
+
+    public InvalidSessionException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
+
+    public InvalidSessionException(String message) {
+        super(message);
+    }
+
 }
