@@ -45,7 +45,7 @@ public class ProviderProperties {
     /**
      * 访问地址
      */
-    private String url = "http://127.0.0.1:3300";
+    private String url = "http://central-provider";
 
     /**
      * 数据

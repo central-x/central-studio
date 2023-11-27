@@ -41,5 +41,5 @@ public class StorageProperties {
     /**
      * 访问地址
      */
-    private String url = "http://127.0.0.1:3500";
+    private String url = "http://central-storage";
 }

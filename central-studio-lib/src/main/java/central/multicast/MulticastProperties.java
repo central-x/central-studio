@@ -41,5 +41,5 @@ public class MulticastProperties {
     /**
      * 访问地址
      */
-    private String url = "http://127.0.0.1:3600";
+    private String url = "http://central-multicast";
 }

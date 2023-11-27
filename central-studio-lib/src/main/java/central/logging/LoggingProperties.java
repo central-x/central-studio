@@ -41,5 +41,5 @@ public class LoggingProperties {
     /**
      * 访问地址
      */
-    private String url = "http://127.0.0.1:3400";
+    private String url = "http://central-gateway";
 }

@@ -41,5 +41,5 @@ public class GatewayProperties {
     /**
      * 访问地址
      */
-    private String url = "http://127.0.0.1:3000";
+    private String url = "http://central-gateway";
 }

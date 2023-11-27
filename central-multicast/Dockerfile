@@ -9,7 +9,7 @@ ARG STUDIO_VERSION
 WORKDIR /workspace
 
 # 复制应用到工作目录
-COPY central-provider-${STUDIO_VERSION}.jar application.jar
+COPY central-multicast-${STUDIO_VERSION}.jar application.jar
 
 # 使用 Spring Boot 工具对应用进行分层
 RUN java -Djarmode=layertools -jar application.jar extract
@@ -20,7 +20,7 @@ FROM centralx/openjdk:17
 MAINTAINER Alan Yeh <alan@yeh.cn>
 LABEL vender=CentralX \
   license="The MIT License" \
-  name="Central Provider"
+  name="Central Multicast"
 
 # 创建工作目录及常用子目录
 WORKDIR /workspace
@@ -47,6 +47,6 @@ ENV JVM_OPTS         "-XX:+UseG1GC"
 # 启动参数
 ENV BOOTSTRAP_OPTS   "-Djava.security.egd=file:/dev/./urandom -Dspring.config.additional-location=optional:./config/"
 
-EXPOSE 3300
+EXPOSE 3600
 VOLUME ["/workspace/config", "/workspace/logs", "/workspace/data"]
 ENTRYPOINT ["sh", "-c", "java -Xms$JVM_MIN_HEAP -Xmx$JVM_MAX_HEAP $JVM_OPTS $BOOTSTRAP_OPTS org.springframework.boot.loader.JarLauncher"]

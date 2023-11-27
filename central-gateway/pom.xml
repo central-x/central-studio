@@ -100,20 +100,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Docker -->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <configuration>
-                    <dockerfile>Dockerfile</dockerfile>
-                    <repository>deploy.central-x.com/central-gateway</repository>
-                    <tag>${project.version}</tag>
-                    <buildArgs>
-                        <JAR_FILE>${project.build.finalName}.${project.packaging}</JAR_FILE>
-                    </buildArgs>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <profiles>
