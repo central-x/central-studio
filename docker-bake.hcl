@@ -14,7 +14,7 @@ group "default" {
 }
 
 ############################################################################
-# Global inheritable target
+# Global inheritable target and variables
 ############################################################################
 target "_platforms" {
     platforms = [
@@ -25,6 +25,14 @@ target "_platforms" {
 
 variable "STUDIO_VERSION" {
     default = "1.0.x-SNAPSHOT"
+}
+
+variable "REGISTRY" {
+    default = "docker.io"
+}
+
+variable "REPOSITORY" {
+    default = "centralx"
 }
 
 ############################################################################
@@ -38,7 +46,7 @@ target "central-gateway" {
         STUDIO_VERSION = "${STUDIO_VERSION}"
     }
     tags = [
-        "docker.io/centralx/central-gateway:${STUDIO_VERSION}"
+        "${REGISTRY}/${REPOSITORY}/central-gateway:${STUDIO_VERSION}"
     ]
 }
 
@@ -50,7 +58,7 @@ target "central-dashboard" {
          STUDIO_VERSION = "${STUDIO_VERSION}"
      }
      tags = [
-         "docker.io/centralx/central-dashboard:${STUDIO_VERSION}"
+         "${REGISTRY}/${REPOSITORY}/central-dashboard:${STUDIO_VERSION}"
      ]
 }
 
@@ -62,7 +70,7 @@ target "central-security" {
          STUDIO_VERSION = "${STUDIO_VERSION}"
      }
      tags = [
-         "docker.io/centralx/central-security:${STUDIO_VERSION}"
+         "${REGISTRY}/${REPOSITORY}/central-security:${STUDIO_VERSION}"
      ]
 }
 
@@ -74,7 +82,7 @@ target "central-provider" {
         STUDIO_VERSION = "${STUDIO_VERSION}"
     }
     tags = [
-        "docker.io/centralx/central-provider:${STUDIO_VERSION}"
+        "${REGISTRY}/${REPOSITORY}/central-provider:${STUDIO_VERSION}"
     ]
 }
 
@@ -86,7 +94,7 @@ target "central-logging" {
         STUDIO_VERSION = "${STUDIO_VERSION}"
     }
     tags = [
-        "docker.io/centralx/central-logging:${STUDIO_VERSION}"
+        "${REGISTRY}/${REPOSITORY}/central-logging:${STUDIO_VERSION}"
     ]
 }
 
@@ -98,7 +106,7 @@ target "central-logging" {
         STUDIO_VERSION = "${STUDIO_VERSION}"
     }
     tags = [
-        "docker.io/centralx/central-logging:${STUDIO_VERSION}"
+        "${REGISTRY}/${REPOSITORY}/central-logging:${STUDIO_VERSION}"
     ]
 }
 
@@ -110,7 +118,7 @@ target "central-storage" {
         STUDIO_VERSION = "${STUDIO_VERSION}"
     }
     tags = [
-        "docker.io/centralx/central-storage:${STUDIO_VERSION}"
+        "${REGISTRY}/${REPOSITORY}/central-storage:${STUDIO_VERSION}"
     ]
 }
 
@@ -122,6 +130,6 @@ target "central-multicast" {
         STUDIO_VERSION = "${STUDIO_VERSION}"
     }
     tags = [
-        "docker.io/centralx/central-multicast:${STUDIO_VERSION}"
+        "${REGISTRY}/${REPOSITORY}/central-multicast:${STUDIO_VERSION}"
     ]
 }
