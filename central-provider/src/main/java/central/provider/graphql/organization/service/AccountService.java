@@ -165,8 +165,8 @@ public class AccountService {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull Page<AccountDTO> pageBy(@Nonnull long pageIndex,
-                                            @Nonnull long pageSize,
+    public @Nonnull Page<AccountDTO> pageBy(@Nonnull Long pageIndex,
+                                            @Nonnull Long pageSize,
                                             @Nullable Columns<AccountDTO> columns,
                                             @Nullable Conditions<AccountDTO> conditions,
                                             @Nullable Orders<AccountDTO> orders,

@@ -276,7 +276,7 @@ public class OAuthController {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class GetScopeVO implements Serializable {
+    public static class GetScopeVO implements Serializable {
         @Serial
         private static final long serialVersionUID = 1099644431930255452L;
 
@@ -297,7 +297,7 @@ public class OAuthController {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Scope implements Serializable {
+    public static class Scope implements Serializable {
         @Serial
         private static final long serialVersionUID = -2194870315185874029L;
 

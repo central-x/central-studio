@@ -219,13 +219,13 @@ public class CasController {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
         var application = container.getApplications().stream()
                 .filter(it -> Stringx.addSuffix(params.getService(), "/").startsWith(Stringx.addSuffix(it.getUrl() + it.getContextPath(), "/")))
-                .findFirst().orElse(null);
-        if (application == null) {
+                .findFirst();
+        if (application.isEmpty()) {
             // 此应用不是已登记的应用，属于非法接入
             sendError(request, response, ErrorCode.INVALID_SERVICE, "服务[service]未登记: " + params.getService(), params.getFormat());
             return;
         }
-        if (!application.getEnabled()) {
+        if (!application.get().getEnabled()) {
             // 此应用已禁用
             sendError(request, response, ErrorCode.INVALID_SERVICE, "服务[service]已禁用: " + params.getService(), params.getFormat());
             return;
@@ -239,7 +239,7 @@ public class CasController {
             return;
         }
 
-        if (!application.getCode().equals(ticket.getCode())) {
+        if (!application.get().getCode().equals(ticket.getCode())) {
             // 应用与票据不匹配
             sendError(request, response, ErrorCode.INVALID_TICKET, "票据[ticket]与服务[service]不符: " + params.getTicket(), params.getFormat());
             return;
@@ -345,12 +345,12 @@ public class CasController {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
         var application = container.getApplications().stream()
                 .filter(it -> Stringx.addSuffix(params.getService(), "/").startsWith(Stringx.addSuffix(it.getUrl() + it.getContextPath(), "/")))
-                .findFirst().orElse(null);
-        if (application == null) {
+                .findFirst();
+        if (application.isEmpty()) {
             // 此应用不是已登记的应用，属于非法接入
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "服务[service]未登记: " + params.getService());
         }
-        if (!application.getEnabled()) {
+        if (!application.get().getEnabled()) {
             // 此应用已禁用
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "服务[service]已禁用: " + params.getService());
         }
@@ -399,10 +399,8 @@ public class CasController {
         } else {
             // 如果不启用单点退出功能，则只通知调用本身口的应用系统注销会话
             var tickets = this.tickets.getTicketBySession(request.getTenantCode(), sessionJwt);
-            var ticket = tickets.stream().filter(it -> Objects.equals(it.getCode(), application.getCode())).findFirst().orElse(null);
-            if (ticket != null) {
-                this.executor.submit(new LogoutRunner(application.getUrl() + application.getContextPath(), ticket.getTicket()));
-            }
+            var ticket = tickets.stream().filter(it -> Objects.equals(it.getCode(), application.get().getCode())).findFirst();
+            ticket.ifPresent(serviceTicket -> this.executor.submit(new LogoutRunner(application.get().getUrl() + application.get().getContextPath(), serviceTicket.getTicket())));
         }
 
         // 由于是异步去调用第三方的退出登录，因此最好等待 1 秒之后，再重定到 service 指定的 URL 地址
