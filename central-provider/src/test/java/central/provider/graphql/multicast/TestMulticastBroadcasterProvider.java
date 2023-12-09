@@ -24,9 +24,6 @@
 
 package central.provider.graphql.multicast;
 
-import central.provider.scheduled.ScheduledDataContext;
-import central.provider.scheduled.fetcher.DataFetcherType;
-import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.data.multicast.MulticastBroadcaster;
 import central.data.multicast.MulticastBroadcasterInput;
 import central.lang.reflect.TypeRef;
@@ -37,6 +34,9 @@ import central.provider.graphql.multicast.mapper.MulticastBroadcasterMapper;
 import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
 import central.provider.graphql.saas.mapper.TenantMapper;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Jsonx;
@@ -80,7 +80,7 @@ public class TestMulticastBroadcasterProvider {
     private static ApplicationEntity applicationEntity;
 
     @Setter(onMethod_ = @Autowired)
-    private ScheduledDataContext context;
+    private DataContext context;
 
     @BeforeEach
     @AfterEach

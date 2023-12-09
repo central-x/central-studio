@@ -24,9 +24,6 @@
 
 package central.provider.graphql.storage;
 
-import central.provider.scheduled.ScheduledDataContext;
-import central.provider.scheduled.fetcher.DataFetcherType;
-import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.data.storage.StorageObject;
 import central.data.storage.StorageObjectInput;
 import central.provider.ApplicationProperties;
@@ -38,6 +35,9 @@ import central.provider.graphql.storage.entity.StorageBucketEntity;
 import central.provider.graphql.storage.entity.StorageObjectEntity;
 import central.provider.graphql.storage.mapper.StorageBucketMapper;
 import central.provider.graphql.storage.mapper.StorageObjectMapper;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.security.Digestx;
 import central.sql.query.Conditions;
 import central.util.Guidx;
@@ -87,7 +87,7 @@ public class TestStorageObjectProvider {
     private static ApplicationEntity applicationEntity;
 
     @Setter(onMethod_ = @Autowired)
-    private ScheduledDataContext context;
+    private DataContext context;
 
     @BeforeEach
     @AfterEach

@@ -24,16 +24,16 @@
 
 package central.security.controller.sso.oauth;
 
-import central.provider.scheduled.fetcher.saas.SaasContainer;
-import central.security.client.SessionVerifier;
-import central.provider.graphql.organization.AccountProvider;
-import central.provider.scheduled.ScheduledDataContext;
-import central.provider.scheduled.fetcher.DataFetcherType;
 import central.data.organization.Account;
 import central.data.saas.Application;
 import central.lang.Arrayx;
 import central.lang.Stringx;
+import central.provider.graphql.organization.AccountProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.security.Digestx;
+import central.security.client.SessionVerifier;
 import central.security.controller.sso.oauth.param.AccessTokenParams;
 import central.security.controller.sso.oauth.param.AuthorizeParams;
 import central.security.controller.sso.oauth.param.GrantParams;
@@ -98,7 +98,7 @@ public class OAuthController {
     private SessionVerifier verifier;
 
     @Setter(onMethod_ = @Autowired)
-    private ScheduledDataContext context;
+    private DataContext context;
 
     @Setter(onMethod_ = @Autowired)
     private OAuthSession session;

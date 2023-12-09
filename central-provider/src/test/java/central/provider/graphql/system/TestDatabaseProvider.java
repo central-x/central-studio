@@ -24,9 +24,6 @@
 
 package central.provider.graphql.system;
 
-import central.provider.scheduled.ScheduledDataContext;
-import central.provider.scheduled.fetcher.DataFetcherType;
-import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.data.system.Database;
 import central.data.system.DatabaseInput;
 import central.data.system.DatabaseProperties;
@@ -34,10 +31,13 @@ import central.data.system.DatabasePropertiesInput;
 import central.provider.ApplicationProperties;
 import central.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
-import central.provider.graphql.system.entity.DatabaseEntity;
-import central.provider.graphql.system.mapper.DatabaseMapper;
 import central.provider.graphql.saas.entity.ApplicationEntity;
 import central.provider.graphql.saas.mapper.ApplicationMapper;
+import central.provider.graphql.system.entity.DatabaseEntity;
+import central.provider.graphql.system.mapper.DatabaseMapper;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.sql.query.Conditions;
 import central.util.Guidx;
 import central.util.Jsonx;
@@ -79,7 +79,7 @@ public class TestDatabaseProvider extends TestProvider {
     private static ApplicationEntity applicationEntity;
 
     @Setter(onMethod_ = @Autowired)
-    private ScheduledDataContext context;
+    private DataContext context;
 
     @BeforeEach
     @AfterEach
