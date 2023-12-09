@@ -128,7 +128,7 @@ public class HttpRoutingFilter implements Filter, InitializingBean, EnvironmentA
             // 该应用系统在接收到请求后，需验证该 token，用于防止其它系统非法调用
             var token = exchange.getRequiredAttribute(ExchangeAttributes.TOKEN)
                     .sign(Algorithm.HMAC256(targetApplication.getSecret()));
-            headers.add(XForwardedHeaders.TOKEN, token);
+            headers.set(XForwardedHeaders.TOKEN, token);
         }
 
         var provider = ConnectionProvider.builder("http-routing")
@@ -150,8 +150,8 @@ public class HttpRoutingFilter implements Filter, InitializingBean, EnvironmentA
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, timeout)
                 // 转发请求头
                 .headers(it -> {
-                    it.remove(HttpHeaders.HOST);
                     headers.forEach(it::add);
+                    it.remove(HttpHeaders.HOST);
                 })
                 .responseTimeout(Duration.ofMillis(timeout))
                 .request(HttpMethod.valueOf(exchange.getRequest().getMethod().name()))
