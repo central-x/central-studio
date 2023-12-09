@@ -1,21 +1,26 @@
 ############################################################################
-# Global inheritable target
+# CentralX
+# https://central-x.com
 ############################################################################
+
+#***************************************************************************
+# Default Group
+#***************************************************************************
 group "default" {
     targets = [
-        "central-gateway",
-        "central-dashboard",
-        "central-security",
-        "central-provider",
-        "central-logging",
-        "central-storage",
-        "central-multicast",
+        "central-studio"
     ]
 }
 
-############################################################################
-# Global inheritable target and variables
-############################################################################
+#***************************************************************************
+# Global inheritable target
+#***************************************************************************
+target "_contexts" {
+    contexts = {
+        image = "docker-image://centralx/spring-runner:17"
+    }
+}
+
 target "_platforms" {
     platforms = [
         "linux/arm64",
@@ -23,6 +28,17 @@ target "_platforms" {
     ]
 }
 
+target "_labels" {
+    labels = {
+        "org.opencontainers.image.description" = "Central Studio packaged by CentralX"
+        "org.opencontainers.image.vendor" = "CentralX"
+        "org.opencontainers.image.maintainer" = "Alan Yeh <alan.yeh.cn>"
+    }
+}
+
+#***************************************************************************
+# Global Argument
+#***************************************************************************
 variable "STUDIO_VERSION" {
     default = "1.0.x-SNAPSHOT"
 }
@@ -35,101 +51,34 @@ variable "REPOSITORY" {
     default = "centralx"
 }
 
-############################################################################
-# Central Studio
-############################################################################
-target "central-gateway" {
-    inherits = ["_platforms"]
-    context = "./central-gateway/target"
+#***************************************************************************
+# Targets
+#***************************************************************************
+target "central-studio" {
+    name = "${STUDIO_COMPONENT}"
+    matrix = {
+        STUDIO_COMPONENT = [
+            "central-gateway",
+            "central-dashboard",
+            "central-security",
+            "central-provider",
+            "central-logging",
+            "central-storage",
+            "central-multicast"
+        ]
+    }
+    inherits = ["_contexts", "_platforms", "_labels"]
+    context = "./${STUDIO_COMPONENT}/target"
     dockerfile = "../Dockerfile"
+    labels = {
+        "org.opencontainers.image.title" = "${STUDIO_COMPONENT}"
+        "org.opencontainers.image.version" = "${STUDIO_VERSION}"
+    }
     args = {
+        STUDIO_COMPONENT = "${STUDIO_COMPONENT}"
         STUDIO_VERSION = "${STUDIO_VERSION}"
     }
     tags = [
-        "${REGISTRY}/${REPOSITORY}/central-gateway:${STUDIO_VERSION}"
-    ]
-}
-
-target "central-dashboard" {
-     inherits = ["_platforms"]
-     context = "./central-dashboard/target"
-     dockerfile = "../Dockerfile"
-     args = {
-         STUDIO_VERSION = "${STUDIO_VERSION}"
-     }
-     tags = [
-         "${REGISTRY}/${REPOSITORY}/central-dashboard:${STUDIO_VERSION}"
-     ]
-}
-
-target "central-security" {
-     inherits = ["_platforms"]
-     context = "./central-security/target"
-     dockerfile = "../Dockerfile"
-     args = {
-         STUDIO_VERSION = "${STUDIO_VERSION}"
-     }
-     tags = [
-         "${REGISTRY}/${REPOSITORY}/central-security:${STUDIO_VERSION}"
-     ]
-}
-
-target "central-provider" {
-    inherits = ["_platforms"]
-    context = "./central-provider/target"
-    dockerfile = "../Dockerfile"
-    args = {
-        STUDIO_VERSION = "${STUDIO_VERSION}"
-    }
-    tags = [
-        "${REGISTRY}/${REPOSITORY}/central-provider:${STUDIO_VERSION}"
-    ]
-}
-
-target "central-logging" {
-    inherits = ["_platforms"]
-    context = "./central-logging/target"
-    dockerfile = "../Dockerfile"
-    args = {
-        STUDIO_VERSION = "${STUDIO_VERSION}"
-    }
-    tags = [
-        "${REGISTRY}/${REPOSITORY}/central-logging:${STUDIO_VERSION}"
-    ]
-}
-
-target "central-logging" {
-    inherits = ["_platforms"]
-    context = "./central-logging/target"
-    dockerfile = "../Dockerfile"
-    args = {
-        STUDIO_VERSION = "${STUDIO_VERSION}"
-    }
-    tags = [
-        "${REGISTRY}/${REPOSITORY}/central-logging:${STUDIO_VERSION}"
-    ]
-}
-
-target "central-storage" {
-    inherits = ["_platforms"]
-    context = "./central-storage/target"
-    dockerfile = "../Dockerfile"
-    args = {
-        STUDIO_VERSION = "${STUDIO_VERSION}"
-    }
-    tags = [
-        "${REGISTRY}/${REPOSITORY}/central-storage:${STUDIO_VERSION}"
-    ]
-}
-
-target "central-multicast" {
-    inherits = ["_platforms"]
-    context = "./central-multicast/target"
-    dockerfile = "../Dockerfile"
-    args = {
-        STUDIO_VERSION = "${STUDIO_VERSION}"
-    }
-    tags = [
-        "${REGISTRY}/${REPOSITORY}/central-multicast:${STUDIO_VERSION}"
+        "${REGISTRY}/${REPOSITORY}/${STUDIO_COMPONENT}:${STUDIO_VERSION}"
     ]
 }

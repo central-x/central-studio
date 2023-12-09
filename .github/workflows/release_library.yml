@@ -1,12 +1,14 @@
-name: Publish libraries
+name: Release Central Studio libraries
+
 on:
   push:
     branches:
       - master
       - '*.x'
+
 jobs:
-  publish-to-github-packages:
-    name: Publish to GitHub Packages
+  release-to-github-packages:
+    name: Release to GitHub Packages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -25,14 +27,14 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
       - name: Echo settings.xml
         run: cat /home/runner/.m2/settings.xml
-      - name: Publish packages
+      - name: Release packages
         run: mvn -P github --batch-mode clean deploy
         env:
           MAVEN_USERNAME: ${{ secrets.GHPKG_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.GHPKG_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-  publish-to-maven-central:
-    name: Publish to Maven Central
+  release-to-maven-central:
+    name: Release to Maven Central
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -51,7 +53,7 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
       - name: Echo settings.xml
         run: cat /home/runner/.m2/settings.xml
-      - name: Publish packages
+      - name: Release packages
         run: mvn -P sonatype --batch-mode clean deploy
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}

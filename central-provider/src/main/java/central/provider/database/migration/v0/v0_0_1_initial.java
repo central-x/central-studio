@@ -542,7 +542,7 @@ public class v0_0_1_initial extends Migration {
         dashboardApp.setCode("central-dashboard");
         dashboardApp.setName("控制中心");
         dashboardApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        dashboardApp.setUrl("http://127.0.0.1:3100");
+        dashboardApp.setUrl("http://central-dashboard");
         dashboardApp.setContextPath("/dashboard");
         dashboardApp.setSecret("glngxOUCye6fndsaiQI");
         dashboardApp.setEnabled(Boolean.TRUE);
@@ -555,7 +555,7 @@ public class v0_0_1_initial extends Migration {
         saasApp.setCode("central-saas");
         saasApp.setName("租户中心");
         saasApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-tenant.png")));
-        saasApp.setUrl("lb://central-saas");
+        saasApp.setUrl("http://central-saas");
         saasApp.setContextPath("/saas");
         saasApp.setSecret("btdHv1HdTTWzCEbiRdg");
         saasApp.setEnabled(Boolean.TRUE);
@@ -568,7 +568,7 @@ public class v0_0_1_initial extends Migration {
         securityApp.setCode("central-security");
         securityApp.setName("认证中心");
         securityApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        securityApp.setUrl("http://127.0.0.1:3200");
+        securityApp.setUrl("http://central-security");
         securityApp.setContextPath("/security");
         securityApp.setSecret("AkJSi2kmH7vSO5lJcvY");
         securityApp.setEnabled(Boolean.TRUE);
@@ -581,7 +581,7 @@ public class v0_0_1_initial extends Migration {
         storageApp.setCode("central-storage");
         storageApp.setName("存储中心");
         storageApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        storageApp.setUrl("http://127.0.0.1:3500");
+        storageApp.setUrl("http://central-storage");
         storageApp.setContextPath("/storage");
         storageApp.setSecret("IKJuAKOiG7Vx9tMMqUf");
         storageApp.setEnabled(Boolean.TRUE);
@@ -594,7 +594,7 @@ public class v0_0_1_initial extends Migration {
         multicastApp.setCode("central-multicast");
         multicastApp.setName("广播中心");
         multicastApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        multicastApp.setUrl("http://127.0.0.1:3600");
+        multicastApp.setUrl("http://central-multicast");
         multicastApp.setContextPath("/multicast");
         multicastApp.setSecret("QHO85BzFQq8hqDzREJ");
         multicastApp.setEnabled(Boolean.TRUE);
@@ -607,7 +607,7 @@ public class v0_0_1_initial extends Migration {
         gatewayApp.setCode("central-gateway");
         gatewayApp.setName("网关中心");
         gatewayApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        gatewayApp.setUrl("http://127.0.0.1:3000");
+        gatewayApp.setUrl("http://central-gateway");
         gatewayApp.setContextPath("/gateway");
         gatewayApp.setSecret("TT6cdfpHIPastoipuDg");
         gatewayApp.setEnabled(Boolean.TRUE);

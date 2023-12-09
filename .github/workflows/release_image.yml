@@ -1,4 +1,4 @@
-name: Publish Docker Images
+name: Release Central Studio Images
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   publish:
-    name: Publish docker images
+    name: Release Central Studio Images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -49,14 +49,14 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.GHPKG_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.GHPKG_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Build and deploy to DockerHub
+      - name: Release to DockerHub
         uses: docker/bake-action@v4
         with:
           push: true
         env:
           REGISTRY: docker.io
           REPOSITORY: centralx
-      - name: Build and deploy to GitHub Packages
+      - name: Release to GitHub Packages
         uses: docker/bake-action@v4
         with:
           push: true
