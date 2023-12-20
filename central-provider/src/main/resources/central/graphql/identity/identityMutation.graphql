@@ -1,0 +1,11 @@
+"""
+认证数据修改
+"""
+type IdentityMutation {
+
+    "密码修改"
+    passwords: IdentityPasswordMutation!
+
+    "安全策略修改"
+    strategies: IdentityStrategyMutation!
+}

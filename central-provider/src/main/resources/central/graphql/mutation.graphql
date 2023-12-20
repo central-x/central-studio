@@ -15,7 +15,7 @@ extend type Mutation {
     log: LogMutation!
 
     "认证中心修改"
-    security: SecurityMutation!
+    identity: IdentityMutation!
 
     "存储中心修改"
     storage: StorageMutation!

@@ -91,7 +91,7 @@ public class TestObjectController {
 
             var token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", null, List.of(Permission.CREATE), Duration.ofMinutes(1).toMillis());
 
-            var object = this.client.upload("security", token, file, null, null, true, "master");
+            var object = this.client.upload("identity", token, file, null, null, true, "master");
             assertNotNull(object);
             assertEquals("test.txt", object.getName());
             assertEquals("txt", object.getExtension());
@@ -100,7 +100,7 @@ public class TestObjectController {
             assertTrue(object.getConfirmed());
 
             token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", List.of(object.getId()), List.of(Permission.VIEW), Duration.ofMinutes(1).toMillis());
-            var download = this.client.download("security", token, object.getId(), "down.txt", "master");
+            var download = this.client.download("identity", token, object.getId(), "down.txt", "master");
             assertNotNull(download);
             assertTrue(download.exists());
             assertEquals("down.txt", download.getName());
@@ -130,12 +130,12 @@ public class TestObjectController {
 
             assertThrows(HttpException.class, () -> {
                 // 直接上传会失败，然后会抛异常
-                var object = this.client.rapidUpload("security", token, "a.txt", digest, true, "master");
+                var object = this.client.rapidUpload("identity", token, "a.txt", digest, true, "master");
                 assertNull(object);
             });
 
 
-            var object = this.client.upload("security", token, file, null, null, true, "master");
+            var object = this.client.upload("identity", token, file, null, null, true, "master");
             assertNotNull(object);
             assertEquals("test.txt", object.getName());
             assertEquals("txt", object.getExtension());
@@ -144,7 +144,7 @@ public class TestObjectController {
             assertTrue(object.getConfirmed());
 
             // 测试快速上传
-            var rapidObject = this.client.rapidUpload("security", token, "a.txt", digest, true, "master");
+            var rapidObject = this.client.rapidUpload("identity", token, "a.txt", digest, true, "master");
             assertNotNull(rapidObject);
             assertEquals("a.txt", rapidObject.getName());
             assertEquals("txt", rapidObject.getExtension());
@@ -178,7 +178,7 @@ public class TestObjectController {
 
             var token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", null, List.of(Permission.CREATE), Duration.ofMinutes(1).toMillis());
 
-            var object = this.client.upload("security", token, file, null, null, false, "master");
+            var object = this.client.upload("identity", token, file, null, null, false, "master");
             assertNotNull(object);
             assertEquals("test.txt", object.getName());
             assertEquals("txt", object.getExtension());
@@ -187,12 +187,12 @@ public class TestObjectController {
             assertFalse(object.getConfirmed());
 
             token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", List.of(object.getId()), List.of(Permission.UPDATE), Duration.ofMinutes(1).toMillis());
-            var effected = this.client.confirm("security", token, List.of(object.getId()), "master");
+            var effected = this.client.confirm("identity", token, List.of(object.getId()), "master");
             assertEquals(1L, effected);
 
 
             token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", List.of(object.getId()), List.of(Permission.VIEW), Duration.ofMinutes(1).toMillis());
-            var object2 = this.client.findById("security", token, object.getId(), "master");
+            var object2 = this.client.findById("identity", token, object.getId(), "master");
             assertNotNull(object2);
             assertEquals(object.getName(), object2.getName());
             assertEquals(object.getExtension(), object2.getExtension());
@@ -200,7 +200,7 @@ public class TestObjectController {
             assertEquals(object.getDigest(), object2.getDigest());
             assertTrue(object2.getConfirmed());
 
-            var objects = this.client.findByIds("security", token, List.of(object.getId()), "master");
+            var objects = this.client.findByIds("identity", token, List.of(object.getId()), "master");
             assertEquals(1, objects.size());
             object2 = Listx.getFirstOrNull(objects);
             assertNotNull(object2);
@@ -211,11 +211,11 @@ public class TestObjectController {
             assertTrue(object2.getConfirmed());
 
             token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", List.of(object.getId()), List.of(Permission.DELETE), Duration.ofMinutes(1).toMillis());
-            effected = this.client.delete("security", token, List.of(object.getId()), "master");
+            effected = this.client.delete("identity", token, List.of(object.getId()), "master");
             assertEquals(1L, effected);
 
             token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", List.of(object.getId()), List.of(Permission.VIEW), Duration.ofMinutes(1).toMillis());
-            object2 = this.client.findById("security", token, object.getId(), "master");
+            object2 = this.client.findById("identity", token, object.getId(), "master");
             assertNull(object2);
         } finally {
             Filex.delete(file);
@@ -244,7 +244,7 @@ public class TestObjectController {
 
             var token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", null, List.of(Permission.CREATE), Duration.ofMinutes(1).toMillis());
 
-            var object = this.client.multipartUpload("security", token, file, digest, null, true, "master");
+            var object = this.client.multipartUpload("identity", token, file, digest, null, true, "master");
             assertNotNull(object);
             assertEquals("test.txt", object.getName());
             assertEquals("txt", object.getExtension());
@@ -253,7 +253,7 @@ public class TestObjectController {
             assertTrue(object.getConfirmed());
 
             token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", List.of(object.getId()), List.of(Permission.VIEW), Duration.ofMinutes(1).toMillis());
-            var download = this.client.download("security", token, object.getId(), "down.txt", "master");
+            var download = this.client.download("identity", token, object.getId(), "down.txt", "master");
             assertNotNull(download);
             assertTrue(download.exists());
             assertEquals("down.txt", download.getName());

@@ -60,7 +60,7 @@ target "central-studio" {
         STUDIO_COMPONENT = [
             "central-gateway",
             "central-dashboard",
-            "central-security",
+            "central-identity",
             "central-provider",
             "central-logging",
             "central-storage",

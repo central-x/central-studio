@@ -563,17 +563,17 @@ public class v0_0_1_initial extends Migration {
         saasApp.updateCreator("syssa");
 
         // 认证中心
-        var securityApp = new ApplicationEntity();
-        securityApp.setId("v788o67covIaDMn67mN");
-        securityApp.setCode("central-security");
-        securityApp.setName("认证中心");
-        securityApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        securityApp.setUrl("http://central-security");
-        securityApp.setContextPath("/security");
-        securityApp.setSecret("AkJSi2kmH7vSO5lJcvY");
-        securityApp.setEnabled(Boolean.TRUE);
-        securityApp.setRemark("用于统一管理全局会话");
-        securityApp.updateCreator("syssa");
+        var identityApp = new ApplicationEntity();
+        identityApp.setId("v788o67covIaDMn67mN");
+        identityApp.setCode("central-identity");
+        identityApp.setName("认证中心");
+        identityApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-identity.png")));
+        identityApp.setUrl("http://central-identity");
+        identityApp.setContextPath("/identity");
+        identityApp.setSecret("AkJSi2kmH7vSO5lJcvY");
+        identityApp.setEnabled(Boolean.TRUE);
+        identityApp.setRemark("用于统一管理全局会话");
+        identityApp.updateCreator("syssa");
 
         // 存储中心
         var storageApp = new ApplicationEntity();
@@ -614,7 +614,7 @@ public class v0_0_1_initial extends Migration {
         gatewayApp.setRemark("用于统一管理网关");
         gatewayApp.updateCreator("syssa");
 
-        applicationMapper.insertBatch(List.of(dashboardApp, saasApp, securityApp, storageApp, multicastApp, gatewayApp));
+        applicationMapper.insertBatch(List.of(dashboardApp, saasApp, identityApp, storageApp, multicastApp, gatewayApp));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 初始化主数据库信息
@@ -672,13 +672,13 @@ public class v0_0_1_initial extends Migration {
         tenantAppRel.setPrimary(Boolean.FALSE);
         tenantAppRel.updateCreator("syssa");
 
-        var securityAppRel = new TenantApplicationEntity();
-        securityAppRel.setId("jlUpCMrWWhUNhWHiBh5");
-        securityAppRel.setTenantId(masterTenant.getId());
-        securityAppRel.setApplicationId(securityApp.getId());
-        securityAppRel.setEnabled(Boolean.TRUE);
-        securityAppRel.setPrimary(Boolean.TRUE);
-        securityAppRel.updateCreator("syssa");
+        var identityAppRel = new TenantApplicationEntity();
+        identityAppRel.setId("jlUpCMrWWhUNhWHiBh5");
+        identityAppRel.setTenantId(masterTenant.getId());
+        identityAppRel.setApplicationId(identityApp.getId());
+        identityAppRel.setEnabled(Boolean.TRUE);
+        identityAppRel.setPrimary(Boolean.TRUE);
+        identityAppRel.updateCreator("syssa");
 
         var storageAppRel = new TenantApplicationEntity();
         storageAppRel.setId("JUWCjb5i032vOjbDYLs");
@@ -704,7 +704,7 @@ public class v0_0_1_initial extends Migration {
         gatewayAppRel.setPrimary(Boolean.FALSE);
         gatewayAppRel.updateCreator("syssa");
 
-        relMapper.insertBatch(List.of(dashboardAppRel, tenantAppRel, securityAppRel, storageAppRel, multicastAppRel, gatewayAppRel));
+        relMapper.insertBatch(List.of(dashboardAppRel, tenantAppRel, identityAppRel, storageAppRel, multicastAppRel, gatewayAppRel));
     }
 
     @Override

@@ -28,7 +28,7 @@
 
         <dependency>
             <groupId>com.central-x</groupId>
-            <artifactId>central-starter-security</artifactId>
+            <artifactId>central-starter-identity</artifactId>
             <scope>provided</scope>
         </dependency>
 

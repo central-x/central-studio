@@ -10,10 +10,10 @@
     <modules>
         <module>central-dashboard</module>
         <module>central-gateway</module>
+        <module>central-identity</module>
         <module>central-logging</module>
         <module>central-multicast</module>
         <module>central-provider</module>
-        <module>central-security</module>
         <module>central-storage</module>
         <module>central-studio-lib</module>
     </modules>

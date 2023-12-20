@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.central-x</groupId>
+        <artifactId>central-parent</artifactId>
+        <version>1.0.x-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>central-identity</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.x-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-studio-lib</artifactId>
+            <version>1.0.x-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-starter-graphql-stub</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-starter-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-starter-logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+        </dependency>
+
+        <!-- 测试依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- 替换 bootstrap.yml 里面的版本号 -->
+        <resources>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.yml</exclude>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- 本项目是程序文件，不发布到 Maven 仓库 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- 运行单元测试时需要依赖其它服务，因此手工执行单元测试 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+
+            <!-- 处理占位符 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>@{ * }@</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
+
+            <!-- Spring Boot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>centralx</id>
+            <!-- 镜像仓库 -->
+            <repositories>
+                <repository>
+                    <id>centralx</id>
+                    <name>CentralX Repository</name>
+                    <url>https://mirror.central-x.com/repository/maven-public/</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <!-- 插件仓库 -->
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>centralx</id>
+                    <name>CentralX Repository</name>
+                    <url>https://mirror.central-x.com/repository/maven-public/</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+            <!-- 发布仓库 -->
+            <distributionManagement>
+                <repository>
+                    <id>centralx</id>
+                    <name>CentralX Release Repository</name>
+                    <url>https://mirror.central-x.com/repository/maven-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>centralx</id>
+                    <name>CentralX Snapshot Repository</name>
+                    <url>https://mirror.central-x.com/repository/maven-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>sonatype</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Sonatype 发布 -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.13</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>sonatype</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <!-- 镜像仓库 -->
+            <repositories>
+                <repository>
+                    <id>sonatype</id>
+                    <name>Sonatype Repository</name>
+                    <url>https://s01.oss.sonatype.org/content/groups/public/</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>central</id>
+                    <name>Maven Central Repository</name>
+                    <url>https://repo1.maven.org/maven2/</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <!-- 插件仓库 -->
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>sonatype</id>
+                    <name>Sonatype Repository</name>
+                    <url>https://s01.oss.sonatype.org/content/groups/public/</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>central</id>
+                    <name>Maven Central Repository</name>
+                    <url>https://repo1.maven.org/maven2/</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+            <!-- 发布仓库 -->
+            <distributionManagement>
+                <repository>
+                    <id>sonatype</id>
+                    <name>Sonatype Release Repository</name>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>sonatype</id>
+                    <name>Sonatype Snapshot Repository</name>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>github</id>
+            <!-- 镜像仓库 -->
+            <repositories>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Repository</name>
+                    <url>https://maven.pkg.github.com/central-x/*</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>central</id>
+                    <name>Maven Central Repository</name>
+                    <url>https://repo1.maven.org/maven2/</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <!-- 插件仓库 -->
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>github</id>
+                    <name>GitHub Repository</name>
+                    <url>https://maven.pkg.github.com/central-x/*</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>central</id>
+                    <name>Maven Central Repository</name>
+                    <url>https://repo1.maven.org/maven2/</url>
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+            <!-- 发布仓库 -->
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Repository</name>
+                    <url>https://maven.pkg.github.com/central-x/central-studio</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+</project>

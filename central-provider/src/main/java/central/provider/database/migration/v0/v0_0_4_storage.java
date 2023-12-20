@@ -108,12 +108,12 @@ public class v0_0_4_storage extends Migration {
         var bucket = new StorageBucketEntity();
         bucket.setId("hy3tODglubTMlR9OcyO");
         bucket.setApplicationId("v788o67covIaDMn67mN");
-        bucket.setCode("security");
+        bucket.setCode("identity");
         bucket.setName("认证中心存储");
         bucket.setType("local");
         bucket.setEnabled(Boolean.TRUE);
         bucket.setRemark("");
-        bucket.setParams(Jsonx.Default().serialize(Map.of("location", "./storages")));
+        bucket.setParams(Jsonx.Default().serialize(Map.of("location", "./data/identity")));
         bucket.setTenantCode("master");
         bucket.updateCreator("syssa");
         bucketMapper.insert(bucket);

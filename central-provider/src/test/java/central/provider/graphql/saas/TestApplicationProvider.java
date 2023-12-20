@@ -87,11 +87,11 @@ public class TestApplicationProvider extends TestProvider {
     @Test
     public void case1() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -103,7 +103,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());

@@ -31,7 +31,7 @@ import central.provider.scheduled.fetcher.gateway.GatewayFetcher;
 import central.provider.scheduled.fetcher.log.LogFetcher;
 import central.provider.scheduled.fetcher.multicast.MulticastFetcher;
 import central.provider.scheduled.fetcher.saas.SaasFetcher;
-import central.provider.scheduled.fetcher.security.SecurityFetcher;
+import central.provider.scheduled.fetcher.identity.IdentityFetcher;
 import central.provider.scheduled.fetcher.storage.StorageFetcher;
 import central.provider.scheduled.fetcher.system.SystemFetcher;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -55,7 +55,7 @@ public enum DataFetcherType implements OptionalEnum<String> {
     LOG("日志中心热数据容器", "fetcher.log", LogFetcher::new),
     STORAGE("存储中心热数据容器", "fetcher.storage", StorageFetcher::new),
     MULTICAST("广播中心热数据容器", "fetcher.multicast", MulticastFetcher::new),
-    SECURITY("认证中心热数据容器", "fetcher.security", SecurityFetcher::new),
+    IDENTITY("认证中心热数据容器", "fetcher.identity", IdentityFetcher::new),
     GATEWAY("网关中心热数据容器", "fetcher.gateway", GatewayFetcher::new);
 
     private final String name;

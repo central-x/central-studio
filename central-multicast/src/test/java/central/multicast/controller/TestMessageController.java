@@ -73,7 +73,7 @@ public class TestMessageController {
     public void case1() {
         var token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", Duration.ofMinutes(30).toMillis());
         var body = new StandardBody("测试邮件", "测试消息体", List.of(new Recipient("alan", "alan@yeh.cn")));
-        var messages = this.client.publish("security", token, PublishMode.STANDARD, List.of(body), "master");
+        var messages = this.client.publish("identity", token, PublishMode.STANDARD, List.of(body), "master");
 
         assertNotNull(messages);
         assertEquals(1, messages.size());

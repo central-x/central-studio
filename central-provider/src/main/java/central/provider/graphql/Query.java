@@ -26,9 +26,9 @@ package central.provider.graphql;
 
 import central.provider.graphql.authority.AuthorityQuery;
 import central.provider.graphql.gateway.GatewayQuery;
+import central.provider.graphql.identity.IdentityQuery;
 import central.provider.graphql.log.LogQuery;
 import central.provider.graphql.multicast.MulticastQuery;
-import central.provider.graphql.security.SecurityQuery;
 import central.provider.graphql.organization.OrganizationQuery;
 import central.provider.graphql.storage.StorageQuery;
 import central.provider.graphql.system.SystemQuery;
@@ -45,7 +45,7 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(types = {AuthorityQuery.class, OrganizationQuery.class, SystemQuery.class, SaasQuery.class, SecurityQuery.class, LogQuery.class, StorageQuery.class, MulticastQuery.class, GatewayQuery.class})
+@GraphQLSchema(types = {AuthorityQuery.class, OrganizationQuery.class, SystemQuery.class, SaasQuery.class, IdentityQuery.class, LogQuery.class, StorageQuery.class, MulticastQuery.class, GatewayQuery.class})
 public class Query {
     /**
      * Authority Query
@@ -88,12 +88,12 @@ public class Query {
     }
 
     /**
-     * Security Query
+     * Identity Query
      * <p>
      * 认证相关查询
      */
     @GraphQLGetter
-    public SecurityQuery getSecurity(@Autowired SecurityQuery query) {
+    public IdentityQuery getIdentity(@Autowired IdentityQuery query) {
         return query;
     }
 

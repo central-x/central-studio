@@ -26,8 +26,8 @@ package central.dashboard;
 
 import central.logging.EnableCentralLogging;
 import central.provider.EnableCentralProvider;
-import central.security.EnableCentralSecurity;
-import central.starter.security.EnableSecurity;
+import central.identity.EnableCentralIdentity;
+import central.starter.identity.EnableIdentity;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,10 +38,10 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/11/17
  */
 @Configuration
-@EnableSecurity // 启用 Shiro
+@EnableIdentity // 启用 Shiro
 @EnableCentralLogging // 对接日志中心
 @EnableCentralProvider // 对接数据服务中心
-@EnableCentralSecurity // 对接认证中心
+@EnableCentralIdentity // 对接认证中心
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
 

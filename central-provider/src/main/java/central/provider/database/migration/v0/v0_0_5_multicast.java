@@ -107,7 +107,7 @@ public class v0_0_5_multicast extends Migration {
         var broadcaster = new MulticastBroadcasterEntity();
         broadcaster.setId("qrCL6YDyaS0JrD8Urm8");
         broadcaster.setApplicationId("v788o67covIaDMn67mN");
-        broadcaster.setCode("security");
+        broadcaster.setCode("identity");
         broadcaster.setName("腾讯企业邮");
         broadcaster.setType("email_smtp");
         broadcaster.setEnabled(Boolean.TRUE);

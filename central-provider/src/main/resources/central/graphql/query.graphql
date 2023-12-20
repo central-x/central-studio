@@ -15,7 +15,7 @@ extend type Query {
     log: LogQuery!
 
     "认证中心查询"
-    security: SecurityQuery!
+    identity: IdentityQuery!
 
     "存储中心查询"
     storage: StorageQuery!

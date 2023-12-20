@@ -1,0 +1,11 @@
+"""
+认证数据查询
+"""
+type IdentityQuery {
+
+    "密码查询"
+    passwords: IdentityPasswordQuery!
+
+    "安全策略查询"
+    strategies: IdentityStrategyQuery!
+}

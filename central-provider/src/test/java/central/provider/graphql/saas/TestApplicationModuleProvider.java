@@ -87,11 +87,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case1() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
