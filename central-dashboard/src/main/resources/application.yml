@@ -28,6 +28,19 @@ central:
   identity:
     unauthorized-url: /identity/
     logout-url: /identity/logout
+  probe:
+    authorizer:
+      type: fixed
+      params:
+        secret: cyLfRYFSnhHOpqAAzFyqvCpOwnlIyzJcCUIQqYHSKaOcnTqtiBjhOvKLNasivqjI
+    points:
+      - name: centralProviderEndpoint
+        type: http
+        params:
+          url: http://central-provider/provider/__probe
+          headers:
+            - name: Authorization
+              value: ${central.probe.authorizer.params.secret}
 
 studio:
   provider:

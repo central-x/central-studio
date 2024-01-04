@@ -154,7 +154,7 @@ public class SessionVerifier implements DisposableBean {
      */
     private boolean verify(Session session) {
         if (this.publicKey == null) {
-            this.publicKey = (RSAPublicKey) Signerx.RSA.getVerifyKey(this.client.getPublicKey());
+            this.publicKey = (RSAPublicKey) Signerx.RSA_256.getVerifyKey(this.client.getPublicKey());
         }
 
         try {

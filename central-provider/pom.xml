@@ -39,12 +39,17 @@
 
         <dependency>
             <groupId>com.central-x</groupId>
+            <artifactId>central-starter-logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x</groupId>
             <artifactId>central-starter-orm</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.central-x</groupId>
-            <artifactId>central-starter-logging</artifactId>
+            <artifactId>central-starter-probe</artifactId>
         </dependency>
 
         <dependency>

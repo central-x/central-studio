@@ -4,6 +4,7 @@ import central.sql.datasource.dynamic.lookup.LookupKeyFilter;
 import central.starter.graphql.EnableGraphQL;
 import central.starter.logging.EnableLogPoint;
 import central.starter.orm.EnableOrm;
+import central.starter.probe.EnableProbe;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.core.Ordered;
  * @since 2022/07/07
  */
 @EnableOrm
+@EnableProbe // 启用探针
 @EnableGraphQL
 @EnableLogPoint
 @EnableCentralProvider

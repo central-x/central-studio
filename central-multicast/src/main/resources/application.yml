@@ -29,6 +29,20 @@ central:
       path: central
       code: ${spring.application.name}
       secret: ${spring.application.secret}
+  probe:
+    authorizer:
+      type: fixed
+      params:
+        secret: cyLfRYFSnhHOpqAAzFyqvCpOwnlIyzJcCUIQqYHSKaOcnTqtiBjhOvKLNasivqjI
+    points:
+      - name: centralProviderEndpoint
+        type: http
+        params:
+          url: http://central-provider/provider/__probe
+          headers:
+            - name: Authorization
+              value: ${central.probe.authorizer.params.secret}
+studio:
   provider:
     fetchers:
       - saas

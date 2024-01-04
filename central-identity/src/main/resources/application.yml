@@ -1,7 +1,7 @@
 server:
   port: 3200
   servlet:
-    context-path: /security
+    context-path: /identity
   tomcat:
     remoteip:
       protocol-header: X-Forwarded-Proto
@@ -25,7 +25,22 @@ central:
       path: central
       code: ${spring.application.name}
       secret: ${spring.application.secret}
+  probe:
+    authorizer:
+      type: fixed
+      params:
+        secret: cyLfRYFSnhHOpqAAzFyqvCpOwnlIyzJcCUIQqYHSKaOcnTqtiBjhOvKLNasivqjI
+    points:
+      - name: centralProviderEndpoint
+        type: http
+        params:
+          url: http://central-provider/provider/__probe
+          headers:
+            - name: Authorization
+              value: ${central.probe.authorizer.params.secret}
+
+studio:
   provider:
     fetchers:
       - saas
-      - security
+      - identity

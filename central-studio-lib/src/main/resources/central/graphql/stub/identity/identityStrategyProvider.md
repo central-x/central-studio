@@ -5,7 +5,7 @@ findById
 
 ```graphql
 query SecurityStrategyProvider($id: String) {
-    security {
+    identity {
         strategies {
             findById(id: $id) {
                 id
@@ -44,7 +44,7 @@ findByIds
 
 ```graphql
 query SecurityStrategyProvider($ids: [String]) {
-    security {
+    identity {
         strategies {
             findByIds(ids: $ids){
                 id
@@ -83,7 +83,7 @@ findBy
 
 ```graphql
 query SecurityStrategyProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
-    security {
+    identity {
         strategies {
             findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
                 id
@@ -122,7 +122,7 @@ pageBy
 
 ```graphql
 query SecurityStrategyProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
-    security {
+    identity {
         strategies {
             pageBy(pageIndex: $pageIndex, pageSize: $pageSize, conditions: $conditions, orders: $orders){
                 pager {
@@ -171,7 +171,7 @@ countBy
 
 ```graphql
 query SecurityStrategyProvider($conditions: [ConditionInput]) {
-    security {
+    identity {
         strategies {
             countBy(conditions: $conditions)
         }
@@ -186,7 +186,7 @@ insert
 
 ```graphql
 mutation SecurityStrategyProvider($input: SecurityStrategyInput, $operator: String) {
-    security {
+    identity {
         strategies {
             insert(input: $input, operator: $operator) {
                 id
@@ -225,7 +225,7 @@ insertBatch
 
 ```graphql
 mutation SecurityStrategyProvider($inputs: [SecurityStrategyInput], $operator: String) {
-    security {
+    identity {
         strategies {
             insertBatch(inputs: $inputs, operator: $operator) {
                 id
@@ -264,7 +264,7 @@ update
 
 ```graphql
 mutation SecurityStrategyProvider($input: SecurityStrategyInput, $operator: String) {
-    security {
+    identity {
         strategies {
             update(input: $input, operator: $operator) {
                 id
@@ -303,7 +303,7 @@ updateBatch
 
 ```graphql
 mutation SecurityStrategyProvider($inputs: [SecurityStrategyInput], $operator: String) {
-    security {
+    identity {
         strategies {
             updateBatch(inputs: $inputs, operator: $operator) {
                 id
@@ -342,7 +342,7 @@ deleteByIds
 
 ```graphql
 mutation SecurityStrategyProvider($ids: [String]) {
-    security {
+    identity {
         strategies {
             deleteByIds(ids: $ids)
         }
@@ -357,7 +357,7 @@ deleteBy
 
 ```graphql
 mutation SecurityStrategyProvider($conditions: [ConditionInput]) {
-    security {
+    identity {
         strategies {
             deleteBy(conditions: $conditions)
         }

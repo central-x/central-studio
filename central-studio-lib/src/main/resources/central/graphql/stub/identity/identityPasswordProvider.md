@@ -5,7 +5,7 @@ findById
 
 ```graphql
 query PasswordProvider($id: String) {
-    security {
+    identity {
         passwords {
             findById(id: $id) {
                 id
@@ -37,7 +37,7 @@ findByIds
 
 ```graphql
 query PasswordProvider($ids: [String]) {
-    security {
+    identity {
         passwords {
             findByIds(ids: $ids){
                 id
@@ -69,7 +69,7 @@ findBy
 
 ```graphql
 query PasswordProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
-    security {
+    identity {
         passwords {
             findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
                 id
@@ -101,7 +101,7 @@ pageBy
 
 ```graphql
 query PasswordProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
-    security {
+    identity {
         passwords {
             pageBy(pageIndex: $pageIndex, pageSize: $pageSize, conditions: $conditions, orders: $orders){
                 pager {
@@ -143,7 +143,7 @@ countBy
 
 ```graphql
 query PasswordProvider($conditions: [ConditionInput]) {
-    security {
+    identity {
         passwords {
             countBy(conditions: $conditions)
         }
@@ -158,7 +158,7 @@ insert
 
 ```graphql
 mutation PasswordProvider($input: SecurityPasswordInput, $operator: String) {
-    security {
+    identity {
         passwords {
             insert(input: $input, operator: $operator) {
                 id
@@ -190,7 +190,7 @@ insertBatch
 
 ```graphql
 mutation PasswordProvider($inputs: [SecurityPasswordInput], $operator: String) {
-    security {
+    identity {
         passwords {
             insertBatch(inputs: $inputs, operator: $operator) {
                 id
@@ -222,7 +222,7 @@ deleteByIds
 
 ```graphql
 mutation PasswordProvider($ids: [String]) {
-    security {
+    identity {
         passwords {
             deleteByIds(ids: $ids)
         }
@@ -237,7 +237,7 @@ deleteBy
 
 ```graphql
 mutation PasswordProvider($conditions: [ConditionInput]) {
-    security {
+    identity {
         passwords {
             deleteBy(conditions: $conditions)
         }

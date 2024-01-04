@@ -28,6 +28,7 @@ import central.logging.EnableCentralLogging;
 import central.provider.EnableCentralProvider;
 import central.identity.EnableCentralIdentity;
 import central.starter.identity.EnableIdentity;
+import central.starter.probe.EnableProbe;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,6 +39,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/11/17
  */
 @Configuration
+@EnableProbe // 启用探针
 @EnableIdentity // 启用 Shiro
 @EnableCentralLogging // 对接日志中心
 @EnableCentralProvider // 对接数据服务中心

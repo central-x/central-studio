@@ -492,7 +492,7 @@ public class Session implements Serializable {
         }
 
         public Session build(String signKey) {
-            return this.build((RSAPrivateKey) Signerx.RSA.getSignKey(signKey));
+            return this.build((RSAPrivateKey) Signerx.RSA_256.getSignKey(signKey));
         }
 
         public Session build(Key signKey) {
@@ -740,7 +740,7 @@ public class Session implements Serializable {
          * @param verifyKey 校验密钥
          */
         public void verify(String verifyKey) throws InvalidKeyException, InvalidSessionException {
-            this.verify((RSAPublicKey) Signerx.RSA.getVerifyKey(verifyKey));
+            this.verify((RSAPublicKey) Signerx.RSA_256.getVerifyKey(verifyKey));
         }
 
         /**

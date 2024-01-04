@@ -28,6 +28,7 @@ import central.pluglet.PlugletFactory;
 import central.pluglet.binder.SpringBeanFieldBinder;
 import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.provider.EnableCentralProvider;
+import central.starter.probe.EnableProbe;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +45,7 @@ import java.util.concurrent.Executors;
  * @author Alan Yeh
  * @since 2022/11/03
  */
+@EnableProbe // 启用探针
 @Configuration
 @EnableCentralProvider
 @EnableConfigurationProperties(ApplicationProperties.class)

@@ -31,6 +31,7 @@ import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.provider.EnableCentralProvider;
 import central.security.Signerx;
 import central.security.signer.KeyPair;
+import central.starter.probe.EnableProbe;
 import central.util.cache.CacheRepository;
 import central.util.cache.memory.MemoryCacheRepository;
 import central.util.cache.redis.RedisCacheRepository;
@@ -47,6 +48,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Alan Yeh
  * @since 2022/10/19
  */
+@EnableProbe // 启用探针
 @Configuration
 @EnableCentralProvider
 @EnableCentralIdentity
@@ -58,7 +60,7 @@ public class ApplicationConfiguration {
      */
     @Bean
     public KeyPair keyPair() {
-        return Signerx.RSA.generateKeyPair();
+        return Signerx.RSA_256.generateKeyPair();
     }
 
     @Bean
