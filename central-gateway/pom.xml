@@ -38,6 +38,16 @@
         </dependency>
 
         <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-starter-probe</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
         </dependency>
