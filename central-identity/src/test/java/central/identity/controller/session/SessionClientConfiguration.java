@@ -25,7 +25,7 @@
 package central.identity.controller.session;
 
 import central.identity.client.SessionClient;
-import central.net.http.executor.okhttp.OkHttpExecutor;
+import central.net.http.executor.apache.ApacheHttpClientExecutor;
 import central.net.http.processor.impl.AddHeaderProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
@@ -44,7 +44,7 @@ import org.springframework.context.annotation.Configuration;
 public class SessionClientConfiguration {
     @Bean
     public SessionClient sessionClient(@Value("${server.port}") int port, @Value("${server.servlet.context-path}") String contextPath) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
                 .baseUrl("http://127.0.0.1:" + port + contextPath)

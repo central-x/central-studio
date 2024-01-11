@@ -31,6 +31,7 @@ import central.storage.core.BucketCache;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,18 +44,18 @@ import java.util.List;
  * @since 2022/11/02
  */
 public class LocalCache implements BucketCache {
-    private final File path;
+    private final Path path;
 
-    public LocalCache(String path) {
-        this.path = new File(path);
-        if (!this.path.exists()) {
-            Assertx.mustTrue(this.path.mkdirs(), "无法读写目录: " + this.path.getAbsolutePath());
+    public LocalCache(Path path) throws IOException{
+        this.path = path;
+        if (!Files.notExists(path)) {
+            Files.createDirectories(this.path);
         }
     }
 
     @Override
     public void put(String key, InputStream data) throws IOException {
-        var cache = new File(this.path, key);
+        var cache = new File(this.path.toFile(), key);
         Assertx.mustTrue(cache.createNewFile(), IOException::new, "缓存[{}]已存在", key);
         try (data; var output = Files.newOutputStream(cache.toPath(), StandardOpenOption.WRITE)) {
             IOStreamx.transfer(data, output);
@@ -63,7 +64,7 @@ public class LocalCache implements BucketCache {
 
     @Override
     public void set(String key, InputStream data) throws IOException {
-        var cache = new File(this.path, key);
+        var cache = new File(this.path.toFile(), key);
         Filex.delete(cache);
         Assertx.mustTrue(cache.createNewFile(), IOException::new, "缓存[{}]创建失败", key);
         try (data; var output = Files.newOutputStream(cache.toPath(), StandardOpenOption.WRITE)) {
@@ -73,7 +74,7 @@ public class LocalCache implements BucketCache {
 
     @Override
     public InputStream cache(String key, InputStream data) throws IOException {
-        var cache = new File(this.path, key);
+        var cache = new File(this.path.toFile(), key);
         Assertx.mustTrue(cache.createNewFile(), IOException::new, "缓存[{}]已存在", key);
 
         var bufferedOutput = new BufferedOutputStream(Files.newOutputStream(cache.toPath(), StandardOpenOption.WRITE));
@@ -100,12 +101,12 @@ public class LocalCache implements BucketCache {
 
     @Override
     public boolean exists(String key) {
-        return new File(this.path, key).exists();
+        return new File(this.path.toFile(), key).exists();
     }
 
     @Override
     public InputStream get(String key) throws IOException {
-        var cache = new File(this.path, key);
+        var cache = new File(this.path.toFile(), key);
         if (!cache.exists()) {
             return null;
         } else {
@@ -126,7 +127,7 @@ public class LocalCache implements BucketCache {
 
     @Override
     public void delete(String key) throws IOException {
-        var cache = new File(this.path, key);
+        var cache = new File(this.path.toFile(), key);
         Filex.delete(cache);
     }
 

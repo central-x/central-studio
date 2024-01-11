@@ -24,7 +24,7 @@
 
 package central.provider;
 
-import central.net.http.executor.okhttp.OkHttpExecutor;
+import central.net.http.executor.apache.ApacheHttpClientExecutor;
 import central.net.http.processor.impl.SetHeaderProcessor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
@@ -58,7 +58,7 @@ public class ProviderConfiguration {
      */
     @Bean
     public ProviderClient providerClient(ProviderProperties properties) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new TransmitForwardedProcessor())
                 .baseUrl(properties.getUrl() + "/provider")
@@ -70,7 +70,7 @@ public class ProviderConfiguration {
      */
     @Bean
     public ProviderClient masterProviderClient(ProviderProperties properties) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new TransmitForwardedProcessor())
                 .processor(new SetHeaderProcessor(XForwardedHeaders.TENANT, "master"))

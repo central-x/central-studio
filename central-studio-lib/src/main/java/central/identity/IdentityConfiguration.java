@@ -24,11 +24,11 @@
 
 package central.identity;
 
-import central.net.http.executor.okhttp.OkHttpExecutor;
+import central.identity.client.SessionClient;
+import central.net.http.executor.apache.ApacheHttpClientExecutor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
-import central.identity.client.SessionClient;
 import central.starter.identity.IdentityProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -52,7 +52,7 @@ public class IdentityConfiguration {
      */
     @Bean
     public SessionClient sessionClient(IdentityProperties properties) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new TransmitForwardedProcessor())
                 .baseUrl(properties.getUrl())

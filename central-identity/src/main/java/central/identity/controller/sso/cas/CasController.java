@@ -24,25 +24,25 @@
 
 package central.identity.controller.sso.cas;
 
-import central.provider.scheduled.fetcher.saas.SaasContainer;
-import central.identity.client.SessionVerifier;
-import central.provider.graphql.organization.AccountProvider;
-import central.provider.scheduled.DataContext;
-import central.provider.scheduled.fetcher.DataFetcherType;
 import central.bean.OptionalEnum;
 import central.data.organization.Account;
-import central.lang.Stringx;
-import central.net.http.executor.okhttp.OkHttpExecutor;
-import central.net.http.proxy.HttpProxyFactory;
-import central.net.http.proxy.contract.spring.SpringContract;
-import central.identity.controller.sso.cas.support.Format;
+import central.identity.client.SessionVerifier;
 import central.identity.controller.sso.cas.param.LoginParams;
 import central.identity.controller.sso.cas.param.LogoutParams;
 import central.identity.controller.sso.cas.param.ValidateParams;
 import central.identity.controller.sso.cas.support.CasSession;
+import central.identity.controller.sso.cas.support.Format;
 import central.identity.controller.sso.cas.support.ServiceTicket;
 import central.identity.core.attribute.CasAttributes;
 import central.identity.core.attribute.SessionAttributes;
+import central.lang.Stringx;
+import central.net.http.executor.apache.ApacheHttpClientExecutor;
+import central.net.http.proxy.HttpProxyFactory;
+import central.net.http.proxy.contract.spring.SpringContract;
+import central.provider.graphql.organization.AccountProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.starter.webmvc.render.TextRender;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
@@ -424,7 +424,7 @@ public class CasController {
                          <samlp:SessionIndex>{}</samlp:SessionIndex>
                     </samlp:LogoutRequest>
                      """, Guidx.nextID(), OffsetDateTime.now().toString(), this.ticket);
-            var client = HttpProxyFactory.builder(OkHttpExecutor.Default())
+            var client = HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                     .contact(new SpringContract())
                     .baseUrl(this.url)
                     .target(LogoutClient.class);

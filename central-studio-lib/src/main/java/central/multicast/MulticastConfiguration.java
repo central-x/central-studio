@@ -25,7 +25,7 @@
 package central.multicast;
 
 import central.multicast.client.MessageClient;
-import central.net.http.executor.okhttp.OkHttpExecutor;
+import central.net.http.executor.apache.ApacheHttpClientExecutor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
@@ -50,7 +50,7 @@ public class MulticastConfiguration {
      */
     @Bean
     public MessageClient messageClient(MulticastProperties properties) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new TransmitForwardedProcessor())
                 .baseUrl(properties.getUrl())

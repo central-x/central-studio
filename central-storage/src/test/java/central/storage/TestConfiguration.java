@@ -24,16 +24,14 @@
 
 package central.storage;
 
-import central.storage.client.ObjectClient;
-import central.net.http.executor.okhttp.OkHttpExecutor;
+import central.net.http.executor.apache.ApacheHttpClientExecutor;
 import central.net.http.processor.impl.ThrowProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
+import central.storage.client.ObjectClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.io.File;
 
 /**
  * 测试配置
@@ -46,10 +44,9 @@ public class TestConfiguration {
 
     @Bean
     public ObjectClient objectClient(@Value("${server.port}") int port) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                 .contact(new SpringContract())
                 .baseUrl("http://127.0.0.1:" + port)
-                .tmp(new File("./tmp"))
                 .processor(new ThrowProcessor())
                 .target(ObjectClient.class);
     }

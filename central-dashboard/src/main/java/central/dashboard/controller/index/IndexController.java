@@ -55,7 +55,8 @@ public class IndexController {
      * 返回首页静态页面
      */
     @GetMapping("/")
-    public View index() {
+    public View index(@RequestAttribute String accountId) {
+        accountService.findById(accountId);
         return new InternalResourceView("index.html");
     }
 

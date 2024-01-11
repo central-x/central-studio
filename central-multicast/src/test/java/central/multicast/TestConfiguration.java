@@ -25,7 +25,7 @@
 package central.multicast;
 
 import central.multicast.client.MessageClient;
-import central.net.http.executor.okhttp.OkHttpExecutor;
+import central.net.http.executor.apache.ApacheHttpClientExecutor;
 import central.net.http.processor.impl.ThrowProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Configuration;
 public class TestConfiguration {
     @Bean
     public MessageClient messageClient(@Value("${server.port}") int port) {
-        return HttpProxyFactory.builder(OkHttpExecutor.Default())
+        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                 .contact(new SpringContract())
                 .baseUrl("http://127.0.0.1:" + port)
                 .processor(new ThrowProcessor())

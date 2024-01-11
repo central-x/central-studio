@@ -39,6 +39,8 @@ import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 
 /**
@@ -54,8 +56,8 @@ import java.util.concurrent.Executors;
 public class ApplicationConfiguration {
 
     @Bean
-    public BucketCache bucketCache() {
-        return new LocalCache("./tmp/storages/");
+    public BucketCache bucketCache() throws IOException {
+        return new LocalCache(Path.of("cache", "storage"));
     }
 
 
