@@ -24,7 +24,7 @@
 
 package central.identity.controller.session;
 
-import central.identity.IdentityApplication;
+import central.studio.identity.IdentityApplication;
 import central.identity.client.Session;
 import central.identity.client.SessionClient;
 import central.security.Digestx;

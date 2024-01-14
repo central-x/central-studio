@@ -25,9 +25,10 @@
 package central.identity.controller.index;
 
 import central.data.organization.Account;
-import central.identity.IdentityApplication;
-import central.identity.controller.index.support.LoginOptions;
-import central.identity.core.attribute.EndpointAttributes;
+import central.studio.identity.IdentityApplication;
+import central.studio.identity.controller.index.IndexController;
+import central.studio.identity.controller.index.support.LoginOptions;
+import central.studio.identity.core.attribute.EndpointAttributes;
 import central.lang.reflect.TypeRef;
 import central.security.Digestx;
 import central.util.Jsonx;
