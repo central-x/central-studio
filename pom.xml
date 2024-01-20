@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>central-bootstrap</module>
         <module>central-dashboard</module>
         <module>central-gateway</module>
         <module>central-identity</module>
