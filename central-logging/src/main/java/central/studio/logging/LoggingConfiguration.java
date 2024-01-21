@@ -32,6 +32,7 @@ import central.starter.probe.EnableProbe;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
@@ -49,9 +50,9 @@ import java.util.concurrent.Executors;
 @EnableProbe // 启用探针
 @Configuration
 @EnableCentralProvider
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
-
+@ComponentScan("central.studio.logging")
+@EnableConfigurationProperties(LoggingProperties.class)
+public class LoggingConfiguration {
     /**
      * 异步事件发布
      */

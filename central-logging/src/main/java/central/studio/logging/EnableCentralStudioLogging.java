@@ -24,14 +24,19 @@
 
 package central.studio.logging;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
- * 应用配置
+ * 启用日志中心
  *
  * @author Alan Yeh
- * @since 2022/10/24
+ * @since 2024/01/21
  */
-@ConfigurationProperties("studio.logging")
-public class ApplicationProperties {
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(LoggingConfiguration.class)
+public @interface EnableCentralStudioLogging {
 }

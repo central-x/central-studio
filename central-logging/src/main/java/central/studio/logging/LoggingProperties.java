@@ -22,22 +22,18 @@
  * SOFTWARE.
  */
 
-package central.studio.bootstrap;
+package central.studio.logging;
 
-import central.provider.EnableCentralProvider;
-import central.studio.logging.EnableCentralStudioLogging;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Application Configuration
+ * 应用配置
  *
  * @author Alan Yeh
- * @since 2024/01/20
+ * @since 2022/10/24
  */
-@Configuration
-@EnableCentralProvider
-@EnableCentralStudioLogging
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
+@Data
+@ConfigurationProperties("studio.logging")
+public class LoggingProperties {
 }

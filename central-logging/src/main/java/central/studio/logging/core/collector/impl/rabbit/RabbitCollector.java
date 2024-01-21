@@ -22,20 +22,11 @@
  * SOFTWARE.
  */
 
-package central.studio.logging;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package central.studio.logging.core.collector.impl.rabbit;
 
 /**
- * Logging Application
- *
  * @author Alan Yeh
- * @since 2022/10/24
+ * @since 2024/01/21
  */
-@SpringBootApplication
-public class LoggingApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(LoggingApplication.class);
-    }
+public class RabbitCollector {
 }

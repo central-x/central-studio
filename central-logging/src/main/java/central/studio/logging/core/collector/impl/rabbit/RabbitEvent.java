@@ -22,22 +22,11 @@
  * SOFTWARE.
  */
 
-package central.studio.bootstrap;
-
-import central.provider.EnableCentralProvider;
-import central.studio.logging.EnableCentralStudioLogging;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+package central.studio.logging.core.collector.impl.rabbit;
 
 /**
- * Application Configuration
- *
  * @author Alan Yeh
- * @since 2024/01/20
+ * @since 2024/01/21
  */
-@Configuration
-@EnableCentralProvider
-@EnableCentralStudioLogging
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
+public class RabbitEvent {
 }

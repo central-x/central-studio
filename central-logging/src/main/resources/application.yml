@@ -1,32 +1,3 @@
-server:
-  servlet:
-    context-path: /logging
-  port: 3400
-
-spring:
-  application:
-    name: central-provider
-    version: @{ project.version }@
-
-central:
-  probe:
-    authorizer:
-      type: fixed
-      params:
-        secret: cyLfRYFSnhHOpqAAzFyqvCpOwnlIyzJcCUIQqYHSKaOcnTqtiBjhOvKLNasivqjI
-    points:
-      - name: centralProviderEndpoint
-        type: http
-        params:
-          url: http://central-provider/provider/__probe
-          headers:
-            - name: Authorization
-              value: ${central.probe.authorizer.params.secret}
-          timeout: 2000
-
-logging:
-  config: classpath:logback-default.xml
-
 studio:
   provider:
     fetchers:

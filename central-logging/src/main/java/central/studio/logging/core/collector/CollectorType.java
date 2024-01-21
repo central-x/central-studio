@@ -26,6 +26,7 @@ package central.studio.logging.core.collector;
 
 import central.bean.OptionalEnum;
 import central.studio.logging.core.collector.impl.http.HttpCollector;
+import central.studio.logging.core.collector.impl.local.LocalCollector;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -39,7 +40,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CollectorType implements OptionalEnum<String> {
 
-    HTTP("HTTP 采集器（Http）", "http", HttpCollector.class);
+    HTTP("HTTP 采集器（Http）", "http", HttpCollector.class),
+    LOCAL("本地文件采集器（Local）", "local", LocalCollector.class);
 
     private final String name;
     private final String value;

@@ -18,18 +18,8 @@
     <dependencies>
         <dependency>
             <groupId>com.central-x</groupId>
-            <artifactId>central-studio-lib</artifactId>
+            <artifactId>central-logging</artifactId>
             <version>1.0.x-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.central-x</groupId>
-            <artifactId>central-starter-webmvc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.central-x</groupId>
-            <artifactId>central-starter-logging</artifactId>
         </dependency>
 
         <!-- 测试依赖 -->

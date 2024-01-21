@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2023/12/21
  */
 @RestController
-@RequestMapping("/")
+@RequestMapping("/logging/")
 public class IndexController {
 
     @GetMapping("/")

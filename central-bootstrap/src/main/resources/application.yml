@@ -9,4 +9,13 @@ spring:
     version: @{ project.version }@
 
 logging:
-  config: classpath:logback-http.xml
+  config: classpath:logback-local.xml
+
+# 应用配置
+studio:
+  provider:
+    code: central-studio
+    key: central-studio-key
+    fetchers:
+      - log
+      - saas

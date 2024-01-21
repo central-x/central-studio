@@ -62,14 +62,14 @@ public class HttpCollector extends Collector implements ApplicationContextAware,
     @Override
     public void afterPropertiesSet() throws Exception {
         // 动态添加监听
-        if (applicationContext instanceof AbstractApplicationContext context) {
+        if (this.applicationContext instanceof AbstractApplicationContext context) {
             context.addApplicationListener(this);
         }
     }
 
     @Override
     public void destroy() throws Exception {
-        if (applicationContext instanceof AbstractApplicationContext context) {
+        if (this.applicationContext instanceof AbstractApplicationContext context) {
             context.getApplicationListeners().remove(this);
         }
         var multicaster = this.applicationContext.getBean(AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME, ApplicationEventMulticaster.class);

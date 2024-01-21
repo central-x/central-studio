@@ -28,7 +28,7 @@ import central.data.log.Log;
 import central.data.log.LogCollector;
 import central.data.log.LogFilter;
 import central.data.log.LogStorage;
-import central.studio.logging.core.Container;
+import central.studio.logging.core.LoggingContainer;
 import central.studio.logging.core.filter.predicate.DynamicPredicate;
 import central.studio.logging.core.filter.predicate.Predicate;
 import central.pluglet.PlugletFactory;
@@ -52,7 +52,7 @@ public class DynamicFilter implements Filter, DisposableBean {
     private final LogFilter data;
 
     private final PlugletFactory factory;
-    private final Container container;
+    private final LoggingContainer container;
 
     /**
      * 采集器主键
@@ -70,7 +70,7 @@ public class DynamicFilter implements Filter, DisposableBean {
 
     private final List<Predicate> predicates = new ArrayList<>();
 
-    public DynamicFilter(LogFilter data, Container container, PlugletFactory factory) {
+    public DynamicFilter(LogFilter data, LoggingContainer container, PlugletFactory factory) {
         this.data = data;
         this.container = container;
         this.factory = factory;

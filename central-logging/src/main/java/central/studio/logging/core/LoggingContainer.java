@@ -34,6 +34,7 @@ import central.pluglet.PlugletFactory;
 import jakarta.annotation.Nonnull;
 import lombok.Setter;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -54,7 +55,7 @@ import java.util.Objects;
  * @since 2022/10/25
  */
 @Component
-public class Container implements ApplicationContextAware, DisposableBean, GenericApplicationListener {
+public class LoggingContainer implements ApplicationContextAware, DisposableBean, InitializingBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;
@@ -166,6 +167,11 @@ public class Container implements ApplicationContextAware, DisposableBean, Gener
                 }
             }
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("Initializing LoggingContainer");
     }
 
     @Override

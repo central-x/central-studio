@@ -55,8 +55,9 @@ import java.util.zip.GZIPInputStream;
  * @since 2022/10/24
  */
 @RestController
-@RequestMapping("/api/collect")
-public class CollectController {
+@RequestMapping("/logging/api/collect/http")
+public class HttpCollectController {
+
     @Setter(onMethod_ = @Autowired)
     private ApplicationEventPublisher publisher;
 
