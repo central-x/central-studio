@@ -22,25 +22,24 @@
  * SOFTWARE.
  */
 
-package central.studio.bootstrap;
+package central.studio.logging.controller;
 
-import central.provider.EnableCentralProvider;
-import central.studio.logging.EnableCentralStudioLogging;
-import central.studio.provider.EnableCentralStudioProvider;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Application Configuration
+ * Index Controller
  *
  * @author Alan Yeh
- * @since 2024/01/20
+ * @since 2023/12/21
  */
-@Configuration
-@EnableCentralProvider
-// Central Studio
-@EnableCentralStudioLogging // 日志中心
-@EnableCentralStudioProvider // 数据服务中心
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
+@RestController
+@RequestMapping("/logging/")
+public class LoggingIndexController {
+
+    @GetMapping("/")
+    public String index(){
+        return "Welcome to Logging";
+    }
 }

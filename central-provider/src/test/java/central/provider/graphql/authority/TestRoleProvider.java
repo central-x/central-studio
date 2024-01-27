@@ -28,7 +28,7 @@ import central.provider.graphql.organization.PostProvider;
 import central.data.organization.option.AreaType;
 import central.data.authority.Role;
 import central.data.authority.RoleInput;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.organization.entity.AreaEntity;
@@ -67,7 +67,7 @@ public class TestRoleProvider extends TestProvider {
     private RoleProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private RoleMapper mapper;

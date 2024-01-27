@@ -17,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 @Data
 @Validated
 @ConfigurationProperties("studio.provider")
-public class ApplicationProperties {
+public class ProviderProperties {
 
     @NotBlank
     @Label("标识")

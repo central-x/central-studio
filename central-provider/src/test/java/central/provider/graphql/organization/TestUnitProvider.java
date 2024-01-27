@@ -27,7 +27,7 @@ package central.provider.graphql.organization;
 import central.data.organization.Unit;
 import central.data.organization.UnitInput;
 import central.data.organization.option.AreaType;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.organization.entity.AreaEntity;
@@ -63,7 +63,7 @@ public class TestUnitProvider extends TestProvider {
     private UnitProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private UnitMapper mapper;

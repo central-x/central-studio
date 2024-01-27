@@ -26,7 +26,7 @@ package central.studio.provider.graphql.identity.query;
 
 import central.provider.graphql.DTO;
 import central.bean.Page;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.graphql.identity.dto.IdentityPasswordDTO;
 import central.studio.provider.graphql.identity.entity.IdentityPasswordEntity;
 import central.studio.provider.graphql.identity.mapper.IdentityPasswordMapper;
@@ -65,7 +65,7 @@ public class IdentityPasswordQuery {
     private IdentityPasswordMapper mapper;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     private IdentityPasswordDTO getSupervisorPassword(String tenant) {
         var password = new IdentityPasswordEntity();

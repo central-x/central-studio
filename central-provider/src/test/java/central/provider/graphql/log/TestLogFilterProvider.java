@@ -28,7 +28,7 @@ import central.data.log.LogFilter;
 import central.data.log.LogFilterInput;
 import central.data.log.LogPredicate;
 import central.data.log.LogPredicateInput;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.sql.query.Conditions;
 import central.studio.provider.graphql.log.entity.*;
@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestLogFilterProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private LogFilterProvider provider;

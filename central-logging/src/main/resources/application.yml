@@ -1,5 +1,6 @@
-studio:
-  provider:
-    fetchers:
-      - SAAS
-      - LOG
+# 应用配置
+#studio:
+#  provider:
+#    fetchers:
+#      - SAAS
+#      - LOG

@@ -28,7 +28,7 @@ import central.data.organization.Department;
 import central.data.organization.DepartmentInput;
 import central.data.organization.option.AreaType;
 import central.lang.Stringx;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.organization.entity.AreaEntity;
@@ -65,7 +65,7 @@ public class TestDepartmentProvider extends TestProvider {
     private DepartmentProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private UnitMapper unitMapper;

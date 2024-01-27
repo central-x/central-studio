@@ -27,7 +27,7 @@ package central.provider.graphql.saas;
 import central.data.saas.Tenant;
 import central.data.saas.TenantInput;
 import central.data.system.DatabaseProperties;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.system.entity.DatabaseEntity;
@@ -68,7 +68,7 @@ public class TestTenantProvider extends TestProvider {
     private TenantProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private TenantMapper mapper;

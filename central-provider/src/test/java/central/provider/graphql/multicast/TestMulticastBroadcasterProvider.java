@@ -27,7 +27,7 @@ package central.provider.graphql.multicast;
 import central.data.multicast.MulticastBroadcaster;
 import central.data.multicast.MulticastBroadcasterInput;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.studio.provider.graphql.multicast.entity.MulticastBroadcasterEntity;
 import central.studio.provider.graphql.multicast.mapper.MulticastBroadcasterMapper;
@@ -63,7 +63,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestMulticastBroadcasterProvider {
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private MulticastBroadcasterProvider provider;

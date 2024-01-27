@@ -25,7 +25,7 @@
 package central.studio.provider.graphql.organization.service;
 
 import central.bean.Page;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.provider.graphql.DTO;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.graphql.organization.entity.AccountEntity;
@@ -57,7 +57,7 @@ public class AccountService {
     private AccountMapper mapper;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     /**
      * 获取超级管理员帐号信息

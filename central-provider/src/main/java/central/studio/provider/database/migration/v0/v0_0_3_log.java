@@ -25,8 +25,6 @@
 package central.studio.provider.database.migration.v0;
 
 import central.data.log.LogPredicate;
-import central.provider.graphql.log.entity.*;
-import central.provider.graphql.log.mapper.*;
 import central.sql.SqlExecutor;
 import central.sql.SqlType;
 import central.sql.datasource.migration.*;
@@ -172,16 +170,27 @@ public class v0_0_3_log extends Migration {
         var collectorRelMapper = executor.getMapper(LogCollectorFilterMapper.class);
         var storageRelMapper = executor.getMapper(LogStorageFilterMapper.class);
 
-        // 采集器
-        var collectorEntity = new LogCollectorEntity();
-        collectorEntity.setCode("http");
-        collectorEntity.setName("Http 采集器");
-        collectorEntity.setType("http");
-        collectorEntity.setEnabled(Boolean.TRUE);
-        collectorEntity.setRemark("Http 采集器");
-        collectorEntity.setParams(Jsonx.Default().serialize(Map.of("path", "central")));
-        collectorEntity.updateCreator("syssa");
-        collectorMapper.insert(collectorEntity);
+        // Http 采集器
+        var httpCollector = new LogCollectorEntity();
+        httpCollector.setCode("http");
+        httpCollector.setName("Http 采集器");
+        httpCollector.setType("http");
+        httpCollector.setEnabled(Boolean.TRUE);
+        httpCollector.setRemark("Http 采集器");
+        httpCollector.setParams(Jsonx.Default().serialize(Map.of("path", "central")));
+        httpCollector.updateCreator("syssa");
+        collectorMapper.insert(httpCollector);
+
+        // 本地采集器
+        var localCollector = new LogCollectorEntity();
+        localCollector.setCode("local");
+        localCollector.setName("本地采集器");
+        localCollector.setType("local");
+        localCollector.setEnabled(Boolean.TRUE);
+        localCollector.setRemark("本地采集器");
+        localCollector.setParams(Jsonx.Default().serialize(Map.of("path", "./logs/tmp")));
+        localCollector.updateCreator("syssa");
+        collectorMapper.insert(localCollector);
 
         // 存储器
         var storageEntity = new LogStorageEntity();
@@ -214,7 +223,7 @@ public class v0_0_3_log extends Migration {
 
         // 采集器与过滤器的关联关系
         var collectorRel = new LogCollectorFilterEntity();
-        collectorRel.setCollectorId(collectorEntity.getId());
+        collectorRel.setCollectorId(httpCollector.getId());
         collectorRel.setFilterId(entity.getId());
         collectorRel.updateCreator("syssa");
         collectorRelMapper.insert(collectorRel);

@@ -27,7 +27,7 @@ package central.provider.graphql.organization;
 import central.data.organization.AccountUnit;
 import central.data.organization.AccountUnitInput;
 import central.data.organization.option.AreaType;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.sql.query.Conditions;
@@ -60,7 +60,7 @@ public class TestAccountUnitProvider extends TestProvider {
     private AccountUnitProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private AreaMapper areaMapper;

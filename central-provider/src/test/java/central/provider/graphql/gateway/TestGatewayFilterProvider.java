@@ -29,7 +29,7 @@ import central.data.gateway.GatewayFilterInput;
 import central.data.gateway.GatewayPredicate;
 import central.data.gateway.GatewayPredicateInput;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.studio.provider.graphql.gateway.entity.GatewayFilterEntity;
 import central.studio.provider.graphql.gateway.mapper.GatewayFilterMapper;
@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestGatewayFilterProvider {
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private GatewayFilterProvider provider;

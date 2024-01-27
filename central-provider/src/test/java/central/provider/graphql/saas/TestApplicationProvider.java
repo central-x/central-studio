@@ -26,7 +26,7 @@ package central.provider.graphql.saas;
 
 import central.data.saas.Application;
 import central.data.saas.ApplicationInput;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.saas.entity.ApplicationEntity;
@@ -65,7 +65,7 @@ public class TestApplicationProvider extends TestProvider {
     private ApplicationProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private ApplicationMapper mapper;

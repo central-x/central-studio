@@ -29,7 +29,7 @@ import central.data.organization.Account;
 import central.data.organization.AccountInput;
 import central.data.organization.option.AreaType;
 import central.lang.Stringx;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.sql.query.Conditions;
@@ -65,7 +65,7 @@ public class TestAccountProvider extends TestProvider {
     private AccountProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private AccountMapper mapper;

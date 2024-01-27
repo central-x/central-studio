@@ -16,9 +16,17 @@
     <version>1.0.x-SNAPSHOT</version>
 
     <dependencies>
+        <!-- 日志中心 -->
         <dependency>
             <groupId>com.central-x</groupId>
             <artifactId>central-logging</artifactId>
+            <version>1.0.x-SNAPSHOT</version>
+        </dependency>
+
+        <!-- 数据服务中心 -->
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-provider</artifactId>
             <version>1.0.x-SNAPSHOT</version>
         </dependency>
 

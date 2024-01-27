@@ -22,24 +22,21 @@
  * SOFTWARE.
  */
 
-package central.studio.logging.controller;
+package central.studio.provider;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
- * Index Controller
+ * 启用数据服务中心
  *
  * @author Alan Yeh
- * @since 2023/12/21
+ * @since 2024/01/27
  */
-@RestController
-@RequestMapping("/logging/")
-public class IndexController {
-
-    @GetMapping("/")
-    public String index(){
-        return "Welcome to Logging";
-    }
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(ProviderConfiguration.class)
+public @interface EnableCentralStudioProvider {
 }

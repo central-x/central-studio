@@ -27,7 +27,7 @@ package central.provider.graphql.storage;
 import central.data.storage.StorageBucket;
 import central.data.storage.StorageBucketInput;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.studio.provider.graphql.saas.entity.ApplicationEntity;
 import central.studio.provider.graphql.saas.mapper.ApplicationMapper;
@@ -66,7 +66,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestStorageBucketProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private StorageBucketProvider provider;

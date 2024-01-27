@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping
-public class IndexController {
+public class ProviderIndexController {
 
     @GetMapping
     public String index() {

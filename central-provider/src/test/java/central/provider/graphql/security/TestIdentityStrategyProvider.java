@@ -27,7 +27,7 @@ package central.provider.graphql.security;
 import central.data.identity.IdentityStrategy;
 import central.data.identity.IdentityStrategyInput;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.identity.IdentityStrategyProvider;
 import central.studio.provider.graphql.identity.entity.IdentityStrategyEntity;
@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestIdentityStrategyProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private IdentityStrategyProvider provider;

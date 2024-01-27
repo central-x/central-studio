@@ -1,45 +1,6 @@
-server:
-  port: 3300
-  servlet:
-    context-path: /provider
-
-spring:
-  application:
-    name: central-provider
-    version: @{ project.version }@
-  datasource:
-    name: master
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/centralx?useUnicode=true&characterEncoding=utf8&useSSL=false
-    username: root
-    password: root
-
-central:
-  probe:
-    cache:
-      enabled: true
-      timeout: 9000
-    authorizer:
-      type: fixed
-      params:
-        secret: cyLfRYFSnhHOpqAAzFyqvCpOwnlIyzJcCUIQqYHSKaOcnTqtiBjhOvKLNasivqjI
-    points:
-      - name: dataSourceEndpoint
-        type: datasource
-        params:
-          driver: ${spring.datasource.driver-class-name}
-          url: ${spring.datasource.url}
-          username: ${spring.datasource.username}
-          password: ${spring.datasource.password}
-
-logging:
-  config: classpath:logback-http.xml
-
 # 应用配置
-studio:
-  provider:
-    code: central-provider
-    key: central-provider-key
-    fetchers:
-      - log
-      - saas
+#studio:
+#  provider:
+#    fetchers:
+#      - log
+#      - saas

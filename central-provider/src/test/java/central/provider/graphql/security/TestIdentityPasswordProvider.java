@@ -27,7 +27,7 @@ package central.provider.graphql.security;
 import central.bean.Page;
 import central.data.identity.IdentityPassword;
 import central.data.identity.IdentityPasswordInput;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.provider.graphql.identity.IdentityPasswordProvider;
@@ -64,7 +64,7 @@ public class TestIdentityPasswordProvider extends TestProvider {
     private IdentityPasswordProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private IdentityPasswordMapper mapper;

@@ -27,7 +27,7 @@ package central.provider.graphql.log;
 import central.data.log.LogCollector;
 import central.data.log.LogCollectorInput;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.studio.provider.graphql.log.entity.LogCollectorEntity;
 import central.studio.provider.graphql.log.mapper.LogCollectorMapper;
@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestLogCollectorProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private LogCollectorProvider provider;

@@ -28,7 +28,7 @@ import central.data.system.Database;
 import central.data.system.DatabaseInput;
 import central.data.system.DatabaseProperties;
 import central.data.system.DatabasePropertiesInput;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.saas.entity.ApplicationEntity;
@@ -68,7 +68,7 @@ public class TestDatabaseProvider extends TestProvider {
     private DatabaseProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private DatabaseMapper mapper;

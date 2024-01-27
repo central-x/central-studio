@@ -27,7 +27,7 @@ package central.provider.graphql.authority;
 import central.data.authority.Menu;
 import central.data.authority.MenuInput;
 import central.data.authority.option.MenuType;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.authority.entity.MenuEntity;
@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestMenuProvider extends TestProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private MenuProvider provider;

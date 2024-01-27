@@ -31,7 +31,7 @@ import central.data.multicast.MulticastMessageInput;
 import central.data.multicast.option.PublishMode;
 import central.data.multicast.option.MessageStatus;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.studio.provider.graphql.multicast.entity.MulticastBroadcasterEntity;
 import central.studio.provider.graphql.multicast.entity.MulticastMessageEntity;
@@ -66,7 +66,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestMulticastMessageProvider {
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private MulticastMessageProvider provider;

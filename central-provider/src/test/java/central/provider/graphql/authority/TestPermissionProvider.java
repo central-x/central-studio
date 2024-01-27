@@ -27,7 +27,7 @@ package central.provider.graphql.authority;
 import central.data.authority.Permission;
 import central.data.authority.PermissionInput;
 import central.data.authority.option.MenuType;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.authority.entity.MenuEntity;
@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestPermissionProvider extends TestProvider {
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private PermissionProvider provider;

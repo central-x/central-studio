@@ -7,9 +7,33 @@ spring:
   application:
     name: central-studio
     version: @{ project.version }@
+  datasource:
+    name: master
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/centralx?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: root
 
 logging:
   config: classpath:logback-local.xml
+
+central:
+  probe:
+    cache:
+      enabled: true
+      timeout: 9000
+    authorizer:
+      type: fixed
+      params:
+        secret: cyLfRYFSnhHOpqAAzFyqvCpOwnlIyzJcCUIQqYHSKaOcnTqtiBjhOvKLNasivqjI
+    points:
+      - name: dataSourceEndpoint
+        type: datasource
+        params:
+          driver: ${spring.datasource.driver-class-name}
+          url: ${spring.datasource.url}
+          username: ${spring.datasource.username}
+          password: ${spring.datasource.password}
 
 # 应用配置
 studio:

@@ -24,7 +24,6 @@
 
 package central.studio.provider.graphql.organization;
 
-import central.provider.graphql.organization.query.*;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.organization.query.*;

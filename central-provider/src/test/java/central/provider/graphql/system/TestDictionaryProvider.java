@@ -26,7 +26,7 @@ package central.provider.graphql.system;
 
 import central.data.system.Dictionary;
 import central.data.system.DictionaryInput;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.provider.graphql.TestProvider;
 import central.studio.provider.graphql.system.entity.DictionaryEntity;
@@ -64,7 +64,7 @@ public class TestDictionaryProvider extends TestProvider {
     private DictionaryProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private DictionaryMapper mapper;

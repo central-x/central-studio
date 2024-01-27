@@ -26,7 +26,7 @@ package central.provider.graphql.storage;
 
 import central.data.storage.StorageObject;
 import central.data.storage.StorageObjectInput;
-import central.studio.provider.ApplicationProperties;
+import central.studio.provider.ProviderProperties;
 import central.studio.provider.ProviderApplication;
 import central.studio.provider.graphql.saas.entity.ApplicationEntity;
 import central.studio.provider.graphql.saas.mapper.ApplicationMapper;
@@ -67,7 +67,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestStorageObjectProvider {
     @Setter(onMethod_ = @Autowired)
-    private ApplicationProperties properties;
+    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private StorageObjectProvider provider;
