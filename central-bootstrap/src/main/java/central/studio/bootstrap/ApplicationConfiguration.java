@@ -27,6 +27,7 @@ package central.studio.bootstrap;
 import central.provider.EnableCentralProvider;
 import central.studio.logging.EnableCentralStudioLogging;
 import central.studio.provider.EnableCentralStudioProvider;
+import central.studio.storage.EnableCentralStudioStorage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,6 +42,7 @@ import org.springframework.context.annotation.Configuration;
 // Central Studio
 @EnableCentralStudioLogging // 日志中心
 @EnableCentralStudioProvider // 数据服务中心
+@EnableCentralStudioStorage // 存储中心
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
 }

@@ -34,15 +34,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.context.event.SimpleApplicationEventMulticaster;
-import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
-
-import java.util.concurrent.Executors;
 
 /**
- * Application Configuration
- * 应用配置
+ * 日志中心配置
  *
  * @author Alan Yeh
  * @since 2022/10/24
@@ -53,17 +47,6 @@ import java.util.concurrent.Executors;
 @ComponentScan("central.studio.logging")
 @EnableConfigurationProperties(LoggingProperties.class)
 public class LoggingConfiguration {
-    /**
-     * 异步事件发布
-     */
-    @Bean
-    public ApplicationEventMulticaster applicationEventMulticaster() {
-        var multicaster = new SimpleApplicationEventMulticaster();
-
-        var service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new CustomizableThreadFactory("central-logging.multicaster"));
-        multicaster.setTaskExecutor(service);
-        return multicaster;
-    }
 
     /**
      * 插件工厂

@@ -31,20 +31,18 @@ import central.provider.EnableCentralProvider;
 import central.starter.probe.EnableProbe;
 import central.studio.storage.core.BucketCache;
 import central.studio.storage.core.cache.LocalCache;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.context.event.SimpleApplicationEventMulticaster;
-import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.concurrent.Executors;
 
 /**
- * 应用配置
+ * 存储中心配置
  *
  * @author Alan Yeh
  * @since 2022/10/30
@@ -52,31 +50,20 @@ import java.util.concurrent.Executors;
 @EnableProbe // 启用探针
 @Configuration
 @EnableCentralProvider
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
+@ComponentScan("central.studio.storage")
+@EnableConfigurationProperties(StorageProperties.class)
+public class StorageConfiguration {
 
     @Bean
     public BucketCache bucketCache() throws IOException {
         return new LocalCache(Path.of("cache", "storage"));
     }
 
-
-    /**
-     * 异步事件发布
-     */
-    @Bean
-    public ApplicationEventMulticaster applicationEventMulticaster() {
-        var multicaster = new SimpleApplicationEventMulticaster();
-
-        var service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new CustomizableThreadFactory("central-logging.multicaster"));
-        multicaster.setTaskExecutor(service);
-        return multicaster;
-    }
-
     /**
      * 插件工厂
      */
     @Bean
+    @ConditionalOnMissingBean(PlugletFactory.class)
     public PlugletFactory plugletFactory(ApplicationContext applicationContext) {
         var factory = new PlugletFactory();
         factory.registerBinder(new SpringBeanFieldBinder(applicationContext));

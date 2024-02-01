@@ -22,16 +22,23 @@
  * SOFTWARE.
  */
 
-package central.studio.storage;
+package central.studio.storage.controller;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 应用配置
+ * Index
  *
  * @author Alan Yeh
- * @since 2022/10/30
+ * @since 2024/02/01
  */
-@ConfigurationProperties("central.storage")
-public class ApplicationProperties {
+@RestController
+@RequestMapping("/storage")
+public class StorageIndexController {
+    @GetMapping
+    public String index() {
+        return "Welcome to Central Storage.";
+    }
 }

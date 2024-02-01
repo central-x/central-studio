@@ -170,6 +170,9 @@ public class ScheduledDataContext extends Observable<ScheduledDataContext> imple
         @SneakyThrows
         public void run() {
             try {
+                // 等待应用启动之后再获取数据
+                Thread.sleep(Duration.ofSeconds(10).toMillis());
+
                 while (true) {
                     var element = queue.take();
                     var type = element.getElement();

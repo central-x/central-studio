@@ -30,6 +30,13 @@
             <version>1.0.x-SNAPSHOT</version>
         </dependency>
 
+        <!-- 存储中心 -->
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-storage</artifactId>
+            <version>1.0.x-SNAPSHOT</version>
+        </dependency>
+
         <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

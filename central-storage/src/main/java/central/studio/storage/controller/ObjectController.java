@@ -24,16 +24,15 @@
 
 package central.studio.storage.controller;
 
-import central.storage.client.data.Multipart;
-import central.storage.client.Permission;
-import central.provider.graphql.storage.StorageObjectProvider;
 import central.data.storage.StorageObject;
 import central.data.storage.StorageObjectInput;
 import central.lang.Assertx;
 import central.lang.Stringx;
+import central.provider.graphql.storage.StorageObjectProvider;
 import central.sql.query.Conditions;
 import central.starter.webmvc.render.FileRender;
-import central.storage.controller.param.*;
+import central.storage.client.Permission;
+import central.storage.client.data.Multipart;
 import central.studio.storage.controller.param.*;
 import central.studio.storage.controller.query.DetailsQuery;
 import central.studio.storage.controller.query.DownloadQuery;
@@ -76,7 +75,7 @@ import java.util.stream.IntStream;
  * @since 2022/10/30
  */
 @RestController
-@RequestMapping("/api/buckets/{code}/objects")
+@RequestMapping("/storage/api/buckets/{code}/objects")
 public class ObjectController {
 
     @Setter(onMethod_ = @Autowired)

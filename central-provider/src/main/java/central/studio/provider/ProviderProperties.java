@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * 应用配置
+ * 数据服务中心配置
  *
  * @author Alan Yeh
  * @since 2022/07/07

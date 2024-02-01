@@ -35,11 +35,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2023/12/21
  */
 @RestController
-@RequestMapping("/logging/")
+@RequestMapping("/logging")
 public class LoggingIndexController {
 
-    @GetMapping("/")
+    @GetMapping
     public String index(){
-        return "Welcome to Logging";
+        return "Welcome to Central Logging.";
     }
 }

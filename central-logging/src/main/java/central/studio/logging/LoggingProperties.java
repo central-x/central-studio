@@ -28,7 +28,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 应用配置
+ * 日志中心配置
  *
  * @author Alan Yeh
  * @since 2022/10/24

@@ -24,25 +24,14 @@
 
 package central.studio.storage;
 
-import jakarta.servlet.*;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 应用过滤器
+ * 存储中心配置
  *
  * @author Alan Yeh
- * @since 2022/11/02
+ * @since 2022/10/30
  */
-@Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class ApplicationFilter implements Filter {
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        request.setAttribute("accountId", "");
-        chain.doFilter(request, response);
-    }
+@ConfigurationProperties("central.storage")
+public class StorageProperties {
 }

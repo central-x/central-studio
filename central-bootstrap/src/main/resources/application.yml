@@ -2,10 +2,17 @@ server:
   port: 8080
   servlet:
     context-path: /
+  tomcat:
+    remoteip:
+      protocol-header: X-Forwarded-Proto
+      host-header: X-Forwarded-Host
+      port-header: X-Forwarded-Port
+      remote-ip-header: X-Forwarded-For
 
 spring:
   application:
     name: central-studio
+    secret: AkJSi2kmH7vSO5lJcvY
     version: @{ project.version }@
   datasource:
     name: master
@@ -13,6 +20,10 @@ spring:
     url: jdbc:mysql://mysql:3306/centralx?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
     password: root
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 logging:
   config: classpath:logback-local.xml
@@ -38,8 +49,10 @@ central:
 # 应用配置
 studio:
   provider:
-    code: central-studio
-    key: central-studio-key
+    code: ${spring.application.name}
+    key: ${spring.application.secret}
     fetchers:
-      - log
       - saas
+      - system
+      - log
+      - storage

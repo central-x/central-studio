@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022/07/07
  */
 @RestController
-@RequestMapping
+@RequestMapping("/provider")
 public class ProviderIndexController {
 
     @GetMapping
     public String index() {
-        return "Welcome to CentralX.";
+        return "Welcome to Central Provider.";
     }
 }

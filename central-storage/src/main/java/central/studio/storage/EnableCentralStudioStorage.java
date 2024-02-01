@@ -24,18 +24,19 @@
 
 package central.studio.storage;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
- * Storage Application
+ * 启用存储中心
  *
  * @author Alan Yeh
- * @since 2022/10/30
+ * @since 2024/02/01
  */
-@SpringBootApplication
-public class StorageApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(StorageApplication.class, args);
-    }
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(StorageConfiguration.class)
+public @interface EnableCentralStudioStorage {
 }
