@@ -53,7 +53,7 @@ import java.util.*;
  * @since 2022/10/30
  */
 @Component
-public class Container implements DisposableBean, GenericApplicationListener {
+public class BucketContainer implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;

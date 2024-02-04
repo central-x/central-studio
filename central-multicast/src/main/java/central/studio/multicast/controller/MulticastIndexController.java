@@ -22,20 +22,23 @@
  * SOFTWARE.
  */
 
-package central.studio.multicast;
+package central.studio.multicast.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 程序启动
+ * Index
  *
  * @author Alan Yeh
- * @since 2022/11/03
+ * @since 2024/02/04
  */
-@SpringBootApplication
-public class MulticastApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(MulticastApplication.class, args);
+@RestController
+@RequestMapping("/multicast")
+public class MulticastIndexController {
+    @GetMapping
+    public String index() {
+        return "Welcome to Central Multicast.";
     }
 }

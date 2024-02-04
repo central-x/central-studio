@@ -37,6 +37,13 @@
             <version>1.0.x-SNAPSHOT</version>
         </dependency>
 
+        <!-- 广播中心 -->
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-multicast</artifactId>
+            <version>1.0.x-SNAPSHOT</version>
+        </dependency>
+
         <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

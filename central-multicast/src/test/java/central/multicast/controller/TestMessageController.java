@@ -30,7 +30,7 @@ import central.multicast.client.body.StandardBody;
 import central.data.multicast.option.PublishMode;
 import central.studio.multicast.MulticastApplication;
 import central.studio.multicast.controller.MessageController;
-import central.studio.multicast.core.Container;
+import central.studio.multicast.core.BroadcasterContainer;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,7 @@ public class TestMessageController {
     private MessageClient client;
 
     @Setter(onMethod_ = @Autowired)
-    private Container container;
+    private BroadcasterContainer container;
 
     @BeforeEach
     @SuppressWarnings("BusyWait")

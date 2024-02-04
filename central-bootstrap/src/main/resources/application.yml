@@ -29,6 +29,12 @@ logging:
   config: classpath:logback-local.xml
 
 central:
+  logging:
+    http:
+      #      server: lb://central-logging
+      path: central
+      code: ${spring.application.name}
+      secret: ${spring.application.secret}
   probe:
     cache:
       enabled: true
@@ -56,3 +62,4 @@ studio:
       - system
       - log
       - storage
+      - multicast

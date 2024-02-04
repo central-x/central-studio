@@ -24,14 +24,10 @@
 
 package central.studio.logging;
 
-import central.pluglet.PlugletFactory;
-import central.pluglet.binder.SpringBeanFieldBinder;
-import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.provider.EnableCentralProvider;
+import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -43,19 +39,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @EnableProbe // 启用探针
 @Configuration
+@EnablePluglet
 @EnableCentralProvider
 @ComponentScan("central.studio.logging")
 @EnableConfigurationProperties(LoggingProperties.class)
 public class LoggingConfiguration {
-
-    /**
-     * 插件工厂
-     */
-    @Bean
-    public PlugletFactory plugletFactory(ApplicationContext applicationContext) {
-        var factory = new PlugletFactory();
-        factory.registerBinder(new SpringBeanFieldBinder(applicationContext));
-        factory.registerLifeCycleProcessor(new SpringLifeCycleProcess(applicationContext));
-        return factory;
-    }
 }

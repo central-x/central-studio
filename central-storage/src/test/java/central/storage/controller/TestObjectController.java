@@ -31,7 +31,7 @@ import central.net.http.HttpException;
 import central.security.Digestx;
 import central.studio.storage.StorageApplication;
 import central.studio.storage.controller.ObjectController;
-import central.studio.storage.core.Container;
+import central.studio.storage.core.BucketContainer;
 import central.util.Guidx;
 import central.util.Listx;
 import lombok.Setter;
@@ -63,7 +63,7 @@ public class TestObjectController {
     private ObjectClient client;
 
     @Setter(onMethod_ = @Autowired)
-    private Container container;
+    private BucketContainer container;
 
     @BeforeEach
     @SuppressWarnings("BusyWait")

@@ -32,7 +32,7 @@ import central.data.multicast.option.MessageStatus;
 import central.data.multicast.option.PublishMode;
 import central.lang.reflect.TypeRef;
 import central.studio.multicast.controller.param.PublishParams;
-import central.studio.multicast.core.Container;
+import central.studio.multicast.core.BroadcasterContainer;
 import central.studio.multicast.core.DynamicBroadcaster;
 import central.util.Jsonx;
 import central.util.Listx;
@@ -61,11 +61,11 @@ import java.util.List;
  * @since 2022/11/04
  */
 @RestController
-@RequestMapping("/api/broadcasters/{code}/messages")
+@RequestMapping("/multicast/api/broadcasters/{code}/messages")
 public class MessageController {
 
     @Setter(onMethod_ = @Autowired)
-    private Container container;
+    private BroadcasterContainer container;
 
     @Setter(onMethod_ = @Autowired)
     private MulticastMessageProvider provider;

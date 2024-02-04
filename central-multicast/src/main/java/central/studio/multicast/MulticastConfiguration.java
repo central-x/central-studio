@@ -24,20 +24,12 @@
 
 package central.studio.multicast;
 
-import central.pluglet.PlugletFactory;
-import central.pluglet.binder.SpringBeanFieldBinder;
-import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.provider.EnableCentralProvider;
+import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.context.event.SimpleApplicationEventMulticaster;
-import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
-
-import java.util.concurrent.Executors;
 
 /**
  * 应用配置
@@ -47,30 +39,9 @@ import java.util.concurrent.Executors;
  */
 @EnableProbe // 启用探针
 @Configuration
+@EnablePluglet
 @EnableCentralProvider
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
-
-    /**
-     * 异步事件发布
-     */
-    @Bean
-    public ApplicationEventMulticaster applicationEventMulticaster() {
-        var multicaster = new SimpleApplicationEventMulticaster();
-
-        var service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new CustomizableThreadFactory("central-logging.multicaster"));
-        multicaster.setTaskExecutor(service);
-        return multicaster;
-    }
-
-    /**
-     * 插件工厂
-     */
-    @Bean
-    public PlugletFactory plugletFactory(ApplicationContext applicationContext) {
-        var factory = new PlugletFactory();
-        factory.registerBinder(new SpringBeanFieldBinder(applicationContext));
-        factory.registerLifeCycleProcessor(new SpringLifeCycleProcess(applicationContext));
-        return factory;
-    }
+@ComponentScan("central.studio.multicast")
+@EnableConfigurationProperties(MulticastProperties.class)
+public class MulticastConfiguration {
 }

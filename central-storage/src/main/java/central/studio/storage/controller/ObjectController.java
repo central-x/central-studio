@@ -38,7 +38,7 @@ import central.studio.storage.controller.query.DetailsQuery;
 import central.studio.storage.controller.query.DownloadQuery;
 import central.studio.storage.controller.query.ListQuery;
 import central.studio.storage.core.BucketCache;
-import central.studio.storage.core.Container;
+import central.studio.storage.core.BucketContainer;
 import central.studio.storage.core.DynamicBucket;
 import central.studio.storage.core.stream.CacheObjectStream;
 import central.studio.storage.core.stream.MultipartFileObjectStream;
@@ -79,7 +79,7 @@ import java.util.stream.IntStream;
 public class ObjectController {
 
     @Setter(onMethod_ = @Autowired)
-    private Container container;
+    private BucketContainer container;
 
     @Setter(onMethod_ = @Autowired)
     private StorageObjectProvider provider;

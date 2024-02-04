@@ -33,5 +33,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 2022/11/03
  */
 @ConfigurationProperties("central.multicast")
-public class ApplicationProperties {
+public class MulticastProperties {
 }

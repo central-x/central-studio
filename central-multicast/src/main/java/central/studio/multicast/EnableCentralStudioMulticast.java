@@ -24,25 +24,19 @@
 
 package central.studio.multicast;
 
-import jakarta.servlet.*;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Import;
 
-import java.io.IOException;
+import java.lang.annotation.*;
 
 /**
- * 应用过滤器
+ * 启用广播中心
  *
  * @author Alan Yeh
- * @since 2022/11/03
+ * @since 2024/02/04
  */
-@Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class ApplicationFilter implements Filter {
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        request.setAttribute("accountId", "");
-        chain.doFilter(request, response);
-    }
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(MulticastConfiguration.class)
+public @interface EnableCentralStudioMulticast {
 }
