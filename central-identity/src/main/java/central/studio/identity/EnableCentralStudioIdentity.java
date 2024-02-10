@@ -24,16 +24,19 @@
 
 package central.studio.identity;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
- * 应用配置
+ * 启用认证中心
  *
  * @author Alan Yeh
- * @since 2022/10/19
+ * @since 2024/02/10
  */
-@Data
-@ConfigurationProperties("studio.security")
-public class ApplicationProperties {
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(IdentityConfiguration.class)
+public @interface EnableCentralStudioIdentity {
 }

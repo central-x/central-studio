@@ -35,6 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 2022/10/19
  */
 @Controller
-@RequestMapping("/sso/openid")
+@RequestMapping("/identity/sso/openid")
 public class OpenidController {
 }

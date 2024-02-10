@@ -63,3 +63,4 @@ studio:
       - log
       - storage
       - multicast
+      - identity

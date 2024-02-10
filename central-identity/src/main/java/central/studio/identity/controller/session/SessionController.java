@@ -24,22 +24,21 @@
 
 package central.studio.identity.controller.session;
 
+import central.data.identity.IdentityPassword;
+import central.data.organization.Account;
 import central.identity.client.Session;
+import central.lang.Stringx;
 import central.provider.graphql.identity.IdentityPasswordProvider;
 import central.provider.graphql.organization.AccountProvider;
-import central.data.organization.Account;
-import central.data.identity.IdentityPassword;
-import central.lang.Stringx;
 import central.security.Passwordx;
-import central.identity.controller.session.param.*;
+import central.sql.query.Conditions;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.studio.identity.controller.session.param.*;
 import central.studio.identity.controller.session.support.Endpoint;
 import central.studio.identity.core.attribute.AuthenticateAttributes;
 import central.studio.identity.core.attribute.SessionAttributes;
 import central.studio.identity.core.session.SessionManager;
-import central.sql.query.Conditions;
-import central.starter.webmvc.servlet.WebMvcRequest;
-import central.starter.webmvc.servlet.WebMvcResponse;
 import central.util.Listx;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +59,7 @@ import java.util.Objects;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/sessions")
+@RequestMapping("/identity/api/sessions")
 public class SessionController {
 
     @Setter(onMethod_ = @Autowired)

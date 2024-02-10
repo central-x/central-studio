@@ -24,13 +24,12 @@
 
 package central.studio.identity;
 
+import central.identity.EnableCentralIdentity;
 import central.identity.client.SessionVerifier;
-import central.pluglet.PlugletFactory;
-import central.pluglet.binder.SpringBeanFieldBinder;
-import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.provider.EnableCentralProvider;
 import central.security.Signerx;
 import central.security.signer.KeyPair;
+import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
 import central.util.cache.CacheRepository;
 import central.util.cache.memory.MemoryCacheRepository;
@@ -38,8 +37,8 @@ import central.util.cache.redis.RedisCacheRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -50,10 +49,12 @@ import org.springframework.context.annotation.Configuration;
  */
 @EnableProbe // 启用探针
 @Configuration
+@EnablePluglet
 @EnableCentralProvider
 @EnableCentralIdentity
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
+@ComponentScan("central.studio.identity")
+@EnableConfigurationProperties(IdentityProperties.class)
+public class IdentityConfiguration {
 
     /**
      * 签发会话时使用的安全密钥
@@ -84,16 +85,5 @@ public class ApplicationConfiguration {
     @ConditionalOnProperty(name = "central.security.cache.type", havingValue = "redis")
     public CacheRepository redisCacheRepository() {
         return new RedisCacheRepository();
-    }
-
-    /**
-     * 插件工厂
-     */
-    @Bean
-    public PlugletFactory plugletFactory(ApplicationContext applicationContext) {
-        var factory = new PlugletFactory();
-        factory.registerBinder(new SpringBeanFieldBinder(applicationContext));
-        factory.registerLifeCycleProcessor(new SpringLifeCycleProcess(applicationContext));
-        return factory;
     }
 }

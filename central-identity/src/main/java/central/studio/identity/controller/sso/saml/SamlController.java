@@ -34,6 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 2022/10/19
  */
 @Controller
-@RequestMapping("/sso/saml")
+@RequestMapping("/identity/sso/saml")
 public class SamlController {
 }

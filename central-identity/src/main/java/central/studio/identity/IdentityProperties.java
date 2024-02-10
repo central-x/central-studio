@@ -24,18 +24,16 @@
 
 package central.studio.identity;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Identity Application
+ * 应用配置
  *
  * @author Alan Yeh
- * @since 2022/10/14
+ * @since 2022/10/19
  */
-@SpringBootApplication
-public class IdentityApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(IdentityApplication.class, args);
-    }
+@Data
+@ConfigurationProperties("studio.identity")
+public class IdentityProperties {
 }

@@ -87,7 +87,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2022/10/19
  */
 @Controller
-@RequestMapping("/sso/cas")
+@RequestMapping("/identity/sso/cas")
 public class CasController {
 
     @Setter(onMethod_ = @Autowired)

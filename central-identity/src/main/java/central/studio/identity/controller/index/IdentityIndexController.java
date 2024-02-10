@@ -27,26 +27,23 @@ package central.studio.identity.controller.index;
 import central.data.organization.Account;
 import central.identity.client.SessionClient;
 import central.identity.client.SessionVerifier;
+import central.lang.Stringx;
+import central.provider.graphql.organization.AccountProvider;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.studio.identity.controller.index.param.IndexParams;
 import central.studio.identity.controller.index.param.LoginParams;
 import central.studio.identity.controller.index.support.LoginOptions;
-import central.lang.Stringx;
-import central.provider.graphql.organization.AccountProvider;
 import central.studio.identity.core.attribute.CaptchaAttributes;
 import central.studio.identity.core.attribute.SessionAttributes;
 import central.studio.identity.core.captcha.CaptchaManager;
-import central.starter.webmvc.servlet.WebMvcRequest;
-import central.starter.webmvc.servlet.WebMvcResponse;
 import com.auth0.jwt.JWT;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
@@ -63,7 +60,8 @@ import java.util.Map;
  * @since 2022/10/14
  */
 @Controller
-public class IndexController {
+@RequestMapping("/identity")
+public class IdentityIndexController {
 
     @Setter(onMethod_ = @Autowired)
     private SessionVerifier verifier;
@@ -105,7 +103,7 @@ public class IndexController {
         }
 
         // 其余情况，返回登录界面
-        return new InternalResourceView("index.html");
+        return new InternalResourceView("/identity/index.html");
     }
 
     /**

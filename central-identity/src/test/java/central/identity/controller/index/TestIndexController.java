@@ -26,7 +26,7 @@ package central.identity.controller.index;
 
 import central.data.organization.Account;
 import central.studio.identity.IdentityApplication;
-import central.studio.identity.controller.index.IndexController;
+import central.studio.identity.controller.index.IdentityIndexController;
 import central.studio.identity.controller.index.support.LoginOptions;
 import central.studio.identity.core.attribute.EndpointAttributes;
 import central.lang.reflect.TypeRef;
@@ -60,7 +60,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 首页测试
  *
  * @author Alan Yeh
- * @see IndexController
+ * @see IdentityIndexController
  * @since 2022/10/23
  */
 @AutoConfigureMockMvc
@@ -70,7 +70,7 @@ public class TestIndexController {
     /**
      * 测试是否所有的登录选项都在
      *
-     * @see IndexController#getOptions
+     * @see IdentityIndexController#getOptions
      */
     @Test
     public void case1(@Autowired MockMvc mvc) throws Exception {
@@ -104,7 +104,7 @@ public class TestIndexController {
     /**
      * 测试获取验证码
      *
-     * @see IndexController#getCaptcha
+     * @see IdentityIndexController#getCaptcha
      */
     @Test
     public void case2(@Autowired MockMvc mvc) throws Exception {
@@ -120,9 +120,9 @@ public class TestIndexController {
     /**
      * 测试登录
      *
-     * @see IndexController#login
-     * @see IndexController#getAccount
-     * @see IndexController#logout
+     * @see IdentityIndexController#login
+     * @see IdentityIndexController#getAccount
+     * @see IdentityIndexController#logout
      */
     @Test
     public void case3(@Autowired MockMvc mvc) throws Exception {

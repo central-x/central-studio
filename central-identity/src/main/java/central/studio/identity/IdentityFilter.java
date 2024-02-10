@@ -49,7 +49,7 @@ import java.util.List;
  * @since 2022/10/19
  */
 @Component
-public class ApplicationFilter implements Filter {
+public class IdentityFilter implements Filter {
 
     /**
      * 全局安全策略

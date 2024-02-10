@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * 随机验证码
+ *
  * @author Alan Yeh
  * @since 2023/05/29
  */

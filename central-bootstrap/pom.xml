@@ -44,6 +44,13 @@
             <version>1.0.x-SNAPSHOT</version>
         </dependency>
 
+        <!-- 认证中心 -->
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-identity</artifactId>
+            <version>1.0.x-SNAPSHOT</version>
+        </dependency>
+
         <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

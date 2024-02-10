@@ -91,7 +91,7 @@ import java.util.stream.Collectors;
  * @since 2022/10/19
  */
 @Controller
-@RequestMapping("/sso/oauth2")
+@RequestMapping("/identity/sso/oauth2")
 public class OAuthController {
 
     @Setter(onMethod_ = @Autowired)
