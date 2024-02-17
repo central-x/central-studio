@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiresAuthentication
 @RequiresPermissions(MenuController.Permissions.VIEW)
-@RequestMapping("/api/authority/menus")
+@RequestMapping("/dashboard/api/authority/menus")
 public class MenuController {
     /**
      * 权限

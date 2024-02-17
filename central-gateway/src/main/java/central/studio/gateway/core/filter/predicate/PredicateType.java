@@ -25,7 +25,6 @@
 package central.studio.gateway.core.filter.predicate;
 
 import central.bean.OptionalEnum;
-import central.gateway.core.filter.predicate.impl.*;
 import central.studio.gateway.core.filter.predicate.impl.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

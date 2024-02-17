@@ -22,16 +22,37 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard;
+package central.studio.dashboard.logic.organization;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import central.provider.graphql.organization.AccountProvider;
+import central.data.organization.Account;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
- * 应用配置
+ * Account Logic
+ * <p>
+ * 帐户业务逻辑
  *
  * @author Alan Yeh
- * @since 2022/11/17
+ * @since 2023/10/07
  */
-@ConfigurationProperties("studio.dashboard")
-public class ApplicationProperties {
+@Service
+public class AccountLogic {
+
+    @Setter(onMethod_ = @Autowired)
+    private AccountProvider provider;
+
+    /**
+     * 根据主键查询实体
+     *
+     * @param id 主键
+     * @return 数据实体
+     */
+    public @Nullable Account findById(@Nonnull String id) {
+        return provider.findById(id);
+    }
 }

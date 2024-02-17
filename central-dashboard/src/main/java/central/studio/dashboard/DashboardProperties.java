@@ -24,21 +24,14 @@
 
 package central.studio.dashboard;
 
-import jakarta.servlet.*;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 应用过滤器
+ * 应用配置
  *
  * @author Alan Yeh
  * @since 2022/11/17
  */
-@Component
-public class ApplicationFilter implements Filter {
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
+@ConfigurationProperties("studio.dashboard")
+public class DashboardProperties {
 }

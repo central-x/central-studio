@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiresAuthentication
 @RequiresPermissions(UnitRoleController.Permissions.VIEW)
-@RequestMapping("/api/authority/unit/roles")
+@RequestMapping("/dashboard/api/authority/unit/roles")
 public class UnitRoleController {
 
     /**

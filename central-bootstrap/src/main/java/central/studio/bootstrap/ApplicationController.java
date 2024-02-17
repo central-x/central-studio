@@ -22,37 +22,29 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.service.organization;
+package central.studio.bootstrap;
 
-import central.provider.graphql.organization.AccountProvider;
-import central.data.organization.Account;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
- * Account Service
- * <p>
- * 帐户服务
+ * 应用控制器
  *
  * @author Alan Yeh
- * @since 2023/10/07
+ * @since 2024/02/18
  */
-@Service
-public class AccountService {
-
-    @Setter(onMethod_ = @Autowired)
-    private AccountProvider provider;
+@Controller
+@RequestMapping
+public class ApplicationController {
 
     /**
-     * 根据主键查询实体
-     *
-     * @param id 主键
-     * @return 数据实体
+     * 应用首页
      */
-    public @Nullable Account findById(@Nonnull String id) {
-        return provider.findById(id);
+    @GetMapping({"", "/"})
+    public View index() {
+        return new RedirectView("/dashboard/");
     }
 }

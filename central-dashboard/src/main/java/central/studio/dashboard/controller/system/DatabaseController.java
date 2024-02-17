@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiresAuthentication
 @RequiresPermissions(DatabaseController.Permissions.VIEW)
-@RequestMapping("/api/system/databases")
+@RequestMapping("/dashboard/api/system/databases")
 public class DatabaseController {
 
     /**

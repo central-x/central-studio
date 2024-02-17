@@ -24,7 +24,7 @@
 
 package central.studio.dashboard.controller.index;
 
-import central.studio.dashboard.service.organization.AccountService;
+import central.studio.dashboard.logic.organization.AccountLogic;
 import central.data.organization.Account;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
@@ -46,17 +47,18 @@ import org.springframework.web.servlet.view.InternalResourceView;
  */
 @Controller
 @RequiresAuthentication
-public class IndexController {
+@RequestMapping("/dashboard")
+public class DashboardIndexController {
 
     @Setter(onMethod_ = @Autowired)
-    private AccountService accountService;
+    private AccountLogic accountLogic;
 
     /**
      * 返回首页静态页面
      */
     @GetMapping("/")
     public View index(@RequestAttribute String accountId) {
-        accountService.findById(accountId);
+        accountLogic.findById(accountId);
         return new InternalResourceView("index.html");
     }
 
@@ -66,7 +68,7 @@ public class IndexController {
     @ResponseBody
     @GetMapping("/api/account")
     public Account getAccount(@RequestAttribute String accountId) {
-        return accountService.findById(accountId);
+        return accountLogic.findById(accountId);
     }
 
 }

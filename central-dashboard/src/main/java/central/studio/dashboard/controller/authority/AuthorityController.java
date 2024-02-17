@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiresAuthentication
 @RequiresPermissions(AuthorityController.Permissions.VIEW)
-@RequestMapping("/api/authority")
+@RequestMapping("/dashboard/api/authority")
 public class AuthorityController {
     /**
      * 权限

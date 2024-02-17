@@ -25,6 +25,7 @@
 package central.studio.bootstrap;
 
 import central.provider.EnableCentralProvider;
+import central.studio.dashboard.EnableCentralStudioDashboard;
 import central.studio.identity.EnableCentralStudioIdentity;
 import central.studio.logging.EnableCentralStudioLogging;
 import central.studio.multicast.EnableCentralStudioMulticast;
@@ -47,6 +48,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableCentralStudioStorage // 存储中心
 @EnableCentralStudioMulticast // 广播中心
 @EnableCentralStudioIdentity // 认证中心
+@EnableCentralStudioDashboard // 控制中心
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
 }

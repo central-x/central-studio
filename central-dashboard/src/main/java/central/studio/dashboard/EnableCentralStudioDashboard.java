@@ -24,27 +24,19 @@
 
 package central.studio.dashboard;
 
-import central.logging.EnableCentralLogging;
-import central.provider.EnableCentralProvider;
-import central.identity.EnableCentralIdentity;
-import central.starter.identity.EnableIdentity;
-import central.starter.probe.EnableProbe;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
- * 应用配置
+ * 启用管理中心
  *
  * @author Alan Yeh
- * @since 2022/11/17
+ * @since 2024/02/18
  */
-@Configuration
-@EnableProbe // 启用探针
-@EnableIdentity // 启用 Shiro
-@EnableCentralLogging // 对接日志中心
-@EnableCentralProvider // 对接数据服务中心
-@EnableCentralIdentity // 对接认证中心
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
-
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import(DashboardConfiguration.class)
+public @interface EnableCentralStudioDashboard {
 }

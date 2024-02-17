@@ -51,6 +51,13 @@
             <version>1.0.x-SNAPSHOT</version>
         </dependency>
 
+        <!-- 控制中心 -->
+        <dependency>
+            <groupId>com.central-x</groupId>
+            <artifactId>central-dashboard</artifactId>
+            <version>1.0.x-SNAPSHOT</version>
+        </dependency>
+
         <!-- 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
