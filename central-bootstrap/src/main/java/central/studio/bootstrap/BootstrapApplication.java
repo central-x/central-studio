@@ -28,14 +28,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Central Studio Application
+ * Central Studio Bootstrap
  *
  * @author Alan Yeh
  * @since 2024/01/20
  */
 @SpringBootApplication
-public class CentralApplication {
+public class BootstrapApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CentralApplication.class, args);
+        SpringApplication.run(BootstrapApplication.class, args);
     }
 }
