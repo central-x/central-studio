@@ -57,6 +57,7 @@ central:
 # 应用配置
 studio:
   provider:
+    url: http://127.0.0.1:${server.port}
     code: ${spring.application.name}
     key: ${spring.application.secret}
     fetchers:
@@ -66,3 +67,11 @@ studio:
       - storage
       - multicast
       - identity
+  storage:
+    url: http://127.0.0.1:${server.port}
+  multicast:
+    url: http://127.0.0.1:${server.port}
+  identity:
+    url: http://127.0.0.1:${server.port}
+  logging:
+    url: http://127.0.0.1:${server.port}

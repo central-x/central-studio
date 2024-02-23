@@ -48,7 +48,7 @@ public class LocalCache implements BucketCache {
 
     public LocalCache(Path path) throws IOException{
         this.path = path;
-        if (!Files.notExists(path)) {
+        if (Files.notExists(path)) {
             Files.createDirectories(this.path);
         }
     }

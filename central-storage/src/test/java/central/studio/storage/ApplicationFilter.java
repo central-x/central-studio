@@ -24,35 +24,25 @@
 
 package central.studio.storage;
 
-import central.provider.EnableCentralProvider;
-import central.starter.ability.EnablePluglet;
-import central.starter.probe.EnableProbe;
-import central.studio.storage.core.BucketCache;
-import central.studio.storage.core.cache.LocalCache;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import jakarta.servlet.*;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 /**
- * 存储中心配置
+ * Application Filter
  *
  * @author Alan Yeh
- * @since 2022/10/30
+ * @since 2024/02/24
  */
-@EnableProbe // 启用探针
-@Configuration
-@EnablePluglet
-@EnableCentralProvider
-@ComponentScan("central.studio.storage")
-@EnableConfigurationProperties(StorageProperties.class)
-public class StorageConfiguration {
-
-    @Bean
-    public BucketCache bucketCache() throws IOException {
-        return new LocalCache(Path.of("cache", "storage"));
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class ApplicationFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        request.setAttribute("accountId", "");
+        chain.doFilter(request, response);
     }
 }

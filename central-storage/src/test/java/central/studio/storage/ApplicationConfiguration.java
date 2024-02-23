@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-package central.storage;
+package central.studio.storage;
 
 import central.net.http.executor.apache.ApacheHttpClientExecutor;
 import central.net.http.processor.impl.ThrowProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
 import central.storage.client.ObjectClient;
+import central.studio.provider.EnableCentralStudioProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +41,9 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/11/03
  */
 @Configuration
-public class TestConfiguration {
+@EnableCentralStudioStorage
+@EnableCentralStudioProvider
+public class ApplicationConfiguration {
 
     @Bean
     public ObjectClient objectClient(@Value("${server.port}") int port) {

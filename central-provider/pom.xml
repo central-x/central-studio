@@ -106,22 +106,6 @@
         </resources>
 
         <plugins>
-            <!-- 本项目是程序文件，不发布到 Maven 仓库 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-
             <!-- 处理占位符 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

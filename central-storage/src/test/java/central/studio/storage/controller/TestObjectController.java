@@ -22,15 +22,14 @@
  * SOFTWARE.
  */
 
-package central.storage.controller;
+package central.studio.storage.controller;
 
-import central.storage.client.ObjectClient;
-import central.storage.client.Permission;
 import central.io.Filex;
 import central.net.http.HttpException;
 import central.security.Digestx;
+import central.storage.client.ObjectClient;
+import central.storage.client.Permission;
 import central.studio.storage.StorageApplication;
-import central.studio.storage.controller.ObjectController;
 import central.studio.storage.core.BucketContainer;
 import central.util.Guidx;
 import central.util.Listx;
@@ -82,6 +81,7 @@ public class TestObjectController {
     public void case1() throws IOException {
         // 创建随机文件
         var file = new File("./test.txt");
+        File download = null;
         try {
             var content = new StringBuilder();
             for (int i = 0; i < 1000; i++) {
@@ -101,14 +101,17 @@ public class TestObjectController {
             assertTrue(object.getConfirmed());
 
             token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", List.of(object.getId()), List.of(Permission.VIEW), Duration.ofMinutes(1).toMillis());
-            var download = this.client.download("identity", token, object.getId(), "down.txt", "master");
+            download = this.client.download("identity", token, object.getId(), "case1.txt", "master");
             assertNotNull(download);
             assertTrue(download.exists());
-            assertEquals("down.txt", download.getName());
+            assertEquals("case1.txt", download.getName());
             assertEquals(file.length(), download.length());
             assertEquals(digest, Digestx.SHA256.digest(Files.newInputStream(download.toPath(), StandardOpenOption.READ)));
         } finally {
             Filex.delete(file);
+            if (download != null) {
+                Filex.delete(download);
+            }
         }
     }
 
@@ -235,6 +238,7 @@ public class TestObjectController {
     public void case4() throws IOException {
         // 创建随机文件
         var file = new File("./test.txt");
+        File download = null;
         try {
             var content = new StringBuilder();
             for (int i = 0; i < 1000000; i++) {
@@ -254,14 +258,17 @@ public class TestObjectController {
             assertTrue(object.getConfirmed());
 
             token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", List.of(object.getId()), List.of(Permission.VIEW), Duration.ofMinutes(1).toMillis());
-            var download = this.client.download("identity", token, object.getId(), "down.txt", "master");
+            download = this.client.download("identity", token, object.getId(), "case4.txt", "master");
             assertNotNull(download);
             assertTrue(download.exists());
-            assertEquals("down.txt", download.getName());
+            assertEquals("case4.txt", download.getName());
             assertEquals(file.length(), download.length());
             assertEquals(digest, Digestx.SHA256.digest(Files.newInputStream(download.toPath(), StandardOpenOption.READ)));
         } finally {
             Filex.delete(file);
+            if (download != null) {
+                Filex.delete(download);
+            }
         }
     }
 }

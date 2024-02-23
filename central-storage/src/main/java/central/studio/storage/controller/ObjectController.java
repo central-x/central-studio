@@ -249,7 +249,7 @@ public class ObjectController {
         var inputs = objects.stream()
                 .map(it -> it.toInput().toBuilder().confirmed(Boolean.TRUE).build())
                 .toList();
-        return (long) this.provider.updateBatch(inputs, accountId, tenant).size();
+        return (long) this.provider.updateBatch(inputs, Objectx.getOrDefault(accountId, "syssa"), tenant).size();
     }
 
     /**

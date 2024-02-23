@@ -58,6 +58,6 @@ central:
 studio:
   provider:
     fetchers:
-      - log
       - saas
+      - log
     url: http://127.0.0.1:${server.port}
