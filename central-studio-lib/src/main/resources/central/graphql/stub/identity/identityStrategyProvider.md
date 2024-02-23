@@ -4,7 +4,7 @@ findById
 * 根据主键查询数据
 
 ```graphql
-query SecurityStrategyProvider($id: String) {
+query IdentityStrategyProvider($id: String) {
     identity {
         strategies {
             findById(id: $id) {
@@ -43,7 +43,7 @@ findByIds
 * 根据主键查询数据
 
 ```graphql
-query SecurityStrategyProvider($ids: [String]) {
+query IdentityStrategyProvider($ids: [String]) {
     identity {
         strategies {
             findByIds(ids: $ids){
@@ -82,7 +82,7 @@ findBy
 * 根据条件查询数据
 
 ```graphql
-query SecurityStrategyProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
+query IdentityStrategyProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
     identity {
         strategies {
             findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
@@ -121,7 +121,7 @@ pageBy
 * 分页查询数据
 
 ```graphql
-query SecurityStrategyProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
+query IdentityStrategyProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInput], $orders: [OrderInput]) {
     identity {
         strategies {
             pageBy(pageIndex: $pageIndex, pageSize: $pageSize, conditions: $conditions, orders: $orders){
@@ -132,7 +132,7 @@ query SecurityStrategyProvider($pageIndex: Long, $pageSize: Long, $conditions: [
                     itemCount
                 }
                 data {
-                    ... on SecurityStrategy {
+                    ... on IdentityStrategy {
                         id
                         code
                         name
@@ -170,7 +170,7 @@ countBy
 * 查询符合条件的数据数量
 
 ```graphql
-query SecurityStrategyProvider($conditions: [ConditionInput]) {
+query IdentityStrategyProvider($conditions: [ConditionInput]) {
     identity {
         strategies {
             countBy(conditions: $conditions)
@@ -185,7 +185,7 @@ insert
 * 保存数据
 
 ```graphql
-mutation SecurityStrategyProvider($input: SecurityStrategyInput, $operator: String) {
+mutation IdentityStrategyProvider($input: IdentityStrategyInput, $operator: String) {
     identity {
         strategies {
             insert(input: $input, operator: $operator) {
@@ -224,7 +224,7 @@ insertBatch
 * 批量保存数据
 
 ```graphql
-mutation SecurityStrategyProvider($inputs: [SecurityStrategyInput], $operator: String) {
+mutation IdentityStrategyProvider($inputs: [IdentityStrategyInput], $operator: String) {
     identity {
         strategies {
             insertBatch(inputs: $inputs, operator: $operator) {
@@ -263,7 +263,7 @@ update
 * 更新数据
 
 ```graphql
-mutation SecurityStrategyProvider($input: SecurityStrategyInput, $operator: String) {
+mutation IdentityStrategyProvider($input: IdentityStrategyInput, $operator: String) {
     identity {
         strategies {
             update(input: $input, operator: $operator) {
@@ -302,7 +302,7 @@ updateBatch
 * 批量更新数据
 
 ```graphql
-mutation SecurityStrategyProvider($inputs: [SecurityStrategyInput], $operator: String) {
+mutation IdentityStrategyProvider($inputs: [IdentityStrategyInput], $operator: String) {
     identity {
         strategies {
             updateBatch(inputs: $inputs, operator: $operator) {
@@ -341,7 +341,7 @@ deleteByIds
 * 删除数据
 
 ```graphql
-mutation SecurityStrategyProvider($ids: [String]) {
+mutation IdentityStrategyProvider($ids: [String]) {
     identity {
         strategies {
             deleteByIds(ids: $ids)
@@ -356,7 +356,7 @@ deleteBy
 * 删除数据
 
 ```graphql
-mutation SecurityStrategyProvider($conditions: [ConditionInput]) {
+mutation IdentityStrategyProvider($conditions: [ConditionInput]) {
     identity {
         strategies {
             deleteBy(conditions: $conditions)

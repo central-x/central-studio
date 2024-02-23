@@ -22,31 +22,20 @@
  * SOFTWARE.
  */
 
-package central.studio.bootstrap;
+package central.studio.provider;
 
-import central.studio.dashboard.EnableCentralStudioDashboard;
-import central.studio.identity.EnableCentralStudioIdentity;
-import central.studio.logging.EnableCentralStudioLogging;
-import central.studio.multicast.EnableCentralStudioMulticast;
-import central.studio.provider.EnableCentralStudioProvider;
-import central.studio.storage.EnableCentralStudioStorage;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Application Configuration
+ * Provider Application
  *
  * @author Alan Yeh
- * @since 2024/01/20
+ * @since 2024/02/23
  */
-@Configuration
-// Central Studio
-@EnableCentralStudioLogging // 日志中心
-@EnableCentralStudioProvider // 数据服务中心
-@EnableCentralStudioStorage // 存储中心
-@EnableCentralStudioMulticast // 广播中心
-@EnableCentralStudioIdentity // 认证中心
-@EnableCentralStudioDashboard // 控制中心
-@EnableConfigurationProperties(ApplicationProperties.class)
-public class ApplicationConfiguration {
+@SpringBootApplication
+public class ProviderApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ProviderApplication.class, args);
+    }
 }

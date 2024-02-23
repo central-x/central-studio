@@ -111,7 +111,7 @@ query PasswordProvider($pageIndex: Long, $pageSize: Long, $conditions: [Conditio
                     itemCount
                 }
                 data {
-                    ... on SecurityPassword {
+                    ... on IdentityPassword {
                         id
                         accountId
                         account {
@@ -157,7 +157,7 @@ insert
 * 保存数据
 
 ```graphql
-mutation PasswordProvider($input: SecurityPasswordInput, $operator: String) {
+mutation PasswordProvider($input: IdentityPasswordInput, $operator: String) {
     identity {
         passwords {
             insert(input: $input, operator: $operator) {
@@ -189,7 +189,7 @@ insertBatch
 * 批量保存数据
 
 ```graphql
-mutation PasswordProvider($inputs: [SecurityPasswordInput], $operator: String) {
+mutation PasswordProvider($inputs: [IdentityPasswordInput], $operator: String) {
     identity {
         passwords {
             insertBatch(inputs: $inputs, operator: $operator) {

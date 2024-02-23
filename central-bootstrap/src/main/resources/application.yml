@@ -22,6 +22,8 @@ spring:
     password: root
   servlet:
     multipart:
+      # 限制请求的大小和上传文件的大小
+      # 超过限制的上传文件请求可以使用分片上传来解决
       max-file-size: 50MB
       max-request-size: 50MB
 
