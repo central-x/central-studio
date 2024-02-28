@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
-package central.multicast.controller;
+package central.studio.multicast.controller;
 
+import central.data.multicast.option.PublishMode;
 import central.multicast.client.MessageClient;
 import central.multicast.client.body.Recipient;
 import central.multicast.client.body.StandardBody;
-import central.data.multicast.option.PublishMode;
 import central.studio.multicast.MulticastApplication;
-import central.studio.multicast.controller.MessageController;
 import central.studio.multicast.core.BroadcasterContainer;
 import central.util.Listx;
 import lombok.Setter;
@@ -41,7 +40,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.Duration;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**

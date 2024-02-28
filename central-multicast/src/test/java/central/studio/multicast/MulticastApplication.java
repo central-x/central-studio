@@ -22,31 +22,20 @@
  * SOFTWARE.
  */
 
-package central.multicast;
+package central.studio.multicast;
 
-import central.multicast.client.MessageClient;
-import central.net.http.executor.apache.ApacheHttpClientExecutor;
-import central.net.http.processor.impl.ThrowProcessor;
-import central.net.http.proxy.HttpProxyFactory;
-import central.net.http.proxy.contract.spring.SpringContract;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * 测试配置
+ * Multicast Application
  *
  * @author Alan Yeh
- * @since 2022/11/04
+ * @since 2024/02/28
  */
-@Configuration
-public class TestConfiguration {
-    @Bean
-    public MessageClient messageClient(@Value("${server.port}") int port) {
-        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
-                .contact(new SpringContract())
-                .baseUrl("http://127.0.0.1:" + port)
-                .processor(new ThrowProcessor())
-                .target(MessageClient.class);
+@SpringBootApplication
+public class MulticastApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MulticastApplication.class, args);
     }
 }

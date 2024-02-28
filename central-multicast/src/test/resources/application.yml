@@ -1,0 +1,35 @@
+server:
+  port: 13600
+  servlet:
+    context-path: /
+  tomcat:
+    remoteip:
+      protocol-header: X-Forwarded-Proto
+      host-header: X-Forwarded-Host
+      port-header: X-Forwarded-Port
+      remote-ip-header: X-Forwarded-For
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  application:
+    name: central-multicast
+    secret: AkJSi2kmH7vSO5lJcvY
+  datasource:
+    name: master
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:central-provider
+    username: centralx
+    password: central.x
+
+logging:
+  config: classpath:logback-default.xml
+
+studio:
+  provider:
+    url: http://127.0.0.1:${server.port}
+    fetchers:
+      - saas
+      - multicast
