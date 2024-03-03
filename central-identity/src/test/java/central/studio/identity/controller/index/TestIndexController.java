@@ -22,15 +22,14 @@
  * SOFTWARE.
  */
 
-package central.identity.controller.index;
+package central.studio.identity.controller.index;
 
 import central.data.organization.Account;
-import central.studio.identity.IdentityApplication;
-import central.studio.identity.controller.index.IdentityIndexController;
-import central.studio.identity.controller.index.support.LoginOptions;
-import central.studio.identity.core.attribute.EndpointAttributes;
 import central.lang.reflect.TypeRef;
 import central.security.Digestx;
+import central.studio.identity.IdentityApplication;
+import central.studio.identity.controller.index.support.LoginOptions;
+import central.studio.identity.core.attribute.EndpointAttributes;
 import central.util.Jsonx;
 import central.util.Mapx;
 import central.web.XForwardedHeaders;
@@ -74,7 +73,7 @@ public class TestIndexController {
      */
     @Test
     public void case1(@Autowired MockMvc mvc) throws Exception {
-        var request = MockMvcRequestBuilders.get("/api/options")
+        var request = MockMvcRequestBuilders.get("/identity/api/options")
                 .header(XForwardedHeaders.TENANT, "master");
 
         var response = mvc.perform(request)
@@ -108,7 +107,7 @@ public class TestIndexController {
      */
     @Test
     public void case2(@Autowired MockMvc mvc) throws Exception {
-        var request = MockMvcRequestBuilders.get("/api/captcha")
+        var request = MockMvcRequestBuilders.get("/identity/api/captcha")
                 .header(XForwardedHeaders.TENANT, "master");
 
         mvc.perform(request)
@@ -129,7 +128,7 @@ public class TestIndexController {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 未登录
         // 未登录时获取用户信息，应该返回 401
-        var unauthorizedRequest = MockMvcRequestBuilders.get("/api/account")
+        var unauthorizedRequest = MockMvcRequestBuilders.get("/identity/api/account")
                 .header(XForwardedHeaders.TENANT, "master");
 
         mvc.perform(unauthorizedRequest)
@@ -147,7 +146,7 @@ public class TestIndexController {
                 Mapx.entry("secret", EndpointAttributes.WEB.getValue().getSecret())
         );
 
-        var loginRequest = MockMvcRequestBuilders.post("/api/login")
+        var loginRequest = MockMvcRequestBuilders.post("/identity/api/login")
                 .content(Jsonx.Default().serialize(form))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(XForwardedHeaders.TENANT, "master");
@@ -164,7 +163,7 @@ public class TestIndexController {
         var token = loginResponse.getCookie("Authorization").getValue();
 
         // 获取当前用户信息，应该能够正常返回用户信息
-        var getAccountRequest = MockMvcRequestBuilders.get("/api/account")
+        var getAccountRequest = MockMvcRequestBuilders.get("/identity/api/account")
                 .cookie(new Cookie("Authorization", token))
                 .header(XForwardedHeaders.TENANT, "master");
 
@@ -180,7 +179,7 @@ public class TestIndexController {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 退出登录
-        var logoutRequest = MockMvcRequestBuilders.get("/api/logout")
+        var logoutRequest = MockMvcRequestBuilders.get("/identity/api/logout")
                 .cookie(new Cookie("Authorization", token))
                 .header(XForwardedHeaders.TENANT, "master");
         mvc.perform(logoutRequest)

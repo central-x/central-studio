@@ -22,32 +22,20 @@
  * SOFTWARE.
  */
 
-package central.identity.controller.session;
+package central.studio.identity;
 
-import central.identity.client.SessionClient;
-import central.net.http.executor.apache.ApacheHttpClientExecutor;
-import central.net.http.processor.impl.AddHeaderProcessor;
-import central.net.http.proxy.HttpProxyFactory;
-import central.net.http.proxy.contract.spring.SpringContract;
-import central.web.XForwardedHeaders;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * 测试配置
+ * Identity Application
  *
  * @author Alan Yeh
- * @since 2022/10/21
+ * @since 2024/03/03
  */
-@Configuration
-public class SessionClientConfiguration {
-    @Bean
-    public SessionClient sessionClient(@Value("${server.port}") int port, @Value("${server.servlet.context-path}") String contextPath) {
-        return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
-                .contact(new SpringContract())
-                .processor(new AddHeaderProcessor(XForwardedHeaders.TENANT, "master"))
-                .baseUrl("http://127.0.0.1:" + port + contextPath)
-                .target(SessionClient.class);
+@SpringBootApplication
+public class IdentityApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(IdentityApplication.class, args);
     }
 }

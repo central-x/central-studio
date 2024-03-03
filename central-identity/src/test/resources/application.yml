@@ -1,5 +1,5 @@
 server:
-  port: 13500
+  port: 13200
   servlet:
     context-path: /
   tomcat:
@@ -15,12 +15,12 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   application:
-    name: central-storage
+    name: central-identity
     secret: AkJSi2kmH7vSO5lJcvY
   datasource:
     name: master
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:central-storage
+    url: jdbc:h2:mem:central-identity
     username: centralx
     password: central.x
 
@@ -32,4 +32,4 @@ studio:
     url: http://127.0.0.1:${server.port}
     fetchers:
       - saas
-      - storage
+      - identity

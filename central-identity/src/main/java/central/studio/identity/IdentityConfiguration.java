@@ -24,7 +24,6 @@
 
 package central.studio.identity;
 
-import central.identity.EnableCentralIdentity;
 import central.identity.client.SessionVerifier;
 import central.provider.EnableCentralProvider;
 import central.security.Signerx;
@@ -51,7 +50,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnablePluglet
 @EnableCentralProvider
-@EnableCentralIdentity
 @ComponentScan("central.studio.identity")
 @EnableConfigurationProperties(IdentityProperties.class)
 public class IdentityConfiguration {
@@ -64,6 +62,9 @@ public class IdentityConfiguration {
         return Signerx.RSA_256.generateKeyPair();
     }
 
+    /**
+     * 会话验证器
+     */
     @Bean
     public SessionVerifier sessionVerifier() {
         return new SessionVerifier();

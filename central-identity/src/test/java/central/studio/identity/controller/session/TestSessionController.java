@@ -22,17 +22,18 @@
  * SOFTWARE.
  */
 
-package central.identity.controller.session;
+package central.studio.identity.controller.session;
 
-import central.studio.identity.IdentityApplication;
 import central.identity.client.Session;
 import central.identity.client.SessionClient;
 import central.security.Digestx;
 import central.security.signer.KeyPair;
+import central.studio.identity.IdentityApplication;
 import central.util.Mapx;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.charset.StandardCharsets;
@@ -48,6 +49,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @see IdentityApplication
  * @since 2022/10/21
  */
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = IdentityApplication.class)
 public class TestSessionController {
 
@@ -59,10 +61,11 @@ public class TestSessionController {
 
     /**
      * 测试获取公钥
+     *
      * @see SessionClient#getPublicKey
      */
     @Test
-    public void case1() throws Exception{
+    public void case1() throws Exception {
         var token = client.getPublicKey();
         assertEquals(token, Base64.getEncoder().encodeToString(keyPair.getVerifyKey().getEncoded()));
     }
@@ -82,13 +85,7 @@ public class TestSessionController {
 
         try {
             // 本地验证
-            session.verifier()
-                    .tenantCode("master")
-                    .username("syssa")
-                    .admin(true)
-                    .supervisor(true)
-                    .claim("test", "123")
-                    .verify(keyPair.getVerifyKey());
+            session.verifier().tenantCode("master").username("syssa").admin(true).supervisor(true).claim("test", "123").verify(keyPair.getVerifyKey());
         } catch (Exception ex) {
             fail("会话校验不通过: " + ex.getLocalizedMessage());
         }
