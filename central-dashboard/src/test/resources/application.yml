@@ -1,5 +1,5 @@
 server:
-  port: 13200
+  port: 13100
   servlet:
     context-path: /
   tomcat:
@@ -11,7 +11,7 @@ server:
 
 spring:
   application:
-    name: central-identity
+    name: central-dashboard
     secret: AkJSi2kmH7vSO5lJcvY
   servlet:
     multipart:
@@ -27,9 +27,29 @@ spring:
 logging:
   config: classpath:logback-default.xml
 
+central:
+  identity:
+    unauthorized-url: /security/
+    logout-url: /__logout
+
+# 应用配置
 studio:
   provider:
     url: http://127.0.0.1:${server.port}
+    code: ${spring.application.name}
+    key: ${spring.application.secret}
     fetchers:
       - saas
+      - system
+      - log
+      - storage
+      - multicast
       - identity
+  storage:
+    url: http://127.0.0.1:${server.port}
+  multicast:
+    url: http://127.0.0.1:${server.port}
+  identity:
+    url: http://127.0.0.1:${server.port}
+  logging:
+    url: http://127.0.0.1:${server.port}

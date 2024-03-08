@@ -48,7 +48,7 @@ import org.springframework.web.servlet.view.InternalResourceView;
 @Controller
 @RequiresAuthentication
 @RequestMapping("/dashboard")
-public class DashboardIndexController {
+public class IndexController {
 
     @Setter(onMethod_ = @Autowired)
     private AccountLogic accountLogic;

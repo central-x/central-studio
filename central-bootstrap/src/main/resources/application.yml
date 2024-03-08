@@ -53,6 +53,9 @@ central:
           url: ${spring.datasource.url}
           username: ${spring.datasource.username}
           password: ${spring.datasource.password}
+  identity:
+    unauthorized-url: /security/
+    logout-url: /__logout
 
 # 应用配置
 studio:
