@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.central-x</groupId>
-        <artifactId>central-parent</artifactId>
+        <groupId>com.central-x.studio</groupId>
+        <artifactId>central-studio-parent</artifactId>
         <version>1.0.x-SNAPSHOT</version>
         <relativePath/>
     </parent>
@@ -17,39 +17,38 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.central-x</groupId>
+            <groupId>com.central-x.studio</groupId>
             <artifactId>central-studio-lib</artifactId>
-            <version>1.0.x-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>com.central-x</groupId>
+            <groupId>com.central-x.framework</groupId>
             <artifactId>central-starter-graphql-stub</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.central-x</groupId>
+            <groupId>com.central-x.framework</groupId>
             <artifactId>central-starter-webmvc</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.central-x</groupId>
+            <groupId>com.central-x.framework</groupId>
             <artifactId>central-starter-logging</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.central-x</groupId>
+            <groupId>com.central-x.framework</groupId>
             <artifactId>central-starter-probe</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x.framework</groupId>
+            <artifactId>central-starter-identity</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.central-x</groupId>
-            <artifactId>central-starter-identity</artifactId>
         </dependency>
 
         <!-- 测试依赖 -->
@@ -59,15 +58,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.central-x</groupId>
+            <groupId>com.central-x.studio</groupId>
             <artifactId>central-provider</artifactId>
-            <version>1.0.x-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.central-x</groupId>
+            <groupId>com.central-x.studio</groupId>
             <artifactId>central-identity</artifactId>
-            <version>1.0.x-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
