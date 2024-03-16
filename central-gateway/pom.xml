@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>com.central-x.studio</groupId>
-            <artifactId>central-studio-lib</artifactId>
+            <artifactId>central-studio-library</artifactId>
         </dependency>
 
         <dependency>

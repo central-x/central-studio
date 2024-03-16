@@ -47,6 +47,12 @@
     <!-- 依赖版本管理 -->
     <dependencyManagement>
         <dependencies>
+            <!-- Central Studio Library -->
+            <dependency>
+                <groupId>com.central-x.studio</groupId>
+                <artifactId>central-studio-library</artifactId>
+                <version>1.0.x-SNAPSHOT</version>
+            </dependency>
             <!-- Central Studio -->
             <dependency>
                 <groupId>com.central-x.studio</groupId>
@@ -83,11 +89,6 @@
                 <artifactId>central-storage</artifactId>
                 <version>1.0.x-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-studio-lib</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -96,7 +97,7 @@
         <!-- Central Studio Library -->
         <dependency>
             <groupId>com.central-x.studio</groupId>
-            <artifactId>central-studio-lib</artifactId>
+            <artifactId>central-studio-library</artifactId>
         </dependency>
     </dependencies>
 

@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.central-x.studio</groupId>
-    <artifactId>central-studio-lib</artifactId>
+    <artifactId>central-studio-library</artifactId>
     <version>1.0.x-SNAPSHOT</version>
     <description>Central Studio Library</description>
     <packaging>jar</packaging>

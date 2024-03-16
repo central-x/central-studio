@@ -9,6 +9,7 @@
 
     <modules>
         <module>central-studio-parent</module>
+        <module>central-studio-library</module>
         <module>central-bootstrap</module>
         <module>central-dashboard</module>
         <module>central-gateway</module>
@@ -17,7 +18,6 @@
         <module>central-multicast</module>
         <module>central-provider</module>
         <module>central-storage</module>
-        <module>central-studio-lib</module>
     </modules>
 
     <build>
