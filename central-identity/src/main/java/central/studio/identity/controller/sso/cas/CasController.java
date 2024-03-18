@@ -170,7 +170,7 @@ public class CasController {
             }
         } else {
             // 会话有效，则生成一次性的 ST（Service Ticket）返回给应用系统
-            // 应用系统在接收到 ST 之后，需要通过 /security/sso/cas/p3/serviceValidate 验证并拿到用户信息
+            // 应用系统在接收到 ST 之后，需要通过 /identity/sso/cas/p3/serviceValidate 验证并拿到用户信息
 
             var ticket = ServiceTicket.builder()
                     .expires(request.getRequiredAttribute(CasAttributes.TIMEOUT))

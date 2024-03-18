@@ -18,6 +18,11 @@
     <dependencies>
         <dependency>
             <groupId>com.central-x.studio</groupId>
+            <artifactId>central-identity-view</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x.studio</groupId>
             <artifactId>central-studio-library</artifactId>
         </dependency>
 

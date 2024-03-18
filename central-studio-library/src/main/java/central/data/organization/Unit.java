@@ -50,6 +50,20 @@ public class Unit extends ModifiableEntity implements Codeable, Orderable<Unit>,
     private static final long serialVersionUID = 1043257253332275916L;
 
     /**
+     * 父单位主键
+     * 如果为空，则表示该单元是独立单位
+     */
+    @Nullable
+    private String parentId;
+
+    /**
+     * 父单位
+     */
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Unit parent;
+
+    /**
      * 标识
      */
     @Nonnull
@@ -79,20 +93,6 @@ public class Unit extends ModifiableEntity implements Codeable, Orderable<Unit>,
      */
     @Nonnull
     private Integer order;
-
-    /**
-     * 父单位主键
-     * 如果为空，则表示该单元是独立单位
-     */
-    @Nullable
-    private String parentId;
-
-    /**
-     * 父单位
-     */
-    @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Unit parent;
 
     /**
      * 子单位

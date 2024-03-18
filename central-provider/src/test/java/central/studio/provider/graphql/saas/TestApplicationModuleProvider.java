@@ -103,7 +103,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -112,7 +112,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -158,7 +158,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -167,7 +167,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -198,11 +198,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case3() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -214,7 +214,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -223,7 +223,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -231,7 +231,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         this.mapper.insertBatch(modules);
 
         // 查询数据
-        var result = this.provider.findBy(1L, 0L, Conditions.of(ApplicationModule.class).eq("application.code", "central-security"), Orders.of(ApplicationModule.class).asc(ApplicationModule::getContextPath), "master");
+        var result = this.provider.findBy(1L, 0L, Conditions.of(ApplicationModule.class).eq("application.code", "central-identity"), Orders.of(ApplicationModule.class).asc(ApplicationModule::getContextPath), "master");
         assertNotNull(result);
         assertEquals(1, result.size());
 
@@ -257,11 +257,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case4() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -273,7 +273,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -282,7 +282,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -290,7 +290,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         this.mapper.insertBatch(modules);
 
         // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(ApplicationModule.class).eq("application.code", "central-security"), null, "master");
+        var page = this.provider.pageBy(1L, 20L, Conditions.of(ApplicationModule.class).eq("application.code", "central-identity"), null, "master");
         assertNotNull(page);
         assertNotNull(page.getPager());
         assertEquals(1L, page.getPager().getPageIndex());
@@ -321,11 +321,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case5() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -337,7 +337,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -346,7 +346,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -354,7 +354,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         this.mapper.insertBatch(modules);
 
         // 查询数据
-        var count = this.provider.countBy(Conditions.of(ApplicationModule.class).eq("application.code", "central-security"), "master");
+        var count = this.provider.countBy(Conditions.of(ApplicationModule.class).eq("application.code", "central-identity"), "master");
         assertEquals(2L, count);
     }
 
@@ -364,11 +364,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case6() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -378,7 +378,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var input = ApplicationModuleInput.builder()
                 .applicationId(entity.getId())
                 .url("http://127.0.0.1:3110")
-                .contextPath("/security/test")
+                .contextPath("/identity/test")
                 .enabled(Boolean.TRUE)
                 .remark("测试模块1")
                 .build();
@@ -408,11 +408,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case7() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -422,7 +422,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var input = ApplicationModuleInput.builder()
                 .applicationId(entity.getId())
                 .url("http://127.0.0.1:3110")
-                .contextPath("/security/test")
+                .contextPath("/identity/test")
                 .enabled(Boolean.TRUE)
                 .remark("测试模块1")
                 .build();
@@ -457,11 +457,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case8() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -473,7 +473,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -482,7 +482,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -515,7 +515,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -527,7 +527,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -536,7 +536,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -570,11 +570,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case10() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -586,7 +586,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -595,7 +595,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -615,11 +615,11 @@ public class TestApplicationModuleProvider extends TestProvider {
     @Test
     public void case11() {
         var entity = new ApplicationEntity();
-        entity.setCode("central-security");
+        entity.setCode("central-identity");
         entity.setName("统一认证中心");
         entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
         entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/security");
+        entity.setContextPath("/identity");
         entity.setSecret(Guidx.nextID());
         entity.setEnabled(Boolean.TRUE);
         entity.setRemark("用于所有应用的认证处理");
@@ -631,7 +631,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -640,7 +640,7 @@ public class TestApplicationModuleProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.FALSE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());

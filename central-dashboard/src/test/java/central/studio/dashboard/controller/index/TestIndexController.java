@@ -106,8 +106,8 @@ public class TestIndexController {
                 .andReturn().getResponse();
 
         var location = response.getHeader(HttpHeaders.LOCATION);
-        // expect location: /security/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F
+        // expect location: /identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F
         Assertions.assertNotNull(location);
-        Assertions.assertEquals(location, "/security/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F");
+        Assertions.assertEquals(location, "/identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F");
     }
 }

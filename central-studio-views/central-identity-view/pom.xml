@@ -1,9 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Central Framework Parent -->
     <parent>
         <groupId>com.central-x.framework</groupId>
         <artifactId>central-parent</artifactId>
@@ -12,104 +12,59 @@
     </parent>
 
     <groupId>com.central-x.studio</groupId>
-    <artifactId>central-studio-parent</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>central-identity-view</artifactId>
     <version>1.0.x-SNAPSHOT</version>
-    <description>Central Studio Parent</description>
-    <url>https://central-x.com</url>
+    <packaging>jar</packaging>
 
-    <licenses>
-        <license>
-            <name>The MIT License</name>
-            <url>https://github.com/central-x/central-studio/blob/master/LICENSE</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <connection>scm:https://github.com/central-x/central-studio.git</connection>
-        <url>https://github.com/central-x/central-studio</url>
-    </scm>
-
-    <!-- 开发者信息 -->
-    <developers>
-        <developer>
-            <name>Alan Yeh</name>
-            <email>alan@yeh.cn</email>
-            <url>https://github.com/alan-yeh</url>
-        </developer>
-    </developers>
-
-    <properties>
-        <central.version>1.0.x-SNAPSHOT</central.version>
-    </properties>
-
-    <!-- 依赖版本管理 -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- Central Studio Library -->
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-studio-library</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <!-- Central Studio -->
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-dashboard</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-dashboard-view</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-gateway</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-identity</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-identity-view</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-logging</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-multicast</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-provider</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.central-x.studio</groupId>
-                <artifactId>central-storage</artifactId>
-                <version>1.0.x-SNAPSHOT</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <!-- 所有子项目都必须添加的依赖 -->
     <dependencies>
-        <!-- Central Studio Library -->
-        <dependency>
-            <groupId>com.central-x.studio</groupId>
-            <artifactId>central-studio-library</artifactId>
-        </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <targetPath>META-INF/resources/</targetPath>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>npm-install</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <workingDirectory>${project.basedir}/src/main/node</workingDirectory>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm-run-build</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <workingDirectory>${project.basedir}/src/main/node</workingDirectory>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>build</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <profile>
@@ -271,7 +226,7 @@
                 <repository>
                     <id>github</id>
                     <name>GitHub Repository</name>
-                    <url>https://maven.pkg.github.com/central-x/central-framework</url>
+                    <url>https://maven.pkg.github.com/central-x/central-studio</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
@@ -279,5 +234,4 @@
             </distributionManagement>
         </profile>
     </profiles>
-
 </project>

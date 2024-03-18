@@ -17,7 +17,7 @@ spring:
   datasource:
     name: master
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/centralx?useUnicode=true&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://mysql:3306/centralx?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
   servlet:
@@ -54,7 +54,7 @@ central:
           username: ${spring.datasource.username}
           password: ${spring.datasource.password}
   identity:
-    unauthorized-url: /security/
+    unauthorized-url: /identity/
     logout-url: /__logout
 
 # 应用配置

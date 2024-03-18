@@ -29,7 +29,7 @@ logging:
 
 central:
   identity:
-    unauthorized-url: /security/
+    unauthorized-url: /identity/
     logout-url: /__logout
 
 # 应用配置

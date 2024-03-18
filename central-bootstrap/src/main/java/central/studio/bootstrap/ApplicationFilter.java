@@ -24,10 +24,19 @@
 
 package central.studio.bootstrap;
 
+import central.lang.Stringx;
+import central.web.XForwardedHeaders;
+import jakarta.annotation.Priority;
 import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Application Filter
@@ -36,6 +45,7 @@ import java.io.IOException;
  * @since 2024/01/20
  */
 @Component
+@Priority(Ordered.HIGHEST_PRECEDENCE)
 public class ApplicationFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -44,7 +54,30 @@ public class ApplicationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(request, response);
+        var req = new HttpServletRequestWrapper((HttpServletRequest) request) {
+            @Override
+            public String getHeader(String name) {
+                var header = super.getHeader(name);
+                if (Stringx.isNullOrBlank(header)) {
+                    if (XForwardedHeaders.TENANT.equalsIgnoreCase(name)) {
+                        return "master";
+                    }
+                }
+                return header;
+            }
+
+            @Override
+            public Enumeration<String> getHeaders(String name) {
+                var headers = super.getHeaders(name);
+                if (!headers.hasMoreElements()) {
+                    if (XForwardedHeaders.TENANT.equalsIgnoreCase(name)) {
+                        return Collections.enumeration(List.of("master"));
+                    }
+                }
+                return headers;
+            }
+        };
+        chain.doFilter(req, response);
     }
 
     @Override

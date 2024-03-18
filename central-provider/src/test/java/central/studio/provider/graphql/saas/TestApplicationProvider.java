@@ -113,7 +113,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -159,7 +159,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -168,7 +168,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -215,7 +215,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -224,7 +224,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -271,7 +271,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -280,7 +280,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -334,7 +334,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -343,7 +343,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -458,7 +458,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -467,7 +467,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -515,7 +515,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -524,7 +524,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -574,7 +574,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -583,7 +583,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());
@@ -621,7 +621,7 @@ public class TestApplicationProvider extends TestProvider {
         var module1 = new ApplicationModuleEntity();
         module1.setApplicationId(entity.getId());
         module1.setUrl("http://127.0.0.1:3110");
-        module1.setContextPath("/security/test");
+        module1.setContextPath("/identity/test");
         module1.setEnabled(Boolean.TRUE);
         module1.setRemark("测试模块1");
         module1.updateCreator(properties.getSupervisor().getUsername());
@@ -630,7 +630,7 @@ public class TestApplicationProvider extends TestProvider {
         var module2 = new ApplicationModuleEntity();
         module2.setApplicationId(entity.getId());
         module2.setUrl("http://127.0.0.1:3120");
-        module2.setContextPath("/security/example");
+        module2.setContextPath("/identity/example");
         module2.setEnabled(Boolean.TRUE);
         module2.setRemark("测试模块2");
         module2.updateCreator(properties.getSupervisor().getUsername());

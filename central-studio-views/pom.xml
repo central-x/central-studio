@@ -3,22 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.central-x.studio</groupId>
-    <artifactId>central-studio</artifactId>
+    <artifactId>central-studio-views</artifactId>
     <version>1.0.x-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>central-studio-parent</module>
-        <module>central-studio-library</module>
-        <module>central-studio-views</module>
-        <module>central-bootstrap</module>
-        <module>central-dashboard</module>
-        <module>central-gateway</module>
-        <module>central-identity</module>
-        <module>central-logging</module>
-        <module>central-multicast</module>
-        <module>central-provider</module>
-        <module>central-storage</module>
+        <module>central-dashboard-view</module>
+        <module>central-identity-view</module>
     </modules>
 
     <build>

@@ -175,7 +175,7 @@ public class OAuthController {
             // 如果找不到会话，则重定向到登录界面
             var loginUrl = UriComponentsBuilder.fromUri(request.getUri())
                     .replacePath(request.getTenantPath())
-                    .path("/security/")
+                    .path("/identity/")
                     .replaceQuery(null)
                     .queryParam("redirect_uri", Stringx.encodeUrl(request.getUri().toString()))
                     .build().toString();
@@ -231,7 +231,7 @@ public class OAuthController {
 
             // 用户完成授权之后，会重新重定向回本接口，就会走到 else 的逻辑了
             var loginUrl = UriComponentsBuilder.fromUri(request.getUri())
-                    .replacePath(request.getTenantPath()).path("/security/")
+                    .replacePath(request.getTenantPath()).path("/identity/")
                     .replaceQuery(null)
                     .queryParam("redirect_uri", Stringx.encodeUrl(request.getUri().toString()))
                     .build().toString();
