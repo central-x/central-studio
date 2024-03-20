@@ -18,7 +18,7 @@ onMounted(() => {
       router.push('/about')
     }).catch((error) => {
     // 跳转到登录
-    router.push('/')
+    router.push('/login')
   })
 })
 
