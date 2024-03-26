@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import axios from 'axios'
+import { RouterView } from 'vue-router'
 import { onMounted } from 'vue'
 import router from '@/router'
-import { useAccountStore } from '@/stores/account'
+import { useSessionStore } from '@/stores/session'
 
-onMounted(() => {
+const sessionStore = useSessionStore()
+
+onMounted(async () => {
   // 显示获取数据中
-  router.push('/loading')
+  await router.push('/loading')
 
-  const accountStore = useAccountStore()
-
-  axios.get('/identity/api/account')
-    .then((response) => {
-      // 跳转到关于界面
-      accountStore.setAccount(response.data)
-      router.push('/about')
-    }).catch((error) => {
-    // 跳转到登录
-    router.push('/login')
-  })
+  const account = await sessionStore.getAccount()
+  if (account) {
+    // 跳转到关于界面
+    await router.push('/about')
+  } else {
+    // 跳转到登录界面
+    await router.push('/login')
+  }
 })
 
 </script>

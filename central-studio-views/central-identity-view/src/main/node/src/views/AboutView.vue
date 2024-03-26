@@ -1,17 +1,19 @@
 <script lang="ts" setup>
-import { useAccountStore } from '@/stores/account'
-import type { Account } from '@/data/organization/Organization'
+import type { Account } from '@/api/data/organization/Account'
+import { useSessionStore } from '@/stores/session'
 import { ref, onMounted } from 'vue'
 
-const account = ref<Account>({})
+const sessionStore = useSessionStore()
+const account = ref<Account | null>(null)
 
-onMounted(() => {
-  const accountStore = useAccountStore()
-  account.value = accountStore.getAccount()
+onMounted(async () => {
+  account.value = await sessionStore.getAccount()
 })
 
-const onLogout = () => {
-  window.location.href = '/identity/api/__logout'
+async function onLogout() {
+  await sessionStore.logout()
+  // 刷新当前页面
+  window.location.reload()
 }
 
 </script>
@@ -20,7 +22,7 @@ const onLogout = () => {
   <div class="about">
     <h1>Central Identity</h1>
     <p />
-    <h2>{{ account.name }}</h2>
+    <h2>{{ account?.name }}</h2>
     <el-button type="primary" @click.prevent="onLogout">Logout</el-button>
   </div>
 </template>

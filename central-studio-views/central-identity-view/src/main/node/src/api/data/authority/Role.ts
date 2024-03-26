@@ -1,4 +1,4 @@
-import type { Account, Unit } from '@/data/organization/Organization'
+import type { Account, Unit } from '@/api/data/organization/Organization'
 
 export interface Role {
   id?: string;

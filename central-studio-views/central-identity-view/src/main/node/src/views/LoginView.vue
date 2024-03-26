@@ -1,34 +1,25 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
-import axios from 'axios'
-import { sha256 } from 'js-sha256'
+import { useSessionStore } from '@/stores/session'
 
-
+const sessionStore = useSessionStore()
 
 const form = reactive({
   account: 'syssa',
-  password: 'x.123456',
-  secret: 'lLS4p6skBbBVZX30zR5' // Web 端固定密钥
+  password: 'x.123456'
 })
 
-const onSubmit = () => {
-  // 对密码进行 sha256 摘要后再提交
-  // 防止原始密码被截取
-  const hasher = sha256.create();
-  hasher.update(form.password);
+async function onSubmit() {
+  try {
+    // 登录
+    await sessionStore.login(form.account, form.password)
 
-  axios.post('/identity/api/login', {
-    account: form.account,
-    password: hasher.hex(),
-    secret: form.secret
-  }).then((response) => {
     // 登录成功后，刷新页面
     // 后台接口在接收到请求后，会根据是否存在 redirect_uri 参数自动判断重定向到指定的地址
     window.location.reload()
-  }).catch((error) => {
-    // 登录失败
-    alert(error.response.data.message)
-  })
+  } catch (error: any) {
+    alert(error.message)
+  }
 }
 </script>
 
