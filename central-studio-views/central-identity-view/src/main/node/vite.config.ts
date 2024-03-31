@@ -15,7 +15,7 @@ export default defineConfig({
           options.headers = { 'X-Forwarded-Tenant': 'master' }
         }
       },
-      '/dashboard/api': {
+      '/dashboard': {
         target: 'http://localhost:8080',
         configure: (proxy, options) => {
           options.headers = { 'X-Forwarded-Tenant': 'master' }

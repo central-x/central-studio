@@ -1,18 +1,17 @@
-import type { Account } from '@/api/data/organization/Account'
-import axios from 'axios'
 import { sha256 } from 'js-sha256'
+import type { Account } from '@centralx/types'
+import type { AxiosInstance } from 'axios'
 
-const client = axios.create({
-  timeout: 10000,
-  headers: {
-    'Accept': 'application/json'
-  },
-  validateStatus: function(status: number) {
-    return true
+/**
+ * 认证中心接口
+ */
+export class IdentityBroker {
+  private http: AxiosInstance
+
+  public constructor(private client: AxiosInstance) {
+    this.http = client
   }
-})
 
-class IdentityService {
   /**
    * 登录
    * @param account 帐户名
@@ -24,7 +23,7 @@ class IdentityService {
     const hash = sha256.create()
     hash.update(password)
 
-    const response = await client.post('/identity/api/login', {
+    const response = await this.http.post('/identity/api/login', {
       account: account,
       password: hash.hex(),
       secret: 'lLS4p6skBbBVZX30zR5'
@@ -39,7 +38,7 @@ class IdentityService {
    * 退出登录
    */
   public async logout(): Promise<void> {
-    return client.get('/identity/api/logout')
+    return this.http.get('/identity/api/logout')
   }
 
   /**
@@ -47,7 +46,7 @@ class IdentityService {
    */
   public async getAccount(): Promise<Account | null> {
     try {
-      const response = await client.get('/identity/api/account')
+      const response = await this.http.get('/identity/api/account')
       if (response.status !== 200) {
         return null
       }
@@ -57,5 +56,3 @@ class IdentityService {
     }
   }
 }
-
-export const identity = new IdentityService()

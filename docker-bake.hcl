@@ -58,13 +58,7 @@ target "central-studio" {
     name = "${STUDIO_COMPONENT}"
     matrix = {
         STUDIO_COMPONENT = [
-            "central-gateway",
-            "central-dashboard",
-            "central-identity",
-            "central-provider",
-            "central-logging",
-            "central-storage",
-            "central-multicast"
+            "central-bootstrap"
         ]
     }
     inherits = ["_contexts", "_platforms", "_labels"]

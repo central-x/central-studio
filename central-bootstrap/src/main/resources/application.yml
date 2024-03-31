@@ -14,12 +14,18 @@ spring:
     name: central-studio
     secret: AkJSi2kmH7vSO5lJcvY
     version: @{ project.version }@
+#  datasource:
+#    name: master
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://mysql:3306/centralx?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+#    username: root
+#    password: root
   datasource:
     name: master
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/centralx?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: root
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:./centralx-h2
+    username: centralx
+    password: central.x
   servlet:
     multipart:
       # 限制请求的大小和上传文件的大小

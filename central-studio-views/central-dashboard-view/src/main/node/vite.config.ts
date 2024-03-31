@@ -9,13 +9,19 @@ export default defineConfig({
   base: './',
   server: {
     proxy: {
-      '/identity/api': {
+      '/identity': {
         target: 'http://localhost:8080',
         configure: (proxy, options) => {
           options.headers = { 'X-Forwarded-Tenant': 'master' }
         }
       },
       '/dashboard/api': {
+        target: 'http://localhost:8080',
+        configure: (proxy, options) => {
+          options.headers = { 'X-Forwarded-Tenant': 'master' }
+        }
+      },
+      '/dashboard/__logout': {
         target: 'http://localhost:8080',
         configure: (proxy, options) => {
           options.headers = { 'X-Forwarded-Tenant': 'master' }
@@ -47,10 +53,19 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@centralx': fileURLToPath(new URL('./library', import.meta.url))
+    }
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/assets/styles/global.scss" as *;`
+      }
     }
   },
   build: {
-    outDir: '../resources/dashboard'
+    outDir: '../resources/dashboard',
+    emptyOutDir: true
   }
 })
