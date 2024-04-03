@@ -1,6 +1,6 @@
-import type { Area } from '@/api/data/organization/Area'
-import type { Department } from '@/api/data/organization/Department'
-import type { Account } from '@/api/data/organization/Account'
+import type { Area } from '@/api/data/organization/Area';
+import type { Department } from '@/api/data/organization/Department';
+import type { Account } from '@/api/data/organization/Account';
 
 export interface Unit {
   id?: string;

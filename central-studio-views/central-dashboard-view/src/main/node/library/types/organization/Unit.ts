@@ -1,6 +1,6 @@
-import type { Area } from "./Area";
-import type { Department } from "./Department";
-import type { Account } from "./Account";
+import type { Area } from './Area';
+import type { Department } from './Department';
+import type { Account } from './Account';
 
 export interface Unit {
   id?: string;

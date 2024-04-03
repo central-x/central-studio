@@ -1,7 +1,7 @@
-import type { Account } from '@/api/data/organization/Account'
-import type { Department } from '@/api/data/organization/Department'
-import type { Unit } from '@/api/data/organization/Unit'
-import type { Rank } from '@/api/data/organization/Rank'
+import type { Account } from '@/api/data/organization/Account';
+import type { Department } from '@/api/data/organization/Department';
+import type { Unit } from '@/api/data/organization/Unit';
+import type { Rank } from '@/api/data/organization/Rank';
 
 export interface AccountUnit {
   id?: string;

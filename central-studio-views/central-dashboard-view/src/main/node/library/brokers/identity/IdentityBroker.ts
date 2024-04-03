@@ -1,15 +1,15 @@
-import { sha256 } from 'js-sha256'
-import type { Account } from '@centralx/types'
-import type { AxiosInstance } from 'axios'
+import { sha256 } from 'js-sha256';
+import type { Account } from '@centralx/types';
+import type { AxiosInstance } from 'axios';
 
 /**
  * 认证中心接口
  */
 export class IdentityBroker {
-  private http: AxiosInstance
+  private http: AxiosInstance;
 
   public constructor(private client: AxiosInstance) {
-    this.http = client
+    this.http = client;
   }
 
   /**
@@ -20,17 +20,17 @@ export class IdentityBroker {
   public async login(account: string, password: string): Promise<void> {
     // 对密码进行 sha256 摘要后再提交
     // 防止原始密码被截取
-    const hash = sha256.create()
-    hash.update(password)
+    const hash = sha256.create();
+    hash.update(password);
 
     const response = await this.http.post('/identity/api/login', {
       account: account,
       password: hash.hex(),
       secret: 'lLS4p6skBbBVZX30zR5'
-    })
+    });
 
     if (response.status !== 200) {
-      throw new Error(response.data.message)
+      throw new Error(response.data.message);
     }
   }
 
@@ -38,7 +38,7 @@ export class IdentityBroker {
    * 退出登录
    */
   public async logout(): Promise<void> {
-    return this.http.get('/identity/api/logout')
+    return this.http.get('/identity/api/logout');
   }
 
   /**
@@ -46,13 +46,13 @@ export class IdentityBroker {
    */
   public async getAccount(): Promise<Account | null> {
     try {
-      const response = await this.http.get('/identity/api/account')
+      const response = await this.http.get('/identity/api/account');
       if (response.status !== 200) {
-        return null
+        return null;
       }
-      return response.data
+      return response.data;
     } catch (error) {
-      return null
+      return null;
     }
   }
 }

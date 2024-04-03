@@ -1,1 +1,1 @@
-export * from "./PortalBroker";
+export * from './PortalBroker';

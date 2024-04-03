@@ -1,21 +1,20 @@
 <script lang="ts" setup>
-import type { Account } from '@/api/data/organization/Account'
-import { useSessionStore } from '@/stores/session'
-import { ref, onMounted } from 'vue'
+import type { Account } from '@/api/data/organization/Account';
+import { useSessionStore } from '@/stores/session';
+import { ref, onMounted } from 'vue';
 
-const sessionStore = useSessionStore()
-const account = ref<Account | null>(null)
+const sessionStore = useSessionStore();
+const account = ref<Account | null>(null);
 
 onMounted(async () => {
-  account.value = await sessionStore.getAccount()
-})
+  account.value = await sessionStore.getAccount();
+});
 
 async function onLogout() {
-  await sessionStore.logout()
+  await sessionStore.logout();
   // 刷新当前页面
-  window.location.reload()
+  window.location.reload();
 }
-
 </script>
 
 <template>
@@ -27,6 +26,4 @@ async function onLogout() {
   </div>
 </template>
 
-<style>
-
-</style>
+<style></style>

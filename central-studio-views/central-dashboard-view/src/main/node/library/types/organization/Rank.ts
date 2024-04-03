@@ -1,5 +1,5 @@
-import type { Unit } from "./Unit";
-import type { Account } from "./Account";
+import type { Unit } from './Unit';
+import type { Account } from './Account';
 
 export interface Rank {
   id?: string;

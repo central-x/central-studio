@@ -50,13 +50,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import {
-  Document,
-  Menu as IconMenu,
-  Location,
-  Setting,
-} from "@element-plus/icons-vue";
+import { ref } from 'vue';
+import { Document, Menu as IconMenu, Location, Setting } from '@element-plus/icons-vue';
 
 const isCollapse = ref(true);
 const handleOpen = (key: string, keyPath: string[]) => {

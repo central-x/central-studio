@@ -1,12 +1,12 @@
-import { ref } from 'vue'
-import { defineStore } from 'pinia'
-import { http } from '@/http'
-import type { Account } from '@centralx/types'
-import { PortalBroker } from '@centralx/brokers'
+import { ref } from 'vue';
+import { defineStore } from 'pinia';
+import { http } from '@/http';
+import type { Account } from '@centralx/types';
+import { PortalBroker } from '@centralx/brokers';
 
 export const useSessionStore = defineStore('session', () => {
-  const account = ref<Account | null>(null)
-  const broker = new PortalBroker(http)
+  const account = ref<Account | null>(null);
+  const broker = new PortalBroker(http);
 
   /**
    * 获取当前已登录的用户信息
@@ -14,17 +14,17 @@ export const useSessionStore = defineStore('session', () => {
    */
   async function getAccount(): Promise<Account | null> {
     if (!account.value) {
-      account.value = await broker.getAccount()
+      account.value = await broker.getAccount();
     }
-    return account.value
+    return account.value;
   }
 
   /**
    * 退出登录
    */
   async function logout(): Promise<void> {
-    return broker.logout()
+    return broker.logout();
   }
 
-  return { getAccount, logout }
-})
+  return { getAccount, logout };
+});

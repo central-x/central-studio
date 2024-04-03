@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import { onMounted } from 'vue'
-import router from '@/router'
-import { useSessionStore } from '@/stores/session'
+import { RouterView } from 'vue-router';
+import { onMounted } from 'vue';
+import router from '@/router';
+import { useSessionStore } from '@/stores/session';
 
-const sessionStore = useSessionStore()
+const sessionStore = useSessionStore();
 
 onMounted(async () => {
   // 显示获取数据中
-  await router.push('/loading')
+  await router.push('/loading');
 
-  const account = await sessionStore.getAccount()
+  const account = await sessionStore.getAccount();
   if (account) {
     // 跳转到关于界面
-    await router.push('/about')
+    await router.push('/about');
   } else {
     // 跳转到登录界面
-    await router.push('/login')
+    await router.push('/login');
   }
-})
-
+});
 </script>
 
 <template>
@@ -40,5 +39,4 @@ header {
   display: block;
   margin: 0 auto 2rem;
 }
-
 </style>

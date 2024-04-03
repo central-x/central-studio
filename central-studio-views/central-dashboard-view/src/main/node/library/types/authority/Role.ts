@@ -1,4 +1,4 @@
-import type { Account, Unit } from "../organization";
+import type { Account, Unit } from '../organization';
 
 export interface Role {
   id?: string;

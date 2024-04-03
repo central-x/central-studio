@@ -1,5 +1,5 @@
-import type { Unit } from '@/api/data/organization/Unit'
-import type { Account } from '@/api/data/organization/Account'
+import type { Unit } from '@/api/data/organization/Unit';
+import type { Account } from '@/api/data/organization/Account';
 
 export interface Rank {
   id?: string;

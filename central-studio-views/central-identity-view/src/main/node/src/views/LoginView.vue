@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import { reactive } from 'vue'
-import { useSessionStore } from '@/stores/session'
+import { reactive } from 'vue';
+import { useSessionStore } from '@/stores/session';
 
-const sessionStore = useSessionStore()
+const sessionStore = useSessionStore();
 
 const form = reactive({
   account: 'syssa',
   password: 'x.123456'
-})
+});
 
 async function onSubmit() {
   try {
     // 登录
-    await sessionStore.login(form.account, form.password)
+    await sessionStore.login(form.account, form.password);
 
     // 登录成功后，刷新页面
     // 后台接口在接收到请求后，会根据是否存在 redirect_uri 参数自动判断重定向到指定的地址
-    window.location.reload()
+    window.location.reload();
   } catch (error: any) {
-    alert(error.message)
+    alert(error.message);
   }
 }
 </script>

@@ -11,19 +11,19 @@
 </template>
 
 <script setup lang="ts">
-import DefaultLayout from "./default/Index.vue";
-import { useThemeStore } from "@/stores";
-import { useTabStore } from "@/stores";
-import { ref } from "vue";
+import DefaultLayout from './default/Index.vue';
+import { useThemeStore } from '@/stores';
+import { useTabStore } from '@/stores';
+import { ref } from 'vue';
 
 const themeStore = useThemeStore();
 const tabStore = useTabStore();
 
-let Layout = themeStore.layout === "default" ? DefaultLayout : DefaultLayout;
+let Layout = themeStore.layout === 'default' ? DefaultLayout : DefaultLayout;
 const layoutName = ref<string>(themeStore.layout);
 
 themeStore.$subscribe((mutation, state) => {
-  Layout = state.layout == "default" ? DefaultLayout : DefaultLayout;
+  Layout = state.layout == 'default' ? DefaultLayout : DefaultLayout;
   layoutName.value = state.layout;
 });
 </script>

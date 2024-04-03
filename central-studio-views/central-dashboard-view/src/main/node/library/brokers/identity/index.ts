@@ -1,1 +1,1 @@
-export * from "./IdentityBroker";
+export * from './IdentityBroker';

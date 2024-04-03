@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
 
 /**
  * 标签页项
@@ -23,14 +23,14 @@ interface TabItem {
  * 标签页管理
  */
 export const useTabStore = defineStore(
-  "tab",
+  'tab',
   () => {
     // 主题
     const list = ref<TabItem[]>([]);
 
     //
     const codes = computed<string[]>(() => {
-      return list.value.map((item) => item.title);
+      return list.value.map(item => item.title);
     });
 
     return { list, codes };
@@ -39,5 +39,5 @@ export const useTabStore = defineStore(
     // persist: {
     //   storage: sessionStorage
     // }
-  },
+  }
 );

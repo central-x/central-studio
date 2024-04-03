@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import vHeader from "../components/header/Index.vue";
-import vSidebar from "../components/sidebar/Index.vue";
+import vHeader from '../components/header/Index.vue';
+import vSidebar from '../components/sidebar/Index.vue';
 </script>
 
 <template>
