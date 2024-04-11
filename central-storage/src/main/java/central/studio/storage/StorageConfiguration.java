@@ -28,7 +28,10 @@ import central.provider.EnableCentralProvider;
 import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
 import central.studio.storage.core.BucketCache;
+import central.studio.storage.core.BucketResolver;
+import central.studio.storage.core.DefaultBucketResolver;
 import central.studio.storage.core.cache.LocalCache;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -51,8 +54,20 @@ import java.nio.file.Path;
 @EnableConfigurationProperties(StorageProperties.class)
 public class StorageConfiguration {
 
+    /**
+     * 存储桶缓存
+     */
     @Bean
     public BucketCache bucketCache() throws IOException {
         return new LocalCache(Path.of("cache", "storage"));
+    }
+
+    /**
+     * 存储桶类型解析器
+     */
+    @Bean
+    @ConditionalOnMissingBean(BucketResolver.class)
+    public BucketResolver bucketResolver() {
+        return new DefaultBucketResolver();
     }
 }

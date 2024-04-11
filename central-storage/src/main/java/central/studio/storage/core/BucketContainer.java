@@ -56,6 +56,9 @@ import java.util.*;
 public class BucketContainer implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
+    private BucketResolver resolver;
+
+    @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;
 
     /**
@@ -119,7 +122,7 @@ public class BucketContainer implements DisposableBean, GenericApplicationListen
                         var current = this.getBucket(tenant.getKey(), data.getCode());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的存储桶
-                            var bucket = new DynamicBucket(data, this.factory);
+                            var bucket = new DynamicBucket(data, this.resolver, this.factory);
                             var old = this.putBucket(tenant.getKey(), bucket);
                             this.factory.destroy(old);
                         }
