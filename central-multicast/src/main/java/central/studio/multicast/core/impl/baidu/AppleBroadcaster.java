@@ -33,7 +33,7 @@ import central.studio.multicast.core.Broadcaster;
  * @author Alan Yeh
  * @since 2022/11/03
  */
-public class AppleBroadcaster implements Broadcaster {
+public class AppleBroadcaster implements Broadcaster<Object> {
     @Override
     public void standardPublish(StandardBody body) {
 

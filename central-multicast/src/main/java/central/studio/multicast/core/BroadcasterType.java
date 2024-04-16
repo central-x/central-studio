@@ -46,7 +46,7 @@ public enum BroadcasterType implements OptionalEnum<String> {
 
     private final String name;
     private final String value;
-    private final Class<? extends Broadcaster> type;
+    private final Class<? extends Broadcaster<?>> type;
 
     public static BroadcasterType resolve(String value) {
         return OptionalEnum.resolve(BroadcasterType.class, value);

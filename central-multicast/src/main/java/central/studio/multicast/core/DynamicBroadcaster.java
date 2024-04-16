@@ -54,20 +54,20 @@ public class DynamicBroadcaster implements Broadcaster<Object>, DisposableBean {
     @Getter
     private final TypeRef<Object> bodyType;
 
-    public DynamicBroadcaster(MulticastBroadcaster data, PlugletFactory factory) {
+    public DynamicBroadcaster(MulticastBroadcaster data, BroadcasterResolver resolver, PlugletFactory factory) {
         this.data = data;
         this.factory = factory;
 
-        var type = Assertx.requireNotNull(BroadcasterType.resolve(data.getType()), "找不到指定类型的广播器类型: " + data.getType());
+        var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定类型的广播器类型: " + data.getType());
 
         try {
             var params = Jsonx.Default().deserialize(data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.delegate = this.factory.create(type.getType(), params);
+            this.delegate = (Broadcaster<Object>) this.factory.create(type, params);
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }
 
-        var parameterizedType = (ParameterizedType) type.getType().getGenericInterfaces()[0];
+        var parameterizedType = (ParameterizedType) type.getGenericInterfaces()[0];
         this.bodyType = TypeRef.of(parameterizedType.getActualTypeArguments()[0]);
     }
 

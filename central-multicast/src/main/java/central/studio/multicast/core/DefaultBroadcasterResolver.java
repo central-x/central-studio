@@ -22,25 +22,28 @@
  * SOFTWARE.
  */
 
-package central.studio.multicast.core.impl.baidu;
+package central.studio.multicast.core;
 
-import central.multicast.client.body.StandardBody;
-import central.studio.multicast.core.Broadcaster;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Android 广播
+ * Default Broadcaster Resolver
+ * <p>
+ * 默认广播器解析
  *
  * @author Alan Yeh
- * @since 2022/11/03
+ * @since 2024/04/16
  */
-public class AndroidBroadcaster implements Broadcaster<Object> {
-    @Override
-    public void standardPublish(StandardBody body) {
-
-    }
+public class DefaultBroadcasterResolver implements BroadcasterResolver {
 
     @Override
-    public void customPublish(Object body) {
-
+    public @Nullable Class<? extends Broadcaster<?>> resolve(@NotNull String code) {
+        BroadcasterType type = BroadcasterType.resolve(code);
+        if (type == null) {
+            return null;
+        } else {
+            return type.getType();
+        }
     }
 }

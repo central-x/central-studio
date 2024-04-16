@@ -56,6 +56,9 @@ import java.util.*;
 public class BroadcasterContainer implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
+    private BroadcasterResolver resolver;
+
+    @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;
 
     /**
@@ -119,7 +122,7 @@ public class BroadcasterContainer implements DisposableBean, GenericApplicationL
                         var current = this.getBroadcaster(tenant.getKey(), data.getCode());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的存储桶
-                            var broadcaster = new DynamicBroadcaster(data, this.factory);
+                            var broadcaster = new DynamicBroadcaster(data, this.resolver, this.factory);
                             var old = this.putBroadcaster(tenant.getKey(), broadcaster);
                             this.factory.destroy(old);
                         }

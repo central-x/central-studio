@@ -27,7 +27,11 @@ package central.studio.multicast;
 import central.provider.EnableCentralProvider;
 import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
+import central.studio.multicast.core.BroadcasterResolver;
+import central.studio.multicast.core.DefaultBroadcasterResolver;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,4 +48,13 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("central.studio.multicast")
 @EnableConfigurationProperties(MulticastProperties.class)
 public class MulticastConfiguration {
+
+    /**
+     * 广播器解析
+     */
+    @Bean
+    @ConditionalOnMissingBean(BroadcasterResolver.class)
+    public BroadcasterResolver broadcasterResolver() {
+        return new DefaultBroadcasterResolver();
+    }
 }
