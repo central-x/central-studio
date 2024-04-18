@@ -58,16 +58,16 @@ public class DynamicCollector extends Collector implements DisposableBean {
 
     private final ApplicationContext applicationContext;
 
-    public DynamicCollector(LogCollector data, PlugletFactory factory, ApplicationContext applicationContext) {
+    public DynamicCollector(LogCollector data, CollectorResolver resolver, PlugletFactory factory, ApplicationContext applicationContext) {
         this.data = data;
         this.factory = factory;
         this.applicationContext = applicationContext;
 
-        var type = Assertx.requireNotNull(CollectorType.resolve(data.getType()), "找不到指定类型的采集器: " + data.getType());
+        var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定类型的采集器: " + data.getType());
 
         try {
             var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.collector = this.factory.create(type.getType(), params);
+            this.collector = this.factory.create(type, params);
             this.collector.setDelegate(this);
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);

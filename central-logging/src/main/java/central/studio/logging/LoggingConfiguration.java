@@ -27,7 +27,13 @@ package central.studio.logging;
 import central.provider.EnableCentralProvider;
 import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
+import central.studio.logging.core.collector.CollectorResolver;
+import central.studio.logging.core.collector.DefaultCollectorResolver;
+import central.studio.logging.core.storage.DefaultStorageResolver;
+import central.studio.logging.core.storage.StorageResolver;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,4 +50,22 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("central.studio.logging")
 @EnableConfigurationProperties(LoggingProperties.class)
 public class LoggingConfiguration {
+
+    /**
+     * 采集器解析
+     */
+    @Bean
+    @ConditionalOnMissingBean(CollectorResolver.class)
+    public CollectorResolver collectorResolver() {
+        return new DefaultCollectorResolver();
+    }
+
+    /**
+     * 存储器解析
+     */
+    @Bean
+    @ConditionalOnMissingBean(StorageResolver.class)
+    public StorageResolver storageResolver() {
+        return new DefaultStorageResolver();
+    }
 }

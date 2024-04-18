@@ -27,10 +27,12 @@ package central.studio.logging.core;
 import central.provider.scheduled.event.DataRefreshEvent;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.log.LogContainer;
+import central.studio.logging.core.collector.CollectorResolver;
 import central.studio.logging.core.collector.DynamicCollector;
 import central.studio.logging.core.filter.DynamicFilter;
 import central.studio.logging.core.storage.DynamicStorage;
 import central.pluglet.PlugletFactory;
+import central.studio.logging.core.storage.StorageResolver;
 import jakarta.annotation.Nonnull;
 import lombok.Setter;
 import org.springframework.beans.factory.DisposableBean;
@@ -56,6 +58,12 @@ import java.util.Objects;
  */
 @Component
 public class LoggingContainer implements ApplicationContextAware, DisposableBean, InitializingBean, GenericApplicationListener {
+
+    @Setter(onMethod_ = @Autowired)
+    private CollectorResolver collectorResolver;
+
+    @Setter(onMethod_ = @Autowired)
+    private StorageResolver storageResolver;
 
     @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;
@@ -134,7 +142,7 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
                     var current = this.getCollector(data.getId());
                     if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                         // 如果当前没有，或者已经过期了，就创建新的采集器
-                        var collector = new DynamicCollector(data, factory, this.applicationContext);
+                        var collector = new DynamicCollector(data, collectorResolver, factory, this.applicationContext);
                         var old = this.collectors.put(data.getId(), collector);
                         factory.destroy(old);
                     }
@@ -147,7 +155,7 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
                     var current = this.getStorage(data.getId());
                     if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                         // 如果当前没有，或者已经过期了，就创建新的存储器
-                        var storage = new DynamicStorage(data, factory);
+                        var storage = new DynamicStorage(data, storageResolver, factory);
                         var old = this.storages.put(data.getId(), storage);
                         factory.destroy(old);
                     }

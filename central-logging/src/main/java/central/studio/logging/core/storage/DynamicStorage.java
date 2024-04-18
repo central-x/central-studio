@@ -51,16 +51,16 @@ public class DynamicStorage implements Storage, DisposableBean {
 
     private final PlugletFactory factory;
 
-    public DynamicStorage(LogStorage data, PlugletFactory factory) {
+    public DynamicStorage(LogStorage data, StorageResolver resolver, PlugletFactory factory) {
         this.data = data;
         this.factory = factory;
 
-        var type = Assertx.requireNotNull(StorageType.resolve(data.getType()), "找不到指定类型的存储器: " + data.getType());
+        var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定类型的存储器: " + data.getType());
 
         try {
             // 动态创建存储器
             var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.storage = factory.create(type.getType(), params);
+            this.storage = factory.create(type, params);
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }
