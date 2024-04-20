@@ -52,6 +52,10 @@ import java.util.*;
  */
 @Component
 public class StrategyContainer implements DisposableBean, GenericApplicationListener {
+
+    @Setter(onMethod_ = @Autowired)
+    private StrategyResolver resolver;
+
     @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;
 
@@ -116,7 +120,7 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
                         var current = this.getStrategy(tenant.getKey(), data.getCode());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的安全策略
-                            var strategy = new DynamicStrategyFilter(data, this.factory);
+                            var strategy = new DynamicStrategyFilter(data, this.resolver, this.factory);
                             var old = this.putStrategy(tenant.getKey(), strategy);
                             this.factory.destroy(old);
                         }

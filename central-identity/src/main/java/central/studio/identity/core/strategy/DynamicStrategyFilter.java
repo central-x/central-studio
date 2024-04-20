@@ -52,15 +52,15 @@ public class DynamicStrategyFilter implements StrategyFilter, DisposableBean {
     @Delegate(types = StrategyFilter.class)
     private final StrategyFilter delegate;
 
-    public DynamicStrategyFilter(IdentityStrategy data, PlugletFactory factory) {
+    public DynamicStrategyFilter(IdentityStrategy data, StrategyResolver resolver, PlugletFactory factory) {
         this.data = data;
         this.factory = factory;
 
-        var type = Assertx.requireNotNull(StrategyType.resolve(data.getType()), "找不到指定类型的插件类型: " + data.getType());
+        var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定类型的插件类型: " + data.getType());
 
         try {
             var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.delegate = this.factory.create(type.getType(), params);
+            this.delegate = this.factory.create(type, params);
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }

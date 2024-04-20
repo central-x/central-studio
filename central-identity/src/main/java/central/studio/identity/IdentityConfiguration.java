@@ -30,6 +30,8 @@ import central.security.Signerx;
 import central.security.signer.KeyPair;
 import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
+import central.studio.identity.core.strategy.DefaultStrategyResolver;
+import central.studio.identity.core.strategy.StrategyResolver;
 import central.util.cache.CacheRepository;
 import central.util.cache.memory.MemoryCacheRepository;
 import central.util.cache.redis.RedisCacheRepository;
@@ -86,5 +88,14 @@ public class IdentityConfiguration {
     @ConditionalOnProperty(name = "central.security.cache.type", havingValue = "redis")
     public CacheRepository redisCacheRepository() {
         return new RedisCacheRepository();
+    }
+
+    /**
+     * 安全策略解析器
+     */
+    @Bean
+    @ConditionalOnMissingBean(StrategyResolver.class)
+    public StrategyResolver resolver() {
+        return new DefaultStrategyResolver();
     }
 }
