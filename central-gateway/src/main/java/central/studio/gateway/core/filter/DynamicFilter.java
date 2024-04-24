@@ -65,7 +65,7 @@ public class DynamicFilter implements Filter, Ordered, DisposableBean {
 
     private final PlugletFactory factory;
 
-    public DynamicFilter(GatewayFilter data, PlugletFactory factory) {
+    public DynamicFilter(GatewayFilter data, FilterResolver resolver, PlugletFactory factory) {
         this.data = data;
         this.factory = factory;
 
@@ -89,11 +89,11 @@ public class DynamicFilter implements Filter, Ordered, DisposableBean {
 
         {
             // 初始化过滤器
-            var type = Assertx.requireNotNull(FilterType.resolve(data.getType()), "找不到指定的过滤器类型: " + data.getType());
+            var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定的过滤器类型: " + data.getType());
             var params = Jsonx.Default().deserialize(data.getParams(), TypeRef.ofMap(String.class, Object.class));
 
             try {
-                this.delegate = factory.create(type.getType(), params);
+                this.delegate = factory.create(type, params);
             } catch (Exception ex) {
                 throw new IllegalStateException(Stringx.format("初始化过滤器插件[type={}]异常: {}", type.getName(), ex.getLocalizedMessage()), ex);
             }

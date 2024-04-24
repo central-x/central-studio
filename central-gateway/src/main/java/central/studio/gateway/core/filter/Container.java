@@ -50,6 +50,9 @@ import java.util.*;
 public class Container implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
+    private FilterResolver resolver;
+
+    @Setter(onMethod_ = @Autowired)
     private PlugletFactory factory;
 
     /**
@@ -109,7 +112,7 @@ public class Container implements DisposableBean, GenericApplicationListener {
                         var current = this.getFilter(tenant.getKey(), data.getId());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的过滤器
-                            var filter = new DynamicFilter(data, this.factory);
+                            var filter = new DynamicFilter(data, this.resolver, this.factory);
                             var old = this.putFilter(tenant.getKey(), filter);
                             this.factory.destroy(old);
                         }
@@ -123,9 +126,9 @@ public class Container implements DisposableBean, GenericApplicationListener {
     public void destroy() throws Exception {
         {
             // 销毁过滤器
-            for (var tenant : this.filters.entrySet()){
+            for (var tenant : this.filters.entrySet()) {
                 var ids = new HashSet<>(tenant.getValue().keySet());
-                for (var id : ids){
+                for (var id : ids) {
                     var filter = tenant.getValue().remove(id);
                     this.factory.destroy(filter);
                 }

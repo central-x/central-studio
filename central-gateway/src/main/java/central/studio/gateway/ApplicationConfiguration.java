@@ -29,6 +29,9 @@ import central.pluglet.binder.SpringBeanFieldBinder;
 import central.pluglet.lifecycle.SpringLifeCycleProcess;
 import central.provider.EnableCentralProvider;
 import central.starter.probe.EnableProbe;
+import central.studio.gateway.core.filter.DefaultFilterResolver;
+import central.studio.gateway.core.filter.FilterResolver;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -55,5 +58,14 @@ public class ApplicationConfiguration {
         factory.registerBinder(new SpringBeanFieldBinder(applicationContext));
         factory.registerLifeCycleProcessor(new SpringLifeCycleProcess(applicationContext));
         return factory;
+    }
+
+    /**
+     * 过滤器类型解析器
+     */
+    @Bean
+    @ConditionalOnMissingBean(FilterResolver.class)
+    public FilterResolver filterResolver() {
+        return new DefaultFilterResolver();
     }
 }
