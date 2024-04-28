@@ -24,6 +24,7 @@
 
 package central.studio.storage;
 
+import central.pluglet.PlugletFactory;
 import central.provider.EnableCentralProvider;
 import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
@@ -67,7 +68,7 @@ public class StorageConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(BucketResolver.class)
-    public BucketResolver bucketResolver() {
-        return new DefaultBucketResolver();
+    public BucketResolver bucketResolver(PlugletFactory factory) {
+        return new DefaultBucketResolver(factory);
     }
 }

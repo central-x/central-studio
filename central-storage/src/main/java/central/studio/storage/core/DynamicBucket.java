@@ -28,7 +28,6 @@ import central.data.storage.StorageBucket;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
 import lombok.experimental.Delegate;
@@ -48,17 +47,15 @@ public class DynamicBucket implements Bucket, DisposableBean {
     @Delegate(types = Bucket.class)
     private final Bucket delegate;
 
-    private final PlugletFactory factory;
+    private final BucketResolver resolver;
 
-    public DynamicBucket(StorageBucket data, BucketResolver resolver, PlugletFactory factory) {
+    public DynamicBucket(StorageBucket data, BucketResolver resolver) {
         this.data = data;
-        this.factory = factory;
-
-        var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定类型的存储桶类型: " + data.getType());
+        this.resolver = resolver;
 
         try {
             var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.delegate = this.factory.create(type, params);
+            this.delegate = Assertx.requireNotNull(resolver.resolve(data.getType(), params), "找不到指定类型的存储桶类型: " + data.getType());
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }
@@ -66,6 +63,6 @@ public class DynamicBucket implements Bucket, DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        factory.destroy(this.delegate);
+        this.resolver.destroy(this.delegate);
     }
 }

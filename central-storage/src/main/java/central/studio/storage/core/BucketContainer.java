@@ -26,13 +26,13 @@ package central.studio.storage.core;
 
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.pluglet.PlugletFactory;
 import central.provider.scheduled.event.DataRefreshEvent;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.storage.StorageContainer;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -52,14 +52,12 @@ import java.util.*;
  * @author Alan Yeh
  * @since 2022/10/30
  */
+@Slf4j
 @Component
 public class BucketContainer implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
     private BucketResolver resolver;
-
-    @Setter(onMethod_ = @Autowired)
-    private PlugletFactory factory;
 
     /**
      * 存储桶
@@ -122,9 +120,15 @@ public class BucketContainer implements DisposableBean, GenericApplicationListen
                         var current = this.getBucket(tenant.getKey(), data.getCode());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的存储桶
-                            var bucket = new DynamicBucket(data, this.resolver, this.factory);
+                            var bucket = new DynamicBucket(data, this.resolver);
                             var old = this.putBucket(tenant.getKey(), bucket);
-                            this.factory.destroy(old);
+                            if (old != null) {
+                                try {
+                                    old.destroy();
+                                } catch (Exception ex) {
+                                    log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                                }
+                            }
                         }
                     }
                 }
@@ -140,7 +144,13 @@ public class BucketContainer implements DisposableBean, GenericApplicationListen
                 var codes = new HashSet<>(tenant.getValue().keySet());
                 for (var code : codes) {
                     var bucket = tenant.getValue().remove(code);
-                    this.factory.destroy(bucket);
+                    if (bucket != null) {
+                        try {
+                            bucket.destroy();
+                        } catch (Exception ex) {
+                            log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                        }
+                    }
                 }
             }
         }

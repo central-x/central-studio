@@ -27,6 +27,8 @@ package central.studio.storage.core;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import java.util.Map;
+
 /**
  * Bucket Resolver
  * <p>
@@ -37,11 +39,19 @@ import jakarta.annotation.Nullable;
  */
 public interface BucketResolver {
     /**
-     * 根据标识解析存储桶类型
+     * 根据标识和参数实例化存储桶
      *
-     * @param code 类型标识
-     * @return 存储桶类型，如果未找到标识对应的类型，则返回空
+     * @param code   类型标识
+     * @param params 初始化参数
+     * @return 存储桶实例，如果未找到标识对应的类型，则返回空
      */
     @Nullable
-    Class<? extends Bucket> resolve(@Nonnull String code);
+    Bucket resolve(@Nonnull String code, @Nonnull Map<String, Object> params);
+
+    /**
+     * 销毁存储桶实例
+     *
+     * @param bucket 实例
+     */
+    void destroy(@Nonnull Bucket bucket);
 }
