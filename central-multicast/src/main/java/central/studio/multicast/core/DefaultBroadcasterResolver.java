@@ -24,8 +24,12 @@
 
 package central.studio.multicast.core;
 
+import central.pluglet.PlugletFactory;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * Default Broadcaster Resolver
@@ -35,15 +39,29 @@ import org.jetbrains.annotations.Nullable;
  * @author Alan Yeh
  * @since 2024/04/16
  */
+@RequiredArgsConstructor
 public class DefaultBroadcasterResolver implements BroadcasterResolver {
 
+    public final PlugletFactory factory;
+
+    @Nullable
     @Override
-    public @Nullable Class<? extends Broadcaster<?>> resolve(@NotNull String code) {
+    public Broadcaster<?> resolve(@NotNull String code, @NotNull Map<String, Object> params) {
         BroadcasterType type = BroadcasterType.resolve(code);
         if (type == null) {
             return null;
-        } else {
-            return type.getType();
         }
+
+        return this.instance(type.getType(), params);
+    }
+
+    protected Broadcaster<?> instance(@NotNull Class<? extends Broadcaster<?>> type, @NotNull Map<String, Object> params) {
+        return this.factory.create(type, params);
+    }
+
+
+    @Override
+    public void destroy(@NotNull Broadcaster<?> broadcaster) {
+        this.factory.destroy(broadcaster);
     }
 }

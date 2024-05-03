@@ -24,12 +24,11 @@
 
 package central.studio.multicast.core;
 
-import central.multicast.client.body.StandardBody;
 import central.data.multicast.MulticastBroadcaster;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.pluglet.PlugletFactory;
+import central.multicast.client.body.StandardBody;
 import central.util.Jsonx;
 import lombok.Getter;
 import org.springframework.beans.factory.DisposableBean;
@@ -47,33 +46,31 @@ public class DynamicBroadcaster implements Broadcaster<Object>, DisposableBean {
     @Getter
     private final MulticastBroadcaster data;
 
-    private final PlugletFactory factory;
-
     private final Broadcaster<Object> delegate;
+
+    private final BroadcasterResolver resolver;
 
     @Getter
     private final TypeRef<Object> bodyType;
 
-    public DynamicBroadcaster(MulticastBroadcaster data, BroadcasterResolver resolver, PlugletFactory factory) {
+    public DynamicBroadcaster(MulticastBroadcaster data, BroadcasterResolver resolver) {
         this.data = data;
-        this.factory = factory;
-
-        var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定类型的广播器类型: " + data.getType());
+        this.resolver = resolver;
 
         try {
-            var params = Jsonx.Default().deserialize(data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.delegate = (Broadcaster<Object>) this.factory.create(type, params);
-        } catch (Exception ex) {
+            var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
+            this.delegate = (Broadcaster<Object>)Assertx.requireNotNull(resolver.resolve(data.getType(), params), "找不到指定类型的广播器类型: " + data.getType());
+        }catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }
 
-        var parameterizedType = (ParameterizedType) type.getGenericInterfaces()[0];
+        var parameterizedType = (ParameterizedType) this.delegate.getClass().getGenericInterfaces()[0];
         this.bodyType = TypeRef.of(parameterizedType.getActualTypeArguments()[0]);
     }
 
     @Override
     public void destroy() throws Exception {
-        factory.destroy(this.delegate);
+        this.resolver.destroy(this.delegate);
     }
 
     @Override

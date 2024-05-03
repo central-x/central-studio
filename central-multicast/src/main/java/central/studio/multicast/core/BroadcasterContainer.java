@@ -24,15 +24,15 @@
 
 package central.studio.multicast.core;
 
+import central.lang.Assertx;
+import central.lang.Stringx;
 import central.provider.scheduled.event.DataRefreshEvent;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.multicast.MulticastContainer;
-import central.lang.Assertx;
-import central.lang.Stringx;
-import central.pluglet.PlugletFactory;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -52,14 +52,12 @@ import java.util.*;
  * @author Alan Yeh
  * @since 2022/11/04
  */
+@Slf4j
 @Component
 public class BroadcasterContainer implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
     private BroadcasterResolver resolver;
-
-    @Setter(onMethod_ = @Autowired)
-    private PlugletFactory factory;
 
     /**
      * 存储桶
@@ -122,9 +120,15 @@ public class BroadcasterContainer implements DisposableBean, GenericApplicationL
                         var current = this.getBroadcaster(tenant.getKey(), data.getCode());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的存储桶
-                            var broadcaster = new DynamicBroadcaster(data, this.resolver, this.factory);
+                            var broadcaster = new DynamicBroadcaster(data, this.resolver);
                             var old = this.putBroadcaster(tenant.getKey(), broadcaster);
-                            this.factory.destroy(old);
+                            if (old != null) {
+                                try {
+                                    old.destroy();
+                                } catch (Exception ex) {
+                                    log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                                }
+                            }
                         }
                     }
                 }
@@ -140,7 +144,13 @@ public class BroadcasterContainer implements DisposableBean, GenericApplicationL
                 var codes = new HashSet<>(tenant.getValue().keySet());
                 for (var code : codes) {
                     var broadcaster = tenant.getValue().remove(code);
-                    this.factory.destroy(broadcaster);
+                    if (broadcaster != null) {
+                        try {
+                            broadcaster.destroy();
+                        } catch (Exception ex) {
+                            log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                        }
+                    }
                 }
             }
         }

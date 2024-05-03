@@ -24,6 +24,7 @@
 
 package central.studio.multicast;
 
+import central.pluglet.PlugletFactory;
 import central.provider.EnableCentralProvider;
 import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
@@ -54,7 +55,7 @@ public class MulticastConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(BroadcasterResolver.class)
-    public BroadcasterResolver broadcasterResolver() {
-        return new DefaultBroadcasterResolver();
+    public BroadcasterResolver broadcasterResolver(PlugletFactory factory) {
+        return new DefaultBroadcasterResolver(factory);
     }
 }
