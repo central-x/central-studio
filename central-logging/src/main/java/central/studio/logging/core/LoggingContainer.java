@@ -30,11 +30,12 @@ import central.provider.scheduled.fetcher.log.LogContainer;
 import central.studio.logging.core.collector.CollectorResolver;
 import central.studio.logging.core.collector.DynamicCollector;
 import central.studio.logging.core.filter.DynamicFilter;
+import central.studio.logging.core.filter.predicate.PredicateResolver;
 import central.studio.logging.core.storage.DynamicStorage;
-import central.pluglet.PlugletFactory;
 import central.studio.logging.core.storage.StorageResolver;
 import jakarta.annotation.Nonnull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,7 @@ import java.util.Objects;
  * @author Alan Yeh
  * @since 2022/10/25
  */
+@Slf4j
 @Component
 public class LoggingContainer implements ApplicationContextAware, DisposableBean, InitializingBean, GenericApplicationListener {
 
@@ -63,10 +65,10 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
     private CollectorResolver collectorResolver;
 
     @Setter(onMethod_ = @Autowired)
-    private StorageResolver storageResolver;
+    private PredicateResolver predicateResolver;
 
     @Setter(onMethod_ = @Autowired)
-    private PlugletFactory factory;
+    private StorageResolver storageResolver;
 
     @Setter
     private ApplicationContext applicationContext;
@@ -142,9 +144,15 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
                     var current = this.getCollector(data.getId());
                     if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                         // 如果当前没有，或者已经过期了，就创建新的采集器
-                        var collector = new DynamicCollector(data, collectorResolver, factory, this.applicationContext);
+                        var collector = new DynamicCollector(data, this.collectorResolver, this.applicationContext);
                         var old = this.collectors.put(data.getId(), collector);
-                        factory.destroy(old);
+                        if (old != null) {
+                            try {
+                                old.destroy();
+                            } catch (Exception ex) {
+                                log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                            }
+                        }
                     }
                 }
             }
@@ -155,9 +163,15 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
                     var current = this.getStorage(data.getId());
                     if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                         // 如果当前没有，或者已经过期了，就创建新的存储器
-                        var storage = new DynamicStorage(data, storageResolver, factory);
+                        var storage = new DynamicStorage(data, this.storageResolver);
                         var old = this.storages.put(data.getId(), storage);
-                        factory.destroy(old);
+                        if (old != null) {
+                            try {
+                                old.destroy();
+                            } catch (Exception ex) {
+                                log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                            }
+                        }
                     }
                 }
             }
@@ -168,9 +182,15 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
                     var current = this.getFilter(data.getId());
                     if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                         // 如果当前没有，或者已经过期了，就创建新的过滤器
-                        var filter = new DynamicFilter(data, this, factory);
+                        var filter = new DynamicFilter(data, this, this.predicateResolver);
                         var old = this.filters.put(data.getId(), filter);
-                        factory.destroy(old);
+                        if (old != null) {
+                            try {
+                                old.destroy();
+                            } catch (Exception ex) {
+                                log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                            }
+                        }
                     }
                 }
             }
@@ -189,7 +209,13 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
             var ids = new HashSet<>(this.filters.keySet());
             for (var id : ids) {
                 var filter = this.filters.remove(id);
-                this.factory.destroy(filter);
+                if (filter != null) {
+                    try {
+                        filter.destroy();
+                    } catch (Exception ex) {
+                        log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                    }
+                }
             }
         }
 
@@ -198,7 +224,13 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
             var ids = new HashSet<>(this.storages.keySet());
             for (var id : ids) {
                 var storage = this.storages.remove(id);
-                this.factory.destroy(storage);
+                if (storage != null) {
+                    try {
+                        storage.destroy();
+                    } catch (Exception ex) {
+                        log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                    }
+                }
             }
         }
 
@@ -207,7 +239,13 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
             var ids = new HashSet<>(this.collectors.keySet());
             for (var id : ids) {
                 var collector = this.collectors.remove(id);
-                this.factory.destroy(collector);
+                if (collector != null) {
+                    try {
+                        collector.destroy();
+                    } catch (Exception ex) {
+                        log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                    }
+                }
             }
         }
     }

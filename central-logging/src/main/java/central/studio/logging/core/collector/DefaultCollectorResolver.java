@@ -24,8 +24,12 @@
 
 package central.studio.logging.core.collector;
 
+import central.pluglet.PlugletFactory;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NotNull;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 /**
  * Default Collector Resolver
@@ -35,15 +39,27 @@ import org.jetbrains.annotations.NotNull;
  * @author Alan Yeh
  * @since 2024/04/19
  */
+@RequiredArgsConstructor
 public class DefaultCollectorResolver implements CollectorResolver {
 
+    public final PlugletFactory factory;
+
     @Override
-    public @Nullable Class<? extends Collector> resolve(@NotNull String code) {
-        CollectorType type = CollectorType.resolve(code);
+    public @Nullable Collector resolve(@Nonnull String code, @Nonnull Map<String, Object> params) {
+        var type = CollectorType.resolve(code);
         if (type == null) {
             return null;
-        } else {
-            return type.getType();
         }
+
+        return this.instance(type.getType(), params);
+    }
+
+    protected Collector instance(@Nonnull Class<? extends Collector> type, @Nonnull Map<String, Object> params) {
+        return this.factory.create(type, params);
+    }
+
+    @Override
+    public void destroy(@Nonnull Collector collector) {
+        this.factory.destroy(collector);
     }
 }

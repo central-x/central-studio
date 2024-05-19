@@ -29,7 +29,6 @@ import central.data.log.LogPredicate;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
 import org.springframework.beans.factory.DisposableBean;
@@ -46,20 +45,17 @@ public class DynamicPredicate implements Predicate, DisposableBean {
 
     private final Predicate delegate;
 
-    private final PlugletFactory factory;
+    private final PredicateResolver resolver;
 
-    public DynamicPredicate(LogPredicate data, PlugletFactory factory) {
+    public DynamicPredicate(LogPredicate data, PredicateResolver resolver) {
         this.data = data;
-        this.factory = factory;
-
-        var type = Assertx.requireNotNull(PredicateType.resolve(data.getType()), "找不到指定类型的日志断言: " + data.getType());
+        this.resolver = resolver;
 
         try {
-            var params = Jsonx.Default().deserialize(data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            // 动态创建断言
-            this.delegate = factory.create(type.getType(), params);
+            var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
+            this.delegate = Assertx.requireNotNull(resolver.resolve(data.getType(), params), "找不到指定类型的断言类型: " + data.getType());
         } catch (Exception ex) {
-            throw new IllegalStateException(Stringx.format("初始化断言插件[type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getType()), ex);
+            throw new IllegalStateException(Stringx.format("初始化插件[type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getType()), ex);
         }
     }
 
@@ -70,6 +66,6 @@ public class DynamicPredicate implements Predicate, DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        this.factory.destroy(this.delegate);
+        this.resolver.destroy(this.delegate);
     }
 }

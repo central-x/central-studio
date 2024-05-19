@@ -25,9 +25,9 @@
 package central.studio.multicast.core;
 
 import central.pluglet.PlugletFactory;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -44,10 +44,9 @@ public class DefaultBroadcasterResolver implements BroadcasterResolver {
 
     public final PlugletFactory factory;
 
-    @Nullable
     @Override
-    public Broadcaster<?> resolve(@NotNull String code, @NotNull Map<String, Object> params) {
-        BroadcasterType type = BroadcasterType.resolve(code);
+    public @Nullable Broadcaster<?> resolve(@Nonnull String code, @Nonnull Map<String, Object> params) {
+        var type = BroadcasterType.resolve(code);
         if (type == null) {
             return null;
         }
@@ -55,13 +54,13 @@ public class DefaultBroadcasterResolver implements BroadcasterResolver {
         return this.instance(type.getType(), params);
     }
 
-    protected Broadcaster<?> instance(@NotNull Class<? extends Broadcaster<?>> type, @NotNull Map<String, Object> params) {
+    protected Broadcaster<?> instance(@Nonnull Class<? extends Broadcaster<?>> type, @Nonnull Map<String, Object> params) {
         return this.factory.create(type, params);
     }
 
 
     @Override
-    public void destroy(@NotNull Broadcaster<?> broadcaster) {
+    public void destroy(@Nonnull Broadcaster<?> broadcaster) {
         this.factory.destroy(broadcaster);
     }
 }

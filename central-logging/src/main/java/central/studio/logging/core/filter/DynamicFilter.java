@@ -30,8 +30,7 @@ import central.data.log.LogFilter;
 import central.data.log.LogStorage;
 import central.studio.logging.core.LoggingContainer;
 import central.studio.logging.core.filter.predicate.DynamicPredicate;
-import central.studio.logging.core.filter.predicate.Predicate;
-import central.pluglet.PlugletFactory;
+import central.studio.logging.core.filter.predicate.PredicateResolver;
 import central.util.Listx;
 import lombok.Getter;
 import org.springframework.beans.factory.DisposableBean;
@@ -51,7 +50,8 @@ public class DynamicFilter implements Filter, DisposableBean {
     @Getter
     private final LogFilter data;
 
-    private final PlugletFactory factory;
+    private final PredicateResolver resolver;
+
     private final LoggingContainer container;
 
     /**
@@ -68,18 +68,18 @@ public class DynamicFilter implements Filter, DisposableBean {
      */
     private final Set<String> storageIds = new HashSet<>();
 
-    private final List<Predicate> predicates = new ArrayList<>();
+    private final List<DynamicPredicate> predicates = new ArrayList<>();
 
-    public DynamicFilter(LogFilter data, LoggingContainer container, PlugletFactory factory) {
+    public DynamicFilter(LogFilter data, LoggingContainer container, PredicateResolver resolver) {
         this.data = data;
         this.container = container;
-        this.factory = factory;
+        this.resolver = resolver;
 
         this.collectorIds.addAll(data.getCollectors().stream().map(LogCollector::getId).toList());
         this.storageIds.addAll(data.getStorages().stream().map(LogStorage::getId).toList());
 
         for (var predicate : this.data.getPredicates()) {
-            this.predicates.add(new DynamicPredicate(predicate, factory));
+            this.predicates.add(new DynamicPredicate(predicate, this.resolver));
         }
 
         // 添加与采集器的关联
@@ -118,7 +118,7 @@ public class DynamicFilter implements Filter, DisposableBean {
         }
 
         for (var predicate : this.predicates) {
-            this.factory.destroy(predicate);
+            predicate.destroy();
         }
     }
 }

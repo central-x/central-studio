@@ -27,6 +27,8 @@ package central.studio.logging.core.storage;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import java.util.Map;
+
 /**
  * Storage Resolver
  * <p>
@@ -36,13 +38,20 @@ import jakarta.annotation.Nullable;
  * @since 2024/04/19
  */
 public interface StorageResolver {
-
     /**
-     * 根据标识解析存储器类型
+     * 根据标识和参数实例化存储器
      *
-     * @param code 类型标识
-     * @return 存储器类型，如果未找到标识对应的类型，则返回空
+     * @param code   类型标识
+     * @param params 初始化参数
+     * @return 存储器实例，如果未找到标识对应的类型，则返回空
      */
     @Nullable
-    Class<? extends Storage> resolve(@Nonnull String code);
+    Storage resolve(@Nonnull String code, @Nonnull Map<String, Object> params);
+
+    /**
+     * 销毁存储器实例
+     *
+     * @param storage 实例
+     */
+    void destroy(@Nonnull Storage storage);
 }

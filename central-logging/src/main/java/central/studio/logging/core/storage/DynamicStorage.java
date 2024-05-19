@@ -29,7 +29,6 @@ import central.data.log.LogStorage;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
 import org.springframework.beans.factory.DisposableBean;
@@ -47,20 +46,17 @@ public class DynamicStorage implements Storage, DisposableBean {
     @Getter
     private final LogStorage data;
 
-    private final Storage storage;
+    private final Storage delegate;
 
-    private final PlugletFactory factory;
+    private final StorageResolver resolver;
 
-    public DynamicStorage(LogStorage data, StorageResolver resolver, PlugletFactory factory) {
+    public DynamicStorage(LogStorage data, StorageResolver resolver) {
         this.data = data;
-        this.factory = factory;
-
-        var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定类型的存储器: " + data.getType());
+        this.resolver = resolver;
 
         try {
-            // 动态创建存储器
             var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.storage = factory.create(type, params);
+            this.delegate = Assertx.requireNotNull(resolver.resolve(data.getType(), params), "找不到指定类型的存储器类型: " + data.getType());
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }
@@ -68,11 +64,11 @@ public class DynamicStorage implements Storage, DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        this.factory.destroy(this.storage);
+        this.resolver.destroy(this.delegate);
     }
 
     @Override
     public void store(List<Log> logs) {
-        this.storage.store(logs);
+        this.delegate.store(logs);
     }
 }

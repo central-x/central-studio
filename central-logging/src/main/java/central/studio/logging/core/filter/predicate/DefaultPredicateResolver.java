@@ -22,36 +22,45 @@
  * SOFTWARE.
  */
 
-package central.studio.logging.core.collector;
+package central.studio.logging.core.filter.predicate;
 
+
+import central.pluglet.PlugletFactory;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
 /**
- * Collector Resolver
+ * Default Predicate Resolver
  * <p>
- * 采集器类型解析器
+ * 默认断言解析
  *
  * @author Alan Yeh
- * @since 2024/04/19
+ * @since 2024/05/19
  */
-public interface CollectorResolver {
-    /**
-     * 根据标识和参数实例化采集器
-     *
-     * @param code   类型标识
-     * @param params 初始化参数
-     * @return 采集器实例，如果未找到标识对应的类型，则返回空
-     */
-    @Nullable
-    Collector resolve(@Nonnull String code, @Nonnull Map<String, Object> params);
+@RequiredArgsConstructor
+public class DefaultPredicateResolver implements PredicateResolver {
 
-    /**
-     * 销毁采集器实例
-     *
-     * @param collector 实例
-     */
-    void destroy(@Nonnull Collector collector);
+    public final PlugletFactory factory;
+
+    @Override
+    public @Nullable Predicate resolve(@Nonnull String code, @Nonnull Map<String, Object> params) {
+        var type = PredicateType.resolve(code);
+        if (type == null) {
+            return null;
+        }
+
+        return this.instance(type.getType(), params);
+    }
+
+    protected Predicate instance(@Nonnull Class<? extends Predicate> type, @Nonnull Map<String, Object> params) {
+        return this.factory.create(type, params);
+    }
+
+    @Override
+    public void destroy(@Nonnull Predicate predicate) {
+        this.factory.destroy(predicate);
+    }
 }

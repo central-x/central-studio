@@ -25,9 +25,9 @@
 package central.studio.storage.core;
 
 import central.pluglet.PlugletFactory;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -47,8 +47,8 @@ public class DefaultBucketResolver implements BucketResolver {
     public final PlugletFactory factory;
 
     @Override
-    public @Nullable Bucket resolve(@NotNull String code, @NotNull Map<String, Object> params) {
-        BucketType type = BucketType.resolve(code);
+    public @Nullable Bucket resolve(@Nonnull String code, @Nonnull Map<String, Object> params) {
+        var type = BucketType.resolve(code);
         if (type == null) {
             return null;
         }
@@ -56,12 +56,12 @@ public class DefaultBucketResolver implements BucketResolver {
         return this.instance(type.getType(), params);
     }
     
-    protected Bucket instance(@NotNull Class<? extends Bucket> type, @NotNull Map<String, Object> params) {
+    protected Bucket instance(@Nonnull Class<? extends Bucket> type, @Nonnull Map<String, Object> params) {
         return this.factory.create(type, params);
     }
 
     @Override
-    public void destroy(@NotNull Bucket bucket) {
+    public void destroy(@Nonnull Bucket bucket) {
         this.factory.destroy(bucket);
     }
 }

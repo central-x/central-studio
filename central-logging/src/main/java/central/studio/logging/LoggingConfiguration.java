@@ -24,11 +24,14 @@
 
 package central.studio.logging;
 
+import central.pluglet.PlugletFactory;
 import central.provider.EnableCentralProvider;
 import central.starter.ability.EnablePluglet;
 import central.starter.probe.EnableProbe;
 import central.studio.logging.core.collector.CollectorResolver;
 import central.studio.logging.core.collector.DefaultCollectorResolver;
+import central.studio.logging.core.filter.predicate.DefaultPredicateResolver;
+import central.studio.logging.core.filter.predicate.PredicateResolver;
 import central.studio.logging.core.storage.DefaultStorageResolver;
 import central.studio.logging.core.storage.StorageResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -56,8 +59,17 @@ public class LoggingConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(CollectorResolver.class)
-    public CollectorResolver collectorResolver() {
-        return new DefaultCollectorResolver();
+    public CollectorResolver collectorResolver(PlugletFactory factory) {
+        return new DefaultCollectorResolver(factory);
+    }
+
+    /**
+     * 断言解析
+     */
+    @Bean
+    @ConditionalOnMissingBean(PredicateResolver.class)
+    public PredicateResolver predicateResolver(PlugletFactory factory) {
+        return new DefaultPredicateResolver(factory);
     }
 
     /**
@@ -65,7 +77,7 @@ public class LoggingConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(StorageResolver.class)
-    public StorageResolver storageResolver() {
-        return new DefaultStorageResolver();
+    public StorageResolver storageResolver(PlugletFactory factory) {
+        return new DefaultStorageResolver(factory);
     }
 }

@@ -24,8 +24,12 @@
 
 package central.studio.logging.core.storage;
 
+import central.pluglet.PlugletFactory;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * Default Storage Resolver
@@ -35,15 +39,26 @@ import org.jetbrains.annotations.Nullable;
  * @author Alan Yeh
  * @since 2024/04/19
  */
+@RequiredArgsConstructor
 public class DefaultStorageResolver implements StorageResolver {
-    @Nullable
+
+    public final PlugletFactory factory;
+
     @Override
-    public Class<? extends Storage> resolve(@NotNull String code) {
-        StorageType type = StorageType.resolve(code);
+    public @Nullable Storage resolve(@NotNull String code, @NotNull Map<String, Object> params) {
+        var type = StorageType.resolve(code);
         if (type == null) {
             return null;
-        } else {
-            return type.getType();
         }
+        return this.instance(type.getType(), params);
+    }
+
+    protected Storage instance(@NotNull Class<? extends Storage> type, @NotNull Map<String, Object> params) {
+        return this.factory.create(type, params);
+    }
+
+    @Override
+    public void destroy(@NotNull Storage storage) {
+        this.factory.destroy(storage);
     }
 }
