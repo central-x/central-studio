@@ -24,8 +24,13 @@
 
 package central.studio.identity.core.strategy;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import central.pluglet.PlugletFactory;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 /**
  * Default Strategy Resolver
@@ -35,15 +40,26 @@ import org.jetbrains.annotations.Nullable;
  * @author Alan Yeh
  * @since 2024/04/20
  */
+@RequiredArgsConstructor
 public class DefaultStrategyResolver implements StrategyResolver {
 
+    public final PlugletFactory factory;
+
     @Override
-    public @Nullable Class<? extends StrategyFilter> resolve(@NotNull String code) {
+    public @Nullable StrategyFilter resolve(@Nonnull String code, @Nonnull Map<String, Object> params) {
         var type = StrategyType.resolve(code);
         if (type == null) {
             return null;
-        } else {
-            return type.getType();
         }
+        return this.instance(type.getType(), params);
+    }
+
+    protected StrategyFilter instance(@Nonnull Class<? extends StrategyFilter> type, @Nonnull Map<String, Object> params) {
+        return this.factory.create(type, params);
+    }
+
+    @Override
+    public void destroy(@Nonnull StrategyFilter strategy) {
+        this.factory.destroy(strategy);
     }
 }

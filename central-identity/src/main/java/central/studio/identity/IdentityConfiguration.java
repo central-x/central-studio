@@ -25,6 +25,7 @@
 package central.studio.identity;
 
 import central.identity.client.SessionVerifier;
+import central.pluglet.PlugletFactory;
 import central.provider.EnableCentralProvider;
 import central.security.Signerx;
 import central.security.signer.KeyPair;
@@ -95,7 +96,7 @@ public class IdentityConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(StrategyResolver.class)
-    public StrategyResolver resolver() {
-        return new DefaultStrategyResolver();
+    public StrategyResolver resolver(PlugletFactory factory) {
+        return new DefaultStrategyResolver(factory);
     }
 }

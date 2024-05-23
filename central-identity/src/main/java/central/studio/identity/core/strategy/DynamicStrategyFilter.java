@@ -28,7 +28,6 @@ import central.data.identity.IdentityStrategy;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.pluglet.PlugletFactory;
 import central.util.Jsonx;
 import lombok.Getter;
 import lombok.experimental.Delegate;
@@ -47,20 +46,18 @@ public class DynamicStrategyFilter implements StrategyFilter, DisposableBean {
     @Getter
     private final IdentityStrategy data;
 
-    private final PlugletFactory factory;
-
     @Delegate(types = StrategyFilter.class)
     private final StrategyFilter delegate;
 
-    public DynamicStrategyFilter(IdentityStrategy data, StrategyResolver resolver, PlugletFactory factory) {
-        this.data = data;
-        this.factory = factory;
+    private final StrategyResolver resolver;
 
-        var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定类型的插件类型: " + data.getType());
+    public DynamicStrategyFilter(IdentityStrategy data, StrategyResolver resolver) {
+        this.data = data;
+        this.resolver = resolver;
 
         try {
             var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.delegate = this.factory.create(type, params);
+            this.delegate = Assertx.requireNotNull(resolver.resolve(data.getType(), params), "找不到指定类型的安全策略类型: " + data.getType());
         } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }
@@ -68,6 +65,6 @@ public class DynamicStrategyFilter implements StrategyFilter, DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        this.factory.destroy(delegate);
+        this.resolver.destroy(delegate);
     }
 }

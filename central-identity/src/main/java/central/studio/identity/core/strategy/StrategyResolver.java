@@ -27,6 +27,8 @@ package central.studio.identity.core.strategy;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import java.util.Map;
+
 /**
  * Strategy Resolver
  * <p>
@@ -37,11 +39,19 @@ import jakarta.annotation.Nullable;
  */
 public interface StrategyResolver {
     /**
-     * 根据标识解析存储桶类型
+     * 根据标识和参数实例化安全策略
      *
-     * @param code 类型标识
-     * @return 存储桶类型，如果未找到标识对应的类型，则返回空
+     * @param code   类型标识
+     * @param params 初始化参数
+     * @return 安全策略实例，如果未找到标识对应的类型，则返回空
      */
     @Nullable
-    Class<? extends StrategyFilter> resolve(@Nonnull String code);
+    StrategyFilter resolve(@Nonnull String code, @Nonnull Map<String, Object> params);
+
+    /**
+     * 销毁安全策略实例
+     *
+     * @param strategy 实例
+     */
+    void destroy(@Nonnull StrategyFilter strategy);
 }

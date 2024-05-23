@@ -26,13 +26,13 @@ package central.studio.identity.core.strategy;
 
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.pluglet.PlugletFactory;
 import central.provider.scheduled.event.DataRefreshEvent;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.identity.IdentityContainer;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -50,14 +50,12 @@ import java.util.*;
  * @author Alan Yeh
  * @since 2022/11/05
  */
+@Slf4j
 @Component
 public class StrategyContainer implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
     private StrategyResolver resolver;
-
-    @Setter(onMethod_ = @Autowired)
-    private PlugletFactory factory;
 
     /**
      * 安全策略
@@ -120,9 +118,15 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
                         var current = this.getStrategy(tenant.getKey(), data.getCode());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的安全策略
-                            var strategy = new DynamicStrategyFilter(data, this.resolver, this.factory);
+                            var strategy = new DynamicStrategyFilter(data, this.resolver);
                             var old = this.putStrategy(tenant.getKey(), strategy);
-                            this.factory.destroy(old);
+                            if (old != null) {
+                                try {
+                                    old.destroy();
+                                } catch (Exception ex) {
+                                    log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                                }
+                            }
                         }
                     }
                 }
@@ -138,7 +142,13 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
                 var codes = new HashSet<>(tenant.getValue().keySet());
                 for (var code : codes) {
                     var strategy = tenant.getValue().remove(code);
-                    this.factory.destroy(strategy);
+                    if (strategy != null) {
+                        try {
+                            strategy.destroy();
+                        } catch (Exception ex) {
+                            log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                        }
+                    }
                 }
             }
         }
