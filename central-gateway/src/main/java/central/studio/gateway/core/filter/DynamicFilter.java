@@ -25,13 +25,11 @@
 package central.studio.gateway.core.filter;
 
 import central.data.gateway.GatewayFilter;
-import central.studio.gateway.core.filter.predicate.Predicate;
-import central.studio.gateway.core.filter.predicate.PredicateType;
-import central.studio.gateway.core.filter.predicate.impl.PathPredicate;
 import central.lang.Assertx;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.pluglet.PlugletFactory;
+import central.studio.gateway.core.filter.predicate.Predicate;
+import central.studio.gateway.core.filter.predicate.PredicateResolver;
 import central.util.Jsonx;
 import lombok.Getter;
 import org.springframework.beans.factory.DisposableBean;
@@ -63,39 +61,39 @@ public class DynamicFilter implements Filter, Ordered, DisposableBean {
 
     private final Filter delegate;
 
-    private final PlugletFactory factory;
+    private final FilterResolver filterResolver;
 
-    public DynamicFilter(GatewayFilter data, FilterResolver resolver, PlugletFactory factory) {
+    private final PredicateResolver predicateResolver;
+
+    public DynamicFilter(GatewayFilter data, FilterResolver filterResolver, PredicateResolver predicateResolver) {
         this.data = data;
-        this.factory = factory;
+        this.filterResolver = filterResolver;
+        this.predicateResolver = predicateResolver;
 
         {
             // 初始化断言
             // 1. 初始化路径断言
-            this.predicates.add(factory.create(PathPredicate.class, Map.of("path", data.getPath())));
+            this.predicates.add(predicateResolver.resolve("path", Map.of("path", data.getPath())));
 
             // 2. 初始化其它断言
             for (var predicate : data.getPredicates()) {
-                var type = Assertx.requireNotNull(PredicateType.resolve(predicate.getType()), "找不到指定的断言类型: " + predicate.getType());
-                var params = Jsonx.Default().deserialize(predicate.getParams(), TypeRef.ofMap(String.class, Object.class));
                 try {
-                    var instance = factory.create(type.getType(), params);
+                    var params = Jsonx.Default().deserialize(predicate.getParams(), TypeRef.ofMap(String.class, Object.class));
+                    var instance = Assertx.requireNotNull(this.predicateResolver.resolve(predicate.getType(), params), "找不到指定的断言类型: " + predicate.getType());
                     this.predicates.add(instance);
                 } catch (Exception ex) {
-                    throw new IllegalStateException(Stringx.format("初始化断言插件[type={}]异常: {}", type.getName(), ex.getLocalizedMessage()), ex);
+                    throw new IllegalStateException(Stringx.format("初始化断言插件[id={}, type={}]异常: {}", this.data.getId(), predicate.getType(), ex.getLocalizedMessage()), ex);
                 }
             }
         }
 
         {
             // 初始化过滤器
-            var type = Assertx.requireNotNull(resolver.resolve(data.getType()), "找不到指定的过滤器类型: " + data.getType());
-            var params = Jsonx.Default().deserialize(data.getParams(), TypeRef.ofMap(String.class, Object.class));
-
             try {
-                this.delegate = factory.create(type, params);
+                var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
+                this.delegate = Assertx.requireNotNull(this.filterResolver.resolve(data.getType(), params), "找不到指定类型的过滤器类型: " + data.getType());
             } catch (Exception ex) {
-                throw new IllegalStateException(Stringx.format("初始化过滤器插件[type={}]异常: {}", type.getName(), ex.getLocalizedMessage()), ex);
+                throw new IllegalStateException(Stringx.format("初始化过滤器插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
             }
         }
     }
@@ -113,8 +111,8 @@ public class DynamicFilter implements Filter, Ordered, DisposableBean {
     @Override
     public void destroy() throws Exception {
         for (var predicate : this.predicates) {
-            factory.destroy(predicate);
+            this.predicateResolver.destroy(predicate);
         }
-        factory.destroy(this.delegate);
+        this.filterResolver.destroy(this.delegate);
     }
 }

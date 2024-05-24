@@ -31,6 +31,8 @@ import central.provider.EnableCentralProvider;
 import central.starter.probe.EnableProbe;
 import central.studio.gateway.core.filter.DefaultFilterResolver;
 import central.studio.gateway.core.filter.FilterResolver;
+import central.studio.gateway.core.filter.predicate.DefaultPredicateResolver;
+import central.studio.gateway.core.filter.predicate.PredicateResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -65,7 +67,16 @@ public class ApplicationConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(FilterResolver.class)
-    public FilterResolver filterResolver() {
-        return new DefaultFilterResolver();
+    public FilterResolver filterResolver(PlugletFactory factory) {
+        return new DefaultFilterResolver(factory);
+    }
+
+    /**
+     * 路由断言类型解析器
+     */
+    @Bean
+    @ConditionalOnMissingBean(PredicateResolver.class)
+    public PredicateResolver predicateResolver(PlugletFactory factory) {
+        return new DefaultPredicateResolver(factory);
     }
 }

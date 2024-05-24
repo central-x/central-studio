@@ -27,10 +27,11 @@ package central.studio.gateway.core.filter;
 import central.provider.scheduled.event.DataRefreshEvent;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.gateway.GatewayContainer;
-import central.pluglet.PlugletFactory;
+import central.studio.gateway.core.filter.predicate.PredicateResolver;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
@@ -46,14 +47,15 @@ import java.util.*;
  * @author Alan Yeh
  * @since 2022/11/08
  */
+@Slf4j
 @Component
 public class Container implements DisposableBean, GenericApplicationListener {
 
     @Setter(onMethod_ = @Autowired)
-    private FilterResolver resolver;
+    private FilterResolver filterResolver;
 
     @Setter(onMethod_ = @Autowired)
-    private PlugletFactory factory;
+    private PredicateResolver predicateResolver;
 
     /**
      * 过滤器
@@ -112,9 +114,15 @@ public class Container implements DisposableBean, GenericApplicationListener {
                         var current = this.getFilter(tenant.getKey(), data.getId());
                         if (current == null || !Objects.equals(data.getModifyDate(), current.getData().getModifyDate())) {
                             // 如果当前没有，或者已经过期了，就创建新的过滤器
-                            var filter = new DynamicFilter(data, this.resolver, this.factory);
+                            var filter = new DynamicFilter(data, this.filterResolver, this.predicateResolver);
                             var old = this.putFilter(tenant.getKey(), filter);
-                            this.factory.destroy(old);
+                            if (old != null) {
+                                try {
+                                    old.destroy();
+                                } catch (Exception ex) {
+                                    log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                                }
+                            }
                         }
                     }
                 }
@@ -130,7 +138,13 @@ public class Container implements DisposableBean, GenericApplicationListener {
                 var ids = new HashSet<>(tenant.getValue().keySet());
                 for (var id : ids) {
                     var filter = tenant.getValue().remove(id);
-                    this.factory.destroy(filter);
+                    if (filter != null) {
+                        try {
+                            filter.destroy();
+                        } catch (Exception ex) {
+                            log.error("实例销毁失败: " + ex.getLocalizedMessage(), ex);
+                        }
+                    }
                 }
             }
         }

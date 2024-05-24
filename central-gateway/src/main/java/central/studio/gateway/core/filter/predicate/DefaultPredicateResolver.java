@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-package central.studio.gateway.core.filter;
+package central.studio.gateway.core.filter.predicate;
 
 import central.pluglet.PlugletFactory;
+import central.studio.gateway.core.filter.predicate.impl.PathPredicate;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -33,35 +34,41 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 /**
- * Default Filter Resolver
+ * Default Predicate Resolver
  * <p>
- * 默认过滤器类型解析器
+ * 默认路由断言类型解析器
  *
  * @author Alan Yeh
- * @since 2024/04/24
+ * @since 2024/05/24
  */
 @RequiredArgsConstructor
-public class DefaultFilterResolver implements FilterResolver {
+public class DefaultPredicateResolver implements PredicateResolver {
 
     public final PlugletFactory factory;
 
     @Nullable
     @Override
-    public Filter resolve(@NotNull String code, @NotNull Map<String, Object> params) {
-        var type = FilterType.resolve(code);
-        if (type == null) {
-            return null;
+    public Predicate resolve(@NotNull String code, @NotNull Map<String, Object> params) {
+        Class<? extends Predicate> type;
+        if ("path".equalsIgnoreCase(code)) {
+            type = PathPredicate.class;
+        } else {
+            var predicateType = PredicateType.resolve(code);
+            if (predicateType == null) {
+                return null;
+            }
+            type = predicateType.getType();
         }
 
-        return this.instance(type.getType(), params);
+        return this.instance(type, params);
     }
 
-    protected Filter instance(@Nonnull Class<? extends Filter> type, @Nonnull Map<String, Object> params) {
+    protected Predicate instance(@Nonnull Class<? extends Predicate> type, @Nonnull Map<String, Object> params) {
         return this.factory.create(type, params);
     }
 
     @Override
-    public void destroy(@NotNull Filter filter) {
-        this.factory.destroy(filter);
+    public void destroy(@NotNull Predicate predicate) {
+        this.factory.destroy(predicate);
     }
 }
