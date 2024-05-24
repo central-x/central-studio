@@ -105,14 +105,14 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.GHPKG_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - name: Release to DockerHub
-        uses: docker/bake-action@v4
+        uses: docker/bake-action@v5
         with:
           push: true
         env:
           REGISTRY: docker.io
           REPOSITORY: centralx
       - name: Release to GitHub Packages
-        uses: docker/bake-action@v4
+        uses: docker/bake-action@v5
         with:
           push: true
         env:
