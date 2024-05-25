@@ -1,3 +1,8 @@
-/cache/
-/data/
-/logs/
+# Compiling
+/target
+
+# Running
+/cache
+/data
+/logs
+/tmp
