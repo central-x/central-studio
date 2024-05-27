@@ -1,0 +1,58 @@
+"""
+权限查询
+"""
+type AuthorizationQuery {
+    """
+    根据应用标识和应用密钥获取应用信息
+    """
+    findApplication(
+        "应用标识"
+        code: String,
+        "应用密钥"
+        secret: String
+    ): Application
+
+    """
+    获取指定帐户允许访问的应用列表
+    """
+    findApplications(
+        "帐户主键"
+        accountId: String,
+        "应用菜单类型"
+        type: String
+    ): [Application]
+
+    """
+    获取指定帐户在指定应用下被授权的角色清单
+    """
+    findRoles(
+        "帐户主键"
+        accountId: String,
+        "菜单权限。如果此值不为空，则返回包含该权限的角色；如果此值为空，则返回该帐户所有角色"
+        permission: String,
+        "应用主键"
+        applicationId: String
+    ): [Role]
+
+    """
+    获取指定帐户在指定应用下被授权的菜单清单
+    """
+    findMenus(
+        "帐户主键"
+        accountId: String,
+        "应用菜单类型"
+        type: String,
+        "应用主键"
+        applicationId: String
+    ): [Menu]
+
+    """
+    获取指定帐户在指定应用下被授权的权限列表
+    """
+    findPermissions(
+        "帐户主键"
+        accountId: String,
+        "应用主键"
+        applicationId: String
+    ): [Permission]
+}

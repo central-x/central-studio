@@ -7,4 +7,7 @@ type AuthorityQuery {
 
     "菜单查询"
     menus: MenuQuery!
+
+    "授权查询"
+    authorizations: AuthorizationQuery!
 }

@@ -24,53 +24,32 @@
 
 package central.studio.provider.graphql.authority;
 
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
-import central.studio.provider.graphql.authority.query.AuthorizationQuery;
-import central.studio.provider.graphql.authority.query.MenuQuery;
-import central.studio.provider.graphql.authority.query.RoleQuery;
+import central.provider.graphql.authority.AuthorizationProvider;
+import central.studio.provider.ProviderApplication;
+import lombok.Setter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * Authority Query
+ * AuthorizationProvider Test Cases
  * <p>
- * 权限类查询
+ * 授权
  *
  * @author Alan Yeh
- * @since 2022/10/26
+ * @since 2024/05/27
  */
-@Component
-@GraphQLSchema(path = "authority", types = {MenuQuery.class, RoleQuery.class})
-public class AuthorityQuery {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
+public class TestAuthorizationProvider {
 
-    /**
-     * Menu Query
-     * <p>
-     * 菜单查询
-     */
-    @GraphQLGetter
-    public MenuQuery getMenus(@Autowired MenuQuery query) {
-        return query;
+    @Setter(onMethod_ = @Autowired)
+    private AuthorizationProvider provider;
+
+    @BeforeEach
+    @AfterEach
+    public void clear() {
+        // 清空数据
     }
 
-    /**
-     * Role Query
-     * <p>
-     * 角色查询
-     */
-    @GraphQLGetter
-    public RoleQuery getRoles(@Autowired RoleQuery query) {
-        return query;
-    }
-
-    /**
-     * Authorization Query
-     * <p>
-     * 授权查询
-     */
-    @GraphQLGetter
-    public AuthorizationQuery getAuthorizations(@Autowired AuthorizationQuery query) {
-        return query;
-    }
 }
