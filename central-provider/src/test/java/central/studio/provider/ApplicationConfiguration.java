@@ -24,6 +24,7 @@
 
 package central.studio.provider;
 
+import central.provider.EnableCentralProvider;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -33,6 +34,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2022/09/26
  */
 @Configuration
+@EnableCentralProvider
 @EnableCentralStudioProvider
 public class ApplicationConfiguration {
 }

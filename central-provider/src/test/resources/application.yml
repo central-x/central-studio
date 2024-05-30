@@ -1,5 +1,5 @@
 server:
-  port: 13300
+  port: 8080
   servlet:
     context-path: /
   tomcat:
@@ -60,4 +60,3 @@ studio:
     fetchers:
       - saas
       - log
-    url: http://127.0.0.1:${server.port}

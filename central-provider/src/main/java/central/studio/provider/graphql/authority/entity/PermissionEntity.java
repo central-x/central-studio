@@ -91,14 +91,6 @@ public class PermissionEntity extends ModifiableEntity implements Tenantable {
     @Size(min = 1, max = 50)
     private String name;
 
-    @Label("是否启用")
-    @NotNull
-    private Boolean enabled;
-
-    @Label("备注")
-    @Size(max = 1024)
-    private String remark;
-
     @Label("租户标识")
     @NotBlank
     @Size(min = 1, max = 32)
@@ -110,7 +102,5 @@ public class PermissionEntity extends ModifiableEntity implements Tenantable {
         this.setMenuId(input.getMenuId());
         this.setCode(input.getCode());
         this.setName(input.getName());
-        this.setEnabled(input.getEnabled());
-        this.setRemark(input.getRemark());
     }
 }

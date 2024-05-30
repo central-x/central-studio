@@ -97,6 +97,10 @@ public class MenuEntity extends ModifiableEntity implements Tenantable {
     @Size(max = 255)
     private String icon;
 
+    @Label("地址")
+    @Size(max = 255)
+    private String url;
+
     @Label("类型")
     @NotBlank
     @Enums(MenuType.class)
@@ -126,6 +130,7 @@ public class MenuEntity extends ModifiableEntity implements Tenantable {
         this.setCode(input.getCode());
         this.setName(input.getName());
         this.setIcon(input.getIcon());
+        this.setUrl(input.getUrl());
         this.setType(input.getType());
         this.setEnabled(input.getEnabled());
         this.setOrder(input.getOrder());

@@ -87,6 +87,10 @@ public class MenuInput implements Serializable {
     @Size(max = 255)
     private String icon;
 
+    @Label("地址")
+    @Size(max = 255)
+    private String url;
+
     @Label("类型")
     @NotBlank
     @Enums(MenuType.class)

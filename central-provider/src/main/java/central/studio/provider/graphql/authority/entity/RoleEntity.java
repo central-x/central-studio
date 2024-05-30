@@ -84,7 +84,7 @@ public class RoleEntity extends ModifiableEntity implements Tenantable {
     @Size(min = 1, max = 50)
     private String name;
 
-    @Label("所属单信主键")
+    @Label("所属单位主键")
     @Size(max = 32)
     private String unitId;
 

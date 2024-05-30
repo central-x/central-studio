@@ -46,7 +46,7 @@ import java.io.Serial;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Permission extends ModifiableEntity implements Codeable, Available, Remarkable {
+public class Permission extends ModifiableEntity implements Codeable {
     @Serial
     private static final long serialVersionUID = -6065228625130524836L;
 
@@ -88,18 +88,6 @@ public class Permission extends ModifiableEntity implements Codeable, Available,
     private String name;
 
     /**
-     * 是否启用
-     */
-    @Nonnull
-    private Boolean enabled;
-
-    /**
-     * 备注
-     */
-    @Nullable
-    private String remark;
-
-    /**
      * 创建人信息
      */
     @Nonnull
@@ -120,8 +108,6 @@ public class Permission extends ModifiableEntity implements Codeable, Available,
                 .menuId(this.getMenuId())
                 .code(this.getCode())
                 .name(this.getName())
-                .enabled(this.getEnabled())
-                .remark(this.getRemark())
                 .build();
     }
 }

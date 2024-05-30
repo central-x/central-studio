@@ -26,17 +26,17 @@ package central.studio.provider.database.migration.v0;
 
 import central.data.system.option.DatabaseType;
 import central.io.IOStreamx;
-import central.studio.provider.graphql.system.entity.DatabaseEntity;
-import central.studio.provider.graphql.system.mapper.DatabaseMapper;
+import central.sql.SqlExecutor;
+import central.sql.SqlType;
+import central.sql.datasource.migration.*;
 import central.studio.provider.graphql.saas.entity.ApplicationEntity;
 import central.studio.provider.graphql.saas.entity.TenantApplicationEntity;
 import central.studio.provider.graphql.saas.entity.TenantEntity;
 import central.studio.provider.graphql.saas.mapper.ApplicationMapper;
 import central.studio.provider.graphql.saas.mapper.TenantApplicationMapper;
 import central.studio.provider.graphql.saas.mapper.TenantMapper;
-import central.sql.SqlExecutor;
-import central.sql.SqlType;
-import central.sql.datasource.migration.*;
+import central.studio.provider.graphql.system.entity.DatabaseEntity;
+import central.studio.provider.graphql.system.mapper.DatabaseMapper;
 import central.util.Guidx;
 import central.util.Jsonx;
 import central.util.Version;
@@ -70,6 +70,7 @@ public class v0_0_1_initial extends Migration {
                     Column.of("CODE", SqlType.STRING, 32, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("ICON", SqlType.STRING, 255, "图标"),
+                    Column.of("URL", SqlType.STRING, 255, "地址"),
                     Column.of("TYPE", SqlType.STRING, 32, "类型"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
                     Column.of("ORDER", SqlType.INTEGER, "排序号"),
@@ -98,8 +99,6 @@ public class v0_0_1_initial extends Migration {
                     Column.of("MENU_ID", SqlType.STRING, 32, "菜单主键"),
                     Column.of("CODE", SqlType.STRING, 32, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
-                    Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
-                    Column.of("REMARK", SqlType.STRING, 1024, "备注"),
                     Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
                     Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
                     Column.of("MODIFIER_ID", SqlType.STRING, 36, "更新人主键"),

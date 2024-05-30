@@ -16,10 +16,6 @@ type Permission implements Entity & Modifiable {
     code:                   String!
     "权限名称"
     name:                   String!
-    "是否启用"
-    enabled:                Boolean!
-    "备注"
-    remark:                 String
 
     "创建帐户信息"
     creator:                Account!

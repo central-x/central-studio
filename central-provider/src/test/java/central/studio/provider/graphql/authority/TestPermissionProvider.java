@@ -121,8 +121,6 @@ public class TestPermissionProvider extends TestProvider {
         permissionEntity.setMenuId(menuEntity.getId());
         permissionEntity.setCode("test-add");
         permissionEntity.setName("添加");
-        permissionEntity.setEnabled(Boolean.TRUE);
-        permissionEntity.setRemark("添加权限");
         permissionEntity.setTenantCode("master");
         permissionEntity.updateCreator(properties.getSupervisor().getUsername());
         this.permissionMapper.insert(permissionEntity);
@@ -180,8 +178,6 @@ public class TestPermissionProvider extends TestProvider {
         permissionEntity.setMenuId(menuEntity.getId());
         permissionEntity.setCode("test-add");
         permissionEntity.setName("添加");
-        permissionEntity.setEnabled(Boolean.TRUE);
-        permissionEntity.setRemark("添加权限");
         permissionEntity.setTenantCode("master");
         permissionEntity.updateCreator(properties.getSupervisor().getUsername());
         this.permissionMapper.insert(permissionEntity);
@@ -243,8 +239,6 @@ public class TestPermissionProvider extends TestProvider {
         permissionEntity.setMenuId(menuEntity.getId());
         permissionEntity.setCode("test-add");
         permissionEntity.setName("添加");
-        permissionEntity.setEnabled(Boolean.TRUE);
-        permissionEntity.setRemark("添加权限");
         permissionEntity.setTenantCode("master");
         permissionEntity.updateCreator(properties.getSupervisor().getUsername());
         this.permissionMapper.insert(permissionEntity);
@@ -310,8 +304,6 @@ public class TestPermissionProvider extends TestProvider {
         permissionEntity.setMenuId(menuEntity.getId());
         permissionEntity.setCode("test-add");
         permissionEntity.setName("添加");
-        permissionEntity.setEnabled(Boolean.TRUE);
-        permissionEntity.setRemark("添加权限");
         permissionEntity.setTenantCode("master");
         permissionEntity.updateCreator(properties.getSupervisor().getUsername());
         this.permissionMapper.insert(permissionEntity);
@@ -358,8 +350,6 @@ public class TestPermissionProvider extends TestProvider {
                 .menuId(menuEntity.getId())
                 .code("test-add")
                 .name("添加")
-                .enabled(Boolean.TRUE)
-                .remark("添加权限")
                 .build();
 
         // 查询数据
@@ -408,8 +398,6 @@ public class TestPermissionProvider extends TestProvider {
                 .menuId(menuEntity.getId())
                 .code("test-add")
                 .name("添加")
-                .enabled(Boolean.TRUE)
-                .remark("添加权限")
                 .build();
 
         // 查询数据
@@ -461,8 +449,6 @@ public class TestPermissionProvider extends TestProvider {
         permissionEntity.setMenuId(menuEntity.getId());
         permissionEntity.setCode("test-add");
         permissionEntity.setName("添加");
-        permissionEntity.setEnabled(Boolean.TRUE);
-        permissionEntity.setRemark("添加权限");
         permissionEntity.setTenantCode("master");
         permissionEntity.updateCreator(properties.getSupervisor().getUsername());
         this.permissionMapper.insert(permissionEntity);
@@ -521,8 +507,6 @@ public class TestPermissionProvider extends TestProvider {
         permissionEntity.setMenuId(menuEntity.getId());
         permissionEntity.setCode("test-add");
         permissionEntity.setName("添加");
-        permissionEntity.setEnabled(Boolean.TRUE);
-        permissionEntity.setRemark("添加权限");
         permissionEntity.setTenantCode("master");
         permissionEntity.updateCreator(properties.getSupervisor().getUsername());
         this.permissionMapper.insert(permissionEntity);
@@ -585,8 +569,6 @@ public class TestPermissionProvider extends TestProvider {
         permissionEntity.setMenuId(menuEntity.getId());
         permissionEntity.setCode("test-add");
         permissionEntity.setName("添加");
-        permissionEntity.setEnabled(Boolean.TRUE);
-        permissionEntity.setRemark("添加权限");
         permissionEntity.setTenantCode("master");
         permissionEntity.updateCreator(properties.getSupervisor().getUsername());
         this.permissionMapper.insert(permissionEntity);
@@ -634,8 +616,6 @@ public class TestPermissionProvider extends TestProvider {
         permissionEntity.setMenuId(menuEntity.getId());
         permissionEntity.setCode("test-add");
         permissionEntity.setName("添加");
-        permissionEntity.setEnabled(Boolean.TRUE);
-        permissionEntity.setRemark("添加权限");
         permissionEntity.setTenantCode("master");
         permissionEntity.updateCreator(properties.getSupervisor().getUsername());
         this.permissionMapper.insert(permissionEntity);

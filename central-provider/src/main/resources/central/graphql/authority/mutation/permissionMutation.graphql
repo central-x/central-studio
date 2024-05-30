@@ -12,10 +12,6 @@ input PermissionInput {
     code:                   String
     "名称"
     name:                   String
-    "是否启用"
-    enabled:                Boolean
-    "备注"
-    remark:                 String
 }
 
 

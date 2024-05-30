@@ -79,12 +79,4 @@ public class PermissionInput implements Serializable {
     @NotBlank
     @Size(min = 1, max = 50)
     private String name;
-
-    @Label("是否启用")
-    @NotNull
-    private Boolean enabled;
-
-    @Label("备注")
-    @Size(max = 1024)
-    private String remark;
 }
