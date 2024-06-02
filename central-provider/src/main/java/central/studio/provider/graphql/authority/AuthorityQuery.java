@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/26
  */
 @Component
-@GraphQLSchema(path = "authority", types = {MenuQuery.class, RoleQuery.class})
+@GraphQLSchema(path = "authority", types = {MenuQuery.class, RoleQuery.class, AuthorizationQuery.class})
 public class AuthorityQuery {
 
     /**
