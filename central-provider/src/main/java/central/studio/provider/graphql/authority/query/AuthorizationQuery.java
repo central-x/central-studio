@@ -24,28 +24,20 @@
 
 package central.studio.provider.graphql.authority.query;
 
-import central.provider.graphql.DTO;
-import central.provider.scheduled.DataContext;
-import central.provider.scheduled.fetcher.DataFetcherType;
-import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.authority.dto.MenuDTO;
 import central.studio.provider.graphql.authority.dto.PermissionDTO;
 import central.studio.provider.graphql.authority.dto.RoleDTO;
+import central.studio.provider.graphql.authority.service.AuthorizationService;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import central.web.XForwardedHeaders;
-import lombok.Setter;
-import org.slf4j.helpers.MessageFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Authorization Query
@@ -58,31 +50,19 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "authority/query")
 public class AuthorizationQuery {
-
-    @Setter(onMethod_ = @Autowired)
-    private DataContext context;
+    @Autowired
+    private AuthorizationService service;
 
     /**
      * 根据应用标识和应用密钥获取应用信息
      *
      * @param code   应用标识
      * @param secret 应用密钥
-     * @param tenant 租户标识
      * @return 应用信息
      */
     @GraphQLFetcher
-    public ApplicationDTO findApplication(@RequestParam String code, @RequestParam String secret,
-                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        SaasContainer container = context.getData(DataFetcherType.SAAS);
-
-        var application = container.getApplicationByCode(code);
-        if (application == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MessageFormatter.format("应用[code={}]不存在", code).getMessage());
-        }
-        if (!Objects.equals(secret, application.getSecret())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MessageFormatter.format("应用[code={}]密钥错误", code).getMessage());
-        }
-        return DTO.wrap(application, ApplicationDTO.class);
+    public ApplicationDTO findApplication(@RequestParam String code, @RequestParam String secret) {
+        return service.findApplication(code, secret);
     }
 
     /**
