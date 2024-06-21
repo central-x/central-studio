@@ -1,0 +1,62 @@
+[
+  {
+    "code": "authority",
+    "name": "权限管理",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 3,
+    "permissions": {},
+    "children": [
+      {
+        "code": "menu",
+        "name": "菜单管理",
+        "icon": "",
+        "url": "@/authority/menu",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "add": "新增",
+          "delete": "删除",
+          "edit": "编辑",
+          "disable": "禁用",
+          "enable": "启用"
+        }
+      },
+      {
+        "code": "role_system",
+        "name": "系统角色管理",
+        "icon": "",
+        "url": "@/authority/role-system",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "add": "新增",
+          "delete": "删除",
+          "edit": "编辑",
+          "disable": "禁用",
+          "enable": "启用"
+        }
+      },
+      {
+        "code": "role",
+        "name": "单位角色管理",
+        "icon": "",
+        "url": "@/authority/role",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "add": "新增",
+          "delete": "删除",
+          "edit": "编辑",
+          "disable": "禁用",
+          "enable": "启用"
+        }
+      }
+    ]
+  }
+]

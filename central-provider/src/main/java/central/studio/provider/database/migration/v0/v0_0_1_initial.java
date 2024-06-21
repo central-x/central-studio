@@ -24,27 +24,16 @@
 
 package central.studio.provider.database.migration.v0;
 
-import central.data.system.option.DatabaseType;
-import central.io.IOStreamx;
 import central.sql.SqlExecutor;
 import central.sql.SqlType;
 import central.sql.datasource.migration.*;
-import central.studio.provider.graphql.saas.entity.ApplicationEntity;
-import central.studio.provider.graphql.saas.entity.TenantApplicationEntity;
-import central.studio.provider.graphql.saas.entity.TenantEntity;
-import central.studio.provider.graphql.saas.mapper.ApplicationMapper;
-import central.studio.provider.graphql.saas.mapper.TenantApplicationMapper;
-import central.studio.provider.graphql.saas.mapper.TenantMapper;
-import central.studio.provider.graphql.system.entity.DatabaseEntity;
-import central.studio.provider.graphql.system.mapper.DatabaseMapper;
+import central.studio.provider.database.initialization.MasterTenantInitializer;
 import central.util.Guidx;
-import central.util.Jsonx;
 import central.util.Version;
 import lombok.SneakyThrows;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 初始化基础数据结构
@@ -531,179 +520,9 @@ public class v0_0_1_initial extends Migration {
     @Override
     @SneakyThrows
     public void upgrade(SqlExecutor executor) throws SQLException {
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 初始化应用信息
-        var applicationMapper = executor.getMapper(ApplicationMapper.class);
-
-        // 控制面板
-        var dashboardApp = new ApplicationEntity();
-        dashboardApp.setId("y9llwWofojZAtx71JP1");
-        dashboardApp.setCode("central-dashboard");
-        dashboardApp.setName("控制中心");
-        dashboardApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        dashboardApp.setUrl("http://central-dashboard");
-        dashboardApp.setContextPath("/dashboard");
-        dashboardApp.setSecret("glngxOUCye6fndsaiQI");
-        dashboardApp.setEnabled(Boolean.TRUE);
-        dashboardApp.setRemark("用于提供套件中所有应用的管理界面");
-        dashboardApp.updateCreator("syssa");
-
-        // Saas中心
-        var saasApp = new ApplicationEntity();
-        saasApp.setId("UFQG4uh6DtrT4AgLA4Z");
-        saasApp.setCode("central-saas");
-        saasApp.setName("租户中心");
-        saasApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-tenant.png")));
-        saasApp.setUrl("http://central-saas");
-        saasApp.setContextPath("/saas");
-        saasApp.setSecret("btdHv1HdTTWzCEbiRdg");
-        saasApp.setEnabled(Boolean.TRUE);
-        saasApp.setRemark("用于维护租户、应用系统以及其租用关系等");
-        saasApp.updateCreator("syssa");
-
-        // 认证中心
-        var identityApp = new ApplicationEntity();
-        identityApp.setId("v788o67covIaDMn67mN");
-        identityApp.setCode("central-identity");
-        identityApp.setName("认证中心");
-        identityApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-identity.png")));
-        identityApp.setUrl("http://central-identity");
-        identityApp.setContextPath("/identity");
-        identityApp.setSecret("AkJSi2kmH7vSO5lJcvY");
-        identityApp.setEnabled(Boolean.TRUE);
-        identityApp.setRemark("用于统一管理全局会话");
-        identityApp.updateCreator("syssa");
-
-        // 存储中心
-        var storageApp = new ApplicationEntity();
-        storageApp.setId("hrnxjZFkYK4P34EZBy2");
-        storageApp.setCode("central-storage");
-        storageApp.setName("存储中心");
-        storageApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        storageApp.setUrl("http://central-storage");
-        storageApp.setContextPath("/storage");
-        storageApp.setSecret("IKJuAKOiG7Vx9tMMqUf");
-        storageApp.setEnabled(Boolean.TRUE);
-        storageApp.setRemark("用于统一管理文件存储");
-        storageApp.updateCreator("syssa");
-
-        // 广播中心
-        var multicastApp = new ApplicationEntity();
-        multicastApp.setId("5HjlG6lusTufjoRapw");
-        multicastApp.setCode("central-multicast");
-        multicastApp.setName("广播中心");
-        multicastApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        multicastApp.setUrl("http://central-multicast");
-        multicastApp.setContextPath("/multicast");
-        multicastApp.setSecret("QHO85BzFQq8hqDzREJ");
-        multicastApp.setEnabled(Boolean.TRUE);
-        multicastApp.setRemark("用于统一消息推送");
-        multicastApp.updateCreator("syssa");
-
-        // 网关中心
-        var gatewayApp = new ApplicationEntity();
-        gatewayApp.setId("4yus43AGTA7kzyrDbbG");
-        gatewayApp.setCode("central-gateway");
-        gatewayApp.setName("网关中心");
-        gatewayApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
-        gatewayApp.setUrl("http://central-gateway");
-        gatewayApp.setContextPath("/gateway");
-        gatewayApp.setSecret("TT6cdfpHIPastoipuDg");
-        gatewayApp.setEnabled(Boolean.TRUE);
-        gatewayApp.setRemark("用于统一管理网关");
-        gatewayApp.updateCreator("syssa");
-
-        applicationMapper.insertBatch(List.of(dashboardApp, saasApp, identityApp, storageApp, multicastApp, gatewayApp));
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 初始化主数据库信息
-        var databaseMapper = executor.getMapper(DatabaseMapper.class);
-
-        var masterDatabase = new DatabaseEntity();
-        masterDatabase.setId("OIJN8cob9iZzJ1NigWE");
-        masterDatabase.setApplicationId(saasApp.getId());
-        masterDatabase.setCode("master");
-        masterDatabase.setName("主数据源");
-        masterDatabase.setType(DatabaseType.MYSQL.getValue());
-        masterDatabase.setEnabled(Boolean.TRUE);
-        masterDatabase.setRemark("本数据源是通过配置文件初始化，请勿修改");
-        masterDatabase.setMasterJson("{}");
-        masterDatabase.setSlavesJson("[]");
-        masterDatabase.setParams(Jsonx.Default().serialize(Map.of(
-                "master", "{}",
-                "slaves", List.of()
-        )));
-        masterDatabase.setTenantCode("master");
-        masterDatabase.updateCreator("syssa");
-        databaseMapper.insert(masterDatabase);
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 初始化主租户
-        var tenantMapper = executor.getMapper(TenantMapper.class);
-
-        var masterTenant = new TenantEntity();
-        masterTenant.setId("2Hp475EmG4I6sNN0dUJ");
-        masterTenant.setCode("master");
-        masterTenant.setName("主租户");
-        masterTenant.setDatabaseId(masterDatabase.getId());
-        masterTenant.setEnabled(Boolean.TRUE);
-        masterTenant.setRemark("本租户主要用于管理基础软硬件及其他租户数据");
-        masterTenant.updateCreator("syssa");
-        tenantMapper.insert(masterTenant);
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 初始化主租户的租用关系
-        var relMapper = executor.getMapper(TenantApplicationMapper.class);
-
-        var dashboardAppRel = new TenantApplicationEntity();
-        dashboardAppRel.setId("95AELSyhLQy5kDheAxQ");
-        dashboardAppRel.setTenantId(masterTenant.getId());
-        dashboardAppRel.setApplicationId(dashboardApp.getId());
-        dashboardAppRel.setEnabled(Boolean.TRUE);
-        dashboardAppRel.setPrimary(Boolean.FALSE);
-        dashboardAppRel.updateCreator("syssa");
-
-        var tenantAppRel = new TenantApplicationEntity();
-        tenantAppRel.setId("2B4wrNPDL80tfvSE8ve");
-        tenantAppRel.setTenantId(masterTenant.getId());
-        tenantAppRel.setApplicationId(saasApp.getId());
-        tenantAppRel.setEnabled(Boolean.TRUE);
-        tenantAppRel.setPrimary(Boolean.FALSE);
-        tenantAppRel.updateCreator("syssa");
-
-        var identityAppRel = new TenantApplicationEntity();
-        identityAppRel.setId("jlUpCMrWWhUNhWHiBh5");
-        identityAppRel.setTenantId(masterTenant.getId());
-        identityAppRel.setApplicationId(identityApp.getId());
-        identityAppRel.setEnabled(Boolean.TRUE);
-        identityAppRel.setPrimary(Boolean.TRUE);
-        identityAppRel.updateCreator("syssa");
-
-        var storageAppRel = new TenantApplicationEntity();
-        storageAppRel.setId("JUWCjb5i032vOjbDYLs");
-        storageAppRel.setTenantId(masterTenant.getId());
-        storageAppRel.setApplicationId(storageApp.getId());
-        storageAppRel.setEnabled(Boolean.TRUE);
-        storageAppRel.setPrimary(Boolean.FALSE);
-        storageAppRel.updateCreator("syssa");
-
-        var multicastAppRel = new TenantApplicationEntity();
-        multicastAppRel.setId("pDaMEd4CZPupGLSqvc");
-        multicastAppRel.setTenantId(masterTenant.getId());
-        multicastAppRel.setApplicationId(multicastApp.getId());
-        multicastAppRel.setEnabled(Boolean.TRUE);
-        multicastAppRel.setPrimary(Boolean.FALSE);
-        multicastAppRel.updateCreator("syssa");
-
-        var gatewayAppRel = new TenantApplicationEntity();
-        gatewayAppRel.setId("L1kpkzehI9oofBw2EbO");
-        gatewayAppRel.setTenantId(masterTenant.getId());
-        gatewayAppRel.setApplicationId(gatewayApp.getId());
-        gatewayAppRel.setEnabled(Boolean.TRUE);
-        gatewayAppRel.setPrimary(Boolean.FALSE);
-        gatewayAppRel.updateCreator("syssa");
-
-        relMapper.insertBatch(List.of(dashboardAppRel, tenantAppRel, identityAppRel, storageAppRel, multicastAppRel, gatewayAppRel));
+        var masterTenantInitializer = new MasterTenantInitializer(executor);
+        masterTenantInitializer.initialize();
     }
 
     @Override

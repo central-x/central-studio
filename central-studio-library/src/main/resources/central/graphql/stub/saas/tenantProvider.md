@@ -14,6 +14,7 @@ query TenantProvider($id: String) {
                 databaseId
                 database {
                     id
+                    applicationId
                     code
                     name
                     type
@@ -83,6 +84,7 @@ query TenantProvider($ids: [String]) {
                 databaseId
                 database {
                     id
+                    applicationId
                     code
                     name
                     type
@@ -152,6 +154,7 @@ query TenantProvider($limit: Long, $offset: Long, $conditions: [ConditionInput],
                 databaseId
                 database {
                     id
+                    applicationId
                     code
                     name
                     type
@@ -229,6 +232,7 @@ query TenantProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionI
                         databaseId
                         database {
                             id
+                            applicationId
                             code
                             name
                             type
@@ -315,6 +319,7 @@ mutation TenantProvider($input: TenantInput, $operator: String) {
                 databaseId
                 database {
                     id
+                    applicationId
                     code
                     name
                     type
@@ -384,6 +389,7 @@ mutation TenantProvider($inputs: [TenantInput], $operator: String) {
                 databaseId
                 database {
                     id
+                    applicationId
                     code
                     name
                     type
@@ -453,6 +459,7 @@ mutation TenantProvider($input: TenantInput, $operator: String) {
                 databaseId
                 database {
                     id
+                    applicationId
                     code
                     name
                     type
@@ -522,6 +529,7 @@ mutation TenantProvider($inputs: [TenantInput], $operator: String) {
                 databaseId
                 database {
                     id
+                    applicationId
                     code
                     name
                     type

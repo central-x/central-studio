@@ -1,0 +1,46 @@
+[
+  {
+    "code": "system",
+    "name": "系统管理",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 3,
+    "permissions": {},
+    "children": [
+      {
+        "code": "dictionary",
+        "name": "字典管理",
+        "icon": "",
+        "url": "@/system/dictionary",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "add": "新增",
+          "delete": "删除",
+          "edit": "编辑",
+          "disable": "禁用",
+          "enable": "启用"
+        }
+      },
+      {
+        "code": "database",
+        "name": "系统角色管理",
+        "icon": "",
+        "url": "@/system/database",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "add": "新增",
+          "delete": "删除",
+          "edit": "编辑",
+          "disable": "禁用",
+          "enable": "启用"
+        }
+      }
+    ]
+  }
+]
