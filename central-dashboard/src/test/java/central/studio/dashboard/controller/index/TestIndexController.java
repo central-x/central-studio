@@ -24,14 +24,17 @@
 
 package central.studio.dashboard.controller.index;
 
+import central.data.organization.Account;
 import central.lang.reflect.TypeRef;
+import central.security.Digestx;
+import central.studio.dashboard.ApplicationCookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.util.Jsonx;
+import central.util.Mapx;
 import central.web.XForwardedHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +43,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -76,8 +84,8 @@ public class TestIndexController {
         var body = Jsonx.Default().deserialize(content, TypeRef.ofMap(String.class, Object.class));
 
         Assertions.assertNotNull(body);
-        Assertions.assertEquals(body.size(), 1);
-        Assertions.assertEquals(body.get("message"), "未登录");
+        assertEquals(1, body.size());
+        assertEquals("未登录", body.get("message"));
     }
 
     /**
@@ -86,7 +94,7 @@ public class TestIndexController {
      * 未登录重定向到登录界面
      */
     @Test
-    public void case2(@Autowired MockMvc mvc, @Value("${server.port}") int port) throws Exception {
+    public void case2(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/dashboard/")
                 .with(req -> {
                     req.setScheme("https");
@@ -107,7 +115,54 @@ public class TestIndexController {
 
         var location = response.getHeader(HttpHeaders.LOCATION);
         // expect location: /identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F
-        Assertions.assertNotNull(location);
-        Assertions.assertEquals(location, "/identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F");
+        assertNotNull(location);
+        assertEquals("/identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F", location);
+    }
+
+    /**
+     * 登录之后
+     */
+    @Test
+    public void case3(@Autowired MockMvc mvc, @Autowired ApplicationCookieStore store) throws Exception {
+        // 登录
+        {
+            var request = MockMvcRequestBuilders.post("/identity/api/login")
+                    .content(Jsonx.Default().serialize(Mapx.of(
+                            Mapx.entry("account", "syssa"),
+                            Mapx.entry("password", Digestx.SHA256.digest("x.123456", StandardCharsets.UTF_8)),
+                            Mapx.entry("secret", "lLS4p6skBbBVZX30zR5")
+                    )))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .accept(MediaType.APPLICATION_JSON);
+
+            var response = mvc.perform(request)
+                    .andExpect(status().is(HttpStatus.OK.value()))
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andReturn().getResponse();
+
+            var content = response.getContentAsString();
+            assertEquals("true", content);
+
+            store.put(URI.create("/identity/api/login"), response);
+        }
+
+        // 验证会话
+        {
+            var request = MockMvcRequestBuilders.get("/dashboard/api/account")
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .cookie(store.getCookies(URI.create("/dashboard/api/account")))
+                    .accept(MediaType.APPLICATION_JSON);
+
+            var response = mvc.perform(request)
+                    .andExpect(status().is(HttpStatus.OK.value()))
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andReturn().getResponse();
+
+            var content = response.getContentAsString();
+            var body = Jsonx.Default().deserialize(content, TypeRef.of(Account.class));
+
+            Assertions.assertNotNull(body);
+        }
     }
 }

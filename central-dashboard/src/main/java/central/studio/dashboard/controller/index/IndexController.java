@@ -29,6 +29,7 @@ import central.lang.Stringx;
 import central.studio.dashboard.logic.organization.AccountLogic;
 import jakarta.annotation.Nullable;
 import lombok.Setter;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,6 +66,7 @@ public class IndexController {
      * 获取当前用户信息
      */
     @ResponseBody
+    @RequiresAuthentication
     @GetMapping("/api/account")
     public @Nullable Account getAccount(@RequestAttribute(required = false) String accountId) {
         if (Stringx.isNullOrBlank(accountId)) {

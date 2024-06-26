@@ -24,6 +24,7 @@
 
 package central.studio.dashboard;
 
+import central.starter.identity.EnableIdentity;
 import central.studio.identity.EnableCentralStudioIdentity;
 import central.studio.provider.EnableCentralStudioProvider;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2024/03/09
  */
 @Configuration
+@EnableIdentity
 @EnableCentralStudioIdentity
 @EnableCentralStudioProvider
 @EnableCentralStudioDashboard
