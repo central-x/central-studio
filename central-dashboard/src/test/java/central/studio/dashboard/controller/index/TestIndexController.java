@@ -26,11 +26,10 @@ package central.studio.dashboard.controller.index;
 
 import central.data.organization.Account;
 import central.lang.reflect.TypeRef;
-import central.security.Digestx;
 import central.studio.dashboard.ApplicationCookieStore;
 import central.studio.dashboard.DashboardApplication;
+import central.studio.dashboard.controller.TestController;
 import central.util.Jsonx;
-import central.util.Mapx;
 import central.web.XForwardedHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -59,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
-public class TestIndexController {
+public class TestIndexController extends TestController {
 
     /**
      * 测试会话
@@ -123,46 +121,22 @@ public class TestIndexController {
      * 登录之后
      */
     @Test
-    public void case3(@Autowired MockMvc mvc, @Autowired ApplicationCookieStore store) throws Exception {
-        // 登录
-        {
-            var request = MockMvcRequestBuilders.post("/identity/api/login")
-                    .content(Jsonx.Default().serialize(Mapx.of(
-                            Mapx.entry("account", "syssa"),
-                            Mapx.entry("password", Digestx.SHA256.digest("x.123456", StandardCharsets.UTF_8)),
-                            Mapx.entry("secret", "lLS4p6skBbBVZX30zR5")
-                    )))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(XForwardedHeaders.TENANT, "master")
-                    .accept(MediaType.APPLICATION_JSON);
-
-            var response = mvc.perform(request)
-                    .andExpect(status().is(HttpStatus.OK.value()))
-                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                    .andReturn().getResponse();
-
-            var content = response.getContentAsString();
-            assertEquals("true", content);
-
-            store.put(URI.create("/identity/api/login"), response);
-        }
-
+    public void case3(@Autowired MockMvc mvc, @Autowired ApplicationCookieStore cookieStore) throws Exception {
         // 验证会话
-        {
-            var request = MockMvcRequestBuilders.get("/dashboard/api/account")
-                    .header(XForwardedHeaders.TENANT, "master")
-                    .cookie(store.getCookies(URI.create("/dashboard/api/account")))
-                    .accept(MediaType.APPLICATION_JSON);
+        var request = MockMvcRequestBuilders.get("/dashboard/api/account")
+                .header(XForwardedHeaders.TENANT, "master")
+                .cookie(this.getSessionCookie(URI.create("/dashboard/api/account"), mvc, cookieStore))
+                .accept(MediaType.APPLICATION_JSON);
 
-            var response = mvc.perform(request)
-                    .andExpect(status().is(HttpStatus.OK.value()))
-                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                    .andReturn().getResponse();
+        var response = mvc.perform(request)
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
 
-            var content = response.getContentAsString();
-            var body = Jsonx.Default().deserialize(content, TypeRef.of(Account.class));
+        var content = response.getContentAsString();
+        var account = Jsonx.Default().deserialize(content, TypeRef.of(Account.class));
 
-            Assertions.assertNotNull(body);
-        }
+        assertNotNull(account);
+        assertEquals("syssa", account.getId());
     }
 }
