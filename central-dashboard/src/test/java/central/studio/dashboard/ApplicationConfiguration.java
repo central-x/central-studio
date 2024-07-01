@@ -25,6 +25,7 @@
 package central.studio.dashboard;
 
 import central.starter.identity.EnableIdentity;
+import central.starter.test.cookie.EnableCookieStore;
 import central.studio.identity.EnableCentralStudioIdentity;
 import central.studio.provider.EnableCentralStudioProvider;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableIdentity
+@EnableCookieStore
 @EnableCentralStudioIdentity
 @EnableCentralStudioProvider
 @EnableCentralStudioDashboard

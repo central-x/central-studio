@@ -26,7 +26,7 @@ package central.studio.dashboard.controller;
 
 import central.lang.Arrayx;
 import central.security.Digestx;
-import central.studio.dashboard.ApplicationCookieStore;
+import central.starter.test.cookie.CookieStore;
 import central.util.Jsonx;
 import central.util.Mapx;
 import central.web.XForwardedHeaders;
@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class TestController {
 
-    public Cookie[] getSessionCookie(URI targetUri, MockMvc mvc, ApplicationCookieStore cookieStore) throws Exception {
+    public Cookie[] getSessionCookie(URI targetUri, MockMvc mvc, CookieStore cookieStore) throws Exception {
         var cookies = cookieStore.getCookies(targetUri);
         if (Arrayx.isNotEmpty(cookies)) {
             return cookies;

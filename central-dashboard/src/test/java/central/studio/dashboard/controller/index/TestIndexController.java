@@ -26,7 +26,7 @@ package central.studio.dashboard.controller.index;
 
 import central.data.organization.Account;
 import central.lang.reflect.TypeRef;
-import central.studio.dashboard.ApplicationCookieStore;
+import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
 import central.util.Jsonx;
@@ -121,7 +121,7 @@ public class TestIndexController extends TestController {
      * 登录之后
      */
     @Test
-    public void case3(@Autowired MockMvc mvc, @Autowired ApplicationCookieStore cookieStore) throws Exception {
+    public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 验证会话
         var request = MockMvcRequestBuilders.get("/dashboard/api/account")
                 .header(XForwardedHeaders.TENANT, "master")
