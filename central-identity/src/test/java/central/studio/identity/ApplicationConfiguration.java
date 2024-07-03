@@ -24,6 +24,8 @@
 
 package central.studio.identity;
 
+import central.provider.EnableCentralProvider;
+import central.starter.test.cookie.EnableCookieStore;
 import central.studio.provider.EnableCentralStudioProvider;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,6 +36,8 @@ import org.springframework.context.annotation.Configuration;
  * @since 2024/03/03
  */
 @Configuration
+@EnableCookieStore
+@EnableCentralProvider
 @EnableCentralStudioProvider
 @EnableCentralStudioIdentity
 public class ApplicationConfiguration {

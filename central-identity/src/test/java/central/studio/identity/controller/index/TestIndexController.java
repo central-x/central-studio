@@ -24,16 +24,17 @@
 
 package central.studio.identity.controller.index;
 
-import central.data.organization.Account;
 import central.lang.reflect.TypeRef;
 import central.security.Digestx;
+import central.starter.test.cookie.CookieStore;
 import central.studio.identity.IdentityApplication;
+import central.studio.identity.controller.TestController;
 import central.studio.identity.controller.index.support.LoginOptions;
 import central.studio.identity.core.attribute.EndpointAttributes;
 import central.util.Jsonx;
 import central.util.Mapx;
+import central.util.function.ThrowableSupplier;
 import central.web.XForwardedHeaders;
-import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,15 +42,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -64,7 +64,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = IdentityApplication.class)
-public class TestIndexController {
+public class TestIndexController extends TestController {
 
     /**
      * 测试是否所有的登录选项都在
@@ -124,75 +124,78 @@ public class TestIndexController {
      * @see IdentityIndexController#logout
      */
     @Test
-    public void case3(@Autowired MockMvc mvc) throws Exception {
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 未登录
-        // 未登录时获取用户信息，应该返回 401
-        var unauthorizedRequest = MockMvcRequestBuilders.get("/identity/api/account")
-                .header(XForwardedHeaders.TENANT, "master");
+    public void case3(@Autowired MockMvc mvc, @Autowired final CookieStore cookieStore) throws Exception {
+        // 获取当前用户信息请求
+        ThrowableSupplier<MockHttpServletRequestBuilder, Exception> accountRequestSupplier = () -> MockMvcRequestBuilders.get("/identity/api/account")
+                .cookie(cookieStore.getCookies("/identity/api/account"))
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
 
-        mvc.perform(unauthorizedRequest)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 未登录状态
+        // 未登录时获取用户信息，应该返回 401
+        mvc.perform(accountRequestSupplier.get())
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(Jsonx.Default().serialize(Map.of("message", "未登录"))));
-
+                .andExpect(jsonPath("$.message").value("未登录"));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 登录
-        var form = Mapx.of(
-                Mapx.entry("account", "syssa"),
-                Mapx.entry("password", Digestx.SHA256.digest("x.123456", StandardCharsets.UTF_8)),
-                Mapx.entry("captcha", "1234"),
-                Mapx.entry("secret", EndpointAttributes.WEB.getValue().getSecret())
-        );
-
         var loginRequest = MockMvcRequestBuilders.post("/identity/api/login")
-                .content(Jsonx.Default().serialize(form))
+                .content(Jsonx.Default().serialize(Mapx.of(
+                        Mapx.entry("account", "syssa"),
+                        Mapx.entry("password", Digestx.SHA256.digest("x.123456", StandardCharsets.UTF_8)),
+                        Mapx.entry("captcha", "1234"),
+                        Mapx.entry("secret", EndpointAttributes.WEB.getValue().getSecret())
+                )))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(XForwardedHeaders.TENANT, "master");
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
 
-        var loginResponse = mvc.perform(loginRequest)
+        mvc.perform(loginRequest)
                 .andExpect(status().isOk())
                 .andExpect(header().exists(HttpHeaders.SET_COOKIE))
                 .andExpect(cookie().exists("Authorization"))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string("true"))
-                .andReturn().getResponse();
+                .andDo(result -> {
+                    // 保存会话
+                    cookieStore.put("/identity/api/login", result.getResponse());
+                });
 
-        // 会话凭证
-        var token = loginResponse.getCookie("Authorization").getValue();
-
-        // 获取当前用户信息，应该能够正常返回用户信息
-        var getAccountRequest = MockMvcRequestBuilders.get("/identity/api/account")
-                .cookie(new Cookie("Authorization", token))
-                .header(XForwardedHeaders.TENANT, "master");
-
-        var getAccountResponse = mvc.perform(getAccountRequest)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 已登录状态
+        // 获取用户信息，应该返回 200 且能正常解析用户信息
+        mvc.perform(accountRequestSupplier.get())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value("syssa"))
+                .andExpect(jsonPath("$.username").value("syssa"))
                 .andReturn().getResponse();
-
-        var account = Jsonx.Default().deserialize(getAccountResponse.getContentAsString(), Account.class);
-        assertNotNull(account);
-        assertEquals(account.getId(), "syssa");
-        assertEquals(account.getUsername(), "syssa");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 退出登录
         var logoutRequest = MockMvcRequestBuilders.get("/identity/api/logout")
-                .cookie(new Cookie("Authorization", token))
-                .header(XForwardedHeaders.TENANT, "master");
+                .cookie(cookieStore.getCookies("/identity/api/logout"))
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
         mvc.perform(logoutRequest)
                 .andExpect(status().isOk())
                 .andExpect(header().exists(HttpHeaders.SET_COOKIE))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string("true"));
+                .andExpect(content().string("true"))
+                .andDo(result -> {
+                    // 保存会话
+                    cookieStore.put("/identity/api/logout", result.getResponse());
+                });
 
-        // 退出登录后，原来的会话不可以再次登录
-        mvc.perform(getAccountRequest)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 已退出登录，处于未登录状态
+        // 未登录时获取用户信息，应该返回 401
+        mvc.perform(accountRequestSupplier.get())
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(Jsonx.Default().serialize(Map.of("message", "未登录"))));
+                .andExpect(jsonPath("$.message").value("未登录"));
     }
 
 }
