@@ -39,8 +39,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,13 +55,28 @@ public class TestController {
     /**
      * 获取会话 Cookie
      *
-     * @param targetUri 目标地址。由于 Cookie 与访问地址相关，因此需要提供目标地址
+     * @param targetUriString 目标地址。由于 Cookie 与访问地址相关，因此需要提供目标地址
+     * @param mvc             MockMvc
+     * @param cookieStore     CookieStore
      */
-    public Cookie[] getSessionCookie(URI targetUri, MockMvc mvc, CookieStore cookieStore) throws Exception {
+    public Cookie[] getSessionCookie(String targetUriString, MockMvc mvc, final CookieStore cookieStore) throws Exception {
+        return this.getSessionCookie(URI.create(targetUriString), mvc, cookieStore);
+    }
+
+    /**
+     * 获取会话 Cookie
+     *
+     * @param targetUri   目标地址。由于 Cookie 与访问地址相关，因此需要提供目标地址
+     * @param mvc         MockMvc
+     * @param cookieStore CookieStore
+     */
+    public Cookie[] getSessionCookie(URI targetUri, MockMvc mvc, final CookieStore cookieStore) throws Exception {
         // 尝试从 CookieStore 获取
         var cookies = cookieStore.getCookies(targetUri);
         if (Arrayx.isNotEmpty(cookies)) {
-            return cookies;
+            if (!Objects.equals("__cookie_store", cookies[0].getName())) {
+                return cookies;
+            }
         }
 
         // 调用登录接口，获取会话 Cookie
@@ -75,16 +90,15 @@ public class TestController {
                 .header(XForwardedHeaders.TENANT, "master")
                 .accept(MediaType.APPLICATION_JSON);
 
-        var response = mvc.perform(request)
+        mvc.perform(request)
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
+                .andExpect(content().string("true"))
+                .andDo(result -> {
+                    // 保存会话 Cookie 到 CookieStore
+                    cookieStore.put(URI.create("/identity/api/login"), result.getResponse());
+                });
 
-        var content = response.getContentAsString();
-        assertEquals("true", content);
-
-        // 保存会话 Cookie 到 CookieStore
-        cookieStore.put(URI.create("/identity/api/login"), response);
         return cookieStore.getCookies(targetUri);
     }
 }

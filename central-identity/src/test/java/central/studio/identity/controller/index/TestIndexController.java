@@ -67,12 +67,61 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TestIndexController extends TestController {
 
     /**
+     * 测试不允许跨域验证
+     *
+     * @see IdentityIndexController#index
+     */
+    @Test
+    public void case1(@Autowired MockMvc mvc) throws Exception {
+        var request = MockMvcRequestBuilders.get("/identity/")
+                .queryParam("redirect_uri", "https://www.example.com")
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(servletRequest -> {
+                    servletRequest.setScheme("https");
+                    servletRequest.setServerName("identity.central-x.com");
+                    servletRequest.setServerPort(443);
+                    return servletRequest;
+                });
+
+        mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                // 如果不同源，则跳转到认证首页
+                .andExpect(header().string(HttpHeaders.LOCATION, "https://identity.central-x.com/identity/"));
+    }
+
+
+    /**
+     * 测试已登录的话，直接重定向到指定页面
+     *
+     * @see IdentityIndexController
+     */
+    @Test
+    public void case2(@Autowired MockMvc mvc, @Autowired final CookieStore cookieStore) throws Exception {
+        var request = MockMvcRequestBuilders.get("/identity/")
+                .queryParam("redirect_uri", "https://identity.central-x.com/dashboard/")
+                .cookie(this.getSessionCookie("/identity/", mvc, cookieStore))
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(servletRequest -> {
+                    servletRequest.setScheme("https");
+                    servletRequest.setServerName("identity.central-x.com");
+                    servletRequest.setServerPort(443);
+                    return servletRequest;
+                });
+
+        mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION, "https://identity.central-x.com/dashboard/"));
+    }
+
+    /**
      * 测试是否所有的登录选项都在
      *
      * @see IdentityIndexController#getOptions
      */
     @Test
-    public void case1(@Autowired MockMvc mvc) throws Exception {
+    public void case3(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/api/options")
                 .header(XForwardedHeaders.TENANT, "master");
 
@@ -106,7 +155,7 @@ public class TestIndexController extends TestController {
      * @see IdentityIndexController#getCaptcha
      */
     @Test
-    public void case2(@Autowired MockMvc mvc) throws Exception {
+    public void case4(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/api/captcha")
                 .header(XForwardedHeaders.TENANT, "master");
 
@@ -124,7 +173,7 @@ public class TestIndexController extends TestController {
      * @see IdentityIndexController#logout
      */
     @Test
-    public void case3(@Autowired MockMvc mvc, @Autowired final CookieStore cookieStore) throws Exception {
+    public void case5(@Autowired MockMvc mvc, @Autowired final CookieStore cookieStore) throws Exception {
         // 获取当前用户信息请求
         ThrowableSupplier<MockHttpServletRequestBuilder, Exception> accountRequestSupplier = () -> MockMvcRequestBuilders.get("/identity/api/account")
                 .cookie(cookieStore.getCookies("/identity/api/account"))
