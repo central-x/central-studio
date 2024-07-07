@@ -60,7 +60,7 @@ public class StorageConfiguration {
      */
     @Bean
     public BucketCache bucketCache() throws IOException {
-        return new LocalCache(Path.of("cache", "storage"));
+        return new LocalCache(Path.of("tmp", "storage"));
     }
 
     /**
