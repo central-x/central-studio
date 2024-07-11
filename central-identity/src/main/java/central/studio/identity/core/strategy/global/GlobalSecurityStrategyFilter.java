@@ -24,13 +24,12 @@
 
 package central.studio.identity.core.strategy.global;
 
-import central.studio.identity.core.strategy.GlobalStrategyFilter;
-import central.studio.identity.core.strategy.StandardStrategyChain;
-import central.studio.identity.core.strategy.StrategyFilterChain;
-import central.studio.identity.core.strategy.StrategyContainer;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
-import central.util.Listx;
+import central.studio.identity.core.strategy.GlobalStrategyFilter;
+import central.studio.identity.core.strategy.StandardStrategyChain;
+import central.studio.identity.core.strategy.StrategyContainer;
+import central.studio.identity.core.strategy.StrategyFilterChain;
 import jakarta.servlet.ServletException;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,13 +53,9 @@ public class GlobalSecurityStrategyFilter implements GlobalStrategyFilter {
     public void execute(WebMvcRequest request, WebMvcResponse response, StrategyFilterChain chain) throws IOException, ServletException {
         var tenant = request.getTenantCode();
 
+        // 执行用户自定义的动态策略
         var strategies = container.getStrategies(tenant);
 
-        if (Listx.isNullOrEmpty(strategies)) {
-            chain.execute(request, response);
-        }
-
-        // 执行用户自定义的动态策略
-        new StandardStrategyChain(strategies).execute(request, response);
+        new StandardStrategyChain(strategies).complete(chain::execute).execute(request, response);
     }
 }

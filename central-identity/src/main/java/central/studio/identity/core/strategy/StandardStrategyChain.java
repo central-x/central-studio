@@ -74,6 +74,24 @@ public class StandardStrategyChain implements StrategyFilterChain {
         return this;
     }
 
+    /**
+     * 认证链执行完毕后执行此策略
+     */
+    public interface CompletionAction {
+        void execute(WebMvcRequest request, WebMvcResponse response) throws ServletException, IOException;
+    }
+
+    /**
+     * 添加认证结束动作
+     * <p>
+     * 在认证链执行完毕后，最终执行指定动作
+     *
+     * @param action 结束动作
+     */
+    public StandardStrategyChain complete(final CompletionAction action) {
+        return this.addStrategy((request, response, chain) -> action.execute(request, response));
+    }
+
     @Override
     public void execute(WebMvcRequest request, WebMvcResponse response) throws IOException, ServletException {
         if (this.index < strategies.size()) {

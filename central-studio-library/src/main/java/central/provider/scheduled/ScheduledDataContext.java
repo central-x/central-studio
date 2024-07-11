@@ -139,6 +139,7 @@ public class ScheduledDataContext extends Observable<ScheduledDataContext> imple
      * @param <T>     数据类型
      * @return 数据
      */
+    @SuppressWarnings("unchecked")
     public <T extends DataContainer> T getData(DataFetcherType fetcher) {
         return (T) this.data.get(fetcher.getValue());
     }

@@ -24,14 +24,12 @@
 
 package central.studio.identity;
 
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.studio.identity.core.strategy.GlobalStrategyFilter;
 import central.studio.identity.core.strategy.StandardStrategyChain;
 import central.studio.identity.core.strategy.StrategyFilter;
-import central.studio.identity.core.strategy.StrategyFilterChain;
-import central.starter.webmvc.servlet.WebMvcRequest;
-import central.starter.webmvc.servlet.WebMvcResponse;
 import jakarta.servlet.*;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,21 +58,12 @@ public class IdentityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (servletRequest instanceof WebMvcRequest request && servletResponse instanceof WebMvcResponse response) {
+            // 执行认证中心过滤器
             var strategies = new ArrayList<StrategyFilter>(this.strategies);
-            // 执行完策略后，最后执行 Filter
-            strategies.add(new ServletExecutingStrategyFilter(filterChain));
 
-            new StandardStrategyChain(strategies).execute(request, response);
-        }
-    }
-
-    @RequiredArgsConstructor
-    private static class ServletExecutingStrategyFilter implements StrategyFilter {
-        private final FilterChain chain;
-
-        @Override
-        public void execute(WebMvcRequest request, WebMvcResponse response, StrategyFilterChain chain) throws ServletException, IOException {
-            this.chain.doFilter(request, response);
+            new StandardStrategyChain(strategies).complete(filterChain::doFilter).execute(request, response);
+        } else {
+            filterChain.doFilter(servletRequest, servletResponse);
         }
     }
 }
