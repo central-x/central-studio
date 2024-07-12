@@ -126,7 +126,7 @@ public class CasController {
 
         var loginUrl = UriComponentsBuilder.fromUri(request.getUri())
                 .replacePath(request.getTenantPath())
-                .path("/security")
+                .path("/identity")
                 .path("/")
                 .replaceQuery(null);
 
@@ -423,7 +423,7 @@ public class CasController {
                          <saml:NameID xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">@NOT_USED@</saml:NameID>
                          <samlp:SessionIndex>{}</samlp:SessionIndex>
                     </samlp:LogoutRequest>
-                     """, Guidx.nextID(), OffsetDateTime.now().toString(), this.ticket);
+                    """, Guidx.nextID(), OffsetDateTime.now().toString(), this.ticket);
             var client = HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                     .contact(new SpringContract())
                     .baseUrl(this.url)

@@ -57,6 +57,7 @@ central:
 # 应用配置
 studio:
   provider:
+    url: http://127.0.0.1:${server.port}
     fetchers:
       - saas
       - log
