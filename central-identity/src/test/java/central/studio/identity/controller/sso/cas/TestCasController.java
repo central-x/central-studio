@@ -30,6 +30,7 @@ import central.provider.graphql.identity.IdentityStrategyProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.identity.IdentityContainer;
+import central.starter.test.cookie.CookieStore;
 import central.studio.identity.IdentityApplication;
 import central.studio.identity.controller.TestController;
 import central.studio.identity.controller.index.IdentityIndexController;
@@ -38,6 +39,8 @@ import central.util.Jsonx;
 import central.util.Listx;
 import central.util.Mapx;
 import central.web.XForwardedHeaders;
+import jakarta.servlet.http.Cookie;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,5 +126,102 @@ public class TestCasController extends TestController {
                                         .build().toString()
                         )
                 );
+    }
+
+    /**
+     * 无效 Cookie 时，重定向到 /identity/ 进行认证
+     *
+     * @see CasController#login
+     * @see IdentityIndexController#login
+     */
+    @Test
+    public void case1(@Autowired MockMvc mvc) throws Exception {
+        var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
+                .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
+                .cookie(new Cookie("Authentication", "invalid"))
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION,
+                                UriComponentsBuilder.fromUriString("/identity/")
+                                        .scheme("https")
+                                        .host("identity.central-x.com")
+                                        .queryParam("redirect_uri",
+                                                Stringx.encodeUrl(UriComponentsBuilder.fromUriString("https://identity.central-x.com/identity/sso/cas/login")
+                                                        .queryParam("service", Stringx.encodeUrl("http://central-identity/identity/sso/cas/login-result"))
+                                                        .build().toString())
+                                        )
+                                        .build().toString()
+                        )
+                );
+    }
+
+    /**
+     * 已登录时，但 renew 参数为 true 时，则要求重定向到 /identity/ 进行认证
+     *
+     * @see CasController#login
+     * @see IdentityIndexController#login
+     */
+    @Test
+    public void case2(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
+        var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
+                .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
+                .queryParam("renew", "true")
+                .cookie(this.getSessionCookie("/identity/sso/cas/login", mvc, cookieStore))
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION,
+                                UriComponentsBuilder.fromUriString("/identity/")
+                                        .scheme("https")
+                                        .host("identity.central-x.com")
+                                        .queryParam("redirect_uri",
+                                                Stringx.encodeUrl(UriComponentsBuilder.fromUriString("https://identity.central-x.com/identity/sso/cas/login")
+                                                        .queryParam("service", Stringx.encodeUrl("http://central-identity/identity/sso/cas/login-result"))
+                                                        .build().toString())
+                                        )
+                                        .build().toString()
+                        )
+                );
+    }
+
+    /**
+     * 已登录时，协带参数跳转到用户指定的地址
+     *
+     * @see CasController#login
+     */
+    @Test
+    public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
+        var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
+                .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
+                .cookie(this.getSessionCookie("/identity/sso/cas/login", mvc, cookieStore))
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION, Matchers.startsWith("http://central-identity/identity/sso/cas/login-result?ticket=")));
     }
 }

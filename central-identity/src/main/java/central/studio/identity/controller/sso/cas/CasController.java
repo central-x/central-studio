@@ -134,11 +134,6 @@ public class CasController {
 
         // 如果没有传递 service，则无法重定向到应用系统，直接跳转登录界面
         if (Stringx.isNullOrBlank(params.getService())) {
-            if (Objects.equals(Boolean.TRUE, params.getRenew())) {
-                // 如果要求重新登录
-                cookie.remove(request, response);
-            }
-
             return new RedirectView(loginUrl.build().toString());
         }
 
@@ -154,6 +149,21 @@ public class CasController {
         if (!application.getEnabled()) {
             // 此应用已禁用
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "服务[service]已禁用: " + params.getService());
+        }
+
+        // 如果传递了 renew 参数，则移除当前会话，重新跳转到登录界面
+        if (Objects.equals(Boolean.TRUE, params.getRenew())) {
+            // 如果要求重新登录
+            cookie.remove(request, response);
+
+            // 移除请求时带的 renew 参数，否则认证完再次回来时又被移除会话了
+            var requestUri = UriComponentsBuilder.fromUri(request.getUri())
+                    .replaceQueryParam("renew")
+                    .build().toUriString();
+
+            // 跳转到登录界面
+            loginUrl.queryParam("redirect_uri", Stringx.encodeUrl(requestUri));
+            return new RedirectView(loginUrl.build().toString());
         }
 
         // 验证会话
