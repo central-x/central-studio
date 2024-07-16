@@ -27,14 +27,6 @@ package central.studio.identity.controller.sso.cas;
 import central.bean.OptionalEnum;
 import central.data.organization.Account;
 import central.identity.client.SessionVerifier;
-import central.studio.identity.controller.sso.cas.param.LoginParams;
-import central.studio.identity.controller.sso.cas.param.LogoutParams;
-import central.studio.identity.controller.sso.cas.param.ValidateParams;
-import central.studio.identity.controller.sso.cas.support.CasSession;
-import central.studio.identity.controller.sso.cas.support.Format;
-import central.studio.identity.controller.sso.cas.support.ServiceTicket;
-import central.studio.identity.core.attribute.CasAttributes;
-import central.studio.identity.core.attribute.SessionAttributes;
 import central.lang.Stringx;
 import central.net.http.executor.apache.ApacheHttpClientExecutor;
 import central.net.http.proxy.HttpProxyFactory;
@@ -43,9 +35,18 @@ import central.provider.graphql.organization.AccountProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
+import central.starter.webmvc.render.JsonRender;
 import central.starter.webmvc.render.TextRender;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
+import central.studio.identity.controller.sso.cas.param.LoginParams;
+import central.studio.identity.controller.sso.cas.param.LogoutParams;
+import central.studio.identity.controller.sso.cas.param.ValidateParams;
+import central.studio.identity.controller.sso.cas.support.CasSession;
+import central.studio.identity.controller.sso.cas.support.Format;
+import central.studio.identity.controller.sso.cas.support.ServiceTicket;
+import central.studio.identity.core.attribute.CasAttributes;
+import central.studio.identity.core.attribute.SessionAttributes;
 import central.util.Guidx;
 import central.util.Jsonx;
 import com.auth0.jwt.JWT;
@@ -309,11 +310,12 @@ public class CasController {
                     "attributes", attrs
             ));
 
-            new TextRender(request, response)
+            new JsonRender(request, response)
                     .setStatus(HttpStatus.OK)
-                    .setContentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
-                    .setText(content)
-                    .render();
+                    .render(Map.of(
+                            "user", account.getUsername(),
+                            "attributes", attrs
+                    ));
         } else {
             var content = """
                     <cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">

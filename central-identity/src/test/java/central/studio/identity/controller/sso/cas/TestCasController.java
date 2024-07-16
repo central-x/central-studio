@@ -47,12 +47,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.Objects;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Cas Controller Test Cases
@@ -205,6 +207,7 @@ public class TestCasController extends TestController {
      * 已登录时，协带参数跳转到用户指定的地址
      *
      * @see CasController#login
+     * @see CasController#validate
      */
     @Test
     public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
@@ -219,9 +222,61 @@ public class TestCasController extends TestController {
                     return req;
                 });
 
-        mvc.perform(request)
+        var response = mvc.perform(request)
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.LOCATION, Matchers.startsWith("http://central-identity/identity/sso/cas/login-result?ticket=")));
+                .andExpect(header().string(HttpHeaders.LOCATION, Matchers.startsWith("http://central-identity/identity/sso/cas/login-result?ticket=")))
+                .andReturn().getResponse();
+
+        // 获取 ST
+        var location = UriComponentsBuilder.fromUriString(Objects.requireNonNull(response.getHeader(HttpHeaders.LOCATION))).build();
+        var serviceTicket = location.getQueryParams().getFirst("ticket");
+
+        // 验证 ST
+        var validateRequest = MockMvcRequestBuilders.post("/identity/sso/cas/serviceValidate")
+                .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
+                .queryParam("ticket", serviceTicket)
+                .queryParam("format", "json")
+//                .content("service=" + Stringx.encodeUrl("http://central-identity/identity/sso/cas/login-result") + "&ticket=" + serviceTicket + "&format=json")
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(validateRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.user").value("syssa"))
+                .andExpect(jsonPath("$.attributes.id").value("syssa"))
+                .andExpect(jsonPath("$.attributes.name").value("超级管理员"));
+    }
+
+    /**
+     * 测试无效的 ST
+     *
+     * @see CasController#validate
+     */
+    @Test
+    public void case4(@Autowired MockMvc mvc) throws Exception {
+        // 验证 ST
+        var request = MockMvcRequestBuilders.post("/identity/sso/cas/serviceValidate")
+                .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
+                .queryParam("ticket", "invalid")
+                .queryParam("format", "json")
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(request)
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").isNotEmpty());
     }
 }
