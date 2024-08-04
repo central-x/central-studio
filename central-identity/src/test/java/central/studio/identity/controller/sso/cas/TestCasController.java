@@ -236,9 +236,9 @@ public class TestCasController extends TestController {
         var validateRequest = MockMvcRequestBuilders.post("/identity/sso/cas/serviceValidate")
                 .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
                 .queryParam("ticket", serviceTicket)
-                .queryParam("format", "json")
-//                .content("service=" + Stringx.encodeUrl("http://central-identity/identity/sso/cas/login-result") + "&ticket=" + serviceTicket + "&format=json")
+//                .content("service=" + Stringx.encodeUrl("http://central-identity/identity/sso/cas/login-result") + "&ticket=" + serviceTicket)
                 .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON)
                 .with(req -> {
                     req.setScheme("https");
                     req.setServerName("identity.central-x.com");
@@ -252,6 +252,12 @@ public class TestCasController extends TestController {
                 .andExpect(jsonPath("$.user").value("syssa"))
                 .andExpect(jsonPath("$.attributes.id").value("syssa"))
                 .andExpect(jsonPath("$.attributes.name").value("超级管理员"));
+
+        // 不允许重复使用 ST
+        mvc.perform(validateRequest)
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.description").isNotEmpty());
     }
 
     /**
@@ -265,8 +271,8 @@ public class TestCasController extends TestController {
         var request = MockMvcRequestBuilders.post("/identity/sso/cas/serviceValidate")
                 .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
                 .queryParam("ticket", "invalid")
-                .queryParam("format", "json")
                 .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON)
                 .with(req -> {
                     req.setScheme("https");
                     req.setServerName("identity.central-x.com");
@@ -277,6 +283,9 @@ public class TestCasController extends TestController {
         mvc.perform(request)
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").isNotEmpty());
+                .andExpect(jsonPath("$.description").isNotEmpty())
+                .andDo(result -> {
+                    System.out.println(result.getResponse().getContentAsString());
+                });
     }
 }

@@ -24,7 +24,6 @@
 
 package central.studio.identity.controller.sso.cas;
 
-import central.bean.OptionalEnum;
 import central.data.organization.Account;
 import central.identity.client.SessionVerifier;
 import central.lang.Stringx;
@@ -35,26 +34,28 @@ import central.provider.graphql.organization.AccountProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
-import central.starter.webmvc.render.JsonRender;
-import central.starter.webmvc.render.TextRender;
 import central.starter.webmvc.servlet.WebMvcRequest;
 import central.starter.webmvc.servlet.WebMvcResponse;
+import central.starter.webmvc.view.JsonView;
+import central.starter.webmvc.view.XmlView;
+import central.studio.identity.controller.sso.cas.exception.CasErrorCode;
+import central.studio.identity.controller.sso.cas.exception.CasException;
 import central.studio.identity.controller.sso.cas.param.LoginParams;
 import central.studio.identity.controller.sso.cas.param.LogoutParams;
 import central.studio.identity.controller.sso.cas.param.ValidateParams;
 import central.studio.identity.controller.sso.cas.support.CasSession;
-import central.studio.identity.controller.sso.cas.support.Format;
 import central.studio.identity.controller.sso.cas.support.ServiceTicket;
 import central.studio.identity.core.attribute.CasAttributes;
 import central.studio.identity.core.attribute.SessionAttributes;
 import central.util.Guidx;
-import central.util.Jsonx;
+import central.util.Mapx;
+import central.util.Objectx;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
@@ -65,15 +66,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -117,12 +117,14 @@ public class CasController {
 
     /**
      * 认证入口
+     * <p>
+     * 此接口是接入方重定向进来的入口，使用标准的异常处理即可，不需要使用 CasException
      */
     @GetMapping("/login")
     public View login(@Validated LoginParams params,
                       WebMvcRequest request, WebMvcResponse response) throws IOException {
         if (!request.getRequiredAttribute(CasAttributes.ENABLED)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "中央认证服务（CAS）已禁用");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "中央认证服务（CAS）已禁用");
         }
 
         var loginUrl = UriComponentsBuilder.fromUri(request.getUri())
@@ -201,29 +203,24 @@ public class CasController {
         }
     }
 
-    @Getter
-    @RequiredArgsConstructor
-    private enum ErrorCode implements OptionalEnum<HttpStatus> {
-        INVALID_REQUEST("INVALID_REQUEST", HttpStatus.BAD_REQUEST),
-        INVALID_TICKET_SPEC("INVALID_TICKET_SPEC", HttpStatus.BAD_REQUEST),
-        UNAUTHORIZED_SERVICE_PROXY("UNAUTHORIZED_SERVICE_PROXY", HttpStatus.BAD_REQUEST),
-        INVALID_PROXY_CALLBACK("INVALID_PROXY_CALLBACK", HttpStatus.BAD_REQUEST),
-        INVALID_TICKET("INVALID_TICKET", HttpStatus.BAD_REQUEST),
-        INVALID_SERVICE("INVALID_SERVICE", HttpStatus.BAD_REQUEST),
-        INTERNAL_ERROR("INTERNAL_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
-
-        private final String name;
-        private final HttpStatus value;
-    }
-
     /**
      * ST 认证
+     * <p>
+     * 此接口是接入方通过调用接口的方式调用，因此需要使用 CasException 来处理异常，以保证遵循 CAS 协议
      */
     @PostMapping({"/serviceValidate", "/p3/serviceValidate"})
-    public void validate(@Validated ValidateParams params,
-                         WebMvcRequest request, WebMvcResponse response) throws IOException {
+    public ModelAndView validate(@Validated ValidateParams params,
+                                 WebMvcRequest request, WebMvcResponse response) throws CasException {
         if (!request.getRequiredAttribute(CasAttributes.ENABLED)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "中央认证服务（CAS）已禁用");
+            throw new CasException(CasErrorCode.SERVICE_UNAVAILABLE, "中央认证服务（CAS）已禁用");
+        }
+
+        // 验证 service 不为空
+        if (Stringx.isNullOrBlank(params.getService())) {
+            throw new CasException(CasErrorCode.INVALID_SERVICE, "服务地址[service]不能为空");
+        }
+        if (params.getService().length() > 4096) {
+            throw new CasException(CasErrorCode.INVALID_SERVICE, "服务地址[service]的长度必须小于 4096");
         }
 
         // 验证 service 是否可信
@@ -233,70 +230,54 @@ public class CasController {
                 .findFirst();
         if (application.isEmpty()) {
             // 此应用不是已登记的应用，属于非法接入
-            sendError(request, response, ErrorCode.INVALID_SERVICE, "服务[service]未登记: " + params.getService(), params.getFormat());
-            return;
+            throw new CasException(CasErrorCode.INVALID_SERVICE, "服务地址[service]未登记: " + params.getService());
         }
         if (!application.get().getEnabled()) {
             // 此应用已禁用
-            sendError(request, response, ErrorCode.INVALID_SERVICE, "服务[service]已禁用: " + params.getService(), params.getFormat());
-            return;
+            throw new CasException(CasErrorCode.INVALID_SERVICE, "服务地址[service]已禁用: " + params.getService());
+        }
+
+        // 验证服务凭证格式
+        if (Stringx.isNullOrBlank(params.getTicket())) {
+            throw new CasException(CasErrorCode.INVALID_TICKET_SPEC, "票据[ticket]必须不为空");
+        }
+        if (params.getTicket().length() > 256) {
+            throw new CasException(CasErrorCode.INVALID_TICKET_SPEC, "票据[ticket]格式无效: " + params.getTicket());
+        }
+        if (!params.getTicket().startsWith("ST-")) {
+            // 服务凭证必须以 ST- 开头
+            throw new CasException(CasErrorCode.INVALID_TICKET_SPEC, "票据[ticket]格式无效: " + params.getTicket());
         }
 
         // 获取会话
         var ticket = this.tickets.remove(request.getTenantCode(), params.getTicket());
         if (ticket == null) {
             // 找不找指定服务凭证
-            sendError(request, response, ErrorCode.INVALID_TICKET, "票据[ticket]无效: " + params.getTicket(), params.getFormat());
-            return;
+            throw new CasException(CasErrorCode.INVALID_TICKET, "票据[ticket]无效: " + params.getTicket());
         }
 
         if (!application.get().getCode().equals(ticket.getCode())) {
             // 应用与票据不匹配
-            sendError(request, response, ErrorCode.INVALID_TICKET, "票据[ticket]与服务[service]不符: " + params.getTicket(), params.getFormat());
-            return;
+            throw new CasException(CasErrorCode.INVALID_TICKET, "票据[ticket]与服务地址[service]不符: " + params.getTicket());
         }
 
         // 验证会话有效性
         var session = ticket.getSession();
         if (!this.verifier.verify(session)) {
-            sendError(request, response, ErrorCode.INVALID_TICKET_SPEC, "票据[ticket]所在会话已过期: " + params.getTicket(), params.getFormat());
-            return;
+            throw new CasException(CasErrorCode.INVALID_TICKET, "票据[ticket]所在会话已过期: " + params.getTicket());
         }
 
         // 解析会话
         var account = this.accountProvider.findById(ticket.getSessionJwt().getSubject(), request.getTenantCode());
-        sendSuccess(request, response, account, null, params.getFormat());
 
         this.tickets.bindTicket(request.getTenantCode(), ticket);
-
+        return getSuccessView(request, response, account, null);
     }
 
-    private void sendError(WebMvcRequest request, WebMvcResponse response, ErrorCode code, String message, String format) throws IOException {
-        if (Format.XML.isCompatibleWith(format)) {
-            var content = """
-                    <cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
-                        <cas:authenticationFailure code="{}">{}</cas:authenticationFailure>
-                    </cas:serviceResponse>
-                    """;
-            new TextRender(request, response)
-                    .setStatus(code.getValue())
-                    .setContentType(new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8))
-                    .setText(Stringx.format(content, code.getName(), message))
-                    .render();
-        } else {
-            var content = Jsonx.Default().serialize(Map.of(
-                    "code", code.getName(),
-                    "description", message
-            ));
-            new TextRender(request, response)
-                    .setStatus(code.getValue())
-                    .setContentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
-                    .setText(content)
-                    .render();
-        }
-    }
+    private ModelAndView getSuccessView(WebMvcRequest request, WebMvcResponse response, Account account, String pgt) {
+        ModelAndView mv = new ModelAndView();
+        mv.setStatus(HttpStatus.OK);
 
-    private void sendSuccess(WebMvcRequest request, WebMvcResponse response, Account account, String pgt, String format) throws IOException {
         var attrs = new HashMap<String, Object>();
         for (var attr : request.getRequiredAttribute(CasAttributes.SCOPES)) {
             for (var fetcher : attr.getFetchers()) {
@@ -304,19 +285,9 @@ public class CasController {
             }
         }
 
-        if (Format.JSON.isCompatibleWith(format)) {
-            var content = Jsonx.Default().serialize(Map.of(
-                    "user", account.getUsername(),
-                    "attributes", attrs
-            ));
+        var accepts = MediaType.parseMediaTypes(Objectx.getOrDefault(request.getHeader(HttpHeaders.ACCEPT), MediaType.ALL_VALUE));
 
-            new JsonRender(request, response)
-                    .setStatus(HttpStatus.OK)
-                    .render(Map.of(
-                            "user", account.getUsername(),
-                            "attributes", attrs
-                    ));
-        } else {
+        if (accepts.stream().anyMatch(MediaType.APPLICATION_XML::includes) || accepts.stream().anyMatch(MediaType.TEXT_XML::includes)) {
             var content = """
                     <cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
                         <cas:authenticationSuccess>
@@ -332,12 +303,15 @@ public class CasController {
             }
             attrsContent.append("        </cas:attributes>");
 
-            new TextRender(request, response)
-                    .setStatus(HttpStatus.OK)
-                    .setContentType(new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8))
-                    .setText(Stringx.format(content, account.getUsername(), attrsContent))
-                    .render();
+            mv.setView(new XmlView(Stringx.format(content, account.getUsername(), attrsContent)));
+        } else {
+            mv.setView(new JsonView(Mapx.of(
+                    Mapx.entry("user", account.getUsername()),
+                    Mapx.entry("attributes", attrs)
+            )));
         }
+
+        return mv;
     }
 
 

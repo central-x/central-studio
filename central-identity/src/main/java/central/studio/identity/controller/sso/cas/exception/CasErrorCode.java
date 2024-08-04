@@ -22,52 +22,34 @@
  * SOFTWARE.
  */
 
-package central.studio.identity.controller.sso.cas.param;
+package central.studio.identity.controller.sso.cas.exception;
 
-import central.validation.Label;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serial;
-import java.io.Serializable;
+import central.bean.OptionalEnum;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 /**
- * 校验参数
+ * CAS Error Code
  * <p>
- * 不能使用传统的参数校验，否则抛出来的异常处理结果不符合 CAS 规范
- * <p>
- * 只能手动校验
+ * Cas 错误码
  *
  * @author Alan Yeh
- * @since 2023/04/09
+ * @since 2024/08/02
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ValidateParams implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -5381566453116378086L;
+@Getter
+@RequiredArgsConstructor
+public enum CasErrorCode implements OptionalEnum<HttpStatus> {
 
-    @Label("服务地址")
-//    @NotBlank
-//    @Size(min = 1, max = 4096)
-    private String service;
+    INVALID_REQUEST("INVALID_REQUEST", HttpStatus.BAD_REQUEST),
+    INVALID_TICKET_SPEC("INVALID_TICKET_SPEC", HttpStatus.BAD_REQUEST),
+    UNAUTHORIZED_SERVICE_PROXY("UNAUTHORIZED_SERVICE_PROXY", HttpStatus.BAD_REQUEST),
+    INVALID_PROXY_CALLBACK("INVALID_PROXY_CALLBACK", HttpStatus.BAD_REQUEST),
+    INVALID_TICKET("INVALID_TICKET", HttpStatus.BAD_REQUEST),
+    INVALID_SERVICE("INVALID_SERVICE", HttpStatus.BAD_REQUEST),
+    INTERNAL_ERROR("INTERNAL_ERROR", HttpStatus.INTERNAL_SERVER_ERROR),
+    SERVICE_UNAVAILABLE("SERVICE_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);
 
-    @Label("服务凭证")
-//    @NotBlank
-//    @Size(min = 1, max = 256)
-    private String ticket;
-
-//    /**
-//     * Proxy Granting Ticket Url。代理回调 URL。
-//     * (暂不支持)
-//     */
-//    private String pgtUrl;
-//
-//    /**
-//     * 如果这个值被设置为 true，则 ST（Service Ticket）必须是由用户授权颁发的，而不能由已存在的统一会话颁发的。
-//     * （暂不支持）
-//     */
-//    private Boolean renew;
+    private final String name;
+    private final HttpStatus value;
 }

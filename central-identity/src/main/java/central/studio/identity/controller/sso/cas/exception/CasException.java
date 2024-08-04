@@ -22,52 +22,29 @@
  * SOFTWARE.
  */
 
-package central.studio.identity.controller.sso.cas.param;
+package central.studio.identity.controller.sso.cas.exception;
 
-import central.validation.Label;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
- * 校验参数
+ * CAS Exception
  * <p>
- * 不能使用传统的参数校验，否则抛出来的异常处理结果不符合 CAS 规范
- * <p>
- * 只能手动校验
+ * CAS 异常
  *
  * @author Alan Yeh
- * @since 2023/04/09
+ * @since 2024/08/02
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ValidateParams implements Serializable {
+public class CasException extends Exception {
     @Serial
-    private static final long serialVersionUID = -5381566453116378086L;
+    private static final long serialVersionUID = -5720313359099797353L;
 
-    @Label("服务地址")
-//    @NotBlank
-//    @Size(min = 1, max = 4096)
-    private String service;
+    @Getter
+    private final CasErrorCode errorCode;
 
-    @Label("服务凭证")
-//    @NotBlank
-//    @Size(min = 1, max = 256)
-    private String ticket;
-
-//    /**
-//     * Proxy Granting Ticket Url。代理回调 URL。
-//     * (暂不支持)
-//     */
-//    private String pgtUrl;
-//
-//    /**
-//     * 如果这个值被设置为 true，则 ST（Service Ticket）必须是由用户授权颁发的，而不能由已存在的统一会话颁发的。
-//     * （暂不支持）
-//     */
-//    private Boolean renew;
+    public CasException(CasErrorCode errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+    }
 }
