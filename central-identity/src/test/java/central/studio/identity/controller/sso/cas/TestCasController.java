@@ -94,6 +94,28 @@ public class TestCasController extends TestController {
         }
     }
 
+    /**
+     * 未登记的应用不允许接入 CAS 功能
+     *
+     * @see CasController#login
+     */
+    @Test
+    public void case0(@Autowired MockMvc mvc) throws Exception {
+        var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
+                .queryParam("service", "https://example.com/identity/sso/cas/login-result")
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(request)
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+    }
+
 
     /**
      * 未登录时，重定向到 /identity/ 进行认证
@@ -102,7 +124,7 @@ public class TestCasController extends TestController {
      * @see IdentityIndexController#login
      */
     @Test
-    public void case0(@Autowired MockMvc mvc) throws Exception {
+    public void case1(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
                 .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
                 .header(XForwardedHeaders.TENANT, "master")
@@ -137,7 +159,7 @@ public class TestCasController extends TestController {
      * @see IdentityIndexController#login
      */
     @Test
-    public void case1(@Autowired MockMvc mvc) throws Exception {
+    public void case2(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
                 .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
                 .cookie(new Cookie("Authentication", "invalid"))
@@ -173,7 +195,7 @@ public class TestCasController extends TestController {
      * @see IdentityIndexController#login
      */
     @Test
-    public void case2(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
+    public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
                 .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
                 .queryParam("renew", "true")
@@ -210,7 +232,7 @@ public class TestCasController extends TestController {
      * @see CasController#validate
      */
     @Test
-    public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
+    public void case4(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
                 .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
                 .cookie(this.getSessionCookie("/identity/sso/cas/login", mvc, cookieStore))
@@ -266,7 +288,7 @@ public class TestCasController extends TestController {
      * @see CasController#validate
      */
     @Test
-    public void case4(@Autowired MockMvc mvc) throws Exception {
+    public void case5(@Autowired MockMvc mvc) throws Exception {
         // 验证 ST
         var request = MockMvcRequestBuilders.post("/identity/sso/cas/serviceValidate")
                 .queryParam("service", "http://central-identity/identity/sso/cas/login-result")
