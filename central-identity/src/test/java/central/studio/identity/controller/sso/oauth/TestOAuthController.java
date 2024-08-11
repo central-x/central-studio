@@ -31,7 +31,9 @@ import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.identity.IdentityContainer;
 import central.studio.identity.IdentityApplication;
+import central.studio.identity.controller.TestController;
 import central.studio.identity.controller.index.IdentityIndexController;
+import central.studio.identity.controller.sso.cas.CasController;
 import central.studio.identity.core.strategy.StrategyType;
 import central.util.Jsonx;
 import central.util.Listx;
@@ -43,14 +45,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * OAuth Controller Test Cases
@@ -62,7 +64,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = IdentityApplication.class)
-public class TestOAuthController {
+public class TestOAuthController extends TestController {
 
     /**
      * 新增 OAuth 2.0 策略
@@ -92,13 +94,38 @@ public class TestOAuthController {
     }
 
     /**
+     * 未登记的应用不允许接入 CAS 功能
+     *
+     * @see CasController#login
+     */
+    @Test
+    public void case0(@Autowired MockMvc mvc) throws Exception {
+        var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", "example")
+                .queryParam("redirect_uri", "https://example.com/identity/sso/oauth2/login-result")
+                .queryParam("state", UUID.randomUUID().toString())
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(request)
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+    }
+
+    /**
      * 未登录时，重定向到 /identity/ 进行认证
      *
      * @see OAuthController#authorize
      * @see IdentityIndexController#login
      */
     @Test
-    public void case0(@Autowired MockMvc mvc) throws Exception {
+    public void case1(@Autowired MockMvc mvc) throws Exception {
         var state = UUID.randomUUID().toString();
         var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
                 .queryParam("response_type", "code")
