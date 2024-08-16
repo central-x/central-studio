@@ -60,7 +60,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -106,16 +107,22 @@ public class TestCasController extends TestController {
     }
 
     /**
-     * 测试禁用 CAS 协议
+     * 获取 CAS 策略
      */
-    @Test
-    void case0(@Autowired MockMvc mvc, @Autowired StrategyContainer container) throws Exception {
+    private CasStrategyFilter getStrategyFilter(StrategyContainer container) {
         var dynamic = container.getStrategy("master", "cas");
         assertNotNull(dynamic);
 
         assertInstanceOf(CasStrategyFilter.class, dynamic.getDelegate());
+        return (CasStrategyFilter) dynamic.getDelegate();
+    }
 
-        var strategy = (CasStrategyFilter) dynamic.getDelegate();
+    /**
+     * 测试禁用 CAS 协议
+     */
+    @Test
+    void case0(@Autowired MockMvc mvc, @Autowired StrategyContainer container) throws Exception {
+        var strategy = this.getStrategyFilter(container);
 
         // 禁用策略
         strategy.setEnabled(BooleanEnum.FALSE);
