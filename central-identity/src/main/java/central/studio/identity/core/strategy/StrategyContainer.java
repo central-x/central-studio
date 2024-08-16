@@ -93,7 +93,7 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
         return Assertx.requireNotNull(this.getStrategy(tenant, code), () -> new ResponseStatusException(HttpStatus.NOT_FOUND, Stringx.format("安全策略[code={}]不存在", code)));
     }
 
-    private @Nullable DynamicStrategyFilter putStrategy(String tenant, DynamicStrategyFilter strategy) {
+    public @Nullable DynamicStrategyFilter putStrategy(String tenant, DynamicStrategyFilter strategy) {
         return this.strategies.computeIfAbsent(tenant, key -> new HashMap<>()).put(strategy.getData().getCode(), strategy);
     }
 

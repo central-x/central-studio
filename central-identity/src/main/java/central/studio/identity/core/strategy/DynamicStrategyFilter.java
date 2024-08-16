@@ -46,6 +46,7 @@ public class DynamicStrategyFilter implements StrategyFilter, DisposableBean {
     @Getter
     private final IdentityStrategy data;
 
+    @Getter
     @Delegate(types = StrategyFilter.class)
     private final StrategyFilter delegate;
 
