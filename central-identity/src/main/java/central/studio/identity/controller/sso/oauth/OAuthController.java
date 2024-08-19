@@ -137,7 +137,7 @@ public class OAuthController {
     public View authorize(@Validated AuthorizeParams params,
                           WebMvcRequest request, WebMvcResponse response) throws IOException {
         if (!request.getRequiredAttribute(OAuthAttributes.ENABLED)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "OAuth 2.0 认证服务已禁用");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "OAuth 2.0 认证服务已禁用");
         }
 
 
