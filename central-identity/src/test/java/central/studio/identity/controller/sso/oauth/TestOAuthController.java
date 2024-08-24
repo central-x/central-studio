@@ -30,6 +30,7 @@ import central.lang.Stringx;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
+import central.starter.test.cookie.CookieStore;
 import central.studio.identity.IdentityApplication;
 import central.studio.identity.controller.TestController;
 import central.studio.identity.controller.index.IdentityIndexController;
@@ -43,6 +44,8 @@ import central.util.Jsonx;
 import central.util.Listx;
 import central.util.Mapx;
 import central.web.XForwardedHeaders;
+import jakarta.servlet.http.Cookie;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +58,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Objects;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -96,7 +99,7 @@ public class TestOAuthController extends TestController {
         strategy.setParams(Jsonx.Default().serialize(Mapx.of(
                 Mapx.entry("enabled", "1"),
                 Mapx.entry("scopes", "user:basic"),
-                Mapx.entry("authGranting", "1"),
+                Mapx.entry("autoGranting", "1"),
                 Mapx.entry("timeout", "180000")
         )));
         strategy.updateCreator("syssa");
@@ -127,8 +130,8 @@ public class TestOAuthController extends TestController {
 
         var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
                 .queryParam("response_type", "code")
-                .queryParam("client_id", "example")
-                .queryParam("redirect_uri", "https://example.com/identity/sso/oauth2/login-result")
+                .queryParam("client_id", "central-identity")
+                .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
                 .queryParam("state", UUID.randomUUID().toString())
                 .header(XForwardedHeaders.TENANT, "master")
                 .with(req -> {
@@ -149,26 +152,49 @@ public class TestOAuthController extends TestController {
     /**
      * 未登记的应用不允许接入 OAuth 功能
      *
-     * @see OAuthController#authorize 
+     * @see OAuthController#authorize
      */
     @Test
     public void case1(@Autowired MockMvc mvc) throws Exception {
-        var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
-                .queryParam("response_type", "code")
-                .queryParam("client_id", "example")
-                .queryParam("redirect_uri", "https://example.com/identity/sso/oauth2/login-result")
-                .queryParam("state", UUID.randomUUID().toString())
-                .header(XForwardedHeaders.TENANT, "master")
-                .with(req -> {
-                    req.setScheme("https");
-                    req.setServerName("identity.central-x.com");
-                    req.setServerPort(443);
-                    return req;
-                });
+        // client_id 错误的情况
+        {
+            var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
+                    .queryParam("response_type", "code")
+                    .queryParam("client_id", "example")
+                    .queryParam("redirect_uri", "https://example.com/identity/sso/oauth2/login-result")
+                    .queryParam("state", UUID.randomUUID().toString())
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .with(req -> {
+                        req.setScheme("https");
+                        req.setServerName("identity.central-x.com");
+                        req.setServerPort(443);
+                        return req;
+                    });
 
-        mvc.perform(request)
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+            mvc.perform(request)
+                    .andExpect(status().is4xxClientError())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+        }
+
+        // client_id 正确，但是 redirect_uri 与登记的一不致的情况
+        {
+            var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
+                    .queryParam("response_type", "code")
+                    .queryParam("client_id", "central-identity")
+                    .queryParam("redirect_uri", "https://example.com/identity/sso/oauth2/login-result")
+                    .queryParam("state", UUID.randomUUID().toString())
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .with(req -> {
+                        req.setScheme("https");
+                        req.setServerName("identity.central-x.com");
+                        req.setServerPort(443);
+                        return req;
+                    });
+
+            mvc.perform(request)
+                    .andExpect(status().is4xxClientError())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+        }
     }
 
     /**
@@ -210,5 +236,119 @@ public class TestOAuthController extends TestController {
                                         .build().toString()
                         )
                 );
+    }
+
+    /**
+     * 无效 Cookie 时，重定向到 /identity/ 进行认证
+     *
+     * @see OAuthController#authorize
+     * @see IdentityIndexController#login
+     */
+    @Test
+    public void case3(@Autowired MockMvc mvc) throws Exception {
+        var state = UUID.randomUUID().toString();
+        var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", "central-identity")
+                .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
+                .queryParam("state", state)
+                .cookie(new Cookie("Authentication", "invalid"))
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+        mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION,
+                                UriComponentsBuilder.fromUriString("/identity/")
+                                        .scheme("https")
+                                        .host("identity.central-x.com")
+                                        .queryParam("redirect_uri",
+                                                Stringx.encodeUrl(UriComponentsBuilder.fromUriString("https://identity.central-x.com/identity/sso/oauth2/authorize")
+                                                        .queryParam("response_type", "code")
+                                                        .queryParam("client_id", "central-identity")
+                                                        .queryParam("redirect_uri", Stringx.encodeUrl("http://central-identity/identity/sso/oauth2/login-result"))
+                                                        .queryParam("state", state)
+                                                        .build().toString())
+                                        )
+                                        .build().toString()
+                        )
+                );
+    }
+
+    /**
+     * 已登录时，如果策略是自动授权，则自动协带 code 返回用户指定的地址
+     * <p>
+     * 开发者可以通过该 code 兑换 access_token
+     *
+     * @see OAuthController#authorize
+     * @see OAuthController#getAccessToken
+     */
+    @Test
+    public void case4(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired StrategyContainer container) throws Exception {
+        var strategy = this.getStrategyFilter(container);
+
+        // 设置策略为自动授权
+        strategy.setAutoGranting(BooleanEnum.TRUE);
+
+        var state = UUID.randomUUID().toString();
+        var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", "central-identity")
+                .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
+                .queryParam("state", state)
+                .cookie(this.getSessionCookie("/identity/sso/oauth2/authorize", mvc, cookieStore))
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        var response = mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION, Matchers.startsWith("http://central-identity/identity/sso/oauth2/login-result")))
+                .andReturn().getResponse();
+
+        // 获取 Code
+        var location = UriComponentsBuilder.fromUriString(Objects.requireNonNull(response.getHeader(HttpHeaders.LOCATION))).build();
+        assertEquals(state, location.getQueryParams().getFirst("state"));
+
+        var code = location.getQueryParams().getFirst("code");
+        assertNotNull(code);
+
+        // 验证 Code
+        var validateRequest = MockMvcRequestBuilders.post("/identity/sso/oauth2/access_token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Jsonx.Default().serialize(Mapx.of(
+                        Mapx.entry("grantType", "authorization_code"),
+                        Mapx.entry("clientId", "central-identity"),
+                        Mapx.entry("clientSecret", "AkJSi2kmH7vSO5lJcvY"),
+                        Mapx.entry("code", code),
+                        Mapx.entry("redirectUri", "http://central-identity/identity/sso/oauth2/login-result")
+                )))
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+        mvc.perform(validateRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.access_token").isNotEmpty())
+                .andExpect(jsonPath("$.token_type").value("Bearer"))
+                .andExpect(jsonPath("$.expires_in").isNumber())
+                .andExpect(jsonPath("$.account_id").value("syssa"))
+                .andExpect(jsonPath("$.username").value("syssa"))
+                .andExpect(jsonPath("$.scope").isNotEmpty());
     }
 }

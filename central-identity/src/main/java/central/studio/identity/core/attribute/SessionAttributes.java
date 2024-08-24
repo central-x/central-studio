@@ -43,7 +43,7 @@ public interface SessionAttributes {
     /**
      * 会话颁发者
      */
-    Attribute<String> ISSUER = Attribute.of("session.issuer", "com.central-x.security");
+    Attribute<String> ISSUER = Attribute.of("session.issuer", "identity.central-x.com");
     /**
      * 会话 Cookie
      */

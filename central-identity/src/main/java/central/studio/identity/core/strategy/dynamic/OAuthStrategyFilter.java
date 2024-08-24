@@ -77,7 +77,7 @@ public class OAuthStrategyFilter implements StrategyFilter {
             "如果选择了自动授权，则用户在完成登录后，系统会将授权范围内的所有梳限授予应用系统；" +
             "如果没有自动授权，则用户在完成登录后，需要进行二次确认授权才会跳转到应用系统。")
     @Setter
-    private BooleanEnum authGranting;
+    private BooleanEnum autoGranting;
 
     @Label("过期时间")
     @NotNull
@@ -91,7 +91,7 @@ public class OAuthStrategyFilter implements StrategyFilter {
     public void execute(WebMvcRequest request, WebMvcResponse response, StrategyFilterChain chain) throws IOException, ServletException {
         request.setAttribute(OAuthAttributes.ENABLED, this.enabled.getJValue());
         request.setAttribute(OAuthAttributes.SCOPES, new HashSet<>(this.scopes));
-        request.setAttribute(OAuthAttributes.AUTO_GRANTING, this.authGranting.getJValue());
+        request.setAttribute(OAuthAttributes.AUTO_GRANTING, this.autoGranting.getJValue());
         request.setAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT, Duration.ofMillis(this.timeout));
 
         chain.execute(request, response);

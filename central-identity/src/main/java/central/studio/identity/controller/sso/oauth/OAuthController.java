@@ -26,6 +26,7 @@ package central.studio.identity.controller.sso.oauth;
 
 import central.data.organization.Account;
 import central.data.saas.Application;
+import central.identity.client.SessionVerifier;
 import central.lang.Arrayx;
 import central.lang.Stringx;
 import central.provider.graphql.organization.AccountProvider;
@@ -33,7 +34,12 @@ import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.security.Digestx;
-import central.identity.client.SessionVerifier;
+import central.security.signer.KeyPair;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
+import central.starter.webmvc.view.JsonView;
+import central.starter.webmvc.view.TextView;
+import central.starter.webmvc.view.XmlView;
 import central.studio.identity.controller.sso.oauth.param.AccessTokenParams;
 import central.studio.identity.controller.sso.oauth.param.AuthorizeParams;
 import central.studio.identity.controller.sso.oauth.param.GrantParams;
@@ -43,12 +49,7 @@ import central.studio.identity.controller.sso.oauth.support.GrantScope;
 import central.studio.identity.controller.sso.oauth.support.OAuthSession;
 import central.studio.identity.core.attribute.OAuthAttributes;
 import central.studio.identity.core.attribute.SessionAttributes;
-import central.security.signer.KeyPair;
-import central.starter.webmvc.render.TextRender;
-import central.starter.webmvc.servlet.WebMvcRequest;
-import central.starter.webmvc.servlet.WebMvcResponse;
 import central.util.Guidx;
-import central.util.Jsonx;
 import central.util.Listx;
 import central.util.Setx;
 import com.auth0.jwt.JWT;
@@ -65,6 +66,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -267,7 +269,7 @@ public class OAuthController {
                         .queryParam("code", code.getCode())
                         .build().toString();
 
-                return new RedirectView(params.getRedirectUri());
+                return new RedirectView(redirectUri);
             }
         }
     }
@@ -427,10 +429,9 @@ public class OAuthController {
      * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.4">Access Token Response</a>
      */
     @PostMapping("/access_token")
-    public void getAccessToken(@RequestBody @Validated AccessTokenParams params,
-                               WebMvcRequest request, WebMvcResponse response) throws IOException {
+    public ModelAndView getAccessToken(@RequestBody @Validated AccessTokenParams params, WebMvcRequest request) throws IOException {
         if (!request.getRequiredAttribute(OAuthAttributes.ENABLED)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "OAuth 2.0 认证服务已禁用");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "OAuth 2.0 认证服务已禁用");
         }
 
         var code = session.getCode(request.getTenantCode(), params.getCode());
@@ -458,8 +459,10 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用密钥[client_secret]错误");
         }
 
-        var scopes = code.getScope();
-        scopes.add(GrantScope.BASIC);
+        var scopes = Setx.newHashSet(GrantScope.BASIC);
+        if (Setx.isNotEmpty(code.getScope())) {
+            scopes.addAll(code.getScope());
+        }
 
         // 颁发 access_token
         // 使用私钥签名，这样客户端那边就没办法伪造，我们也不需要保存这个凭证的信息，日期过了就失效了
@@ -480,18 +483,18 @@ public class OAuthController {
         // 返回响应
         var body = Map.of(
                 "access_token", token,
-                "token_type", "bearer",
+                "token_type", "Bearer",
                 "expires_in", request.getRequiredAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT).toSeconds(),
                 "account_id", code.getSession().getAccountId(),
                 "username", code.getSession().getUsername(),
                 "scope", String.join(",", scopes.stream().map(GrantScope::getValue).toList())
         );
 
+        var mv = new ModelAndView();
+        mv.setStatus(HttpStatus.OK);
+
         if (request.isAcceptContentType(MediaType.APPLICATION_JSON)) {
-            new TextRender(request, response)
-                    .setStatus(HttpStatus.OK)
-                    .setContentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
-                    .render(Jsonx.Default().serialize(body));
+            mv.setView(new JsonView(body));
         } else if (request.isAcceptContentType(MediaType.APPLICATION_XML)) {
             var content = new StringBuilder("<OAuth>");
             for (var item : body.entrySet()) {
@@ -499,23 +502,15 @@ public class OAuthController {
             }
             content.append("</OAuth>");
 
-            new TextRender(request, response)
-                    .setStatus(HttpStatus.OK)
-                    .setContentType(new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8))
-                    .render(content.toString());
+            mv.setView(new XmlView(content.toString()));
         } else if (request.isAcceptContentType(MediaType.APPLICATION_FORM_URLENCODED)) {
             var content = body.entrySet().stream().map(it -> it.getKey() + "=" + it.getValue()).collect(Collectors.joining("&"));
 
-            new TextRender(request, response)
-                    .setStatus(HttpStatus.OK)
-                    .setContentType(new MediaType(MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8))
-                    .render(content);
+            mv.setView(new TextView(MediaType.APPLICATION_FORM_URLENCODED, content));
         } else {
-            new TextRender(request, response)
-                    .setStatus(HttpStatus.OK)
-                    .setContentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
-                    .render(Jsonx.Default().serialize(body));
+            mv.setView(new JsonView(body));
         }
+        return mv;
     }
 
     /**
@@ -553,7 +548,7 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing required header 'Authorization'");
         }
         if (token.toLowerCase().startsWith("bearer ")) {
-            token = token.substring("Bearer ".length());
+            token = token.substring("Bearer " .length());
         }
         DecodedJWT accessToken;
         try {
