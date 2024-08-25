@@ -517,6 +517,7 @@ public class OAuthController {
      * 获取当前用户信息
      */
     @GetMapping("/user")
+    @ResponseBody
     public Map<String, Object> getUser(WebMvcRequest request) {
         // 获取 access_token
         var token = this.validate(request);

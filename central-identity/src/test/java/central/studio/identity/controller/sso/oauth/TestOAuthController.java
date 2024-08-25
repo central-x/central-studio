@@ -27,6 +27,7 @@ package central.studio.identity.controller.sso.oauth;
 import central.data.identity.IdentityStrategy;
 import central.lang.BooleanEnum;
 import central.lang.Stringx;
+import central.lang.reflect.TypeRef;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
@@ -284,9 +285,12 @@ public class TestOAuthController extends TestController {
      * 已登录时，如果策略是自动授权，则自动协带 code 返回用户指定的地址
      * <p>
      * 开发者可以通过该 code 兑换 access_token
+     * <p>
+     * 通过 access_token 可以获取到对应的用户信息
      *
      * @see OAuthController#authorize
      * @see OAuthController#getAccessToken
+     * @see OAuthController#getUser
      */
     @Test
     public void case4(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired StrategyContainer container) throws Exception {
@@ -341,7 +345,7 @@ public class TestOAuthController extends TestController {
                     req.setServerPort(443);
                     return req;
                 });
-        mvc.perform(validateRequest)
+        var body = mvc.perform(validateRequest)
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.access_token").isNotEmpty())
@@ -349,6 +353,27 @@ public class TestOAuthController extends TestController {
                 .andExpect(jsonPath("$.expires_in").isNumber())
                 .andExpect(jsonPath("$.account_id").value("syssa"))
                 .andExpect(jsonPath("$.username").value("syssa"))
-                .andExpect(jsonPath("$.scope").isNotEmpty());
+                .andExpect(jsonPath("$.scope").isNotEmpty())
+                .andReturn().getResponse().getContentAsString();
+
+        var json = Jsonx.Default().deserialize(body, TypeRef.ofMap(String.class, Object.class));
+        var accessToken = json.get("access_token");
+
+        var getUserRequest = MockMvcRequestBuilders.get("/identity/sso/oauth2/user")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+        mvc.perform(getUserRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value("syssa"))
+                .andExpect(jsonPath("$.username").value("syssa"))
+                .andExpect(jsonPath("$.name").value("超级管理员"));
     }
 }
