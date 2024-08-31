@@ -76,7 +76,7 @@ public class AuthorizationTransaction implements Expired, Serializable {
     /**
      * 开发者申请的权限
      */
-    private Set<GrantScope> scopes;
+    private Set<GrantScope> scope;
 
     // 创建事务时用户 URL 的摘要（SHA256）
     private String digest;

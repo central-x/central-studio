@@ -35,15 +35,14 @@ import central.starter.test.cookie.CookieStore;
 import central.studio.identity.IdentityApplication;
 import central.studio.identity.controller.TestController;
 import central.studio.identity.controller.index.IdentityIndexController;
+import central.studio.identity.controller.sso.oauth.support.GrantScope;
 import central.studio.identity.core.strategy.DynamicStrategyFilter;
 import central.studio.identity.core.strategy.StrategyContainer;
 import central.studio.identity.core.strategy.StrategyResolver;
 import central.studio.identity.core.strategy.StrategyType;
 import central.studio.identity.core.strategy.dynamic.OAuthStrategyFilter;
-import central.util.Guidx;
-import central.util.Jsonx;
-import central.util.Listx;
-import central.util.Mapx;
+import central.util.*;
+import central.util.function.ThrowableSupplier;
 import central.web.XForwardedHeaders;
 import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
@@ -56,6 +55,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -134,6 +134,8 @@ public class TestOAuthController extends TestController {
                 .queryParam("client_id", "central-identity")
                 .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
                 .queryParam("state", UUID.randomUUID().toString())
+                .queryParam("scope", "user:basic")
+                .queryParam("scope", "user:contract")
                 .header(XForwardedHeaders.TENANT, "master")
                 .with(req -> {
                     req.setScheme("https");
@@ -164,6 +166,7 @@ public class TestOAuthController extends TestController {
                     .queryParam("client_id", "example")
                     .queryParam("redirect_uri", "https://example.com/identity/sso/oauth2/login-result")
                     .queryParam("state", UUID.randomUUID().toString())
+                    .queryParam("scope", "user:basic")
                     .header(XForwardedHeaders.TENANT, "master")
                     .with(req -> {
                         req.setScheme("https");
@@ -184,6 +187,7 @@ public class TestOAuthController extends TestController {
                     .queryParam("client_id", "central-identity")
                     .queryParam("redirect_uri", "https://example.com/identity/sso/oauth2/login-result")
                     .queryParam("state", UUID.randomUUID().toString())
+                    .queryParam("scope", "user:basic")
                     .header(XForwardedHeaders.TENANT, "master")
                     .with(req -> {
                         req.setScheme("https");
@@ -223,19 +227,19 @@ public class TestOAuthController extends TestController {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.LOCATION,
-                                UriComponentsBuilder.fromUriString("/identity/")
-                                        .scheme("https")
-                                        .host("identity.central-x.com")
-                                        .queryParam("redirect_uri",
-                                                Stringx.encodeUrl(UriComponentsBuilder.fromUriString("https://identity.central-x.com/identity/sso/oauth2/authorize")
-                                                        .queryParam("response_type", "code")
-                                                        .queryParam("client_id", "central-identity")
-                                                        .queryParam("redirect_uri", Stringx.encodeUrl("http://central-identity/identity/sso/oauth2/login-result"))
-                                                        .queryParam("state", state)
-                                                        .build().toString())
-                                        )
-                                        .build().toString()
-                        )
+                        UriComponentsBuilder.fromUriString("/identity/")
+                                .scheme("https")
+                                .host("identity.central-x.com")
+                                .queryParam("redirect_uri",
+                                        Stringx.encodeUrl(UriComponentsBuilder.fromUriString("https://identity.central-x.com/identity/sso/oauth2/authorize")
+                                                .queryParam("response_type", "code")
+                                                .queryParam("client_id", "central-identity")
+                                                .queryParam("redirect_uri", Stringx.encodeUrl("http://central-identity/identity/sso/oauth2/login-result"))
+                                                .queryParam("state", state)
+                                                .build().toString())
+                                )
+                                .build().toString())
+
                 );
     }
 
@@ -265,7 +269,7 @@ public class TestOAuthController extends TestController {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.LOCATION,
-                                UriComponentsBuilder.fromUriString("/identity/")
+                                Matchers.hasLength(UriComponentsBuilder.fromUriString("/identity/")
                                         .scheme("https")
                                         .host("identity.central-x.com")
                                         .queryParam("redirect_uri",
@@ -276,7 +280,7 @@ public class TestOAuthController extends TestController {
                                                         .queryParam("state", state)
                                                         .build().toString())
                                         )
-                                        .build().toString()
+                                        .build().toString().length())
                         )
                 );
     }
@@ -315,6 +319,156 @@ public class TestOAuthController extends TestController {
                 });
 
         var response = mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION, Matchers.startsWith("http://central-identity/identity/sso/oauth2/login-result")))
+                .andReturn().getResponse();
+
+        // 获取 Code
+        var location = UriComponentsBuilder.fromUriString(Objects.requireNonNull(response.getHeader(HttpHeaders.LOCATION))).build();
+        assertEquals(state, location.getQueryParams().getFirst("state"));
+
+        var code = location.getQueryParams().getFirst("code");
+        assertNotNull(code);
+
+        // 验证 Code
+        var validateRequest = MockMvcRequestBuilders.post("/identity/sso/oauth2/access_token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Jsonx.Default().serialize(Mapx.of(
+                        Mapx.entry("grantType", "authorization_code"),
+                        Mapx.entry("clientId", "central-identity"),
+                        Mapx.entry("clientSecret", "AkJSi2kmH7vSO5lJcvY"),
+                        Mapx.entry("code", code),
+                        Mapx.entry("redirectUri", "http://central-identity/identity/sso/oauth2/login-result")
+                )))
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+        var body = mvc.perform(validateRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.access_token").isNotEmpty())
+                .andExpect(jsonPath("$.token_type").value("Bearer"))
+                .andExpect(jsonPath("$.expires_in").isNumber())
+                .andExpect(jsonPath("$.account_id").value("syssa"))
+                .andExpect(jsonPath("$.username").value("syssa"))
+                .andExpect(jsonPath("$.scope").isNotEmpty())
+                .andReturn().getResponse().getContentAsString();
+
+        var json = Jsonx.Default().deserialize(body, TypeRef.ofMap(String.class, Object.class));
+        var accessToken = json.get("access_token");
+
+        var getUserRequest = MockMvcRequestBuilders.get("/identity/sso/oauth2/user")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+        mvc.perform(getUserRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value("syssa"))
+                .andExpect(jsonPath("$.username").value("syssa"))
+                .andExpect(jsonPath("$.name").value("超级管理员"));
+    }
+
+    /**
+     * 已登录时，如果策略是手动授权，则需要跳转到授权界面进行授权
+     * <p>
+     * 用户需要手动选择对应的授权范围，并同意授权后，才会回调给开发者
+     * <p>
+     * 开发者可以通过该 code 兑换 access_token
+     *
+     * @see OAuthController#authorize
+     * @see OAuthController#getScopes
+     * @see OAuthController#grant
+     * @see OAuthController#getAccessToken
+     */
+    @Test
+    public void case5(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired StrategyContainer container) throws Exception {
+        var strategy = this.getStrategyFilter(container);
+
+        // 设置策略为手动授权
+        strategy.setAutoGranting(BooleanEnum.FALSE);
+
+        //////////////////////////////////////////////////////////////////////
+        // 申请授权
+        var state = UUID.randomUUID().toString();
+        ThrowableSupplier<MockHttpServletRequestBuilder, Exception> request = () -> MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", "central-identity")
+                .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
+                .queryParam("state", state)
+                .cookie(this.getSessionCookie("/identity/sso/oauth2/authorize", mvc, cookieStore))
+                .header(XForwardedHeaders.TENANT, "master")
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        var response = mvc.perform(request.get())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION, Matchers.startsWith("https://identity.central-x.com/identity")))
+                .andReturn().getResponse();
+
+        // 保存授权用的 Cookie
+        cookieStore.put("https://identity.central-x.com/identity", response);
+
+        //////////////////////////////////////////////////////////////////////
+        // 获取待授权范围列表
+        var getScopesRequest = MockMvcRequestBuilders.get("/identity/sso/oauth2/scopes")
+                .cookie(this.getSessionCookie("/identity", mvc, cookieStore))
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(getScopesRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.account").isNotEmpty())
+                .andExpect(jsonPath("$.application").isNotEmpty())
+                .andExpect(jsonPath("$.scope").isNotEmpty());
+
+        //////////////////////////////////////////////////////////////////////
+        // 用户授权
+        var grantRequest = MockMvcRequestBuilders.post("/identity/sso/oauth2/scopes")
+                .cookie(this.getSessionCookie("/identity/sso/oauth2/scopes", mvc, cookieStore))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Jsonx.Default().serialize(Mapx.of(Mapx.entry("scope", Setx.newHashSet(GrantScope.BASIC.getValue())))))
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(grantRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("授权成功"));
+
+        //////////////////////////////////////////////////////////////////////
+        // 再次申请授权
+        response = mvc.perform(request.get())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.LOCATION, Matchers.startsWith("http://central-identity/identity/sso/oauth2/login-result")))

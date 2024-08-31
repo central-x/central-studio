@@ -26,6 +26,7 @@ package central.studio.identity.controller.sso.oauth.param;
 
 import central.studio.identity.controller.sso.oauth.support.GrantScope;
 import central.validation.Enums;
+import central.validation.Label;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,6 +51,7 @@ public class GrantParams implements Serializable {
     /**
      * 用户同意的授权列表
      */
+    @Label("授权列表")
     @Enums(GrantScope.class)
     private Set<String> scope;
 }

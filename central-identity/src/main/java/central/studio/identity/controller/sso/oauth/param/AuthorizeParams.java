@@ -25,6 +25,7 @@
 package central.studio.identity.controller.sso.oauth.param;
 
 import central.studio.identity.controller.sso.oauth.support.GrantScope;
+import central.validation.Enums;
 import central.validation.Fix;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
@@ -95,5 +96,6 @@ public class AuthorizeParams implements Serializable {
      * 不传则默认只能获取用户主键信息
      */
     @Label("授权范围")
-    private Set<GrantScope> scope;
+    @Enums(GrantScope.class)
+    private Set<String> scope;
 }

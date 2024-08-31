@@ -157,6 +157,11 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "回调地址[redirect_uri]与应用不符");
         }
 
+        // 如果开发者没有申请授权范围，则默认为基础授权范围
+        if (Setx.isNullOrEmpty(params.getScope())) {
+            params.setScope(Setx.of(GrantScope.BASIC.getValue()));
+        }
+
         if (request.getRequiredAttribute(OAuthAttributes.AUTO_GRANTING)) {
             return this.autoGranting(params, request, response);
         } else {
@@ -191,7 +196,7 @@ public class OAuthController {
                     .clientId(params.getClientId())
                     .redirectUri(params.getRedirectUri())
                     .token(session)
-                    .scope(params.getScope())
+                    .scope(params.getScope().stream().map(GrantScope::resolve).collect(Collectors.toSet()))
                     .build();
 
             // 保存一次性授权
@@ -220,7 +225,7 @@ public class OAuthController {
                     .expires(request.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_TIMEOUT))
                     .id(Guidx.nextID())
                     .clientId(params.getClientId())
-                    .scopes(params.getScope())
+                    .scope(params.getScope().stream().map(GrantScope::resolve).collect(Collectors.toSet()))
                     // 保存摘要，等完成授权后进行对比，保证没有人篡改过
                     .digest(Digestx.SHA256.digest(request.getUri().toString(), StandardCharsets.UTF_8))
                     // 标记为未授权
@@ -289,7 +294,7 @@ public class OAuthController {
         private Application application = new Application();
 
         @Builder.Default
-        private List<Scope> scopes = new ArrayList<>();
+        private List<Scope> scope = new ArrayList<>();
     }
 
     /**
@@ -326,7 +331,7 @@ public class OAuthController {
      */
     @GetMapping("/scopes")
     @ResponseBody
-    public GetScopeVO getScopes(WebMvcRequest request, WebMvcResponse response) throws IOException {
+    public GetScopeVO getScopes(WebMvcRequest request, WebMvcResponse response) {
         var sessionCookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
         var session = sessionCookie.get(request, response);
         if (!verifier.verify(session)) {
@@ -350,11 +355,14 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到待授权事务");
         }
 
+        // 重新保存到会话
+        this.session.saveTransaction(request.getTenantCode(), transaction);
+
         // 组装授权信息
         var account = this.provider.findById(sessionJwt.getSubject());
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
         var application = container.getApplicationByCode(transaction.getClientId());
-        var scopes = transaction.getScopes();
+        var scopes = transaction.getScope();
 
         var vo = new GetScopeVO();
         vo.getAccount().setId(account.getId());
@@ -366,7 +374,7 @@ public class OAuthController {
         vo.getApplication().setName(application.getName());
         vo.getApplication().setLogo(application.getLogo());
 
-        vo.getScopes().addAll(scopes.stream().map(it -> new Scope(it.getName(), it.getValue(), true, it == GrantScope.BASIC)).toList());
+        vo.getScope().addAll(scopes.stream().map(it -> new Scope(it.getName(), it.getValue(), true, it == GrantScope.BASIC)).toList());
 
         return vo;
     }
@@ -400,11 +408,11 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权错误: 找不到待授权请求");
         }
         // 开发者申请的范围
-        var requestedScopes = transaction.getScopes();
+        var requestedScope = transaction.getScope();
         // 用户授权的范围
-        var grantedScopes = params.getScope().stream().map(GrantScope::resolve).collect(Collectors.toSet());
+        var grantedScope = params.getScope().stream().map(GrantScope::resolve).collect(Collectors.toSet());
 
-        if (grantedScopes.size() > requestedScopes.size() || !requestedScopes.containsAll(grantedScopes)) {
+        if (grantedScope.size() > requestedScope.size() || !requestedScope.containsAll(grantedScope)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "授权错误: 用户授权超出范围");
         }
 
@@ -459,10 +467,7 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "应用密钥[client_secret]错误");
         }
 
-        var scopes = Setx.newHashSet(GrantScope.BASIC);
-        if (Setx.isNotEmpty(code.getScope())) {
-            scopes.addAll(code.getScope());
-        }
+        var scope = code.getScope();
 
         // 颁发 access_token
         // 使用私钥签名，这样客户端那边就没办法伪造，我们也不需要保存这个凭证的信息，日期过了就失效了
@@ -475,7 +480,7 @@ public class OAuthController {
                 // 被授权的应用
                 .withAudience(application.getCode())
                 // 限定范围
-                .withArrayClaim("scope", scopes.stream().map(GrantScope::getValue).toArray(String[]::new))
+                .withArrayClaim("scope", scope.stream().map(GrantScope::getValue).toArray(String[]::new))
                 // 指定过期时间
                 .withExpiresAt(new Date(System.currentTimeMillis() + request.getRequiredAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT).toMillis()))
                 .sign(Algorithm.RSA256((RSAPublicKey) keyPair.getVerifyKey(), (RSAPrivateKey) keyPair.getSignKey()));
@@ -487,7 +492,7 @@ public class OAuthController {
                 "expires_in", request.getRequiredAttribute(OAuthAttributes.ACCESS_TOKEN_TIMEOUT).toSeconds(),
                 "account_id", code.getSession().getAccountId(),
                 "username", code.getSession().getUsername(),
-                "scope", String.join(",", scopes.stream().map(GrantScope::getValue).toList())
+                "scope", String.join(",", scope.stream().map(GrantScope::getValue).toList())
         );
 
         var mv = new ModelAndView();
@@ -549,7 +554,7 @@ public class OAuthController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing required header 'Authorization'");
         }
         if (token.toLowerCase().startsWith("bearer ")) {
-            token = token.substring("Bearer " .length());
+            token = token.substring("Bearer ".length());
         }
         DecodedJWT accessToken;
         try {
