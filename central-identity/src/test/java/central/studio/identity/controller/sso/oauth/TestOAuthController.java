@@ -530,4 +530,32 @@ public class TestOAuthController extends TestController {
                 .andExpect(jsonPath("$.username").value("syssa"))
                 .andExpect(jsonPath("$.name").value("超级管理员"));
     }
+
+    /**
+     * 测试未申请授权时，直接获取待授权范围
+     *
+     * @see OAuthController#getScopes
+     */
+    @Test
+    public void case6(@Autowired MockMvc mvc, @Autowired StrategyContainer container) throws Exception {
+        var strategy = this.getStrategyFilter(container);
+
+        // 设置策略为手动授权
+        strategy.setAutoGranting(BooleanEnum.FALSE);
+
+        var getScopesRequest = MockMvcRequestBuilders.get("/identity/sso/oauth2/scopes")
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(req -> {
+                    req.setScheme("https");
+                    req.setServerName("identity.central-x.com");
+                    req.setServerPort(443);
+                    return req;
+                });
+
+        mvc.perform(getScopesRequest)
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").isNotEmpty());
+    }
 }
