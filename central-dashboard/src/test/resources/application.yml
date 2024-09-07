@@ -20,7 +20,7 @@ spring:
   datasource:
     name: master
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:central-identity
+    url: jdbc:h2:mem:central-dashboard
     username: centralx
     password: central.x
 

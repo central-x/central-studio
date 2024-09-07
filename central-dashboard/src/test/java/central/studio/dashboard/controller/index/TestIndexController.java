@@ -24,14 +24,10 @@
 
 package central.studio.dashboard.controller.index;
 
-import central.data.organization.Account;
-import central.lang.reflect.TypeRef;
 import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
-import central.util.Jsonx;
 import central.web.XForwardedHeaders;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,12 +38,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Index Controller Test Cases
@@ -72,18 +63,12 @@ public class TestIndexController extends TestController {
                 .header(XForwardedHeaders.TENANT, "master")
                 .accept(MediaType.APPLICATION_JSON);
 
-        var response = mvc.perform(request)
+        mvc.perform(request)
                 .andExpect(status().is(HttpStatus.UNAUTHORIZED.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                // {"message":"未登录","timestamp":1732731511265}
+                .andExpect(jsonPath("$.message").value("未登录"))
                 .andReturn().getResponse();
-
-        var content = response.getContentAsString();
-        // expect json: {"message": "未登录"}
-        var body = Jsonx.Default().deserialize(content, TypeRef.ofMap(String.class, Object.class));
-
-        Assertions.assertNotNull(body);
-        assertEquals(1, body.size());
-        assertEquals("未登录", body.get("message"));
     }
 
     /**
@@ -106,15 +91,10 @@ public class TestIndexController extends TestController {
                 .header(XForwardedHeaders.PORT, "9443")
                 .header(XForwardedHeaders.ORIGIN_URI, "https://test.central-x.com:9443/dashboard/");
 
-        var response = mvc
-                .perform(request)
-                .andExpect(status().is(HttpStatus.FOUND.value()))
-                .andReturn().getResponse();
-
-        var location = response.getHeader(HttpHeaders.LOCATION);
-        // expect location: /identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F
-        assertNotNull(location);
-        assertEquals("/identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F", location);
+        mvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.LOCATION, "/identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F"));
     }
 
     /**
@@ -125,18 +105,13 @@ public class TestIndexController extends TestController {
         // 验证会话
         var request = MockMvcRequestBuilders.get("/dashboard/api/account")
                 .header(XForwardedHeaders.TENANT, "master")
-                .cookie(this.getSessionCookie(URI.create("/dashboard/api/account"), mvc, cookieStore))
+                .cookie(this.getSessionCookie("/dashboard/api/account", mvc, cookieStore))
                 .accept(MediaType.APPLICATION_JSON);
 
-        var response = mvc.perform(request)
+        mvc.perform(request)
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        var content = response.getContentAsString();
-        var account = Jsonx.Default().deserialize(content, TypeRef.of(Account.class));
-
-        assertNotNull(account);
-        assertEquals("syssa", account.getId());
+                .andExpect(jsonPath("$.id").value("syssa"))
+                .andExpect(jsonPath("$.name").value("超级管理员"));
     }
 }
