@@ -51,7 +51,8 @@ public class Unit extends ModifiableEntity implements Codeable, Orderable<Unit>,
 
     /**
      * 父单位主键
-     * 如果为空，则表示该单元是独立单位
+     * <p>
+     * 如果为空，则表示该单位是独立单位
      */
     @Nullable
     private String parentId;

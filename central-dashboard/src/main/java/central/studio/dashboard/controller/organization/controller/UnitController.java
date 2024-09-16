@@ -22,15 +22,15 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.organization;
+package central.studio.dashboard.controller.organization.controller;
 
 import central.bean.Page;
-import central.data.organization.Area;
+import central.data.organization.Unit;
 import central.starter.web.param.IdsParams;
-import central.studio.dashboard.controller.organization.param.AreaParams;
-import central.studio.dashboard.controller.organization.query.AreaIdQuery;
-import central.studio.dashboard.controller.organization.query.AreaPageQuery;
-import central.studio.dashboard.logic.organization.AreaLogic;
+import central.studio.dashboard.controller.organization.param.UnitParams;
+import central.studio.dashboard.controller.organization.query.UnitIdQuery;
+import central.studio.dashboard.controller.organization.query.UnitPageQuery;
+import central.studio.dashboard.logic.organization.UnitLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import jakarta.validation.groups.Default;
@@ -41,80 +41,78 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Area Controller
+ * Unit Controller
  * <p>
- * 行政区划管理
+ * 组织机构管理
  *
  * @author Alan Yeh
- * @since 2024/09/14
+ * @since 2024/09/16
  */
 @RestController
 @RequiresAuthentication
-@RequestMapping("/dashboard/api/organization/areas")
-public class AreaController {
-
+@RequestMapping("/dashboard/api/organization/units")
+public class UnitController {
     public interface Permissions {
-        String VIEW = "organization:area:view";
-        String ADD = "organization:area:add";
-        String EDIT = "organization:area:edit";
-        String DELETE = "organization:area:delete";
-        String ENABLE = "organization:area:enable";
-        String DISABLE = "organization:area:disable";
+
+        String VIEW = "organization:unit:view";
+        String ADD = "organization:unit:add";
+        String EDIT = "organization:unit:edit";
+        String DELETE = "organization:unit:delete";
     }
 
     @Setter(onMethod_ = @Autowired)
-    private AreaLogic logic;
+    private UnitLogic logic;
 
     /**
-     * 按条件分页查询行政区划列表
+     * 按条件分页查询组织机构列表
      *
      * @param query 查询
      * @return 分页结果
      */
     @GetMapping("/page")
-    public Page<Area> page(@Validated AreaPageQuery query) {
+    public Page<Unit> page(@Validated UnitPageQuery query) {
         return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null);
     }
 
     /**
-     * 根据主键查询行政区划详情
+     * 根据主键查询组织机构详情
      *
      * @param query 查询
      * @return 详情
      */
     @GetMapping
-    public Area details(@Validated AreaIdQuery query) {
+    public Unit details(@Validated UnitIdQuery query) {
         return this.logic.findById(query.getId());
     }
 
     /**
-     * 新增行政区划
+     * 新增组织机构
      *
-     * @param params    行政区划入参
+     * @param params    组织机构入参
      * @param accountId 当前登录帐号
-     * @return 新增后行政区划数据
+     * @return 新增后组织机构数据
      */
     @PostMapping
-    public Area add(@RequestBody @Validated({Insert.class, Default.class}) AreaParams params, @RequestAttribute String accountId) {
+    public Unit add(@RequestBody @Validated({Insert.class, Default.class}) UnitParams params, @RequestAttribute String accountId) {
         return this.logic.insert(params.toInput(), accountId);
     }
 
     /**
-     * 更新行政区划
+     * 更新组织机构
      *
-     * @param params    行政区划数据
+     * @param params    组织机构数据
      * @param accountId 当前登录帐号
-     * @return 更新后行政区划数据
+     * @return 更新后组织机构数据
      */
     @PutMapping
-    public Area update(@RequestBody @Validated({Update.class, Default.class}) AreaParams params, @RequestAttribute String accountId) {
+    public Unit update(@RequestBody @Validated({Update.class, Default.class}) UnitParams params, @RequestAttribute String accountId) {
         return this.logic.update(params.toInput(), accountId);
     }
 
     /**
-     * 根据主键删除行政区划数据
+     * 根据主键删除组织机构数据
      *
-     * @param params    行政区划数据
+     * @param params    组织机构数据
      * @param accountId 当前登录帐号
      * @return 受影响数据行数
      */

@@ -25,14 +25,12 @@
 package central.studio.dashboard.logic.organization;
 
 import central.bean.Page;
-import central.data.organization.Area;
-import central.data.organization.AreaInput;
-import central.provider.graphql.organization.AreaProvider;
+import central.data.organization.Unit;
+import central.data.organization.UnitInput;
+import central.provider.graphql.organization.UnitProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.util.Collectionx;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,29 +38,29 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Area Logic
+ * Unit Logic
  * <p>
- * 行政区划业务逻辑
+ * 组织机构业务逻辑
  *
  * @author Alan Yeh
- * @since 2024/09/14
+ * @since 2024/09/16
  */
 @Service
-public class AreaLogic {
+public class UnitLogic {
 
     @Setter(onMethod_ = @Autowired)
-    private AreaProvider provider;
+    private UnitProvider provider;
 
     /**
      * 如用用户没有指定排序条件，则构建默认的排序条件
      *
      * @param orders 用户指定的排序条件
      */
-    private Orders<Area> getDefaultOrders(Orders<Area> orders) {
+    private Orders<Unit> getDefaultOrders(Orders<Unit> orders) {
         if (Collectionx.isNotEmpty(orders)) {
             return orders;
         }
-        return Orders.of(Area.class).desc(Area::getOrder).asc(Area::getName);
+        return Orders.of(Unit.class).desc(Unit::getOrder).asc(Unit::getName);
     }
 
     /**
@@ -74,7 +72,7 @@ public class AreaLogic {
      * @param orders     排序条件
      * @return 分页数据
      */
-    public Page<Area> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Area> conditions, @Nullable Orders<Area> orders) {
+    public Page<Unit> pageBy(Long pageIndex, Long pageSize, Conditions<Unit> conditions, Orders<Unit> orders) {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders);
     }
@@ -85,7 +83,7 @@ public class AreaLogic {
      * @param id 主键
      * @return 详情
      */
-    public Area findById(@Nonnull String id) {
+    public Unit findById(String id) {
         return this.provider.findById(id);
     }
 
@@ -96,7 +94,7 @@ public class AreaLogic {
      * @param accountId 操作帐号主键
      * @return 插入后的数据
      */
-    public Area insert(@Nonnull AreaInput input, @Nonnull String accountId) {
+    public Unit insert(UnitInput input, String accountId) {
         return this.provider.insert(input, accountId);
     }
 
@@ -107,7 +105,7 @@ public class AreaLogic {
      * @param accountId 操作帐号主键
      * @return 更新后的数据
      */
-    public Area update(@Nonnull AreaInput input, @Nonnull String accountId) {
+    public Unit update(UnitInput input, String accountId) {
         return this.provider.update(input, accountId);
     }
 
@@ -118,7 +116,7 @@ public class AreaLogic {
      * @param accountId 操作帐号主键
      * @return 受影响数据行数
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId) {
+    public long deleteByIds(List<String> ids, String accountId) {
         return this.provider.deleteByIds(ids, accountId);
     }
 }

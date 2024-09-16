@@ -24,26 +24,26 @@
 
 package central.studio.dashboard.controller.organization.query;
 
-import central.data.organization.Area;
+import central.data.organization.Unit;
 import central.sql.query.Conditions;
 import central.starter.web.query.IdQuery;
 
 import java.io.Serial;
 
 /**
- * Area ID Query
+ * Unit ID Query
  * <p>
- * 行政区划详情查询
+ * 组织机构详情查询
  *
  * @author Alan Yeh
- * @since 2024/09/14
+ * @since 2024/09/16
  */
-public class AreaIdQuery extends IdQuery<Area> {
+public class UnitIdQuery extends IdQuery<Unit> {
     @Serial
-    private static final long serialVersionUID = -2794850503534139768L;
+    private static final long serialVersionUID = 3060175754011070094L;
 
     @Override
-    public Conditions<Area> build() {
-        return Conditions.of(Area.class).eq(Area::getId, getId());
+    public Conditions<Unit> build() {
+        return Conditions.of(Unit.class).eq(Unit::getId, getId());
     }
 }

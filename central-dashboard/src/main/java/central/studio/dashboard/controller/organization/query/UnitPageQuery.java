@@ -24,73 +24,68 @@
 
 package central.studio.dashboard.controller.organization.query;
 
-import central.data.organization.Area;
-import central.data.organization.option.AreaType;
+import central.data.organization.Unit;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
 import central.starter.web.query.PageQuery;
-import central.validation.Enums;
 import central.validation.Label;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
 /**
- * Area Page Query
+ * Unit Page Query
  * <p>
- * 行政区划分页查询
+ * 组织机构分页查询
  *
  * @author Alan Yeh
- * @since 2024/09/14
+ * @since 2024/09/16
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AreaPageQuery extends PageQuery<Area> {
+public class UnitPageQuery extends PageQuery<Unit> {
     @Serial
-    private static final long serialVersionUID = 4386213609514710396L;
+    private static final long serialVersionUID = 6875903664559333974L;
 
-    @Label("父行政区划主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    @Label("所属行政区划主键")
+    private String areaId;
+
+    @Label("父单位主键")
     private String parentId;
 
     @Label("主键")
     private String id;
 
+    @Label("标识")
+    private String code;
+
     @Label("名称")
     private String name;
 
-    @Label("区划代码")
-    private String code;
-
-    @Label("类型")
-    @Enums(value = AreaType.class)
-    private String type;
-
     @Override
-    public Conditions<Area> build() {
-        var conditions = Conditions.of(Area.class);
+    public Conditions<Unit> build() {
+        var conditions = Conditions.of(Unit.class);
+
+        conditions.eq(Unit::getAreaId, this.getAreaId());
 
         if (Stringx.isNotEmpty(this.getParentId())) {
-            conditions.eq(Area::getParentId, this.getParentId());
+            conditions.eq(Unit::getParentId, this.getParentId());
         }
 
         // 精确搜索
         if (Stringx.isNotEmpty(this.getId())) {
-            conditions.eq(Area::getId, this.getId());
+            conditions.eq(Unit::getId, this.getId());
         }
         if (Stringx.isNotEmpty(this.getName())) {
-            conditions.like(Area::getName, this.getName());
+            conditions.like(Unit::getName, this.getName());
         }
         if (Stringx.isNotEmpty(this.getCode())) {
-            conditions.like(Area::getCode, this.getCode());
-        }
-        if (Stringx.isNotEmpty(this.getType())) {
-            conditions.eq(Area::getType, this.getType());
-        }
-
-        // 模糊搜索
-        for (String keyword : this.getKeywords()) {
-            conditions.and(filter -> filter.like(Area::getName, keyword));
+            conditions.like(Unit::getCode, this.getCode());
         }
 
         return conditions;

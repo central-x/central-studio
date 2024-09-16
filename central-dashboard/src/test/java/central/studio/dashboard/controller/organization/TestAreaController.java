@@ -30,6 +30,7 @@ import central.lang.reflect.TypeRef;
 import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
+import central.studio.dashboard.controller.organization.controller.AreaController;
 import central.util.Jsonx;
 import central.util.Mapx;
 import central.web.XForwardedHeaders;
