@@ -24,12 +24,11 @@
 
 package central.studio.dashboard.controller.organization.controller;
 
-import central.bean.Page;
 import central.data.organization.Area;
 import central.starter.web.param.IdsParams;
 import central.studio.dashboard.controller.organization.param.AreaParams;
 import central.studio.dashboard.controller.organization.query.AreaIdQuery;
-import central.studio.dashboard.controller.organization.query.AreaPageQuery;
+import central.studio.dashboard.controller.organization.query.AreaListQuery;
 import central.studio.dashboard.logic.organization.AreaLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -39,6 +38,8 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Area Controller
@@ -64,14 +65,14 @@ public class AreaController {
     private AreaLogic logic;
 
     /**
-     * 按条件分页查询行政区划列表
+     * 按条件查询行政区划列表
      *
      * @param query 查询
-     * @return 分页结果
+     * @return 列表结果
      */
-    @GetMapping("/page")
-    public Page<Area> page(@Validated AreaPageQuery query) {
-        return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null);
+    @GetMapping
+    public List<Area> list(@Validated AreaListQuery query) {
+        return this.logic.listBy(query.build(), null);
     }
 
     /**
@@ -80,7 +81,7 @@ public class AreaController {
      * @param query 查询
      * @return 详情
      */
-    @GetMapping
+    @GetMapping("/details")
     public Area details(@Validated AreaIdQuery query) {
         return this.logic.findById(query.getId());
     }

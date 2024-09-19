@@ -80,6 +80,18 @@ public class AreaLogic {
     }
 
     /**
+     * 列表查询
+     *
+     * @param conditions 筛选条件
+     * @param orders     排序条件
+     * @return 列表数据
+     */
+    public List<Area> listBy(@Nullable Conditions<Area> conditions, @Nullable Orders<Area> orders) {
+        orders = this.getDefaultOrders(orders);
+        return this.provider.findBy(null, null, conditions, orders);
+    }
+
+    /**
      * 主键查询
      *
      * @param id 主键

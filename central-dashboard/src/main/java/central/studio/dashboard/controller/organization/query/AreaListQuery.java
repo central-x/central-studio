@@ -28,7 +28,7 @@ import central.data.organization.Area;
 import central.data.organization.option.AreaType;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
-import central.starter.web.query.PageQuery;
+import central.starter.web.query.ListQuery;
 import central.validation.Enums;
 import central.validation.Label;
 import lombok.Data;
@@ -37,20 +37,20 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 
 /**
- * Area Page Query
+ * Area List Query
  * <p>
- * 行政区划分页查询
+ * 行政区划列表查询
  *
  * @author Alan Yeh
- * @since 2024/09/14
+ * @since 2024/09/20
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AreaPageQuery extends PageQuery<Area> {
+public class AreaListQuery extends ListQuery<Area> {
     @Serial
-    private static final long serialVersionUID = 4386213609514710396L;
+    private static final long serialVersionUID = -5166956508840261658L;
 
-    @Label("父行政区划主键")
+    @Label("父节点主键")
     private String parentId;
 
     @Label("主键")

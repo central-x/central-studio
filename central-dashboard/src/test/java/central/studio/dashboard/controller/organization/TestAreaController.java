@@ -43,7 +43,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -89,8 +89,8 @@ public class TestAreaController extends TestController {
         assertNotNull(body);
 
         // 详情查询
-        var detailsRequest = MockMvcRequestBuilders.get(PATH)
-                .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+        var detailsRequest = MockMvcRequestBuilders.get(PATH + "/details")
+                .cookie(this.getSessionCookie(PATH + "/details", mvc, cookieStore))
                 .queryParam("id", body.getId())
                 .header(XForwardedHeaders.TENANT, "master")
                 .accept(MediaType.APPLICATION_JSON);
@@ -117,7 +117,7 @@ public class TestAreaController extends TestController {
 
     /**
      * @see AreaController#add
-     * @see AreaController#page
+     * @see AreaController#list
      * @see AreaController#delete
      */
     @Test
@@ -145,11 +145,9 @@ public class TestAreaController extends TestController {
         var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Area.class));
         assertNotNull(body);
 
-        // 分页查询
-        var pageRequest = MockMvcRequestBuilders.get(PATH + "/page")
-                .cookie(this.getSessionCookie(PATH + "/page", mvc, cookieStore))
-                .queryParam("pageIndex", "1")
-                .queryParam("pageSize", "10")
+        // 列表查询
+        var pageRequest = MockMvcRequestBuilders.get(PATH)
+                .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
                 .header(XForwardedHeaders.TENANT, "master")
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -157,13 +155,8 @@ public class TestAreaController extends TestController {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
-                .andExpect(jsonPath("$.pager.pageIndex").value(1))
-                .andExpect(jsonPath("$.pager.pageSize").value(10))
-                .andExpect(jsonPath("$.pager.pageCount").value(1))
-                .andExpect(jsonPath("$.pager.itemCount").value(1))
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data").isNotEmpty())
-                .andExpect(jsonPath("$.data[0].id").value(body.getId()))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].id").value(body.getId()))
                 .andReturn().getResponse();
 
         // 删除数据
@@ -236,8 +229,8 @@ public class TestAreaController extends TestController {
                 .andExpect(jsonPath("$.order").value(0));
 
         // 详情查询(更新了 code 属性)
-        var detailsRequest = MockMvcRequestBuilders.get(PATH)
-                .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+        var detailsRequest = MockMvcRequestBuilders.get(PATH + "/details")
+                .cookie(this.getSessionCookie(PATH + "/details", mvc, cookieStore))
                 .queryParam("id", body.getId())
                 .header(XForwardedHeaders.TENANT, "master")
                 .accept(MediaType.APPLICATION_JSON);
