@@ -24,12 +24,11 @@
 
 package central.studio.dashboard.controller.organization.controller;
 
-import central.bean.Page;
 import central.data.organization.Unit;
 import central.starter.web.param.IdsParams;
 import central.studio.dashboard.controller.organization.param.UnitParams;
 import central.studio.dashboard.controller.organization.query.UnitIdQuery;
-import central.studio.dashboard.controller.organization.query.UnitPageQuery;
+import central.studio.dashboard.controller.organization.query.UnitListQuery;
 import central.studio.dashboard.logic.organization.UnitLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -39,6 +38,8 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Unit Controller
@@ -64,14 +65,14 @@ public class UnitController {
     private UnitLogic logic;
 
     /**
-     * 按条件分页查询组织机构列表
+     * 按条件查询组织机构列表
      *
      * @param query 查询
      * @return 分页结果
      */
-    @GetMapping("/page")
-    public Page<Unit> page(@Validated UnitPageQuery query) {
-        return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null);
+    @GetMapping
+    public List<Unit> list(@Validated UnitListQuery query) {
+        return this.logic.listBy(query.build(), null);
     }
 
     /**
@@ -80,7 +81,7 @@ public class UnitController {
      * @param query 查询
      * @return 详情
      */
-    @GetMapping
+    @GetMapping("/details")
     public Unit details(@Validated UnitIdQuery query) {
         return this.logic.findById(query.getId());
     }

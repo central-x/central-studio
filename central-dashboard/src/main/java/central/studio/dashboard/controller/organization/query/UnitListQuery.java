@@ -27,7 +27,7 @@ package central.studio.dashboard.controller.organization.query;
 import central.data.organization.Unit;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
-import central.starter.web.query.PageQuery;
+import central.starter.web.query.ListQuery;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,16 +37,16 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 
 /**
- * Unit Page Query
+ * Unit List Query
  * <p>
- * 组织机构分页查询
+ * 组织机构列表查询
  *
  * @author Alan Yeh
- * @since 2024/09/16
+ * @since 2024/09/21
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UnitPageQuery extends PageQuery<Unit> {
+public class UnitListQuery extends ListQuery<Unit> {
     @Serial
     private static final long serialVersionUID = 6875903664559333974L;
 

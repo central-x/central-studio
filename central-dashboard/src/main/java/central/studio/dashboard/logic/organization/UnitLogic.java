@@ -31,6 +31,7 @@ import central.provider.graphql.organization.UnitProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.util.Collectionx;
+import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,6 +77,19 @@ public class UnitLogic {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders);
     }
+
+    /**
+     * 列表查询
+     *
+     * @param conditions 筛选条件
+     * @param orders     排序条件
+     * @return 列表数据
+     */
+    public List<Unit> listBy(@Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders) {
+        orders = this.getDefaultOrders(orders);
+        return this.provider.findBy(null, null, conditions, orders);
+    }
+
 
     /**
      * 主键查询

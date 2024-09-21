@@ -156,8 +156,7 @@ public class TestAreaController extends TestController {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].id").value(body.getId()))
-                .andReturn().getResponse();
+                .andExpect(jsonPath("$[0].id").value(body.getId()));
 
         // 删除数据
         var deleteRequest = MockMvcRequestBuilders.delete(PATH)

@@ -116,8 +116,8 @@ public class TestUnitController extends TestController {
             assertNotNull(body);
 
             // 详情查询
-            var detailsRequest = MockMvcRequestBuilders.get(PATH)
-                    .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+            var detailsRequest = MockMvcRequestBuilders.get(PATH + "/details")
+                    .cookie(this.getSessionCookie(PATH + "/details", mvc, cookieStore))
                     .queryParam("id", body.getId())
                     .header(XForwardedHeaders.TENANT, "master")
                     .accept(MediaType.APPLICATION_JSON);
@@ -146,7 +146,7 @@ public class TestUnitController extends TestController {
 
     /**
      * @see UnitController#add
-     * @see UnitController#page
+     * @see UnitController#list
      * @see UnitController#delete
      */
     @Test
@@ -180,10 +180,8 @@ public class TestUnitController extends TestController {
             assertNotNull(body);
 
             // 分页查询
-            var pageRequest = MockMvcRequestBuilders.get(PATH + "/page")
-                    .cookie(this.getSessionCookie(PATH + "/page", mvc, cookieStore))
-                    .queryParam("pageIndex", "1")
-                    .queryParam("pageSize", "10")
+            var pageRequest = MockMvcRequestBuilders.get(PATH)
+                    .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
                     .queryParam("areaId", area.getId())
                     .header(XForwardedHeaders.TENANT, "master")
                     .accept(MediaType.APPLICATION_JSON);
@@ -192,14 +190,8 @@ public class TestUnitController extends TestController {
                     .andExpect(status().is2xxSuccessful())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                     .andExpect(content().string(Matchers.not(Matchers.emptyString())))
-                    .andExpect(jsonPath("$.pager.pageIndex").value(1))
-                    .andExpect(jsonPath("$.pager.pageSize").value(10))
-                    .andExpect(jsonPath("$.pager.pageCount").value(1))
-                    .andExpect(jsonPath("$.pager.itemCount").value(1))
-                    .andExpect(jsonPath("$.data").isArray())
-                    .andExpect(jsonPath("$.data").isNotEmpty())
-                    .andExpect(jsonPath("$.data[0].id").value(body.getId()))
-                    .andReturn().getResponse();
+                    .andExpect(jsonPath("$").isArray())
+                    .andExpect(jsonPath("$[0].id").value(body.getId()));
 
             // 删除数据
             var deleteRequest = MockMvcRequestBuilders.delete(PATH)
@@ -279,8 +271,8 @@ public class TestUnitController extends TestController {
                     .andExpect(jsonPath("$.order").value(0));
 
             // 详情查询(更新了 code 属性)
-            var detailsRequest = MockMvcRequestBuilders.get(PATH)
-                    .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+            var detailsRequest = MockMvcRequestBuilders.get(PATH + "/details")
+                    .cookie(this.getSessionCookie(PATH + "/details", mvc, cookieStore))
                     .queryParam("id", body.getId())
                     .header(XForwardedHeaders.TENANT, "master")
                     .accept(MediaType.APPLICATION_JSON);
