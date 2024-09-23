@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.system;
+package central.studio.dashboard.controller.system.controller;
 
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Dictionary Controller
+ * Database Controller
  * <p>
- * 字典管理
+ * 数据源管理
  *
  * @author Alan Yeh
  * @since 2023/11/21
@@ -40,18 +40,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiresAuthentication
 @RequiresPermissions(DatabaseController.Permissions.VIEW)
-@RequestMapping("/dashboard/api/system/dictionaries")
-public class DictionaryController {
+@RequestMapping("/dashboard/api/system/databases")
+public class DatabaseController {
 
     /**
      * 权限
      */
     public interface Permissions {
-        String VIEW = "${application}:system:dictionary:view";
-        String ADD = "${application}:system:dictionary:add";
-        String EDIT = "${application}:system:dictionary:edit";
-        String REMOVE = "${application}:system:dictionary:remove";
-        String ENABLE = "${application}:system:dictionary:enable";
-        String DISABLE = "${application}:system:dictionary:disable";
+        String VIEW = "${application}:system:database:view";
+        String ADD = "${application}:system:database:add";
+        String EDIT = "${application}:system:database:edit";
+        String REMOVE = "${application}:system:database:remove";
+        String ENABLE = "${application}:system:database:enable";
+        String DISABLE = "${application}:system:database:disable";
     }
 }
