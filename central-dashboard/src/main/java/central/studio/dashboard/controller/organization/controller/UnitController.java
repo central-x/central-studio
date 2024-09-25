@@ -26,8 +26,8 @@ package central.studio.dashboard.controller.organization.controller;
 
 import central.data.organization.Unit;
 import central.starter.web.param.IdsParams;
+import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.organization.param.UnitParams;
-import central.studio.dashboard.controller.organization.query.UnitIdQuery;
 import central.studio.dashboard.controller.organization.query.UnitListQuery;
 import central.studio.dashboard.logic.organization.UnitLogic;
 import central.validation.group.Insert;
@@ -82,7 +82,7 @@ public class UnitController {
      * @return 详情
      */
     @GetMapping("/details")
-    public Unit details(@Validated UnitIdQuery query) {
+    public Unit details(@Validated IdQuery<Unit> query) {
         return this.logic.findById(query.getId());
     }
 

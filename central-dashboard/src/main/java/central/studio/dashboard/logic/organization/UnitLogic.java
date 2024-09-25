@@ -31,10 +31,15 @@ import central.provider.graphql.organization.UnitProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.util.Collectionx;
+import central.validation.group.Insert;
+import central.validation.group.Update;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -73,7 +78,7 @@ public class UnitLogic {
      * @param orders     排序条件
      * @return 分页数据
      */
-    public Page<Unit> pageBy(Long pageIndex, Long pageSize, Conditions<Unit> conditions, Orders<Unit> orders) {
+    public Page<Unit> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders) {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders);
     }
@@ -90,14 +95,13 @@ public class UnitLogic {
         return this.provider.findBy(null, null, conditions, orders);
     }
 
-
     /**
      * 主键查询
      *
      * @param id 主键
      * @return 详情
      */
-    public Unit findById(String id) {
+    public Unit findById(@Nonnull String id) {
         return this.provider.findById(id);
     }
 
@@ -108,7 +112,7 @@ public class UnitLogic {
      * @param accountId 操作帐号主键
      * @return 插入后的数据
      */
-    public Unit insert(UnitInput input, String accountId) {
+    public Unit insert(@Nonnull @Validated({Insert.class, Default.class}) UnitInput input, @Nonnull String accountId) {
         return this.provider.insert(input, accountId);
     }
 
@@ -119,7 +123,7 @@ public class UnitLogic {
      * @param accountId 操作帐号主键
      * @return 更新后的数据
      */
-    public Unit update(UnitInput input, String accountId) {
+    public Unit update(@Nonnull @Validated({Update.class, Default.class}) UnitInput input, @Nonnull String accountId) {
         return this.provider.update(input, accountId);
     }
 
@@ -130,7 +134,7 @@ public class UnitLogic {
      * @param accountId 操作帐号主键
      * @return 受影响数据行数
      */
-    public long deleteByIds(List<String> ids, String accountId) {
+    public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId) {
         return this.provider.deleteByIds(ids, accountId);
     }
 }

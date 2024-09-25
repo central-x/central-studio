@@ -88,6 +88,11 @@ public class UnitListQuery extends ListQuery<Unit> {
             conditions.like(Unit::getCode, this.getCode());
         }
 
+        // 模糊搜索
+        for (String keyword : this.getKeywords()) {
+            conditions.and(filter -> filter.like(Unit::getCode, keyword).or().like(Unit::getName, keyword));
+        }
+
         return conditions;
     }
 }
