@@ -90,7 +90,7 @@ public class AreaListQuery extends ListQuery<Area> {
 
         // 模糊搜索
         for (String keyword : this.getKeywords()) {
-            conditions.and(filter -> filter.like(Area::getName, keyword));
+            conditions.and(filter -> filter.like(Area::getCode, keyword).or().like(Area::getName, keyword));
         }
 
         return conditions;

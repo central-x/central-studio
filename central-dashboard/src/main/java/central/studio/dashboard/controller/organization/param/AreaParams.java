@@ -43,6 +43,7 @@ import lombok.Data;
  */
 @Data
 public class AreaParams {
+
     @Label("主键")
     @Null(groups = Insert.class)
     @NotBlank(groups = Update.class)

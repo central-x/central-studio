@@ -26,8 +26,8 @@ package central.studio.dashboard.controller.organization.controller;
 
 import central.data.organization.Area;
 import central.starter.web.param.IdsParams;
+import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.organization.param.AreaParams;
-import central.studio.dashboard.controller.organization.query.AreaIdQuery;
 import central.studio.dashboard.controller.organization.query.AreaListQuery;
 import central.studio.dashboard.logic.organization.AreaLogic;
 import central.validation.group.Insert;
@@ -82,7 +82,7 @@ public class AreaController {
      * @return 详情
      */
     @GetMapping("/details")
-    public Area details(@Validated AreaIdQuery query) {
+    public Area details(@Validated IdQuery<Area> query) {
         return this.logic.findById(query.getId());
     }
 
@@ -113,7 +113,7 @@ public class AreaController {
     /**
      * 根据主键删除行政区划数据
      *
-     * @param params    行政区划数据
+     * @param params    待删除主键列表
      * @param accountId 当前登录帐号
      * @return 受影响数据行数
      */

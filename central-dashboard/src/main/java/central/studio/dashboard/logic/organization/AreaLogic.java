@@ -31,11 +31,15 @@ import central.provider.graphql.organization.AreaProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.util.Collectionx;
+import central.validation.group.Insert;
+import central.validation.group.Update;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -108,7 +112,7 @@ public class AreaLogic {
      * @param accountId 操作帐号主键
      * @return 插入后的数据
      */
-    public Area insert(@Nonnull AreaInput input, @Nonnull String accountId) {
+    public Area insert(@Nonnull @Validated({Insert.class, Default.class}) AreaInput input, @Nonnull String accountId) {
         return this.provider.insert(input, accountId);
     }
 
@@ -119,7 +123,7 @@ public class AreaLogic {
      * @param accountId 操作帐号主键
      * @return 更新后的数据
      */
-    public Area update(@Nonnull AreaInput input, @Nonnull String accountId) {
+    public Area update(@Nonnull @Validated({Update.class, Default.class}) AreaInput input, @Nonnull String accountId) {
         return this.provider.update(input, accountId);
     }
 
