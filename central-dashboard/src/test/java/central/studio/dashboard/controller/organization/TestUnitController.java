@@ -74,11 +74,11 @@ public class TestUnitController extends TestController {
                 .name("中国")
                 .type(AreaType.COUNTRY.getValue())
                 .order(0)
-                .build(), "syssa");
+                .build(), "syssa", "master");
     }
 
     private void deleteArea(String id) {
-        areaLogic.deleteByIds(List.of(id), "syssa");
+        areaLogic.deleteByIds(List.of(id), "syssa", "master");
     }
 
     /**

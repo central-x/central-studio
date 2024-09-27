@@ -76,11 +76,12 @@ public class UnitLogic {
      * @param pageSize   分页大小
      * @param conditions 筛选条件
      * @param orders     排序条件
+     * @param tenant     租户标识
      * @return 分页数据
      */
-    public Page<Unit> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders) {
+    public Page<Unit> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
-        return this.provider.pageBy(pageIndex, pageSize, conditions, orders);
+        return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
     /**
@@ -88,21 +89,23 @@ public class UnitLogic {
      *
      * @param conditions 筛选条件
      * @param orders     排序条件
+     * @param tenant     租户标识
      * @return 列表数据
      */
-    public List<Unit> listBy(@Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders) {
+    public List<Unit> listBy(@Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
-        return this.provider.findBy(null, null, conditions, orders);
+        return this.provider.findBy(null, null, conditions, orders, tenant);
     }
 
     /**
      * 主键查询
      *
-     * @param id 主键
+     * @param id     主键
+     * @param tenant 租户标识
      * @return 详情
      */
-    public Unit findById(@Nonnull String id) {
-        return this.provider.findById(id);
+    public Unit findById(@Nonnull String id, @Nonnull String tenant) {
+        return this.provider.findById(id, tenant);
     }
 
     /**
@@ -110,10 +113,11 @@ public class UnitLogic {
      *
      * @param input     数据输入
      * @param accountId 操作帐号主键
+     * @param tenant    租户标识
      * @return 插入后的数据
      */
-    public Unit insert(@Nonnull @Validated({Insert.class, Default.class}) UnitInput input, @Nonnull String accountId) {
-        return this.provider.insert(input, accountId);
+    public Unit insert(@Nonnull @Validated({Insert.class, Default.class}) UnitInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.provider.insert(input, accountId, tenant);
     }
 
     /**
@@ -121,10 +125,11 @@ public class UnitLogic {
      *
      * @param input     数据输入
      * @param accountId 操作帐号主键
+     * @param tenant    租户标识
      * @return 更新后的数据
      */
-    public Unit update(@Nonnull @Validated({Update.class, Default.class}) UnitInput input, @Nonnull String accountId) {
-        return this.provider.update(input, accountId);
+    public Unit update(@Nonnull @Validated({Update.class, Default.class}) UnitInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.provider.update(input, accountId, tenant);
     }
 
     /**
@@ -132,9 +137,10 @@ public class UnitLogic {
      *
      * @param ids       主键
      * @param accountId 操作帐号主键
+     * @param tenant    租户标识
      * @return 受影响数据行数
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId) {
-        return this.provider.deleteByIds(ids, accountId);
+    public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.provider.deleteByIds(ids, tenant);
     }
 }

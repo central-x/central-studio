@@ -32,6 +32,7 @@ import central.studio.dashboard.controller.organization.query.UnitListQuery;
 import central.studio.dashboard.logic.organization.UnitLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -67,23 +68,25 @@ public class UnitController {
     /**
      * 按条件查询组织机构列表
      *
-     * @param query 查询
+     * @param query  查询
+     * @param tenant 租户标识
      * @return 分页结果
      */
     @GetMapping
-    public List<Unit> list(@Validated UnitListQuery query) {
-        return this.logic.listBy(query.build(), null);
+    public List<Unit> list(@Validated UnitListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.listBy(query.build(), null, tenant);
     }
 
     /**
      * 根据主键查询组织机构详情
      *
-     * @param query 查询
+     * @param query  查询
+     * @param tenant 租户标识
      * @return 详情
      */
     @GetMapping("/details")
-    public Unit details(@Validated IdQuery<Unit> query) {
-        return this.logic.findById(query.getId());
+    public Unit details(@Validated IdQuery<Unit> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.findById(query.getId(), tenant);
     }
 
     /**
@@ -91,11 +94,12 @@ public class UnitController {
      *
      * @param params    组织机构入参
      * @param accountId 当前登录帐号
+     * @param tenant    租户标识
      * @return 新增后组织机构数据
      */
     @PostMapping
-    public Unit add(@RequestBody @Validated({Insert.class, Default.class}) UnitParams params, @RequestAttribute String accountId) {
-        return this.logic.insert(params.toInput(), accountId);
+    public Unit add(@RequestBody @Validated({Insert.class, Default.class}) UnitParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.insert(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -103,11 +107,12 @@ public class UnitController {
      *
      * @param params    组织机构数据
      * @param accountId 当前登录帐号
+     * @param tenant    租户标识
      * @return 更新后组织机构数据
      */
     @PutMapping
-    public Unit update(@RequestBody @Validated({Update.class, Default.class}) UnitParams params, @RequestAttribute String accountId) {
-        return this.logic.update(params.toInput(), accountId);
+    public Unit update(@RequestBody @Validated({Update.class, Default.class}) UnitParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.update(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -115,10 +120,11 @@ public class UnitController {
      *
      * @param params    组织机构数据
      * @param accountId 当前登录帐号
+     * @param tenant    租户标识
      * @return 受影响数据行数
      */
     @DeleteMapping
-    public long delete(@Validated IdsParams params, @RequestAttribute String accountId) {
-        return this.logic.deleteByIds(params.getIds(), accountId);
+    public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
 }

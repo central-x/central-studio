@@ -68,7 +68,8 @@ public class AreaController {
     /**
      * 按条件查询行政区划列表
      *
-     * @param query 查询
+     * @param query  查询
+     * @param tenant 租户标识
      * @return 列表结果
      */
     @GetMapping
@@ -79,7 +80,8 @@ public class AreaController {
     /**
      * 根据主键查询行政区划详情
      *
-     * @param query 查询
+     * @param query  查询
+     * @param tenant 租户标识
      * @return 详情
      */
     @GetMapping("/details")
@@ -92,6 +94,7 @@ public class AreaController {
      *
      * @param params    行政区划入参
      * @param accountId 当前登录帐号
+     * @param tenant    租户标识
      * @return 新增后行政区划数据
      */
     @PostMapping
@@ -104,6 +107,7 @@ public class AreaController {
      *
      * @param params    行政区划数据
      * @param accountId 当前登录帐号
+     * @param tenant    租户标识
      * @return 更新后行政区划数据
      */
     @PutMapping
@@ -116,6 +120,7 @@ public class AreaController {
      *
      * @param params    待删除主键列表
      * @param accountId 当前登录帐号
+     * @param tenant    租户标识
      * @return 受影响数据行数
      */
     @DeleteMapping
