@@ -32,6 +32,7 @@ import central.studio.dashboard.controller.organization.query.AreaListQuery;
 import central.studio.dashboard.logic.organization.AreaLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -71,8 +72,8 @@ public class AreaController {
      * @return 列表结果
      */
     @GetMapping
-    public List<Area> list(@Validated AreaListQuery query) {
-        return this.logic.listBy(query.build(), null);
+    public List<Area> list(@Validated AreaListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.listBy(query.build(), null, tenant);
     }
 
     /**
@@ -82,8 +83,8 @@ public class AreaController {
      * @return 详情
      */
     @GetMapping("/details")
-    public Area details(@Validated IdQuery<Area> query) {
-        return this.logic.findById(query.getId());
+    public Area details(@Validated IdQuery<Area> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.findById(query.getId(), tenant);
     }
 
     /**
@@ -94,8 +95,8 @@ public class AreaController {
      * @return 新增后行政区划数据
      */
     @PostMapping
-    public Area add(@RequestBody @Validated({Insert.class, Default.class}) AreaParams params, @RequestAttribute String accountId) {
-        return this.logic.insert(params.toInput(), accountId);
+    public Area add(@RequestBody @Validated({Insert.class, Default.class}) AreaParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.insert(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -106,8 +107,8 @@ public class AreaController {
      * @return 更新后行政区划数据
      */
     @PutMapping
-    public Area update(@RequestBody @Validated({Update.class, Default.class}) AreaParams params, @RequestAttribute String accountId) {
-        return this.logic.update(params.toInput(), accountId);
+    public Area update(@RequestBody @Validated({Update.class, Default.class}) AreaParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.update(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -118,7 +119,7 @@ public class AreaController {
      * @return 受影响数据行数
      */
     @DeleteMapping
-    public long delete(@Validated IdsParams params, @RequestAttribute String accountId) {
-        return this.logic.deleteByIds(params.getIds(), accountId);
+    public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
 }
