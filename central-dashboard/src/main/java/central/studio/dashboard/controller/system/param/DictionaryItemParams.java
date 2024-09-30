@@ -26,9 +26,10 @@ package central.studio.dashboard.controller.system.param;
 
 import central.data.system.DictionaryItemInput;
 import central.validation.Label;
-import central.validation.group.Insert;
-import central.validation.group.Update;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
@@ -41,17 +42,6 @@ import lombok.Data;
  */
 @Data
 public class DictionaryItemParams {
-
-    @Label("主键")
-    @Null(groups = Insert.class)
-    @NotBlank(groups = Update.class)
-    @Size(min = 1, max = 32, groups = Insert.class)
-    private String id;
-
-    @Label("所属字典主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String dictionaryId;
 
     @Label("标识")
     @NotBlank
@@ -79,8 +69,6 @@ public class DictionaryItemParams {
 
     public DictionaryItemInput toInput() {
         return DictionaryItemInput.builder()
-                .id(this.getId())
-                .dictionaryId(this.getDictionaryId())
                 .code(this.getCode())
                 .name(this.getName())
                 .primary(this.getPrimary())

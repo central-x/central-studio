@@ -25,9 +25,10 @@
 package central.data.system;
 
 import central.validation.Label;
-import central.validation.group.Insert;
-import central.validation.group.Update;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serial;
@@ -47,17 +48,6 @@ import java.io.Serializable;
 public class DictionaryItemInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 1993705712726179462L;
-
-    @Label("主键")
-    @Null(groups = Insert.class)
-    @NotBlank(groups = Update.class)
-    @Size(min = 1, max = 32, groups = Insert.class)
-    private String id;
-
-    @Label("所属字典主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String dictionaryId;
 
     @Label("标识")
     @NotBlank

@@ -26,15 +26,14 @@ package central.studio.provider.graphql.system.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.system.dto.DictionaryDTO;
-import central.studio.provider.graphql.system.entity.DictionaryEntity;
-import central.studio.provider.graphql.system.mapper.DictionaryMapper;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
-import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.system.dto.DictionaryDTO;
+import central.studio.provider.graphql.system.entity.DictionaryEntity;
+import central.studio.provider.graphql.system.mapper.DictionaryMapper;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -50,13 +49,14 @@ import java.util.stream.Collectors;
 
 /**
  * Dictionary Query
+ * <p>
  * 字典查询
  *
  * @author Alan Yeh
  * @since 2022/10/03
  */
 @Component
-@GraphQLSchema(path = "system/query", types = {DictionaryDTO.class, DictionaryItemQuery.class})
+@GraphQLSchema(path = "system/query", types = DictionaryDTO.class)
 public class DictionaryQuery {
     @Setter(onMethod_ = @Autowired)
     private DictionaryMapper mapper;
@@ -155,18 +155,5 @@ public class DictionaryQuery {
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(DictionaryEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 关联查询
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * DictionaryItem Query
-     * 字典项查询
-     */
-    @GraphQLGetter
-    public DictionaryItemQuery getItems(@Autowired DictionaryItemQuery query) {
-        return query;
     }
 }

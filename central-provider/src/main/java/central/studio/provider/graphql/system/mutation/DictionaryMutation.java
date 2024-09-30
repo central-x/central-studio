@@ -27,15 +27,12 @@ package central.studio.provider.graphql.system.mutation;
 import central.data.system.DictionaryInput;
 import central.lang.Stringx;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.system.dto.DictionaryDTO;
-import central.studio.provider.graphql.system.dto.DictionaryItemDTO;
-import central.studio.provider.graphql.system.entity.DictionaryEntity;
-import central.studio.provider.graphql.system.entity.DictionaryItemEntity;
-import central.studio.provider.graphql.system.mapper.DictionaryMapper;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
-import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.system.dto.DictionaryDTO;
+import central.studio.provider.graphql.system.entity.DictionaryEntity;
+import central.studio.provider.graphql.system.mapper.DictionaryMapper;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -61,7 +58,7 @@ import java.util.Objects;
  * @since 2022/10/04
  */
 @Component
-@GraphQLSchema(path = "system/mutation", types = {DictionaryItemDTO.class, DictionaryItemMutation.class})
+@GraphQLSchema(path = "system/mutation")
 public class DictionaryMutation {
     @Setter(onMethod_ = @Autowired)
     private DictionaryMapper mapper;
@@ -157,18 +154,12 @@ public class DictionaryMutation {
      */
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
-                            @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                            @Autowired DictionaryItemMutation mutation) {
+                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0L;
         }
 
-        var effected = this.mapper.deleteBy(Conditions.of(DictionaryEntity.class).in(DictionaryEntity::getId, ids).eq(DictionaryEntity::getTenantCode, tenant));
-        if (effected > 0L) {
-            // 级联删除
-            mutation.deleteBy(Conditions.of(DictionaryItemEntity.class).in(DictionaryItemEntity::getDictionaryId, ids), tenant);
-        }
-        return effected;
+        return this.mapper.deleteBy(Conditions.of(DictionaryEntity.class).in(DictionaryEntity::getId, ids).eq(DictionaryEntity::getTenantCode, tenant));
     }
 
     /**
@@ -179,31 +170,13 @@ public class DictionaryMutation {
      */
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<DictionaryEntity> conditions,
-                         @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                         @Autowired DictionaryItemMutation mutation) {
+                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(DictionaryEntity::getTenantCode, tenant);
 
         var entities = this.mapper.findBy(conditions);
         if (entities.isEmpty()) {
             return 0L;
         }
-        var effected = this.mapper.deleteBy(conditions);
-        // 级联删除
-        mutation.deleteBy(Conditions.of(DictionaryItemEntity.class).in(DictionaryItemEntity::getDictionaryId, entities.stream().map(DictionaryEntity::getId).toList()), tenant);
-
-        return effected;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 关联查询
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * DictionaryItem Mutation
-     * 字典项修改
-     */
-    @GraphQLGetter
-    public DictionaryItemMutation getItems(@Autowired DictionaryItemMutation mutation) {
-        return mutation;
+        return this.mapper.deleteBy(conditions);
     }
 }

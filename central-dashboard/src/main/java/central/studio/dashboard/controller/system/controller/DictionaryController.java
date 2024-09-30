@@ -26,10 +26,8 @@ package central.studio.dashboard.controller.system.controller;
 
 import central.bean.Page;
 import central.data.system.Dictionary;
-import central.data.system.DictionaryItem;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
-import central.studio.dashboard.controller.system.param.DictionaryItemParams;
 import central.studio.dashboard.controller.system.param.DictionaryParams;
 import central.studio.dashboard.controller.system.query.DictionaryPageQuery;
 import central.studio.dashboard.logic.system.DictionaryLogic;
@@ -42,8 +40,6 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Dictionary Controller
@@ -77,7 +73,8 @@ public class DictionaryController {
     /**
      * 按条件分页查询字典列表
      *
-     * @param query 查询
+     * @param query  查询
+     * @param tenant 租户标识
      * @return 分页结果
      */
     @GetMapping("/page")
@@ -88,7 +85,8 @@ public class DictionaryController {
     /**
      * 根据主键查询字典详情
      *
-     * @param query 查询
+     * @param query  查询
+     * @param tenant 租户标识
      * @return 详情
      */
     @GetMapping("/details")
@@ -100,6 +98,7 @@ public class DictionaryController {
      * 新增字典
      *
      * @param params 字典入参
+     * @param tenant 租户标识
      * @return 新增后的字典
      */
     @PostMapping
@@ -112,6 +111,7 @@ public class DictionaryController {
      *
      * @param params    字典入参
      * @param accountId 当前登录帐号
+     * @param tenant    租户标识
      * @return 更新后字典数据
      */
     @PutMapping
@@ -124,57 +124,11 @@ public class DictionaryController {
      *
      * @param params    待删除主键列表
      * @param accountId 当前登录帐号
+     * @param tenant    租户标识
      * @return 受影响数据行数
      */
     @DeleteMapping
-    public long deleteByIds(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+    public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
-    }
-
-    /**
-     * 获取字典项列表
-     *
-     * @param query 查询
-     * @return 字典项列表
-     */
-    @GetMapping("/items")
-    public List<DictionaryItem> getItems(@Validated IdQuery<Dictionary> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.getItems(query.getId(), tenant);
-    }
-
-    /**
-     * 新增字典项
-     *
-     * @param params    字典项入参
-     * @param accountId 当前登录帐号
-     * @return 新增后的字典项
-     */
-    @PostMapping("/items")
-    public DictionaryItem addItem(@Validated DictionaryItemParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.insertItem(params.toInput(), accountId, tenant);
-    }
-
-    /**
-     * 更新字典项
-     *
-     * @param params    字典项入参
-     * @param accountId 当前登录帐号
-     * @return 更新后的字典项
-     */
-    @PutMapping("/items")
-    public DictionaryItem updateItem(@Validated DictionaryItemParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.updateItem(params.toInput(), accountId, tenant);
-    }
-
-    /**
-     * 删除字典项
-     *
-     * @param params    待删除主键列表
-     * @param accountId 当前登录帐号
-     * @return 受影响数据行数
-     */
-    @DeleteMapping("/items")
-    public long deleteItems(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.deleteItems(params.getIds(), accountId, tenant);
     }
 }

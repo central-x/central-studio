@@ -19,14 +19,23 @@ input DictionaryInput {
 }
 
 """
+字典项输入
+"""
+input DictionaryItemInput {
+    "标识"
+    code:                   String
+    "名称"
+    name:                   String
+    "是否主选项"
+    primary:                Boolean
+    "排序号"
+    order:                  Int
+}
+
+"""
 字典修改
 """
 type DictionaryMutation {
-    """
-    字典项修改
-    """
-    items: DictionaryItemMutation
-
     """
     保存数据
     """

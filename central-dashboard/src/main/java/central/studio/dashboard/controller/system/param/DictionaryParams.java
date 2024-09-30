@@ -25,11 +25,15 @@
 package central.studio.dashboard.controller.system.param;
 
 import central.data.system.DictionaryInput;
+import central.util.Listx;
 import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Dictionary Input
@@ -77,6 +81,11 @@ public class DictionaryParams {
     @Size(max = 1024)
     private String remark;
 
+    @Valid
+    @Label("字典项")
+    @NotEmpty
+    private List<DictionaryItemParams> items;
+
     public DictionaryInput toInput() {
         return DictionaryInput.builder()
                 .id(this.getId())
@@ -85,6 +94,7 @@ public class DictionaryParams {
                 .name(this.getName())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
+                .items(Listx.asStream(this.getItems()).map(DictionaryItemParams::toInput).toList())
                 .build();
     }
 }

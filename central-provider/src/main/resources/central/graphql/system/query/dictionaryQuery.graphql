@@ -16,7 +16,7 @@ type Dictionary implements Entity & Modifiable {
     enabled:                Boolean!
     "备注"
     remark:                 String
-
+    "字典项"
     items:                 [DictionaryItem]!
 
     "创建帐户信息"
@@ -34,14 +34,23 @@ type Dictionary implements Entity & Modifiable {
 }
 
 """
+字典项
+"""
+type DictionaryItem {
+    "标识"
+    code:                   String!
+    "名称"
+    name:                   String!
+    "是否主选项"
+    primary:                Boolean!
+    "排序号"
+    order:                  Int!
+}
+
+"""
 字典查询
 """
 type DictionaryQuery {
-    """
-    字典项查询
-    """
-    items: DictionaryItemQuery
-
     """
     查询数据
     """

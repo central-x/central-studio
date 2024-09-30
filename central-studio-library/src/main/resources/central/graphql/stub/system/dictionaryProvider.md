@@ -21,8 +21,6 @@ query DictionaryProvider($id: String) {
                 remark
                 
                 items {
-                    id
-                    dictionaryId
                     code
                     name
                     primary
@@ -73,8 +71,6 @@ query DictionaryProvider($ids: [String]) {
                 remark
 
                 items {
-                    id
-                    dictionaryId
                     code
                     name
                     primary
@@ -125,8 +121,6 @@ query DictionaryProvider($limit: Long, $offset: Long, $conditions: [ConditionInp
                 remark
 
                 items {
-                    id
-                    dictionaryId
                     code
                     name
                     primary
@@ -185,8 +179,6 @@ query DictionaryProvider($pageIndex: Long, $pageSize: Long, $conditions: [Condit
                         remark
 
                         items {
-                            id
-                            dictionaryId
                             code
                             name
                             primary
@@ -254,8 +246,6 @@ mutation DictionaryProvider($input: DictionaryInput, $operator: String) {
                 remark
 
                 items {
-                    id
-                    dictionaryId
                     code
                     name
                     primary
@@ -306,8 +296,6 @@ mutation DictionaryProvider($inputs: [DictionaryInput], $operator: String) {
                 remark
 
                 items {
-                    id
-                    dictionaryId
                     code
                     name
                     primary
@@ -358,8 +346,6 @@ mutation DictionaryProvider($input: DictionaryInput, $operator: String) {
                 remark
 
                 items {
-                    id
-                    dictionaryId
                     code
                     name
                     primary
@@ -410,8 +396,6 @@ mutation DictionaryProvider($inputs: [DictionaryInput], $operator: String) {
                 remark
 
                 items {
-                    id
-                    dictionaryId
                     code
                     name
                     primary

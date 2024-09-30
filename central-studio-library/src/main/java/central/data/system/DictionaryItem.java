@@ -28,14 +28,13 @@ import central.bean.Codeable;
 import central.bean.Nonnull;
 import central.bean.Orderable;
 import central.data.organization.Account;
-import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 字典项
@@ -46,23 +45,9 @@ import java.io.Serial;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class DictionaryItem extends ModifiableEntity implements Codeable, Orderable<DictionaryItem> {
+public class DictionaryItem implements Serializable, Codeable, Orderable<DictionaryItem> {
     @Serial
     private static final long serialVersionUID = -819169978008402813L;
-
-    /**
-     * 所属字典主键
-     */
-    @Nonnull
-    private String dictionaryId;
-
-    /**
-     * 所属字典信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Dictionary dictionary;
 
     /**
      * 标识
@@ -89,13 +74,6 @@ public class DictionaryItem extends ModifiableEntity implements Codeable, Ordera
     private Integer order;
 
     /**
-     * 创建人信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Account creator;
-
-    /**
      * 修改人信息
      */
     @Nonnull
@@ -104,8 +82,6 @@ public class DictionaryItem extends ModifiableEntity implements Codeable, Ordera
 
     public DictionaryItemInput toInput() {
         return DictionaryItemInput.builder()
-                .id(this.getId())
-                .dictionaryId(this.getDictionaryId())
                 .code(this.getCode())
                 .name(this.getName())
                 .primary(this.getPrimary())

@@ -373,6 +373,7 @@ public class v0_0_1_initial extends Migration {
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
                     Column.of("REMARK", SqlType.STRING, 1024, "备注"),
+                    Column.of("ITEMS_JSON", SqlType.CLOB, "字典项"),
                     Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
                     Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
                     Column.of("MODIFIER_ID", SqlType.STRING, 36, "更新人主键"),
@@ -385,30 +386,6 @@ public class v0_0_1_initial extends Migration {
             );
 
             var table = Table.of("X_SYS_DICTIONARY", "字典", columns, indies);
-
-            database.addTable(table);
-        }
-        {
-            // 字典项
-            var columns = List.of(
-                    Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("DICTIONARY_ID", SqlType.STRING, 32, "字典主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
-                    Column.of("NAME", SqlType.STRING, 50, "名称"),
-                    Column.of("PRIMARY", SqlType.BOOLEAN, "是否主选项"),
-                    Column.of("ORDER", SqlType.INTEGER, "排序号"),
-                    Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
-                    Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
-                    Column.of("MODIFIER_ID", SqlType.STRING, 36, "更新人主键"),
-                    Column.of("MODIFY_DATE", SqlType.DATETIME, "更新时间"),
-                    Column.of("TENANT_CODE", SqlType.STRING, 32, "租户编码")
-            );
-
-            var indies = List.of(
-                    Index.of("X_SDI_CODE", false, "CODE")
-            );
-
-            var table = Table.of("X_SYS_DICTIONARY_ITEM", "字典项", columns, indies);
 
             database.addTable(table);
         }

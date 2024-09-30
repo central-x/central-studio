@@ -24,21 +24,17 @@
 
 package central.studio.provider.graphql.system.dto;
 
+import central.data.system.DictionaryItem;
+import central.lang.reflect.TypeRef;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.system.entity.DictionaryEntity;
-import central.studio.provider.graphql.system.entity.DictionaryItemEntity;
-import central.studio.provider.graphql.system.query.DictionaryItemQuery;
-import central.studio.provider.graphql.saas.dto.ApplicationDTO;
-import central.sql.query.Conditions;
-import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
-import central.web.XForwardedHeaders;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
+import central.studio.provider.graphql.saas.dto.ApplicationDTO;
+import central.studio.provider.graphql.system.entity.DictionaryEntity;
+import central.util.Jsonx;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.Serial;
 import java.util.List;
@@ -68,12 +64,8 @@ public class DictionaryDTO extends DictionaryEntity implements DTO {
      * 字典项
      */
     @GraphQLGetter
-    public List<DictionaryItemDTO> getItems(@Autowired DictionaryItemQuery query,
-                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return query.findBy(null, null,
-                Conditions.of(DictionaryItemEntity.class).eq(DictionaryItemEntity::getDictionaryId, this.getId()),
-                Orders.of(DictionaryItemEntity.class).asc(DictionaryItemEntity::getOrder).asc(DictionaryItemEntity::getCode),
-                tenant);
+    public List<DictionaryItem> getItems() {
+        return Jsonx.Default().deserialize(this.getItemsJson(), TypeRef.ofList(DictionaryItem.class));
     }
 
     /**

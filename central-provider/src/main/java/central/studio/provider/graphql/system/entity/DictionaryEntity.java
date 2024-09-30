@@ -29,6 +29,7 @@ import central.data.system.DictionaryInput;
 import central.studio.provider.graphql.saas.entity.ApplicationEntity;
 import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.Relation;
+import central.util.Jsonx;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -93,6 +94,11 @@ public class DictionaryEntity extends ModifiableEntity implements Tenantable {
     @Size(max = 1024)
     private String remark;
 
+    @Label("字典项")
+    @NotBlank
+    @Size(max = 5 * 1024 * 1024)
+    private String itemsJson;
+
     @Label("租户标识")
     @NotBlank
     @Size(min = 1, max = 32)
@@ -105,5 +111,6 @@ public class DictionaryEntity extends ModifiableEntity implements Tenantable {
         this.setName(input.getName());
         this.setEnabled(input.getEnabled());
         this.setRemark(input.getRemark());
+        this.setItemsJson(Jsonx.Default().serialize(input.getItems()));
     }
 }

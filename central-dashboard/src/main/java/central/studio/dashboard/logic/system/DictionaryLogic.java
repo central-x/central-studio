@@ -27,10 +27,7 @@ package central.studio.dashboard.logic.system;
 import central.bean.Page;
 import central.data.system.Dictionary;
 import central.data.system.DictionaryInput;
-import central.data.system.DictionaryItem;
-import central.data.system.DictionaryItemInput;
 import central.lang.Stringx;
-import central.provider.graphql.system.DictionaryItemProvider;
 import central.provider.graphql.system.DictionaryProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
@@ -65,9 +62,6 @@ public class DictionaryLogic {
     private DictionaryProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private DictionaryItemProvider itemProvider;
-
-    @Setter(onMethod_ = @Autowired)
     private DataContext context;
 
     private SaasContainer getSaaSContainer() {
@@ -84,13 +78,6 @@ public class DictionaryLogic {
             return orders;
         }
         return Orders.of(Dictionary.class).asc(Dictionary::getCode);
-    }
-
-    private Orders<DictionaryItem> getDefaultItemOrders(@Nullable Orders<DictionaryItem> orders) {
-        if (Collectionx.isNullOrEmpty(orders)) {
-            return orders;
-        }
-        return Orders.of(DictionaryItem.class).asc(DictionaryItem::getOrder).asc(DictionaryItem::getCode);
     }
 
     /**
@@ -159,55 +146,6 @@ public class DictionaryLogic {
      * @return 受影响数据行数
      */
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
-        // 删除对应的字典项
-        this.itemProvider.deleteBy(Conditions.of(DictionaryItem.class).in(DictionaryItem::getDictionaryId, ids));
         return this.provider.deleteByIds(ids, tenant);
-    }
-
-    /**
-     * 根据字典主键获取字典项
-     *
-     * @param dictionaryId 字典主键
-     * @param tenant       租户标识
-     * @return 字典项
-     */
-    public List<DictionaryItem> getItems(@Nonnull String dictionaryId, @Nonnull String tenant) {
-        return this.itemProvider.findBy(null, null, Conditions.of(DictionaryItem.class).eq(DictionaryItem::getDictionaryId, dictionaryId), this.getDefaultItemOrders(null), tenant);
-    }
-
-    /**
-     * 添加字典项
-     *
-     * @param input     字典项输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
-    public DictionaryItem insertItem(@Nonnull @Validated({Insert.class, Default.class}) DictionaryItemInput input, @Nonnull String accountId, @Nonnull String tenant) {
-        return this.itemProvider.insert(input, accountId, tenant);
-    }
-
-    /**
-     * 更新字典项
-     *
-     * @param input     字典项输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
-    public DictionaryItem updateItem(@Nonnull @Validated({Update.class, Default.class}) DictionaryItemInput input, @Nonnull String accountId, @Nonnull String tenant) {
-        return this.itemProvider.update(input, accountId, tenant);
-    }
-
-    /**
-     * 删除字典项
-     *
-     * @param ids       字典项主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
-    public long deleteItems(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
-        return this.itemProvider.deleteByIds(ids, tenant);
     }
 }
