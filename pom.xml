@@ -53,6 +53,22 @@
     <!-- 镜像仓库 -->
     <repositories>
         <repository>
+            <id>centralx</id>
+            <name>CentralX Repository</name>
+            <url>https://mirror.central-x.com/repository/maven-public/</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>github</id>
+            <name>GitHub Repository</name>
+            <url>https://maven.pkg.github.com/central-x/*</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
             <id>central</id>
             <name>Maven Central Repository</name>
             <url>https://repo1.maven.org/maven2/</url>
@@ -64,6 +80,23 @@
 
     <!-- 插件仓库 -->
     <pluginRepositories>
+        <pluginRepository>
+            <id>centralx</id>
+            <name>CentralX Repository</name>
+            <url>https://mirror.central-x.com/repository/maven-public/</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>github</id>
+            <name>GitHub Repository</name>
+            <url>https://maven.pkg.github.com/central-x/*</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </pluginRepository>
         <pluginRepository>
             <id>central</id>
             <name>Maven Central Repository</name>
