@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.central-x.framework</groupId>
-        <artifactId>central-parent</artifactId>
+        <groupId>com.central-x.studio</groupId>
+        <artifactId>central-studio-parent</artifactId>
         <version>1.0.x-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../central-studio-parent</relativePath>
     </parent>
 
-    <groupId>com.central-x.studio</groupId>
     <artifactId>central-studio-library</artifactId>
     <version>1.0.x-SNAPSHOT</version>
     <description>Central Studio Library</description>

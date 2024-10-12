@@ -102,20 +102,78 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- 所有子项目都必须添加的依赖 -->
-    <dependencies>
-        <!-- Central Studio Library -->
-        <dependency>
-            <groupId>com.central-x.studio</groupId>
-            <artifactId>central-studio-library</artifactId>
-        </dependency>
+    <profiles>
+        <profile>
+            <id>centralx</id>
+            <!-- 发布仓库 -->
+            <distributionManagement>
+                <repository>
+                    <id>centralx</id>
+                    <name>CentralX Release Repository</name>
+                    <url>https://mirror.central-x.com/repository/maven-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>centralx</id>
+                    <name>CentralX Snapshot Repository</name>
+                    <url>https://mirror.central-x.com/repository/maven-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
 
-        <!-- 单元测试 -->
-        <dependency>
-            <groupId>com.central-x.framework</groupId>
-            <artifactId>central-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+        <profile>
+            <id>sonatype</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Sonatype Maven Central -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.6.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>sonatype</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>sonatype</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <!-- 发布仓库 -->
+            <distributionManagement>
+                <repository>
+                    <id>sonatype</id>
+                    <name>Sonatype Release Repository</name>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
 
+        <profile>
+            <id>github</id>
+            <!-- 发布仓库 -->
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Repository</name>
+                    <url>https://maven.pkg.github.com/central-x/central-studio</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>

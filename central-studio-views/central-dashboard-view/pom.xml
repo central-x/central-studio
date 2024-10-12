@@ -5,13 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.central-x.framework</groupId>
-        <artifactId>central-parent</artifactId>
+        <groupId>com.central-x.studio</groupId>
+        <artifactId>central-studio-parent</artifactId>
         <version>1.0.x-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../../central-studio-parent</relativePath>
     </parent>
 
-    <groupId>com.central-x.studio</groupId>
     <artifactId>central-dashboard-view</artifactId>
     <version>1.0.x-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -32,20 +31,19 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
-<!--                    <execution>-->
-<!--                        <id>npm-install</id>-->
-<!--                        <phase>generate-sources</phase>-->
-<!--                        <configuration>-->
-<!--                            <workingDirectory>${project.basedir}/src/main/node</workingDirectory>-->
-<!--                            <executable>npm</executable>-->
-<!--                            <arguments>-->
-<!--                                <argument>install</argument>-->
-<!--                            </arguments>-->
-<!--                        </configuration>-->
-<!--                        <goals>-->
-<!--                            <goal>exec</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
+                    <execution>
+                        <id>npm-install</id>
+                        <configuration>
+                            <workingDirectory>${project.basedir}/src/main/node</workingDirectory>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
                     <execution>
                         <id>npm-run-build</id>
                         <phase>generate-sources</phase>
