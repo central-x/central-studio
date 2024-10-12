@@ -24,23 +24,20 @@
 
 package central.studio.dashboard.controller.index;
 
-import central.data.authority.Menu;
 import central.data.organization.Account;
 import central.lang.Stringx;
 import central.studio.dashboard.logic.organization.AccountLogic;
-import central.studio.dashboard.logic.saas.TenantLogic;
-import central.web.XForwardedHeaders;
 import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Index Controller
@@ -57,9 +54,6 @@ public class IndexController {
 
     @Setter(onMethod_ = @Autowired)
     private AccountLogic accountLogic;
-
-    @Setter(onMethod_ = @Autowired)
-    private TenantLogic tenantLogic;
 
     /**
      * 返回首页静态页面
@@ -79,17 +73,5 @@ public class IndexController {
             return null;
         }
         return accountLogic.findById(accountId);
-    }
-
-    @ResponseBody
-    @GetMapping("/api/portal")
-    public @Nullable List<Menu> getMenu(@RequestAttribute(required = false) String accountId, @RequestHeader(XForwardedHeaders.TENANT) String code) {
-        var tenant = tenantLogic.findByCode(code);
-        if (tenant == null) {
-            // 租户为空
-            return Collections.emptyList();
-        }
-
-        throw new UnsupportedOperationException();
     }
 }
