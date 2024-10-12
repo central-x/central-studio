@@ -1,15 +1,15 @@
-name: Release to Sonatype
+name: Release to Github Packages
 
 on:
   push:
-    # 只发布正式版到 Maven Central
-    tags:
-      - '*.RELEASE'
+    branches:
+      - master
+      - '*.x'
 
 jobs:
-  # 构建应用组件并发布到 Maven Central
-  release-to-sonatype:
-    name: Release to Sonatype (Maven Central)
+  # 构建应用组件并发布到 GitHub Packages
+  release-to-github-packages:
+    name: Release to Github Packages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -31,31 +31,30 @@ jobs:
         with:
           java-version: 17
           distribution: zulu
-          server-id: sonatype
+          server-id: github
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
-      - name: Release packages to Sonatype (Maven Central)
+      - name: Release packages to GitHub Packages
         run: |
           # 覆盖 maven settings.xml 文件，添加自定义 profiles
           # 先 install maven-studio-parent 到 local repository
           # 再安装 central-studio-views 下项目的 npm 依赖
           # 最后再来发布类库
           rm ~/.m2/settings.xml & cp ${{ github.workspace }}/.github/.m2/settings.xml ~/.m2/settings.xml &
-          mvn -P sonatype --batch-mode clean install -pl :central-studio-parent &
-          mvn -P sonatype exec:exec@npm-install -pl :central-dashboard-view,:central-identity-view &
-          mvn -P sonatype --batch-mode clean deploy
+          mvn -P github --batch-mode clean install -pl :central-studio-parent &
+          mvn -P github exec:exec@npm-install -pl :central-dashboard-view,:central-identity-view &
+          mvn -P github --batch-mode clean deploy
         env:
           MAVEN_USERNAME: ${{ secrets.GHPKG_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.GHPKG_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-  # 构建应用组件并发布到 DockerHub
+  # 构建应用组件并发布到 GitHub Packages
   release-docker-images:
     name: Release Docker Images
     runs-on: ubuntu-latest
-    needs: [ release-to-sonatype ]
+    needs: [release-to-github-packages]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,7 +65,7 @@ jobs:
         with:
           java-version: 17
           distribution: zulu
-          server-id: sonatype
+          server-id: github
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -89,15 +88,15 @@ jobs:
           # 覆盖 maven settings.xml 文件，添加自定义 profiles
           # 打包应用组件
           rm ~/.m2/settings.xml & cp ${{ github.workspace }}/.github/.m2/settings.xml ~/.m2/settings.xml &
-          mvn -P sonatype --batch-mode clean package -pl :central-bootstrap
+          mvn -P github --batch-mode clean package -pl :central-bootstrap
         env:
           MAVEN_USERNAME: ${{ secrets.GHPKG_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.GHPKG_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Release images to DockerHub
+      - name: Release images to GitHub Packages
         uses: docker/bake-action@v5
         with:
           push: true
         env:
-          REGISTRY: docker.io
-          REPOSITORY: centralx
+          REGISTRY: ghcr.io
+          REPOSITORY: central-x
