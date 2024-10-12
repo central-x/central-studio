@@ -33,3 +33,5 @@ studio:
     fetchers:
       - saas
       - storage
+  storage:
+    url: http://127.0.0.1:${server.port}

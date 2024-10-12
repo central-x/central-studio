@@ -53,7 +53,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Provider Provider Test Cases
+ * Permission Provider Test Cases
  * 权限测试
  *
  * @author Alan Yeh
@@ -108,6 +108,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -165,6 +166,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -226,6 +228,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -291,6 +294,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -337,6 +341,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -385,6 +390,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -436,6 +442,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -494,6 +501,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -556,6 +564,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -603,6 +612,7 @@ public class TestPermissionProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);

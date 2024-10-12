@@ -14,6 +14,8 @@ input MenuInput {
     name:                   String
     "图标"
     icon:                   String
+    "地址"
+    url:                    String
     "类型"
     type:                   String
     "是否启用"

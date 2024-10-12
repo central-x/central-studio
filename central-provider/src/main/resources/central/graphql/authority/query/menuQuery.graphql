@@ -14,6 +14,8 @@ type Menu implements Entity & Modifiable {
     name:                   String!
     "图标"
     icon:                   String
+    "地址"
+    url:                    String
     "类型（业务菜单: business, 管理菜单: admin）"
     type:                   String!
     "是否启用"

@@ -24,6 +24,7 @@
 
 package central.studio.storage.controller.query;
 
+import central.data.storage.StorageObject;
 import central.starter.web.query.IdsQuery;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
@@ -45,7 +46,7 @@ import java.io.Serial;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ListQuery extends IdsQuery {
+public class ListQuery extends IdsQuery<StorageObject> {
     @Serial
     private static final long serialVersionUID = 3281007876039123204L;
 

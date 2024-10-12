@@ -321,7 +321,7 @@ public class ObjectController {
         this.validate(query.getToken(), bucket, Permission.VIEW, query.getIds());
 
         return this.provider.findBy(null, null,
-                        Conditions.of(StorageObject.class).eq(StorageObject::getBucketId, bucket.getData().getId()).in(StorageObject::getId, query.getIds()),
+                        Conditions.of(query.build()).eq(StorageObject::getBucketId, bucket.getData().getId()),
                         null, tenant).stream()
                 // 忽略存储键，以防泄露
                 .peek(it -> it.setKey(null))

@@ -109,8 +109,8 @@ public class IdentityIndexController {
     /**
      * 获取当前已登录的用户信息
      */
-    @GetMapping("/api/account")
     @ResponseBody
+    @GetMapping("/api/account")
     public Account getAccount(WebMvcRequest request) {
         // 检测会话有效性
         var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);

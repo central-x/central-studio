@@ -24,8 +24,6 @@ query PermissionProvider($id: String) {
                     }
                     code
                     name
-                    enabled
-                    remark
 
                     creatorId
                     createDate
@@ -75,8 +73,6 @@ query PermissionProvider($ids: [String]) {
                     }
                     code
                     name
-                    enabled
-                    remark
 
                     creatorId
                     createDate
@@ -126,8 +122,6 @@ query PermissionProvider($limit: Long, $offset: Long, $conditions: [ConditionInp
                     }
                     code
                     name
-                    enabled
-                    remark
 
                     creatorId
                     createDate
@@ -185,8 +179,6 @@ query PermissionProvider($pageIndex: Long, $pageSize: Long, $conditions: [Condit
                             }
                             code
                             name
-                            enabled
-                            remark
 
                             creatorId
                             createDate
@@ -255,8 +247,6 @@ mutation PermissionProvider($input: PermissionInput, $operator: String) {
                     }
                     code
                     name
-                    enabled
-                    remark
 
                     creatorId
                     createDate
@@ -306,8 +296,6 @@ mutation PermissionProvider($inputs: [PermissionInput], $operator: String) {
                     }
                     code
                     name
-                    enabled
-                    remark
 
                     creatorId
                     createDate
@@ -358,8 +346,6 @@ mutation RoleProvider($input: PermissionInput, $operator: String) {
                     }
                     code
                     name
-                    enabled
-                    remark
 
                     creatorId
                     createDate
@@ -409,8 +395,6 @@ mutation RoleProvider($inputs: [PermissionInput], $operator: String) {
                     }
                     code
                     name
-                    enabled
-                    remark
 
                     creatorId
                     createDate

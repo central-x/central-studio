@@ -109,6 +109,7 @@ public class TestMenuProvider extends TestProvider {
         parentEntity.setCode("test-parent");
         parentEntity.setName("测试父菜单");
         parentEntity.setIcon("icon-parent");
+        parentEntity.setUrl("");
         parentEntity.setType(MenuType.BACKEND.getValue());
         parentEntity.setEnabled(Boolean.TRUE);
         parentEntity.setOrder(0);
@@ -123,6 +124,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -137,6 +139,7 @@ public class TestMenuProvider extends TestProvider {
         childEntity.setCode("test-child");
         childEntity.setName("测试子菜单");
         childEntity.setIcon("icon-child");
+        childEntity.setUrl("@/test-child");
         childEntity.setType(MenuType.BACKEND.getValue());
         childEntity.setEnabled(Boolean.TRUE);
         childEntity.setOrder(0);
@@ -189,6 +192,7 @@ public class TestMenuProvider extends TestProvider {
         parentEntity.setCode("test-parent");
         parentEntity.setName("测试父菜单");
         parentEntity.setIcon("icon-parent");
+        parentEntity.setUrl("");
         parentEntity.setType(MenuType.BACKEND.getValue());
         parentEntity.setEnabled(Boolean.TRUE);
         parentEntity.setOrder(0);
@@ -203,6 +207,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -217,6 +222,7 @@ public class TestMenuProvider extends TestProvider {
         childEntity.setCode("test-child");
         childEntity.setName("测试子菜单");
         childEntity.setIcon("icon-child");
+        childEntity.setUrl("@/test-child");
         childEntity.setType(MenuType.BACKEND.getValue());
         childEntity.setEnabled(Boolean.TRUE);
         childEntity.setOrder(0);
@@ -273,6 +279,7 @@ public class TestMenuProvider extends TestProvider {
         parentEntity.setCode("test-parent");
         parentEntity.setName("测试父菜单");
         parentEntity.setIcon("icon-parent");
+        parentEntity.setUrl("");
         parentEntity.setType(MenuType.BACKEND.getValue());
         parentEntity.setEnabled(Boolean.TRUE);
         parentEntity.setOrder(0);
@@ -287,6 +294,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -301,6 +309,7 @@ public class TestMenuProvider extends TestProvider {
         childEntity.setCode("test-child");
         childEntity.setName("测试子菜单");
         childEntity.setIcon("icon-child");
+        childEntity.setUrl("@/test-child");
         childEntity.setType(MenuType.BACKEND.getValue());
         childEntity.setEnabled(Boolean.TRUE);
         childEntity.setOrder(0);
@@ -357,6 +366,7 @@ public class TestMenuProvider extends TestProvider {
         parentEntity.setCode("test-parent");
         parentEntity.setName("测试父菜单");
         parentEntity.setIcon("icon-parent");
+        parentEntity.setUrl("");
         parentEntity.setType(MenuType.BACKEND.getValue());
         parentEntity.setEnabled(Boolean.TRUE);
         parentEntity.setOrder(0);
@@ -371,6 +381,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -385,6 +396,7 @@ public class TestMenuProvider extends TestProvider {
         childEntity.setCode("test-child");
         childEntity.setName("测试子菜单");
         childEntity.setIcon("icon-child");
+        childEntity.setUrl("@/test-child");
         childEntity.setType(MenuType.BACKEND.getValue());
         childEntity.setEnabled(Boolean.TRUE);
         childEntity.setOrder(0);
@@ -445,6 +457,7 @@ public class TestMenuProvider extends TestProvider {
         parentEntity.setCode("test-parent");
         parentEntity.setName("测试父菜单");
         parentEntity.setIcon("icon-parent");
+        parentEntity.setUrl("");
         parentEntity.setType(MenuType.BACKEND.getValue());
         parentEntity.setEnabled(Boolean.TRUE);
         parentEntity.setOrder(0);
@@ -459,6 +472,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -473,6 +487,7 @@ public class TestMenuProvider extends TestProvider {
         childEntity.setCode("test-child");
         childEntity.setName("测试子菜单");
         childEntity.setIcon("icon-child");
+        childEntity.setUrl("@/test-child");
         childEntity.setType(MenuType.BACKEND.getValue());
         childEntity.setEnabled(Boolean.TRUE);
         childEntity.setOrder(0);
@@ -510,6 +525,7 @@ public class TestMenuProvider extends TestProvider {
                 .code("test")
                 .name("测试菜单")
                 .icon("icon")
+                .url("@/test")
                 .type(MenuType.BACKEND.getValue())
                 .enabled(Boolean.TRUE)
                 .order(0)
@@ -551,6 +567,7 @@ public class TestMenuProvider extends TestProvider {
                 .code("test")
                 .name("测试菜单")
                 .icon("icon")
+                .url("@/test")
                 .type(MenuType.BACKEND.getValue())
                 .enabled(Boolean.TRUE)
                 .order(0)
@@ -593,6 +610,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -642,6 +660,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -695,6 +714,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);
@@ -733,6 +753,7 @@ public class TestMenuProvider extends TestProvider {
         menuEntity.setCode("test");
         menuEntity.setName("测试菜单");
         menuEntity.setIcon("icon");
+        menuEntity.setUrl("@/test");
         menuEntity.setType(MenuType.BACKEND.getValue());
         menuEntity.setEnabled(Boolean.TRUE);
         menuEntity.setOrder(0);

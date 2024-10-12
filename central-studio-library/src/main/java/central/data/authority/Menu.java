@@ -84,6 +84,12 @@ public class Menu extends ModifiableEntity implements Codeable, Available, Remar
     private String icon;
 
     /**
+     * 地址
+     */
+    @Nullable
+    private String url;
+
+    /**
      * 菜单类型
      *
      * @see MenuType
@@ -163,6 +169,7 @@ public class Menu extends ModifiableEntity implements Codeable, Available, Remar
                 .code(this.getCode())
                 .name(this.getName())
                 .icon(this.getIcon())
+                .url(this.getUrl())
                 .type(this.getType())
                 .enabled(this.getEnabled())
                 .order(this.getOrder())

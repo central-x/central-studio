@@ -173,7 +173,9 @@ public class TestIndexController extends TestController {
      * @see IdentityIndexController#logout
      */
     @Test
-    public void case5(@Autowired MockMvc mvc, @Autowired final CookieStore cookieStore) throws Exception {
+    public void case5(@Autowired MockMvc mvc) throws Exception {
+        var cookieStore = new CookieStore();
+
         // 获取当前用户信息请求
         ThrowableSupplier<MockHttpServletRequestBuilder, Exception> accountRequestSupplier = () -> MockMvcRequestBuilders.get("/identity/api/account")
                 .cookie(cookieStore.getCookies("/identity/api/account"))

@@ -18,6 +18,7 @@ query MenuProvider($id: String) {
                 code
                 name
                 icon
+                url
                 type
                 enabled
                 order
@@ -40,7 +41,6 @@ query MenuProvider($id: String) {
                     menuId
                     code
                     name
-                    enabled
                 }
 
                 creatorId
@@ -84,6 +84,7 @@ query MenuProvider($ids: [String]) {
                 code
                 name
                 icon
+                url
                 type
                 enabled
                 order
@@ -106,7 +107,6 @@ query MenuProvider($ids: [String]) {
                     menuId
                     code
                     name
-                    enabled
                 }
 
                 creatorId
@@ -150,6 +150,7 @@ query MenuProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $
                 code
                 name
                 icon
+                url
                 type
                 enabled
                 order
@@ -172,7 +173,6 @@ query MenuProvider($limit: Long, $offset: Long, $conditions: [ConditionInput], $
                     menuId
                     code
                     name
-                    enabled
                 }
 
                 creatorId
@@ -224,6 +224,7 @@ query MenuProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInp
                         code
                         name
                         icon
+                        url
                         type
                         enabled
                         order
@@ -246,7 +247,6 @@ query MenuProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionInp
                             menuId
                             code
                             name
-                            enabled
                         }
 
                         creatorId
@@ -307,6 +307,7 @@ mutation MenuProvider($input: MenuInput, $operator: String) {
                 code
                 name
                 icon
+                url
                 type
                 enabled
                 order
@@ -329,7 +330,6 @@ mutation MenuProvider($input: MenuInput, $operator: String) {
                     menuId
                     code
                     name
-                    enabled
                 }
 
                 creatorId
@@ -373,6 +373,7 @@ mutation MenuProvider($inputs: [MenuInput], $operator: String) {
                 code
                 name
                 icon
+                url
                 type
                 enabled
                 order
@@ -395,7 +396,6 @@ mutation MenuProvider($inputs: [MenuInput], $operator: String) {
                     menuId
                     code
                     name
-                    enabled
                 }
 
                 creatorId
@@ -439,6 +439,7 @@ mutation MenuProvider($input: MenuInput, $operator: String) {
                 code
                 name
                 icon
+                url
                 type
                 enabled
                 order
@@ -461,7 +462,6 @@ mutation MenuProvider($input: MenuInput, $operator: String) {
                     menuId
                     code
                     name
-                    enabled
                 }
 
                 creatorId
@@ -505,6 +505,7 @@ mutation MenuProvider($inputs: [MenuInput], $operator: String) {
                 code
                 name
                 icon
+                url
                 type
                 enabled
                 order
@@ -527,7 +528,6 @@ mutation MenuProvider($inputs: [MenuInput], $operator: String) {
                     menuId
                     code
                     name
-                    enabled
                 }
 
                 creatorId
