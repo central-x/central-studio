@@ -24,10 +24,22 @@
 
 package central.studio.dashboard.controller.system.controller;
 
+import central.bean.Page;
+import central.data.system.Database;
+import central.starter.web.param.IdsParams;
+import central.starter.web.query.IdQuery;
+import central.studio.dashboard.controller.system.param.DatabaseParams;
+import central.studio.dashboard.controller.system.query.DatabasePageQuery;
+import central.studio.dashboard.logic.system.DatabaseLogic;
+import central.validation.group.Insert;
+import central.validation.group.Update;
+import central.web.XForwardedHeaders;
+import jakarta.validation.groups.Default;
+import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Database Controller
@@ -35,11 +47,10 @@ import org.springframework.web.bind.annotation.RestController;
  * 数据源管理
  *
  * @author Alan Yeh
- * @since 2023/11/21
+ * @since 2024/10/20
  */
 @RestController
 @RequiresAuthentication
-@RequiresPermissions(DatabaseController.Permissions.VIEW)
 @RequestMapping("/dashboard/api/system/databases")
 public class DatabaseController {
 
@@ -53,5 +64,70 @@ public class DatabaseController {
         String REMOVE = "${application}:system:database:remove";
         String ENABLE = "${application}:system:database:enable";
         String DISABLE = "${application}:system:database:disable";
+    }
+
+    @Setter(onMethod_ = @Autowired)
+    private DatabaseLogic logic;
+
+    /**
+     * 按条件分页查询字典列表
+     *
+     * @param query  查询
+     * @param tenant 租户标识
+     * @return 分页结果
+     */
+    @GetMapping("/page")
+    public Page<Database> page(@Validated DatabasePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
+    }
+
+    /**
+     * 根据主键查询字典详情
+     *
+     * @param query  查询
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    @GetMapping("/details")
+    public Database details(@Validated IdQuery<Database> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.findById(query.getId(), tenant);
+    }
+
+    /**
+     * 新增字典
+     *
+     * @param params 字典入参
+     * @param tenant 租户标识
+     * @return 新增后的字典
+     */
+    @PostMapping
+    public Database add(@RequestBody @Validated({Insert.class, Default.class}) DatabaseParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.insert(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 更新字典
+     *
+     * @param params    字典入参
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 更新后字典数据
+     */
+    @PutMapping
+    public Database update(@RequestBody @Validated({Update.class, Default.class}) DatabaseParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.update(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 根据主键删除字典数据
+     *
+     * @param params    待删除主键列表
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    @DeleteMapping
+    public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
 }
