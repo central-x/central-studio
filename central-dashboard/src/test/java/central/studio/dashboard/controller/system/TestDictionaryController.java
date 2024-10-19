@@ -84,6 +84,7 @@ public class TestDictionaryController extends TestController {
 
     /**
      * @see DictionaryController#add
+     * @see DictionaryController#page
      * @see DictionaryController#details
      * @see DictionaryController#delete
      */
@@ -170,6 +171,182 @@ public class TestDictionaryController extends TestController {
                 .andExpect(jsonPath("$.items[1].name").value("男性"))
                 .andExpect(jsonPath("$.items[2].code").value("female"))
                 .andExpect(jsonPath("$.items[2].name").value("女性"));
+
+        // 分页查询
+        var pageRequest = MockMvcRequestBuilders.get(PATH + "/page")
+                .cookie(this.getSessionCookie(PATH + "/page", mvc, cookieStore))
+                .queryParam("applicationId", application.getId())
+                .queryParam("pageIndex", "1")
+                .queryParam("pageSize", "20")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master");
+        mvc.perform(pageRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.pager.pageIndex").value(1))
+                .andExpect(jsonPath("$.pager.pageSize").value(20))
+                .andExpect(jsonPath("$.pager.pageCount").value(1))
+                .andExpect(jsonPath("$.pager.itemCount").value(1))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data[0].id").value(body.getId()))
+                .andExpect(jsonPath("$.data[0].applicationId").value(body.getApplicationId()))
+                .andExpect(jsonPath("$.data[0].code").value(body.getCode()))
+                .andExpect(jsonPath("$.data[0].name").value(body.getName()))
+                .andExpect(jsonPath("$.data[0].enabled").value(body.getEnabled()))
+                .andExpect(jsonPath("$.data[0].remark").value(body.getRemark()))
+                .andExpect(jsonPath("$.data[0].items").isArray())
+                .andExpect(jsonPath("$.data[0].items").isNotEmpty())
+                .andExpect(jsonPath("$.data[0].items[0].code").value("unknown"))
+                .andExpect(jsonPath("$.data[0].items[0].name").value("未知"))
+                .andExpect(jsonPath("$.data[0].items[1].code").value("male"))
+                .andExpect(jsonPath("$.data[0].items[1].name").value("男性"))
+                .andExpect(jsonPath("$.data[0].items[2].code").value("female"))
+                .andExpect(jsonPath("$.data[0].items[2].name").value("女性"));
+
+        // 删除数据
+        var deleteRequest = MockMvcRequestBuilders.delete(PATH)
+                .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                .queryParam("ids", body.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master");
+
+        mvc.perform(deleteRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("1"));
+    }
+
+    /**
+     * @see DictionaryController#add
+     * @see DictionaryController#update
+     * @see DictionaryController#details
+     * @see DictionaryController#delete
+     */
+    @Test
+    public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
+        var application = this.getApplication(context);
+
+        // 新增
+        var addRequest = MockMvcRequestBuilders.post(PATH)
+                .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Jsonx.Default().serialize(Mapx.of(
+                        Mapx.entry("applicationId", application.getId()),
+                        Mapx.entry("code", "sex"),
+                        Mapx.entry("name", "性别"),
+                        Mapx.entry("enabled", "true"),
+                        Mapx.entry("remark", "性别"),
+                        Mapx.entry("items", List.of(
+                                Mapx.of(
+                                        Mapx.entry("code", "unknown"),
+                                        Mapx.entry("name", "未知"),
+                                        Mapx.entry("primary", true),
+                                        Mapx.entry("order", -1)
+                                ), Mapx.of(
+                                        Mapx.entry("code", "male"),
+                                        Mapx.entry("name", "男性"),
+                                        Mapx.entry("primary", false),
+                                        Mapx.entry("order", 0)
+                                ), Mapx.of(
+                                        Mapx.entry("code", "female"),
+                                        Mapx.entry("name", "女性"),
+                                        Mapx.entry("primary", false),
+                                        Mapx.entry("order", 1)
+                                )
+                        ))
+                )))
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master");
+        var response = mvc.perform(addRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.applicationId").isNotEmpty())
+                .andExpect(jsonPath("$.code").isNotEmpty())
+                .andExpect(jsonPath("$.name").isNotEmpty())
+                .andExpect(jsonPath("$.enabled").isNotEmpty())
+                .andExpect(jsonPath("$.remark").isNotEmpty())
+                .andExpect(jsonPath("$.items").isArray())
+                .andExpect(jsonPath("$.items").isNotEmpty())
+                .andExpect(jsonPath("$.items[0].code").value("unknown"))
+                .andExpect(jsonPath("$.items[0].name").value("未知"))
+                .andExpect(jsonPath("$.items[1].code").value("male"))
+                .andExpect(jsonPath("$.items[1].name").value("男性"))
+                .andExpect(jsonPath("$.items[2].code").value("female"))
+                .andExpect(jsonPath("$.items[2].name").value("女性"))
+                .andReturn().getResponse();
+
+        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Dictionary.class));
+        assertNotNull(body);
+
+        // 更新
+        var updateRequest = MockMvcRequestBuilders.put(PATH)
+                .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Jsonx.Default().serialize(Mapx.of(
+                        Mapx.entry("id", body.getId()),
+                        Mapx.entry("applicationId", application.getId()),
+                        Mapx.entry("code", body.getCode()),
+                        Mapx.entry("name", body.getName()),
+                        Mapx.entry("enabled", "false"),
+                        Mapx.entry("remark", body.getRemark()),
+                        Mapx.entry("items", List.of(
+                                Mapx.of(
+                                        Mapx.entry("code", "male"),
+                                        Mapx.entry("name", "男性"),
+                                        Mapx.entry("primary", false),
+                                        Mapx.entry("order", 0)),
+                                Mapx.of(
+                                        Mapx.entry("code", "female"),
+                                        Mapx.entry("name", "女性"),
+                                        Mapx.entry("primary", false),
+                                        Mapx.entry("order", 1)
+                                )))
+                )))
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master");
+
+        mvc.perform(updateRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                .andExpect(jsonPath("$.id").value(body.getId()))
+                .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
+                .andExpect(jsonPath("$.code").value(body.getCode()))
+                .andExpect(jsonPath("$.name").value(body.getName()))
+                .andExpect(jsonPath("$.enabled").value("false"))
+                .andExpect(jsonPath("$.remark").value(body.getRemark()))
+                .andExpect(jsonPath("$.items").isArray())
+                .andExpect(jsonPath("$.items").isNotEmpty())
+                .andExpect(jsonPath("$.items[0].code").value("male"))
+                .andExpect(jsonPath("$.items[0].name").value("男性"))
+                .andExpect(jsonPath("$.items[1].code").value("female"))
+                .andExpect(jsonPath("$.items[1].name").value("女性"));
+
+        // 详情查询
+        var detailsRequest = MockMvcRequestBuilders.get(PATH + "/details")
+                .cookie(this.getSessionCookie(PATH + "/details", mvc, cookieStore))
+                .queryParam("id", body.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .header(XForwardedHeaders.TENANT, "master");
+
+        mvc.perform(detailsRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                .andExpect(jsonPath("$.id").value(body.getId()))
+                .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
+                .andExpect(jsonPath("$.code").value(body.getCode()))
+                .andExpect(jsonPath("$.name").value(body.getName()))
+                .andExpect(jsonPath("$.enabled").value("false"))
+                .andExpect(jsonPath("$.remark").value(body.getRemark()))
+                .andExpect(jsonPath("$.items").isArray())
+                .andExpect(jsonPath("$.items").isNotEmpty())
+                .andExpect(jsonPath("$.items[0].code").value("male"))
+                .andExpect(jsonPath("$.items[0].name").value("男性"))
+                .andExpect(jsonPath("$.items[1].code").value("female"))
+                .andExpect(jsonPath("$.items[1].name").value("女性"));
 
         // 删除数据
         var deleteRequest = MockMvcRequestBuilders.delete(PATH)

@@ -31,12 +31,15 @@ import central.validation.group.Insert;
 import central.validation.group.Update;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /**
- * Dictionary Input
+ * Dictionary Params
  * <p>
  * 字典入参
  *
@@ -44,6 +47,9 @@ import java.util.List;
  * @since 2024/09/24
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DictionaryParams {
 
     @Label("主键")

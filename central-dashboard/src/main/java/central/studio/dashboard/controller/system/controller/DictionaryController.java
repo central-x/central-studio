@@ -79,7 +79,7 @@ public class DictionaryController {
      */
     @GetMapping("/page")
     public Page<Dictionary> page(@Validated DictionaryPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.pageBy(query.getPageIndex(), query.getPageIndex(), query.build(), null, tenant);
+        return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
     /**

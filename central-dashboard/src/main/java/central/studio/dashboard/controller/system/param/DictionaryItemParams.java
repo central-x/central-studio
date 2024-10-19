@@ -30,7 +30,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Dictionary Item Params
@@ -41,6 +44,9 @@ import lombok.Data;
  * @since 2024/09/24
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DictionaryItemParams {
 
     @Label("标识")

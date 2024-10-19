@@ -64,7 +64,7 @@ public class DictionaryLogic {
     @Setter(onMethod_ = @Autowired)
     private DataContext context;
 
-    private SaasContainer getSaaSContainer() {
+    private SaasContainer getSaasContainer() {
         return context.getData(DataFetcherType.SAAS);
     }
 
@@ -115,7 +115,7 @@ public class DictionaryLogic {
      * @return 插入后的数据
      */
     public Dictionary insert(@Nonnull @Validated({Insert.class, Default.class}) DictionaryInput input, @Nonnull String accountId, @Nonnull String tenant) {
-        if (this.getSaaSContainer().getApplicationById(input.getApplicationId()) == null) {
+        if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
         }
 
@@ -131,7 +131,7 @@ public class DictionaryLogic {
      * @return 更新后的数据
      */
     public Dictionary update(@Nonnull @Validated({Update.class, Default.class}) DictionaryInput input, @Nonnull String accountId, @Nonnull String tenant) {
-        if (this.getSaaSContainer().getApplicationById(input.getApplicationId()) == null) {
+        if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
         }
         return this.provider.update(input, accountId, tenant);
