@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.system;
+package central.studio.dashboard.controller.storage;
 
 import central.data.saas.Application;
 import central.data.system.Database;
-import central.data.system.option.DatabaseType;
 import central.lang.reflect.TypeRef;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
@@ -34,9 +33,8 @@ import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
-import central.studio.dashboard.controller.system.controller.DatabaseController;
-import central.studio.dashboard.controller.system.param.DatabaseParams;
-import central.studio.dashboard.controller.system.param.DatabasePropertiesParams;
+import central.studio.dashboard.controller.storage.controller.BucketController;
+import central.studio.dashboard.controller.storage.param.BucketParams;
 import central.util.Jsonx;
 import central.util.Listx;
 import central.util.Mapx;
@@ -51,20 +49,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Database Controller Test Cases
+ * Storage Bucket Controller Test Cases
  *
  * @author Alan Yeh
- * @since 2024/10/20
+ * @since 2024/10/29
  */
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
-public class TestDatabaseController extends TestController {
-
-    private static final String PATH = "/dashboard/api/system/databases";
+public class TestBucketController extends TestController {
+    private static final String PATH = "/dashboard/api/storage/buckets";
 
     @BeforeAll
     public static void setup(@Autowired DataContext context) throws Exception {
@@ -84,10 +83,10 @@ public class TestDatabaseController extends TestController {
     }
 
     /**
-     * @see DatabaseController#add
-     * @see DatabaseController#details
-     * @see DatabaseController#page
-     * @see DatabaseController#delete
+     * @see BucketController#add
+     * @see BucketController#details
+     * @see BucketController#page
+     * @see BucketController#delete
      */
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
@@ -97,34 +96,15 @@ public class TestDatabaseController extends TestController {
         var addRequest = MockMvcRequestBuilders.post(PATH)
                 .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Jsonx.Default().serialize(DatabaseParams.builder()
+                .content(Jsonx.Default().serialize(BucketParams.builder()
                         .applicationId(application.getId())
                         .code("test")
-                        .name("测试数据库")
-                        .type(DatabaseType.H2.getValue())
+                        .name("测试存储桶")
+                        .type("local")
                         .enabled(Boolean.TRUE)
-                        .remark("测试用数据库")
-                        .master(DatabasePropertiesParams.builder()
-                                .driver("org.h2.Driver")
-                                .url("jdbc:h2:mem:master")
-                                .username("centralx")
-                                .password("x.123456")
-                                .build())
-                        .slaves(Listx.of(DatabasePropertiesParams.builder()
-                                        .driver("org.h2.Driver")
-                                        .url("jdbc:h2:mem:slave1")
-                                        .username("centralx")
-                                        .password("x.123456")
-                                        .build(),
-                                DatabasePropertiesParams.builder()
-                                        .driver("org.h2.Driver")
-                                        .url("jdbc:h2:mem:slave2")
-                                        .username("centralx")
-                                        .password("x.123456")
-                                        .build()))
+                        .remark("测试用存储桶")
                         .params(Jsonx.Default().serialize(Mapx.of(
-                                Mapx.entry("initial-size", 3),
-                                Mapx.entry("max-active", 50))))
+                                Mapx.entry("location", "./data"))))
                         .build()))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(XForwardedHeaders.TENANT, "master");
@@ -136,13 +116,10 @@ public class TestDatabaseController extends TestController {
                 .andExpect(jsonPath("$.applicationId").isNotEmpty())
                 .andExpect(jsonPath("$.code").isNotEmpty())
                 .andExpect(jsonPath("$.name").isNotEmpty())
+                .andExpect(jsonPath("$.type").isNotEmpty())
                 .andExpect(jsonPath("$.enabled").isNotEmpty())
                 .andExpect(jsonPath("$.remark").isNotEmpty())
-                .andExpect(jsonPath("$.master").isMap())
-                .andExpect(jsonPath("$.master.driver").value("org.h2.Driver"))
-                .andExpect(jsonPath("$.master.url").value("jdbc:h2:mem:master"))
-                .andExpect(jsonPath("$.slaves").isArray())
-                .andExpect(jsonPath("$.slaves[0].driver").value("org.h2.Driver"))
+                .andExpect(jsonPath("$.params").isNotEmpty())
                 .andReturn().getResponse();
 
         var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Database.class));
@@ -159,17 +136,13 @@ public class TestDatabaseController extends TestController {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
-                .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.applicationId").isNotEmpty())
-                .andExpect(jsonPath("$.code").isNotEmpty())
-                .andExpect(jsonPath("$.name").isNotEmpty())
-                .andExpect(jsonPath("$.enabled").isNotEmpty())
-                .andExpect(jsonPath("$.remark").isNotEmpty())
-                .andExpect(jsonPath("$.master").isMap())
-                .andExpect(jsonPath("$.master.driver").value("org.h2.Driver"))
-                .andExpect(jsonPath("$.master.url").value("jdbc:h2:mem:master"))
-                .andExpect(jsonPath("$.slaves").isArray())
-                .andExpect(jsonPath("$.slaves[0].driver").value("org.h2.Driver"));
+                .andExpect(jsonPath("$.id").value(body.getId()))
+                .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
+                .andExpect(jsonPath("$.code").value(body.getCode()))
+                .andExpect(jsonPath("$.name").value(body.getName()))
+                .andExpect(jsonPath("$.enabled").value(body.getEnabled()))
+                .andExpect(jsonPath("$.remark").value(body.getRemark()))
+                .andExpect(jsonPath("$.params").value(body.getParams()));
 
         // 分页查询
         var pageRequest = MockMvcRequestBuilders.get(PATH + "/page")
@@ -187,17 +160,13 @@ public class TestDatabaseController extends TestController {
                 .andExpect(jsonPath("$.pager.pageCount").value(1))
                 .andExpect(jsonPath("$.pager.itemCount").value(1))
                 .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data[0].id").isNotEmpty())
-                .andExpect(jsonPath("$.data[0].applicationId").isNotEmpty())
-                .andExpect(jsonPath("$.data[0].code").isNotEmpty())
-                .andExpect(jsonPath("$.data[0].name").isNotEmpty())
-                .andExpect(jsonPath("$.data[0].enabled").isNotEmpty())
-                .andExpect(jsonPath("$.data[0].remark").isNotEmpty())
-                .andExpect(jsonPath("$.data[0].master").isMap())
-                .andExpect(jsonPath("$.data[0].master.driver").value("org.h2.Driver"))
-                .andExpect(jsonPath("$.data[0].master.url").value("jdbc:h2:mem:master"))
-                .andExpect(jsonPath("$.data[0].slaves").isArray())
-                .andExpect(jsonPath("$.data[0].slaves[0].driver").value("org.h2.Driver"));
+                .andExpect(jsonPath("$.data[0].id").value(body.getId()))
+                .andExpect(jsonPath("$.data[0].applicationId").value(body.getApplicationId()))
+                .andExpect(jsonPath("$.data[0].code").value(body.getCode()))
+                .andExpect(jsonPath("$.data[0].name").value(body.getName()))
+                .andExpect(jsonPath("$.data[0].enabled").value(body.getEnabled()))
+                .andExpect(jsonPath("$.data[0].remark").value(body.getRemark()))
+                .andExpect(jsonPath("$.data[0].params").value(body.getParams()));
 
         // 删除数据
         var deleteRequest = MockMvcRequestBuilders.delete(PATH)
@@ -213,10 +182,10 @@ public class TestDatabaseController extends TestController {
     }
 
     /**
-     * @see DatabaseController#add
-     * @see DatabaseController#update
-     * @see DatabaseController#details
-     * @see DatabaseController#delete
+     * @see BucketController#add
+     * @see BucketController#update
+     * @see BucketController#details
+     * @see BucketController#delete
      */
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
@@ -226,34 +195,15 @@ public class TestDatabaseController extends TestController {
         var addRequest = MockMvcRequestBuilders.post(PATH)
                 .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Jsonx.Default().serialize(DatabaseParams.builder()
+                .content(Jsonx.Default().serialize(BucketParams.builder()
                         .applicationId(application.getId())
                         .code("test")
-                        .name("测试数据库")
-                        .type(DatabaseType.H2.getValue())
+                        .name("测试存储桶")
+                        .type("local")
                         .enabled(Boolean.TRUE)
-                        .remark("测试用数据库")
-                        .master(DatabasePropertiesParams.builder()
-                                .driver("org.h2.Driver")
-                                .url("jdbc:h2:mem:master")
-                                .username("centralx")
-                                .password("x.123456")
-                                .build())
-                        .slaves(Listx.of(DatabasePropertiesParams.builder()
-                                        .driver("org.h2.Driver")
-                                        .url("jdbc:h2:mem:slave1")
-                                        .username("centralx")
-                                        .password("x.123456")
-                                        .build(),
-                                DatabasePropertiesParams.builder()
-                                        .driver("org.h2.Driver")
-                                        .url("jdbc:h2:mem:slave2")
-                                        .username("centralx")
-                                        .password("x.123456")
-                                        .build()))
+                        .remark("测试用存储桶")
                         .params(Jsonx.Default().serialize(Mapx.of(
-                                Mapx.entry("initial-size", 3),
-                                Mapx.entry("max-active", 50))))
+                                Mapx.entry("location", "./data"))))
                         .build()))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(XForwardedHeaders.TENANT, "master");
@@ -265,13 +215,10 @@ public class TestDatabaseController extends TestController {
                 .andExpect(jsonPath("$.applicationId").isNotEmpty())
                 .andExpect(jsonPath("$.code").isNotEmpty())
                 .andExpect(jsonPath("$.name").isNotEmpty())
+                .andExpect(jsonPath("$.type").isNotEmpty())
                 .andExpect(jsonPath("$.enabled").isNotEmpty())
                 .andExpect(jsonPath("$.remark").isNotEmpty())
-                .andExpect(jsonPath("$.master").isMap())
-                .andExpect(jsonPath("$.master.driver").value("org.h2.Driver"))
-                .andExpect(jsonPath("$.master.url").value("jdbc:h2:mem:master"))
-                .andExpect(jsonPath("$.slaves").isArray())
-                .andExpect(jsonPath("$.slaves[0].driver").value("org.h2.Driver"))
+                .andExpect(jsonPath("$.params").isNotEmpty())
                 .andReturn().getResponse();
 
         var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Database.class));
@@ -281,31 +228,16 @@ public class TestDatabaseController extends TestController {
         var updateRequest = MockMvcRequestBuilders.put(PATH)
                 .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Jsonx.Default().serialize(DatabaseParams.builder()
+                .content(Jsonx.Default().serialize(BucketParams.builder()
                         .id(body.getId())
                         .applicationId(body.getApplicationId())
                         .code(body.getCode())
                         .name(body.getName())
                         .type(body.getType())
-                        // 修改为禁用
                         .enabled(Boolean.FALSE)
                         .remark(body.getRemark())
-                        .master(DatabasePropertiesParams.builder()
-                                .driver(body.getMaster().getDriver())
-                                .url(body.getMaster().getUrl())
-                                .username(body.getMaster().getUsername())
-                                .password(body.getMaster().getPassword())
-                                .build())
-                        .slaves(Listx.of(
-                                // 移除了一个 Slave
-                                DatabasePropertiesParams.builder()
-                                        .driver(body.getSlaves().get(1).getDriver())
-                                        .url(body.getSlaves().get(1).getUrl())
-                                        .username(body.getSlaves().get(1).getUsername())
-                                        .password(body.getSlaves().get(1).getPassword())
-                                        .build()
-                        ))
-                        .params(body.getParams())
+                        .params(Jsonx.Default().serialize(Mapx.of(
+                                Mapx.entry("location", "./data2"))))
                         .build()))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(XForwardedHeaders.TENANT, "master");
@@ -314,18 +246,13 @@ public class TestDatabaseController extends TestController {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
-                .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.applicationId").isNotEmpty())
-                .andExpect(jsonPath("$.code").isNotEmpty())
-                .andExpect(jsonPath("$.name").isNotEmpty())
+                .andExpect(jsonPath("$.id").value(body.getId()))
+                .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
+                .andExpect(jsonPath("$.code").value(body.getCode()))
+                .andExpect(jsonPath("$.name").value(body.getName()))
                 .andExpect(jsonPath("$.enabled").value(false))
-                .andExpect(jsonPath("$.remark").isNotEmpty())
-                .andExpect(jsonPath("$.master").isMap())
-                .andExpect(jsonPath("$.master.driver").value("org.h2.Driver"))
-                .andExpect(jsonPath("$.master.url").value("jdbc:h2:mem:master"))
-                .andExpect(jsonPath("$.slaves").isArray())
-                .andExpect(jsonPath("$.slaves[0].driver").value("org.h2.Driver"))
-                .andExpect(jsonPath("$.slaves[0].url").value("jdbc:h2:mem:slave2"));
+                .andExpect(jsonPath("$.remark").value(body.getRemark()))
+                .andExpect(jsonPath("$.params").value(Jsonx.Default().serialize(Map.of("location", "./data2"))));
 
         // 详情查询
         var detailsRequest = MockMvcRequestBuilders.get(PATH + "/details")
@@ -338,18 +265,13 @@ public class TestDatabaseController extends TestController {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
-                .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.applicationId").isNotEmpty())
-                .andExpect(jsonPath("$.code").isNotEmpty())
-                .andExpect(jsonPath("$.name").isNotEmpty())
+                .andExpect(jsonPath("$.id").value(body.getId()))
+                .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
+                .andExpect(jsonPath("$.code").value(body.getCode()))
+                .andExpect(jsonPath("$.name").value(body.getName()))
                 .andExpect(jsonPath("$.enabled").value(false))
-                .andExpect(jsonPath("$.remark").isNotEmpty())
-                .andExpect(jsonPath("$.master").isMap())
-                .andExpect(jsonPath("$.master.driver").value("org.h2.Driver"))
-                .andExpect(jsonPath("$.master.url").value("jdbc:h2:mem:master"))
-                .andExpect(jsonPath("$.slaves").isArray())
-                .andExpect(jsonPath("$.slaves[0].driver").value("org.h2.Driver"))
-                .andExpect(jsonPath("$.slaves[0].url").value("jdbc:h2:mem:slave2"));
+                .andExpect(jsonPath("$.remark").value(body.getRemark()))
+                .andExpect(jsonPath("$.params").value(Jsonx.Default().serialize(Map.of("location", "./data2"))));
 
         // 删除数据
         var deleteRequest = MockMvcRequestBuilders.delete(PATH)
