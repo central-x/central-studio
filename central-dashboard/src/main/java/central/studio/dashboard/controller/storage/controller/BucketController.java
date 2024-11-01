@@ -26,10 +26,14 @@ package central.studio.dashboard.controller.storage.controller;
 
 import central.bean.Page;
 import central.data.storage.StorageBucket;
+import central.data.storage.StorageObject;
+import central.lang.Stringx;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.storage.param.BucketParams;
+import central.studio.dashboard.controller.storage.param.ObjectParams;
 import central.studio.dashboard.controller.storage.query.BucketPageQuery;
+import central.studio.dashboard.controller.storage.query.ObjectPageQuery;
 import central.studio.dashboard.logic.storage.StorageLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -38,8 +42,12 @@ import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 /**
  * Storage Bucket Controller
@@ -71,7 +79,7 @@ public class BucketController {
      *
      * @param query  查询
      * @param tenant 租户标识
-     * @return 列表结果
+     * @return 分页结果
      */
     @GetMapping("/page")
     public Page<StorageBucket> page(@Validated BucketPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -127,5 +135,55 @@ public class BucketController {
     @DeleteMapping
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
+    }
+
+    /**
+     * 按条件分页查询存储对象列表
+     *
+     * @param query  查询
+     * @param tenant 租户标识
+     * @return 列表结果
+     */
+    @GetMapping("/objects/page")
+    public Page<StorageObject> pageObjects(@Validated ObjectPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.pageObjects(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
+    }
+
+    /**
+     * 修改存储对象
+     * <p>
+     * 只能修改对象文件名和确认状态
+     *
+     * @param params    待修改数据
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 更新后的数据
+     */
+    public StorageObject updateObject(@Validated @RequestBody ObjectParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var object = this.logic.findObjectById(params.getId(), tenant);
+        if (object == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("文件[id={}]不存在", params.getId()));
+        }
+        if (!Objects.equals(object.getBucketId(), params.getBucketId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("文件[id={}]不存在", params.getId()));
+        }
+
+        var input = object.toInput();
+        input.setName(params.getName());
+        input.setConfirmed(params.getConfirmed());
+        return this.logic.updateObject(input, accountId, tenant);
+    }
+
+    /**
+     * 根据主键删除存储对象数据
+     *
+     * @param params    待删除主键列表
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    @DeleteMapping("/objects")
+    public long deleteObjects(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.deleteObjectByIds(params.getIds(), accountId, tenant);
     }
 }

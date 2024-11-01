@@ -27,8 +27,11 @@ package central.studio.dashboard.logic.storage;
 import central.bean.Page;
 import central.data.storage.StorageBucket;
 import central.data.storage.StorageBucketInput;
+import central.data.storage.StorageObject;
+import central.data.storage.StorageObjectInput;
 import central.lang.Stringx;
 import central.provider.graphql.storage.StorageBucketProvider;
+import central.provider.graphql.storage.StorageObjectProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
@@ -62,6 +65,9 @@ public class StorageLogic {
     private StorageBucketProvider bucketProvider;
 
     @Setter(onMethod_ = @Autowired)
+    private StorageObjectProvider objectProvider;
+
+    @Setter(onMethod_ = @Autowired)
     private DataContext context;
 
     private SaasContainer getSaasContainer() {
@@ -73,11 +79,23 @@ public class StorageLogic {
      *
      * @param orders 用户指定的排序条件
      */
-    private Orders<StorageBucket> getDefaultOrders(@Nullable Orders<StorageBucket> orders) {
+    private Orders<StorageBucket> getBucketDefaultOrders(@Nullable Orders<StorageBucket> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
         }
         return Orders.of(StorageBucket.class).asc(StorageBucket::getCode);
+    }
+
+    /**
+     * 如用用户没有指定排序条件，则构建默认的排序条件
+     *
+     * @param orders 用户指定的排序条件
+     */
+    private Orders<StorageObject> getObjectDefaultOrders(@Nullable Orders<StorageObject> orders) {
+        if (Collectionx.isNullOrEmpty(orders)) {
+            return orders;
+        }
+        return Orders.of(StorageObject.class).asc(StorageObject::getName);
     }
 
     /**
@@ -91,7 +109,7 @@ public class StorageLogic {
      * @return 分页数据
      */
     public Page<StorageBucket> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<StorageBucket> conditions, @Nullable Orders<StorageBucket> orders, @Nonnull String tenant) {
-        orders = this.getDefaultOrders(orders);
+        orders = this.getBucketDefaultOrders(orders);
         return this.bucketProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
@@ -148,5 +166,66 @@ public class StorageLogic {
      */
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.bucketProvider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param pageIndex  分页下标
+     * @param pageSize   分页大小
+     * @param conditions 筛选条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     * @return 分页数据
+     */
+    public Page<StorageObject> pageObjects(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<StorageObject> conditions, @Nullable Orders<StorageObject> orders, @Nonnull String tenant) {
+        return this.objectProvider.pageBy(pageIndex, pageSize, conditions, this.getObjectDefaultOrders(orders), tenant);
+    }
+
+    /**
+     * 主键查询
+     *
+     * @param id     主键
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    public StorageObject findObjectById(@Nonnull String id, @Nonnull String tenant) {
+        return this.objectProvider.findById(id, tenant);
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param input     数据输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 插入后的数据
+     */
+    public StorageObject insertObject(@Nonnull @Validated({Insert.class, Default.class}) StorageObjectInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.objectProvider.insert(input, tenant);
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param input     数据输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 更新后的数据
+     */
+    public StorageObject updateObject(@Nonnull @Validated({Update.class, Default.class}) StorageObjectInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.objectProvider.update(input, tenant);
+    }
+
+    /**
+     * 根据主键删除数据
+     *
+     * @param ids       主键
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deleteObjectByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.objectProvider.deleteByIds(ids, tenant);
     }
 }

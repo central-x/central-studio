@@ -24,12 +24,10 @@
 
 package central.studio.dashboard.controller.storage.query;
 
-import central.data.organization.option.AreaType;
-import central.data.storage.StorageBucket;
+import central.data.storage.StorageObject;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
 import central.starter.web.query.PageQuery;
-import central.validation.Enums;
 import central.validation.Label;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,57 +35,45 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 
 /**
- * Bucket Page Query
+ * Storage Object Page Query
  * <p>
- * 存储桶分页查询
+ * 存储对象分页查询
  *
  * @author Alan Yeh
- * @since 2024/10/29
+ * @since 2024/11/01
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class BucketPageQuery extends PageQuery<StorageBucket> {
+public class ObjectPageQuery extends PageQuery<StorageObject> {
     @Serial
-    private static final long serialVersionUID = -5018132706306974456L;
+    private static final long serialVersionUID = 7917881061907979327L;
 
-    @Label("主键")
-    private String id;
+    @Label("存储桶主键")
+    private String bucketId;
 
-    @Label("应用主键")
-    private String applicationId;
-
-    @Label("名称")
+    @Label("文件名称")
     private String name;
 
-    @Label("区划代码")
-    private String code;
-
-    @Label("类型")
-    @Enums(value = AreaType.class)
-    private String type;
+    @Label("确认状态")
+    private Boolean confirmed;
 
     @Override
-    public Conditions<StorageBucket> build() {
-        var conditions = Conditions.of(StorageBucket.class);
+    public Conditions<StorageObject> build() {
+        var conditions = Conditions.of(StorageObject.class).eq(StorageObject::getBucketId, this.getBucketId());
 
         // 精确字段搜索
-        if (Stringx.isNotEmpty(this.getId())) {
-            conditions.eq(StorageBucket::getId, this.getId());
-        }
-        if (Stringx.isNotEmpty(this.getApplicationId())) {
-            conditions.eq(StorageBucket::getApplicationId, this.getApplicationId());
-        }
         if (Stringx.isNotEmpty(this.getName())) {
-            conditions.like(StorageBucket::getName, this.getName());
+            conditions.like(StorageObject::getName, this.getName());
         }
-        if (Stringx.isNotEmpty(this.getCode())) {
-            conditions.like(StorageBucket::getCode, this.getCode());
+        if (this.getConfirmed() != null) {
+            conditions.eq(StorageObject::getConfirmed, this.getConfirmed());
         }
 
         // 模糊搜索
-        for (String keyword : this.getKeywords()) {
-            conditions.and(filter -> filter.like(StorageBucket::getCode, keyword).or().like(StorageBucket::getName, keyword));
+        for (var keyword : this.getKeywords()) {
+            conditions.and(filter -> filter.like(StorageObject::getName, keyword));
         }
+
         return conditions;
     }
 }
