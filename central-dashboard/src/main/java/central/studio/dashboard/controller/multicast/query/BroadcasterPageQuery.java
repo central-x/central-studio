@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.storage.query;
+package central.studio.dashboard.controller.multicast.query;
 
+import central.data.multicast.MulticastBroadcaster;
 import central.data.organization.option.AreaType;
-import central.data.storage.StorageBucket;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
 import central.starter.web.query.PageQuery;
@@ -37,18 +37,18 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 
 /**
- * Bucket Page Query
+ * Broadcaster Page Query
  * <p>
- * 存储桶分页查询
+ * 广播器分页查询
  *
  * @author Alan Yeh
- * @since 2024/10/29
+ * @since 2024/11/07
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class BucketPageQuery extends PageQuery<StorageBucket> {
+public class BroadcasterPageQuery extends PageQuery<MulticastBroadcaster> {
     @Serial
-    private static final long serialVersionUID = -5018132706306974456L;
+    private static final long serialVersionUID = 4377760817013978860L;
 
     @Label("主键")
     private String id;
@@ -67,26 +67,26 @@ public class BucketPageQuery extends PageQuery<StorageBucket> {
     private String type;
 
     @Override
-    public Conditions<StorageBucket> build() {
-        var conditions = Conditions.of(StorageBucket.class);
+    public Conditions<MulticastBroadcaster> build() {
+        var conditions = Conditions.of(MulticastBroadcaster.class);
 
         // 精确字段搜索
         if (Stringx.isNotEmpty(this.getId())) {
-            conditions.eq(StorageBucket::getId, this.getId());
+            conditions.eq(MulticastBroadcaster::getId, this.getId());
         }
         if (Stringx.isNotEmpty(this.getApplicationId())) {
-            conditions.eq(StorageBucket::getApplicationId, this.getApplicationId());
+            conditions.eq(MulticastBroadcaster::getApplicationId, this.getApplicationId());
         }
         if (Stringx.isNotEmpty(this.getName())) {
-            conditions.like(StorageBucket::getName, this.getName());
+            conditions.like(MulticastBroadcaster::getName, this.getName());
         }
         if (Stringx.isNotEmpty(this.getCode())) {
-            conditions.like(StorageBucket::getCode, this.getCode());
+            conditions.like(MulticastBroadcaster::getCode, this.getCode());
         }
 
         // 模糊搜索
         for (String keyword : this.getKeywords()) {
-            conditions.and(filter -> filter.like(StorageBucket::getCode, keyword).or().like(StorageBucket::getName, keyword));
+            conditions.and(filter -> filter.like(MulticastBroadcaster::getCode, keyword).or().like(MulticastBroadcaster::getName, keyword));
         }
         return conditions;
     }
