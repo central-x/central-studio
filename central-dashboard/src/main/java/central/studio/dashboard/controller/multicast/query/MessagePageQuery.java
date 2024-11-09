@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.storage.query;
+package central.studio.dashboard.controller.multicast.query;
 
-import central.data.storage.StorageObject;
+import central.data.multicast.MulticastMessage;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
 import central.starter.web.query.PageQuery;
@@ -37,45 +37,45 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 
 /**
- * Storage Object Page Query
+ * Multicast Message Page Query
  * <p>
- * 存储对象分页查询
+ * 消息分页查询
  *
  * @author Alan Yeh
- * @since 2024/11/01
+ * @since 2024/11/09
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ObjectPageQuery extends PageQuery<StorageObject> {
+public class MessagePageQuery extends PageQuery<MulticastMessage> {
     @Serial
-    private static final long serialVersionUID = 7917881061907979327L;
+    private static final long serialVersionUID = 3554744502321204801L;
 
-    @Label("存储桶主键")
+    @Label("广播器主键")
     @NotBlank
     @Size(min = 1, max = 32)
-    private String bucketId;
+    private String broadcasterId;
 
-    @Label("文件名称")
-    private String name;
+    @Label("消息体")
+    private String body;
 
-    @Label("确认状态")
-    private Boolean confirmed;
+    @Label("消息状态")
+    private String status;
 
     @Override
-    public Conditions<StorageObject> build() {
-        var conditions = Conditions.of(StorageObject.class).eq(StorageObject::getBucketId, this.getBucketId());
+    public Conditions<MulticastMessage> build() {
+        var conditions = Conditions.of(MulticastMessage.class).eq(MulticastMessage::getBroadcasterId, this.getBroadcasterId());
 
         // 精确字段搜索
-        if (Stringx.isNotEmpty(this.getName())) {
-            conditions.like(StorageObject::getName, this.getName());
+        if (Stringx.isNotEmpty(this.getBody())) {
+            conditions.like(MulticastMessage::getBody, this.getBody());
         }
-        if (this.getConfirmed() != null) {
-            conditions.eq(StorageObject::getConfirmed, this.getConfirmed());
+        if (this.getStatus() != null) {
+            conditions.eq(MulticastMessage::getStatus, this.getStatus());
         }
 
         // 模糊搜索
         for (var keyword : this.getKeywords()) {
-            conditions.and(filter -> filter.like(StorageObject::getName, keyword));
+            conditions.and(filter -> filter.like(MulticastMessage::getBody, keyword));
         }
 
         return conditions;

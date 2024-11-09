@@ -27,8 +27,10 @@ package central.studio.dashboard.logic.multicast;
 import central.bean.Page;
 import central.data.multicast.MulticastBroadcaster;
 import central.data.multicast.MulticastBroadcasterInput;
+import central.data.multicast.MulticastMessage;
 import central.lang.Stringx;
 import central.provider.graphql.multicast.MulticastBroadcasterProvider;
+import central.provider.graphql.multicast.MulticastMessageProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
@@ -62,6 +64,9 @@ public class MulticastLogic {
     private MulticastBroadcasterProvider broadcasterProvider;
 
     @Setter(onMethod_ = @Autowired)
+    private MulticastMessageProvider messageProvider;
+
+    @Setter(onMethod_ = @Autowired)
     private DataContext context;
 
     private SaasContainer getSaasContainer() {
@@ -73,11 +78,23 @@ public class MulticastLogic {
      *
      * @param orders 用户指定的排序条件
      */
-    private Orders<MulticastBroadcaster> getDefaultOrders(@Nullable Orders<MulticastBroadcaster> orders) {
+    private Orders<MulticastBroadcaster> getBroadcasterDefaultOrders(@Nullable Orders<MulticastBroadcaster> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
         }
-        return Orders.of(MulticastBroadcaster.class).asc(MulticastBroadcaster::getCode);
+        return Orders.of(MulticastBroadcaster.class).asc(MulticastBroadcaster::getCode).asc(MulticastBroadcaster::getName);
+    }
+
+    /**
+     * 如用用户没有指定排序条件，则构建默认的排序条件
+     *
+     * @param orders 用户指定的排序条件
+     */
+    private Orders<MulticastMessage> getMessageDefaultOrders(@Nullable Orders<MulticastMessage> orders) {
+        if (Collectionx.isNullOrEmpty(orders)) {
+            return orders;
+        }
+        return Orders.of(MulticastMessage.class).desc(MulticastMessage::getCreateDate);
     }
 
     /**
@@ -91,7 +108,7 @@ public class MulticastLogic {
      * @return 分页数据
      */
     public Page<MulticastBroadcaster> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<MulticastBroadcaster> conditions, @Nullable Orders<MulticastBroadcaster> orders, @Nonnull String tenant) {
-        orders = this.getDefaultOrders(orders);
+        orders = this.getBroadcasterDefaultOrders(orders);
         return this.broadcasterProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
@@ -150,4 +167,29 @@ public class MulticastLogic {
         return this.broadcasterProvider.deleteByIds(ids, tenant);
     }
 
+    /**
+     * 分页查询
+     *
+     * @param pageIndex  分页下标
+     * @param pageSize   分页大小
+     * @param conditions 筛选条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     * @return 分页数据
+     */
+    public Page<MulticastMessage> pageMessages(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<MulticastMessage> conditions, @Nullable Orders<MulticastMessage> orders, @Nonnull String tenant) {
+        return this.messageProvider.pageBy(pageIndex, pageSize, conditions, this.getMessageDefaultOrders(orders), tenant);
+    }
+
+    /**
+     * 根据主键删除数据
+     *
+     * @param ids       主键
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deleteMessagesByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.messageProvider.deleteByIds(ids, tenant);
+    }
 }

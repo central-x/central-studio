@@ -26,10 +26,12 @@ package central.studio.dashboard.controller.multicast.controller;
 
 import central.bean.Page;
 import central.data.multicast.MulticastBroadcaster;
+import central.data.multicast.MulticastMessage;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.multicast.param.BroadcasterParams;
 import central.studio.dashboard.controller.multicast.query.BroadcasterPageQuery;
+import central.studio.dashboard.controller.multicast.query.MessagePageQuery;
 import central.studio.dashboard.logic.multicast.MulticastLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -119,5 +121,30 @@ public class BroadcasterController {
     @DeleteMapping
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
+    }
+
+    /**
+     * 按条件分页查询消息列表
+     *
+     * @param query  查询
+     * @param tenant 租户标识
+     * @return 列表结果
+     */
+    @GetMapping("/messages/page")
+    public Page<MulticastMessage> pageMessages(@Validated MessagePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.pageMessages(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
+    }
+
+    /**
+     * 根据主键删除消息数据
+     *
+     * @param params    待删除主键列表
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    @DeleteMapping("/messages")
+    public long deleteMessages(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.deleteMessagesByIds(params.getIds(), accountId, tenant);
     }
 }
