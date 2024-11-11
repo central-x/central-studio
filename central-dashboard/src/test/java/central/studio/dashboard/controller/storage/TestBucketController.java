@@ -25,7 +25,7 @@
 package central.studio.dashboard.controller.storage;
 
 import central.data.saas.Application;
-import central.data.system.Database;
+import central.data.storage.StorageBucket;
 import central.lang.reflect.TypeRef;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
@@ -122,7 +122,7 @@ public class TestBucketController extends TestController {
                 .andExpect(jsonPath("$.params").isNotEmpty())
                 .andReturn().getResponse();
 
-        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Database.class));
+        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(StorageBucket.class));
         assertNotNull(body);
 
         // 详情查询
@@ -140,6 +140,7 @@ public class TestBucketController extends TestController {
                 .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
                 .andExpect(jsonPath("$.code").value(body.getCode()))
                 .andExpect(jsonPath("$.name").value(body.getName()))
+                .andExpect(jsonPath("$.type").value(body.getType()))
                 .andExpect(jsonPath("$.enabled").value(body.getEnabled()))
                 .andExpect(jsonPath("$.remark").value(body.getRemark()))
                 .andExpect(jsonPath("$.params").value(body.getParams()));
@@ -164,6 +165,7 @@ public class TestBucketController extends TestController {
                 .andExpect(jsonPath("$.data[0].applicationId").value(body.getApplicationId()))
                 .andExpect(jsonPath("$.data[0].code").value(body.getCode()))
                 .andExpect(jsonPath("$.data[0].name").value(body.getName()))
+                .andExpect(jsonPath("$.data[0].type").value(body.getType()))
                 .andExpect(jsonPath("$.data[0].enabled").value(body.getEnabled()))
                 .andExpect(jsonPath("$.data[0].remark").value(body.getRemark()))
                 .andExpect(jsonPath("$.data[0].params").value(body.getParams()));
@@ -221,7 +223,7 @@ public class TestBucketController extends TestController {
                 .andExpect(jsonPath("$.params").isNotEmpty())
                 .andReturn().getResponse();
 
-        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Database.class));
+        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(StorageBucket.class));
         assertNotNull(body);
 
         // 更新
@@ -250,6 +252,7 @@ public class TestBucketController extends TestController {
                 .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
                 .andExpect(jsonPath("$.code").value(body.getCode()))
                 .andExpect(jsonPath("$.name").value(body.getName()))
+                .andExpect(jsonPath("$.type").value(body.getType()))
                 .andExpect(jsonPath("$.enabled").value(false))
                 .andExpect(jsonPath("$.remark").value(body.getRemark()))
                 .andExpect(jsonPath("$.params").value(Jsonx.Default().serialize(Map.of("location", "./data2"))));
@@ -269,6 +272,7 @@ public class TestBucketController extends TestController {
                 .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
                 .andExpect(jsonPath("$.code").value(body.getCode()))
                 .andExpect(jsonPath("$.name").value(body.getName()))
+                .andExpect(jsonPath("$.type").value(body.getType()))
                 .andExpect(jsonPath("$.enabled").value(false))
                 .andExpect(jsonPath("$.remark").value(body.getRemark()))
                 .andExpect(jsonPath("$.params").value(Jsonx.Default().serialize(Map.of("location", "./data2"))));

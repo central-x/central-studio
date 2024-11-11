@@ -22,25 +22,21 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.multicast;
+package central.studio.dashboard.controller.identity;
 
-import central.data.multicast.MulticastBroadcaster;
-import central.data.saas.Application;
+import central.data.identity.IdentityStrategy;
 import central.lang.reflect.TypeRef;
 import central.provider.scheduled.DataContext;
-import central.provider.scheduled.fetcher.DataFetcherType;
-import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
-import central.studio.dashboard.controller.multicast.controller.BroadcasterController;
+import central.studio.dashboard.controller.identity.controller.StrategyController;
+import central.studio.dashboard.controller.identity.param.StrategyParams;
 import central.studio.dashboard.controller.storage.param.BucketParams;
 import central.util.Jsonx;
-import central.util.Listx;
 import central.util.Mapx;
 import central.web.XForwardedHeaders;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -49,67 +45,48 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.Duration;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Multicast Broadcaster Controller Test Cases
+ * Identity Strategy Controller Test Cases
  *
  * @author Alan Yeh
- * @since 2024/11/07
+ * @since 2024/11/11
  */
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
-public class TestBroadcasterController extends TestController {
+public class TestStrategyController extends TestController {
 
-    private static final String PATH = "/dashboard/api/multicast/broadcasters";
-
-    @BeforeAll
-    public static void setup(@Autowired DataContext context) throws Exception {
-        SaasContainer container = null;
-        while (container == null || Listx.isNullOrEmpty(container.getApplications())) {
-            Thread.sleep(100);
-            container = context.getData(DataFetcherType.SAAS);
-        }
-    }
+    private static final String PATH = "/dashboard/api/identity/strategies";
 
     /**
-     * 获取测试用的应用
-     */
-    private Application getApplication(DataContext context) {
-        SaasContainer container = context.getData(DataFetcherType.SAAS);
-        return container.getApplicationByCode("central-dashboard");
-    }
-
-    /**
-     * @see BroadcasterController#add
-     * @see BroadcasterController#details
-     * @see BroadcasterController#page
-     * @see BroadcasterController#delete
+     * @see StrategyController#add
+     * @see StrategyController#details
+     * @see StrategyController#page
+     * @see StrategyController#delete
      */
     @Test
-    public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
-        var application = this.getApplication(context);
-
+    public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增
         var addRequest = MockMvcRequestBuilders.post(PATH)
                 .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Jsonx.Default().serialize(BucketParams.builder()
-                        .applicationId(application.getId())
-                        .code("test")
-                        .name("测试邮件广播器")
-                        .type("email_smtp")
+                .content(Jsonx.Default().serialize(StrategyParams.builder()
+                        .code("oauth")
+                        .name("测试 OAuth 策略")
+                        .type("oauth")
                         .enabled(Boolean.TRUE)
-                        .remark("测试用存储桶")
+                        .remark("测试用策略")
                         .params(Jsonx.Default().serialize(
                                 Mapx.of(
-                                        Mapx.entry("host", "smtp.exmail.qq.com"),
-                                        Mapx.entry("useSsl", "enabled"),
-                                        Mapx.entry("port", 465),
-                                        Mapx.entry("username", "noreply@central-x.com"),
-                                        Mapx.entry("password", "x.123456"),
-                                        Mapx.entry("name", "CentralX Support")
+                                        Mapx.entry("enabled", "true"),
+                                        Mapx.entry("scopes", List.of("user:basic", "user:contract")),
+                                        Mapx.entry("autoGranting", "true"),
+                                        Mapx.entry("timeout", Duration.ofDays(1).toMillis())
                                 ))
                         )
                         .build()))
@@ -120,7 +97,6 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.applicationId").isNotEmpty())
                 .andExpect(jsonPath("$.code").isNotEmpty())
                 .andExpect(jsonPath("$.name").isNotEmpty())
                 .andExpect(jsonPath("$.type").isNotEmpty())
@@ -129,7 +105,7 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(jsonPath("$.params").isNotEmpty())
                 .andReturn().getResponse();
 
-        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(MulticastBroadcaster.class));
+        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(IdentityStrategy.class));
         assertNotNull(body);
 
         // 详情查询
@@ -144,7 +120,6 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
                 .andExpect(jsonPath("$.id").value(body.getId()))
-                .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
                 .andExpect(jsonPath("$.code").value(body.getCode()))
                 .andExpect(jsonPath("$.name").value(body.getName()))
                 .andExpect(jsonPath("$.type").value(body.getType()))
@@ -155,7 +130,6 @@ public class TestBroadcasterController extends TestController {
         // 分页查询
         var pageRequest = MockMvcRequestBuilders.get(PATH + "/page")
                 .cookie(this.getSessionCookie(PATH + "/page", mvc, cookieStore))
-                .queryParam("applicationId", application.getId())
                 .queryParam("pageIndex", "1")
                 .queryParam("pageSize", "20")
                 .accept(MediaType.APPLICATION_JSON)
@@ -169,7 +143,6 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(jsonPath("$.pager.itemCount").value(1))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data[0].id").value(body.getId()))
-                .andExpect(jsonPath("$.data[0].applicationId").value(body.getApplicationId()))
                 .andExpect(jsonPath("$.data[0].code").value(body.getCode()))
                 .andExpect(jsonPath("$.data[0].name").value(body.getName()))
                 .andExpect(jsonPath("$.data[0].type").value(body.getType()))
@@ -191,34 +164,29 @@ public class TestBroadcasterController extends TestController {
     }
 
     /**
-     * @see BroadcasterController#add
-     * @see BroadcasterController#update
-     * @see BroadcasterController#details
-     * @see BroadcasterController#delete
+     * @see StrategyController#add
+     * @see StrategyController#update
+     * @see StrategyController#details
+     * @see StrategyController#delete
      */
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
-        var application = this.getApplication(context);
-
         // 新增
         var addRequest = MockMvcRequestBuilders.post(PATH)
                 .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Jsonx.Default().serialize(BucketParams.builder()
-                        .applicationId(application.getId())
-                        .code("test")
-                        .name("测试邮件广播器")
-                        .type("email_smtp")
+                .content(Jsonx.Default().serialize(StrategyParams.builder()
+                        .code("oauth")
+                        .name("测试 OAuth 策略")
+                        .type("oauth")
                         .enabled(Boolean.TRUE)
-                        .remark("测试用存储桶")
+                        .remark("测试用策略")
                         .params(Jsonx.Default().serialize(
                                 Mapx.of(
-                                        Mapx.entry("host", "smtp.exmail.qq.com"),
-                                        Mapx.entry("useSsl", "enabled"),
-                                        Mapx.entry("port", 465),
-                                        Mapx.entry("username", "noreply@central-x.com"),
-                                        Mapx.entry("password", "x.123456"),
-                                        Mapx.entry("name", "CentralX Support")
+                                        Mapx.entry("enabled", "true"),
+                                        Mapx.entry("scopes", List.of("user:basic", "user:contract")),
+                                        Mapx.entry("autoGranting", "true"),
+                                        Mapx.entry("timeout", Duration.ofDays(1).toMillis())
                                 ))
                         )
                         .build()))
@@ -229,7 +197,6 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.applicationId").isNotEmpty())
                 .andExpect(jsonPath("$.code").isNotEmpty())
                 .andExpect(jsonPath("$.name").isNotEmpty())
                 .andExpect(jsonPath("$.type").isNotEmpty())
@@ -238,7 +205,7 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(jsonPath("$.params").isNotEmpty())
                 .andReturn().getResponse();
 
-        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(MulticastBroadcaster.class));
+        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(IdentityStrategy.class));
         assertNotNull(body);
 
         // 更新
@@ -247,19 +214,12 @@ public class TestBroadcasterController extends TestController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Jsonx.Default().serialize(BucketParams.builder()
                         .id(body.getId())
-                        .applicationId(body.getApplicationId())
                         .code(body.getCode())
                         .name(body.getName())
                         .type(body.getType())
                         .enabled(Boolean.FALSE)
                         .remark(body.getRemark())
-                        .params(Jsonx.Default().serialize(Mapx.of(
-                                Mapx.entry("host", "smtp.exmail.qq.com"),
-                                Mapx.entry("useSsl", "enabled"),
-                                Mapx.entry("port", 465),
-                                Mapx.entry("username", "noreply@central-x.com"),
-                                Mapx.entry("password", "x.123456"),
-                                Mapx.entry("name", "CentralX Support"))))
+                        .params(body.getParams())
                         .build()))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(XForwardedHeaders.TENANT, "master");
@@ -269,10 +229,9 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
                 .andExpect(jsonPath("$.id").value(body.getId()))
-                .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
                 .andExpect(jsonPath("$.code").value(body.getCode()))
                 .andExpect(jsonPath("$.name").value(body.getName()))
-                .andExpect(jsonPath("$.type").value(body.getType()))
+                .andExpect(jsonPath("$.type").isNotEmpty())
                 .andExpect(jsonPath("$.enabled").value(false))
                 .andExpect(jsonPath("$.remark").value(body.getRemark()));
 
@@ -288,10 +247,9 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(Matchers.not(Matchers.emptyString())))
                 .andExpect(jsonPath("$.id").value(body.getId()))
-                .andExpect(jsonPath("$.applicationId").value(body.getApplicationId()))
                 .andExpect(jsonPath("$.code").value(body.getCode()))
                 .andExpect(jsonPath("$.name").value(body.getName()))
-                .andExpect(jsonPath("$.type").value(body.getType()))
+                .andExpect(jsonPath("$.type").isNotEmpty())
                 .andExpect(jsonPath("$.enabled").value(false))
                 .andExpect(jsonPath("$.remark").value(body.getRemark()));
 
