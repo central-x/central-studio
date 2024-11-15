@@ -22,80 +22,74 @@
  * SOFTWARE.
  */
 
-package central.data.gateway;
+package central.studio.dashboard.controller.gateway.params;
 
-import central.bean.*;
-import central.data.organization.Account;
-import central.sql.data.ModifiableEntity;
+import central.data.gateway.GatewayFilterInput;
 import central.util.Listx;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import central.validation.Label;
+import central.validation.group.Insert;
+import central.validation.group.Update;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.util.List;
 
 /**
- * Gateway Filter
+ * Gateway Filter Params
  * <p>
- * 网关过滤器
+ * 网关过滤器入参
  *
  * @author Alan Yeh
- * @since 2022/11/08
+ * @since 2024/11/15
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class GatewayFilter extends ModifiableEntity implements Remarkable, Available, Orderable<GatewayFilter> {
-    @Serial
-    private static final long serialVersionUID = 1192393390020070868L;
+public class FilterParams {
 
-    /**
-     * 类型
-     */
-    @Nonnull
+    @Label("主键")
+    @Null(groups = Insert.class)
+    @NotBlank(groups = Update.class)
+    @Size(min = 1, max = 32, groups = Insert.class)
+    private String id;
+
+    @Label("类型")
+    @NotBlank
+    @Size(min = 1, max = 32)
     private String type;
-    /**
-     * 匹配路径
-     */
-    @Nonnull
+
+    @Label("匹配路径")
+    @NotBlank
+    @Size(min = 1, max = 255)
     private String path;
-    /**
-     * 排序号
-     */
-    @Nonnull
+
+    @Label("排序号")
+    @NotNull
+    @Min(Integer.MIN_VALUE)
+    @Max(Integer.MAX_VALUE)
     private Integer order;
-    /**
-     * 是否启用
-     */
-    @Nonnull
+
+    @Label("是否启用")
+    @NotNull
     private Boolean enabled;
-    /**
-     * 备注
-     */
-    @Nullable
+
+    @Label("备注")
+    @Size(max = 1024)
     private String remark;
-    /**
-     * 初始化参数(JSON)
-     */
-    @Nonnull
+
+    @Label("初始化参数")
+    @NotNull
+    @Size(min = 1, max = 5 * 1024 * 1024)
     private String params;
-    /**
-     * 断言
-     */
-    private List<GatewayPredicate> predicates;
-    /**
-     * 创建人信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Account creator;
-    /**
-     * 修改人信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Account modifier;
+
+    @Label("断言")
+    @Valid
+    private List<PredicateParams> predicates;
 
     public GatewayFilterInput toInput() {
         return GatewayFilterInput.builder()
@@ -106,7 +100,7 @@ public class GatewayFilter extends ModifiableEntity implements Remarkable, Avail
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
                 .params(this.getParams())
-                .predicates(Listx.asStream(this.predicates).map(GatewayPredicate::toInput).toList())
+                .predicates(Listx.asStream(this.getPredicates()).map(PredicateParams::toInput).toList())
                 .build();
     }
 }
