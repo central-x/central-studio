@@ -103,6 +103,7 @@ public class TestTenantProvider extends TestProvider {
         application.setSecret(Guidx.nextID());
         application.setEnabled(Boolean.TRUE);
         application.setRemark("统一认证");
+        application.setRoutesJson("[]");
         application.updateCreator(properties.getSupervisor().getUsername());
         return application;
     }

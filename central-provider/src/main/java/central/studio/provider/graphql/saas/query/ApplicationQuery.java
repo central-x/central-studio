@@ -27,15 +27,14 @@ package central.studio.provider.graphql.saas.query;
 import central.bean.Page;
 import central.lang.Assertx;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.saas.dto.ApplicationDTO;
-import central.studio.provider.graphql.saas.entity.ApplicationEntity;
-import central.studio.provider.graphql.saas.mapper.ApplicationMapper;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
-import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.saas.dto.ApplicationDTO;
+import central.studio.provider.graphql.saas.entity.ApplicationEntity;
+import central.studio.provider.graphql.saas.mapper.ApplicationMapper;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -58,7 +57,7 @@ import java.util.stream.Collectors;
  * @since 2022/10/03
  */
 @Component
-@GraphQLSchema(path = "saas/query", types = {ApplicationDTO.class, ApplicationModuleQuery.class})
+@GraphQLSchema(path = "saas/query", types = ApplicationDTO.class)
 public class ApplicationQuery {
     @Setter(onMethod_ = @Autowired)
     private ApplicationMapper mapper;
@@ -160,18 +159,5 @@ public class ApplicationQuery {
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
         return this.mapper.countBy(conditions);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 关联查询
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Application Module Query
-     * 模块查询
-     */
-    @GraphQLGetter
-    public ApplicationModuleQuery getModules(@Autowired ApplicationModuleQuery query) {
-        return query;
     }
 }

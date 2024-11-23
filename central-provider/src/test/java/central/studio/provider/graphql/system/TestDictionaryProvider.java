@@ -94,6 +94,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -151,6 +152,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -213,6 +215,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -275,6 +278,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -342,6 +346,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -383,6 +388,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -419,6 +425,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -456,6 +463,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -505,6 +513,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -555,6 +564,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -597,6 +607,7 @@ public class TestDictionaryProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("统一认证");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 

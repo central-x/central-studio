@@ -37,9 +37,7 @@ query TenantProvider($id: String) {
                         contextPath
                         secret
                         enabled
-                        modules {
-                            id
-                            applicationId
+                        routes {
                             url
                             contextPath
                             enabled
@@ -107,12 +105,11 @@ query TenantProvider($ids: [String]) {
                         contextPath
                         secret
                         enabled
-                        modules {
-                            id
-                            applicationId
+                        routes {
                             url
                             contextPath
                             enabled
+                            remark
                         }
                     }
                 }
@@ -177,12 +174,11 @@ query TenantProvider($limit: Long, $offset: Long, $conditions: [ConditionInput],
                         contextPath
                         secret
                         enabled
-                        modules {
-                            id
-                            applicationId
+                        routes {
                             url
                             contextPath
                             enabled
+                            remark
                         }
                     }
                 }
@@ -255,12 +251,11 @@ query TenantProvider($pageIndex: Long, $pageSize: Long, $conditions: [ConditionI
                                 contextPath
                                 secret
                                 enabled
-                                modules {
-                                    id
-                                    applicationId
+                                routes {
                                     url
                                     contextPath
                                     enabled
+                                    remark
                                 }
                             }
                         }
@@ -342,12 +337,11 @@ mutation TenantProvider($input: TenantInput, $operator: String) {
                         contextPath
                         secret
                         enabled
-                        modules {
-                            id
-                            applicationId
+                        routes {
                             url
                             contextPath
                             enabled
+                            remark
                         }
                     }
                 }
@@ -412,12 +406,11 @@ mutation TenantProvider($inputs: [TenantInput], $operator: String) {
                         contextPath
                         secret
                         enabled
-                        modules {
-                            id
-                            applicationId
+                        routes {
                             url
                             contextPath
                             enabled
+                            remark
                         }
                     }
                 }
@@ -482,12 +475,11 @@ mutation TenantProvider($input: TenantInput, $operator: String) {
                         contextPath
                         secret
                         enabled
-                        modules {
-                            id
-                            applicationId
+                        routes {
                             url
                             contextPath
                             enabled
+                            remark
                         }
                     }
                 }
@@ -552,12 +544,11 @@ mutation TenantProvider($inputs: [TenantInput], $operator: String) {
                         contextPath
                         secret
                         enabled
-                        modules {
-                            id
-                            applicationId
+                        routes {
                             url
                             contextPath
                             enabled
+                            remark
                         }
                     }
                 }

@@ -96,7 +96,8 @@ public class TestDatabaseProvider extends TestProvider {
             applicationEntity.setContextPath("/security");
             applicationEntity.setSecret(Guidx.nextID());
             applicationEntity.setEnabled(Boolean.TRUE);
-            applicationEntity.setRemark("统一认班上");
+            applicationEntity.setRemark("统一认证");
+            applicationEntity.setRoutesJson("[]");
             applicationEntity.updateCreator(properties.getSupervisor().getUsername());
             this.applicationMapper.insert(applicationEntity);
 

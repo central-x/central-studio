@@ -82,6 +82,7 @@ public class MasterTenantInitializer {
         dashboardApp.setSecret("glngxOUCye6fndsaiQI");
         dashboardApp.setEnabled(Boolean.TRUE);
         dashboardApp.setRemark("用于提供套件中所有应用的管理界面");
+        dashboardApp.setRoutesJson("[]");
         dashboardApp.updateCreator("syssa");
 
         // Saas中心
@@ -95,6 +96,7 @@ public class MasterTenantInitializer {
         saasApp.setSecret("btdHv1HdTTWzCEbiRdg");
         saasApp.setEnabled(Boolean.TRUE);
         saasApp.setRemark("用于维护租户、应用系统以及其租用关系等");
+        saasApp.setRoutesJson("[]");
         saasApp.updateCreator("syssa");
 
         // 认证中心
@@ -108,6 +110,7 @@ public class MasterTenantInitializer {
         identityApp.setSecret("AkJSi2kmH7vSO5lJcvY");
         identityApp.setEnabled(Boolean.TRUE);
         identityApp.setRemark("用于统一管理全局会话");
+        identityApp.setRoutesJson("[]");
         identityApp.updateCreator("syssa");
 
         // 存储中心
@@ -121,6 +124,7 @@ public class MasterTenantInitializer {
         storageApp.setSecret("IKJuAKOiG7Vx9tMMqUf");
         storageApp.setEnabled(Boolean.TRUE);
         storageApp.setRemark("用于统一管理文件存储");
+        storageApp.setRoutesJson("[]");
         storageApp.updateCreator("syssa");
 
         // 广播中心
@@ -134,6 +138,7 @@ public class MasterTenantInitializer {
         multicastApp.setSecret("QHO85BzFQq8hqDzREJ");
         multicastApp.setEnabled(Boolean.TRUE);
         multicastApp.setRemark("用于统一消息推送");
+        multicastApp.setRoutesJson("[]");
         multicastApp.updateCreator("syssa");
 
         // 网关中心
@@ -147,6 +152,7 @@ public class MasterTenantInitializer {
         gatewayApp.setSecret("TT6cdfpHIPastoipuDg");
         gatewayApp.setEnabled(Boolean.TRUE);
         gatewayApp.setRemark("用于统一管理网关");
+        gatewayApp.setRoutesJson("[]");
         gatewayApp.updateCreator("syssa");
 
         var applications = List.of(dashboardApp, saasApp, identityApp, storageApp, multicastApp, gatewayApp);

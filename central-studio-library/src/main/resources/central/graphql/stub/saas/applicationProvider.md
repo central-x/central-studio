@@ -17,11 +17,9 @@ query ApplicationProvider($id: String) {
                 secret
                 enabled
                 remark
-                modules {
-                    id
-                    applicationId
-                    url
+                routes {
                     contextPath
+                    url
                     enabled
                     remark
                 }
@@ -66,15 +64,13 @@ query ApplicationProvider($ids: [String]) {
                 secret
                 enabled
                 remark
-                modules {
-                    id
-                    applicationId
-                    url
+                routes {
                     contextPath
+                    url
                     enabled
                     remark
                 }
-
+                
                 creatorId
                 createDate
                 creator {
@@ -115,11 +111,9 @@ query ApplicationProvider($limit: Long, $offset: Long, $conditions: [ConditionIn
                 secret
                 enabled
                 remark
-                modules {
-                    id
-                    applicationId
-                    url
+                routes {
                     contextPath
+                    url
                     enabled
                     remark
                 }
@@ -172,11 +166,9 @@ query ApplicationProvider($pageIndex: Long, $pageSize: Long, $conditions: [Condi
                         secret
                         enabled
                         remark
-                        modules {
-                            id
-                            applicationId
-                            url
+                        routes {
                             contextPath
+                            url
                             enabled
                             remark
                         }
@@ -238,11 +230,9 @@ mutation ApplicationProvider($input: ApplicationInput, $operator: String) {
                 secret
                 enabled
                 remark
-                modules {
-                    id
-                    applicationId
-                    url
+                routes {
                     contextPath
+                    url
                     enabled
                     remark
                 }
@@ -287,11 +277,9 @@ mutation ApplicationProvider($inputs: [ApplicationInput], $operator: String) {
                 secret
                 enabled
                 remark
-                modules {
-                    id
-                    applicationId
-                    url
+                routes {
                     contextPath
+                    url
                     enabled
                     remark
                 }
@@ -336,11 +324,9 @@ mutation ApplicationProvider($input: ApplicationInput, $operator: String) {
                 secret
                 enabled
                 remark
-                modules {
-                    id
-                    applicationId
-                    url
+                routes {
                     contextPath
+                    url
                     enabled
                     remark
                 }
@@ -385,11 +371,9 @@ mutation ApplicationProvider($inputs: [ApplicationInput], $operator: String) {
                 secret
                 enabled
                 remark
-                modules {
-                    id
-                    applicationId
-                    url
+                routes {
                     contextPath
+                    url
                     enabled
                     remark
                 }

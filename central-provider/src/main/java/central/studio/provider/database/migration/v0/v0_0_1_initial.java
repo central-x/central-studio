@@ -403,6 +403,7 @@ public class v0_0_1_initial extends Migration {
                     Column.of("SECRET", SqlType.STRING, 128, "密钥"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
                     Column.of("REMARK", SqlType.STRING, 1024, "备注"),
+                    Column.of("ROUTES_JSON", SqlType.CLOB, "路由"),
                     Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
                     Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
                     Column.of("MODIFIER_ID", SqlType.STRING, 36, "更新人主键"),
@@ -414,29 +415,6 @@ public class v0_0_1_initial extends Migration {
             );
 
             var table = Table.of("X_SAAS_APPLICATION", "应用", columns, indies);
-
-            database.addTable(table);
-        }
-        {
-            // 应用模块
-            var columns = List.of(
-                    Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("APPLICATION_ID", SqlType.STRING, 32, "所属应用主键"),
-                    Column.of("URL", SqlType.STRING, 1024, "服务地址"),
-                    Column.of("CONTEXT_PATH", SqlType.STRING, 64, "上下文地址"),
-                    Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
-                    Column.of("REMARK", SqlType.STRING, 1024, "备注"),
-                    Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
-                    Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
-                    Column.of("MODIFIER_ID", SqlType.STRING, 36, "更新人主键"),
-                    Column.of("MODIFY_DATE", SqlType.DATETIME, "更新时间")
-            );
-
-            var indies = List.of(
-                    Index.of("X_TAM_AI", false, "APPLICATION_ID")
-            );
-
-            var table = Table.of("X_SAAS_APPLICATION_MODULE", "应用模块", columns, indies);
 
             database.addTable(table);
         }
@@ -582,11 +560,6 @@ public class v0_0_1_initial extends Migration {
             var application = database.getTable("X_SAAS_APPLICATION");
             if (application != null) {
                 application.drop();
-            }
-
-            var applicationModule = database.getTable("X_SAAS_APPLICATION_MODULE");
-            if (applicationModule != null) {
-                applicationModule.drop();
             }
 
             var tenant = database.getTable("X_SAAS_TENANT");

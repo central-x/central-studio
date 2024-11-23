@@ -17,9 +17,7 @@ query AuthorizationProvider($code: String, $secret: String) {
                 secret
                 enabled
                 remark
-                modules {
-                    id
-                    applicationId
+                routes {
                     url
                     contextPath
                     enabled

@@ -22,18 +22,63 @@
  * SOFTWARE.
  */
 
-package central.studio.provider.graphql.saas.mapper;
+package central.data.saas;
 
-import central.studio.provider.graphql.saas.entity.ApplicationModuleEntity;
-import central.sql.proxy.Mapper;
-import org.springframework.stereotype.Repository;
+import central.validation.Label;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
- * 应用模块
+ * Application Route
+ * <p>
+ * 应用路由
  *
  * @author Alan Yeh
- * @since 2022/09/25
+ * @since 2024/12/10
  */
-@Repository
-public interface ApplicationModuleMapper extends Mapper<ApplicationModuleEntity> {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ApplicationRouteInput implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2736131525653405558L;
+
+    /**
+     * 上下文路径
+     */
+    @Label("上下文路径")
+    @NotBlank
+    @Size(min = 1, max = 64)
+    private String contextPath;
+
+    /**
+     * 服务地址
+     */
+    @Label("服务地址")
+    @NotBlank
+    @Size(min = 1, max = 1024)
+    private String url;
+
+    /**
+     * 是否启用
+     */
+    @Label("是否启用")
+    @NotNull
+    private Boolean enabled;
+
+    /**
+     * 备注
+     */
+    @Label("备注")
+    @Size(max = 1024)
+    private String remark;
 }

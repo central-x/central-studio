@@ -22,23 +22,66 @@
  * SOFTWARE.
  */
 
-package central.provider.graphql.saas;
+package central.data.saas;
 
-import central.data.saas.ApplicationModule;
-import central.data.saas.ApplicationModuleInput;
-import central.starter.graphql.stub.ModifiableProvider;
-import central.starter.graphql.stub.annotation.BodyPath;
-import central.starter.graphql.stub.annotation.GraphQLStub;
-import org.springframework.stereotype.Repository;
+import central.bean.Available;
+import central.bean.Nonnull;
+import central.bean.Remarkable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
- * 应用模块
+ * Application Route
+ * <p>
+ * 应用路由
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2022/09/25
  */
-@Repository
-@BodyPath("saas.applications.modules")
-@GraphQLStub(path = "saas", client = "masterProviderClient")
-public interface ApplicationModuleProvider extends ModifiableProvider<ApplicationModule, ApplicationModuleInput> {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ApplicationRoute implements Serializable, Available, Remarkable {
+
+    @Serial
+    private static final long serialVersionUID = -4968804715373126621L;
+
+    /**
+     * 上下文路径
+     */
+    @Nonnull
+    private String contextPath;
+
+    /**
+     * 服务地址
+     */
+    @Nonnull
+    private String url;
+
+    /**
+     * 是否启用
+     */
+    @Nonnull
+    private Boolean enabled;
+
+    /**
+     * 备注
+     */
+    @Nonnull
+    private String remark;
+
+    public ApplicationRouteInput toInput() {
+        return ApplicationRouteInput.builder()
+                .contextPath(this.getContextPath())
+                .url(this.getUrl())
+                .enabled(this.getEnabled())
+                .remark(this.getRemark())
+                .build();
+    }
 }

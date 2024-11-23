@@ -10,18 +10,18 @@ type Application implements Entity & Modifiable & Codeable & Available {
     name:                   String!
     "图标(Base64)"
     logo:                   String
-    "服务地址"
-    url:                    String
     "上下文路径"
     contextPath:            String!
+    "服务地址"
+    url:                    String
     "密钥"
     secret:                 String!
     "是否启用"
     enabled:                Boolean!
     "备注"
     remark:                 String
-    "应用模块"
-    modules:               [ApplicationModule]
+    "应用路由"
+    routes:                 [ApplicationRoute]
 
     "创建帐户信息"
     creator:                Account!
@@ -38,13 +38,23 @@ type Application implements Entity & Modifiable & Codeable & Available {
 }
 
 """
+应用路由
+"""
+type ApplicationRoute {
+    "上下文路径"
+    contextPath:            String!
+    "服务地址"
+    url:                    String!
+    "是否启用"
+    enabled:                Boolean!
+    "备注"
+    remark:                 String
+}
+
+"""
 应用查询
 """
 type ApplicationQuery {
-    """
-    模块查询
-    """
-    modules: ApplicationModuleQuery
 
     """
     查询数据

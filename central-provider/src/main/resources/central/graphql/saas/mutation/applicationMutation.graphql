@@ -10,28 +10,38 @@ input ApplicationInput {
     name:                   String
     "图标(Base64)"
     logo:                   String
-    "服务地址"
-    url:                    String
     "上下文路径"
     contextPath:            String
+    "服务地址"
+    url:                    String
     "密钥"
     secret:                 String
     "是否启用"
     enabled:                Boolean
     "备注"
     remark:                 String
-    "应用模块"
-    modules:               [ApplicationModuleInput]
+    "应用路由"
+    routes:                 [ApplicationRouteInput]
+}
+
+"""
+应用路由输入
+"""
+input ApplicationRouteInput {
+    "上下文路径"
+    contextPath:            String
+    "服务地址"
+    url:                    String
+    "是否启用"
+    enabled:                String
+    "备注"
+    remark:                 String
 }
 
 """
 应用修改
 """
 type ApplicationMutation {
-    """
-    模块修改
-    """
-    modules: ApplicationModuleMutation
 
     """
     保存数据

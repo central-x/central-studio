@@ -25,7 +25,7 @@
 package central.studio.gateway.core.attribute;
 
 import central.data.saas.Application;
-import central.data.saas.ApplicationModule;
+import central.data.saas.ApplicationRoute;
 import central.data.saas.Tenant;
 import central.studio.gateway.core.body.EmptyBody;
 import central.studio.gateway.core.body.HttpResponseBody;
@@ -80,9 +80,9 @@ public interface ExchangeAttributes {
     Attribute<HttpResponseBody> RESPONSE_BODY = Attribute.of(ExchangeAttributes.class.getName() + ".response_body", EmptyBody::new);
 
     /**
-     * 网关转发的目标应用模块
+     * 网关转发的目标应用路由
      */
-    Attribute<ApplicationModule> TARGET_APPLICATION_MODULE = Attribute.of(ExchangeAttributes.class.getName() + ".target_application_module");
+    Attribute<ApplicationRoute> TARGET_APPLICATION_ROUTE = Attribute.of(ExchangeAttributes.class.getName() + ".target_application_route");
 
     /**
      * 网关实际转发地址

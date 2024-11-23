@@ -22,33 +22,35 @@
  * SOFTWARE.
  */
 
-package central.data.saas;
+package central.studio.dashboard.controller.saas.param;
 
+import central.data.saas.ApplicationInput;
+import central.util.Listx;
 import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.List;
 
 /**
- * 应用输入
+ * Application Params
+ * <p>
+ * 应用数据入参
  *
  * @author Alan Yeh
- * @since 2022/09/12
+ * @since 2024/11/19
  */
 @Data
-@Builder(toBuilder = true)
-@EqualsAndHashCode
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApplicationInput implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 8025153683772274773L;
+public class ApplicationParams {
 
     @Label("主键")
     @Null(groups = Insert.class)
@@ -77,15 +79,15 @@ public class ApplicationInput implements Serializable {
     @Size(max = 2 * 1024 * 1024)
     private String logo;
 
-    @Label("服务地址")
-    @NotBlank
-    @Size(min = 1, max = 1024)
-    private String url;
-
     @Label("上下文路径")
     @NotBlank
     @Size(min = 1, max = 64)
     private String contextPath;
+
+    @Label("服务地址")
+    @NotBlank
+    @Size(min = 1, max = 1024)
+    private String url;
 
     @Label("密钥")
     @NotBlank
@@ -102,5 +104,20 @@ public class ApplicationInput implements Serializable {
 
     @Valid
     @Label("路由")
-    private List<ApplicationRouteInput> routes;
+    private List<ApplicationRouteParams> routes;
+
+    public ApplicationInput toInput() {
+        return ApplicationInput.builder()
+                .id(this.getId())
+                .code(this.getCode())
+                .name(this.getName())
+                .logo(this.getLogo())
+                .url(this.getUrl())
+                .contextPath(this.getContextPath())
+                .secret(this.getSecret())
+                .enabled(this.getEnabled())
+                .remark(this.getRemark())
+                .routes(Listx.asStream(this.getRoutes()).map(ApplicationRouteParams::toInput).toList())
+                .build();
+    }
 }

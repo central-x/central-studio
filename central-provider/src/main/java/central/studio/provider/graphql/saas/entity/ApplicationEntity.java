@@ -27,6 +27,9 @@ package central.studio.provider.graphql.saas.entity;
 import central.data.saas.ApplicationInput;
 import central.lang.Stringx;
 import central.sql.data.ModifiableEntity;
+import central.util.Collectionx;
+import central.util.Jsonx;
+import central.util.Objectx;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -105,6 +108,10 @@ public class ApplicationEntity extends ModifiableEntity {
     @Size(max = 1024)
     private String remark;
 
+    @Label("路由")
+    @Size(max = 5 * 1024 * 1024)
+    private String routesJson;
+
     public void fromInput(ApplicationInput input) {
         this.setId(input.getId());
         this.setCode(input.getCode());
@@ -122,5 +129,6 @@ public class ApplicationEntity extends ModifiableEntity {
         this.setSecret(input.getSecret());
         this.setEnabled(input.getEnabled());
         this.setRemark(input.getRemark());
+        this.setRoutesJson(Jsonx.Default().serialize(Objectx.getOrDefault(input.getRoutes(), Collectionx.emptyList())));
     }
 }

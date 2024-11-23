@@ -100,6 +100,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -183,6 +184,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -270,6 +272,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -357,6 +360,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -448,6 +452,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -516,6 +521,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -558,6 +564,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -601,6 +608,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -651,6 +659,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -705,6 +714,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 
@@ -744,6 +754,7 @@ public class TestMenuProvider extends TestProvider {
         applicationEntity.setSecret(Guidx.nextID());
         applicationEntity.setEnabled(Boolean.TRUE);
         applicationEntity.setRemark("用于所有应用的认证处理");
+        applicationEntity.setRoutesJson("[]");
         applicationEntity.updateCreator(properties.getSupervisor().getUsername());
         this.applicationMapper.insert(applicationEntity);
 

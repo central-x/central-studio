@@ -25,7 +25,7 @@
 package central.studio.gateway.core.filter.global;
 
 import central.bean.Orderable;
-import central.data.saas.ApplicationModule;
+import central.data.saas.ApplicationRoute;
 import central.data.saas.Tenant;
 import central.studio.gateway.core.filter.FilterChain;
 import central.studio.gateway.core.filter.GlobalFilter;
@@ -112,11 +112,11 @@ public class ApplicationDispatcherFilter implements GlobalFilter {
 
         var target = application.getApplication();
 
-        ApplicationModule module = null;
+        ApplicationRoute route = null;
 
-        if (Listx.isNotEmpty(target.getModules())) {
-            // 是否有模块
-            module = target.getModules()
+        if (Listx.isNotEmpty(target.getRoutes())) {
+            // 是否有路由
+            route = target.getRoutes()
                     .stream()
                     .map(it -> {
                         // 子应用的 contextPath 已经以应用的 contextPath 开头了
@@ -148,16 +148,16 @@ public class ApplicationDispatcherFilter implements GlobalFilter {
         // 上下文路径
         String contextPath;
 
-        if (module == null) {
-            // 没有子模块匹配上，那么就转发到主应用
+        if (route == null) {
+            // 没有子路由匹配上，那么就转发到主应用
             log.info("匹配应用成功[code: {}, name: {}, contextPath: {}, url: {}]", target.getCode(), target.getName(), target.getContextPath(), target.getUrl());
             contextPath = target.getContextPath();
             url = target.getUrl();
         } else {
-            // 子模块匹配上了
-            log.info("匹配应用模块成功[code: {}, name: {}, contextPath: {}, url: {}]", target.getCode(), target.getName(), module.getContextPath(), module.getUrl());
-            contextPath = module.getContextPath();
-            url = module.getUrl();
+            // 子路由匹配上了
+            log.info("匹配应用路由成功[code: {}, name: {}, contextPath: {}, url: {}]", target.getCode(), target.getName(), route.getContextPath(), route.getUrl());
+            contextPath = route.getContextPath();
+            url = route.getUrl();
         }
 
         if (exchange.getRequest().getPath().value().equals(contextPath) && !exchange.getRequest().getPath().value().endsWith("/")) {
@@ -189,8 +189,8 @@ public class ApplicationDispatcherFilter implements GlobalFilter {
 
         // 将目标应用放到 Attributes，后面的 Filter 可以通过 Attributes 获取
         exchange.setAttribute(ExchangeAttributes.TARGET_APPLICATION, target);
-        if (module != null) {
-            exchange.setAttribute(ExchangeAttributes.TARGET_APPLICATION_MODULE, module);
+        if (route != null) {
+            exchange.setAttribute(ExchangeAttributes.TARGET_APPLICATION_ROUTE, route);
         }
 
         exchange.getRequiredAttribute(ExchangeAttributes.TOKEN).withClaim(RegisteredClaims.ISSUER, "gateway");

@@ -22,91 +22,54 @@
  * SOFTWARE.
  */
 
-package central.data.saas;
+package central.studio.dashboard.controller.saas.param;
 
-import central.bean.*;
-import central.data.organization.Account;
-import central.sql.data.ModifiableEntity;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import central.data.saas.ApplicationRouteInput;
+import central.validation.Label;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-
 /**
- * 应用模块
+ * Application Module Params
+ * <p>
+ * 应用路由参数
  *
  * @author Alan Yeh
- * @since 2022/09/25
+ * @since 2024/11/19
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class ApplicationModule extends ModifiableEntity implements Available, Remarkable {
+public class ApplicationRouteParams {
 
-    @Serial
-    private static final long serialVersionUID = -4968804715373126621L;
-
-    /**
-     * 应用主键
-     */
-    @Nonnull
-    private String applicationId;
-
-    /**
-     * 应用信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Application application;
-
-    /**
-     * 服务地址
-     */
-    @Nonnull
-    private String url;
-
-    /**
-     * 上下文路径
-     */
-    @Nonnull
+    @Label("上下文路径")
+    @NotBlank
+    @Size(min = 1, max = 64)
     private String contextPath;
 
-    /**
-     * 是否启用
-     */
-    @Nonnull
+    @Label("服务地址")
+    @NotBlank
+    @Size(min = 1, max = 1024)
+    private String url;
+
+    @Label("是否启用")
+    @NotNull
     private Boolean enabled;
 
-    /**
-     * 备注
-     */
-    @Nullable
+    @Label("备注")
+    @Size(max = 1024)
     private String remark;
 
-    /**
-     * 创建人信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Account creator;
-
-    /**
-     * 修改人信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Account modifier;
-
-    public ApplicationModuleInput toInput() {
-        return ApplicationModuleInput.builder()
-                .id(this.getId())
-                .url(this.getUrl())
+    public ApplicationRouteInput toInput() {
+        return ApplicationRouteInput.builder()
                 .contextPath(this.getContextPath())
-                .applicationId(this.getApplicationId())
+                .url(this.getUrl())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
                 .build();

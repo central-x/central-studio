@@ -100,11 +100,10 @@ public class Application extends ModifiableEntity implements Codeable, Available
     private String remark;
 
     /**
-     * 应用模块
+     * 路由
      */
     @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<ApplicationModule> modules;
+    private List<ApplicationRoute> routes;
 
     /**
      * 创建人信息
@@ -131,7 +130,7 @@ public class Application extends ModifiableEntity implements Codeable, Available
                 .secret(this.getSecret())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .modules(Listx.asStream(this.getModules()).map(ApplicationModule::toInput).toList())
+                .routes(Listx.asStream(this.getRoutes()).map(ApplicationRoute::toInput).toList())
                 .build();
     }
 }

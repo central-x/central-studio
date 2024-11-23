@@ -24,23 +24,20 @@
 
 package central.studio.provider.graphql.saas.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.saas.ApplicationInput;
 import central.lang.Assertx;
 import central.lang.Stringx;
-import central.studio.provider.graphql.saas.dto.ApplicationDTO;
-import central.studio.provider.graphql.saas.entity.ApplicationEntity;
-import central.studio.provider.graphql.saas.entity.ApplicationModuleEntity;
-import central.studio.provider.graphql.saas.entity.TenantApplicationEntity;
-import central.studio.provider.graphql.saas.mapper.ApplicationMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
-import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.web.XForwardedHeaders;
+import central.studio.provider.graphql.saas.dto.ApplicationDTO;
+import central.studio.provider.graphql.saas.entity.ApplicationEntity;
+import central.studio.provider.graphql.saas.mapper.ApplicationMapper;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
@@ -64,8 +61,9 @@ import java.util.Objects;
  * @since 2022/10/03
  */
 @Component
-@GraphQLSchema(path = "saas/mutation", types = {ApplicationDTO.class, ApplicationModuleMutation.class})
+@GraphQLSchema(path = "saas/mutation", types = ApplicationDTO.class)
 public class ApplicationMutation {
+
     @Setter(onMethod_ = @Autowired)
     private ApplicationMapper mapper;
 
@@ -164,20 +162,13 @@ public class ApplicationMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                            @Autowired ApplicationModuleMutation moduleMutation,
                             @Autowired TenantApplicationMutation mutation) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
         if (Listx.isNullOrEmpty(ids)) {
             return 0L;
         }
 
-        var effected = this.mapper.deleteByIds(ids);
-        if (effected > 0L) {
-            // 级联删除
-            moduleMutation.deleteBy(Conditions.of(ApplicationModuleEntity.class).in(ApplicationModuleEntity::getApplicationId, ids), tenant);
-            mutation.deleteBy(Conditions.of(TenantApplicationEntity.class).in(TenantApplicationEntity::getApplicationId, ids), tenant);
-        }
-        return effected;
+        return this.mapper.deleteByIds(ids);
     }
 
     /**
@@ -188,32 +179,12 @@ public class ApplicationMutation {
      */
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<ApplicationEntity> conditions,
-                         @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                         @Autowired ApplicationModuleMutation moduleMutation,
-                         @Autowired TenantApplicationMutation mutation) {
+                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
         var entities = this.mapper.findBy(conditions);
         if (entities.isEmpty()) {
             return 0L;
         }
-        var effected = this.mapper.deleteBy(conditions);
-        // 级联删除
-        var ids = entities.stream().map(ApplicationEntity::getId).toList();
-        moduleMutation.deleteBy(Conditions.of(ApplicationModuleEntity.class).in(ApplicationModuleEntity::getApplicationId, ids), tenant);
-        mutation.deleteBy(Conditions.of(TenantApplicationEntity.class).in(TenantApplicationEntity::getApplicationId, ids), tenant);
-        return effected;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 关联查询
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Application Module Mutation
-     * 模块修改
-     */
-    @GraphQLGetter
-    public ApplicationModuleMutation getModules(@Autowired ApplicationModuleMutation mutation) {
-        return mutation;
+        return this.mapper.deleteBy(conditions);
     }
 }

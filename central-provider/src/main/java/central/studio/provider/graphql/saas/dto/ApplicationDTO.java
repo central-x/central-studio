@@ -24,24 +24,22 @@
 
 package central.studio.provider.graphql.saas.dto;
 
-import central.provider.graphql.DTO;
+import central.data.saas.ApplicationRoute;
 import central.lang.Arrayx;
-import central.studio.provider.graphql.saas.entity.ApplicationEntity;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.saas.entity.ApplicationModuleEntity;
-import central.studio.provider.graphql.saas.query.ApplicationModuleQuery;
-import central.sql.query.Conditions;
-import central.sql.query.Orders;
+import central.lang.Stringx;
+import central.lang.reflect.TypeRef;
+import central.provider.graphql.DTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
-import central.web.XForwardedHeaders;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
+import central.studio.provider.graphql.saas.entity.ApplicationEntity;
+import central.util.Jsonx;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.Serial;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -71,12 +69,15 @@ public class ApplicationDTO extends ApplicationEntity implements DTO {
     }
 
     /**
-     * 获取模块
+     * 获取路由
      */
     @GraphQLGetter
-    public List<ApplicationModuleDTO> getModules(@Autowired ApplicationModuleQuery query,
-                                                 @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return query.findBy(null, null, Conditions.of(ApplicationModuleEntity.class).eq(ApplicationModuleEntity::getApplicationId, this.getId()), Orders.of(ApplicationModuleEntity.class).asc(ApplicationModuleEntity::getContextPath), tenant);
+    public List<ApplicationRoute> getRoutes() {
+        if (Stringx.isNullOrEmpty(this.getRoutesJson())) {
+            return Collections.emptyList();
+        }
+
+        return Jsonx.Default().deserialize(this.getRoutesJson(), TypeRef.ofList(ApplicationRoute.class));
     }
 
     /**
