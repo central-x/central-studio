@@ -27,7 +27,10 @@ package central.studio.dashboard.logic.log;
 import central.bean.Page;
 import central.data.log.LogCollector;
 import central.data.log.LogCollectorInput;
+import central.data.log.LogStorage;
+import central.data.log.LogStorageInput;
 import central.provider.graphql.log.LogCollectorProvider;
+import central.provider.graphql.log.LogStorageProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.util.Collectionx;
@@ -57,6 +60,9 @@ public class LogLogic {
     @Setter(onMethod_ = @Autowired)
     private LogCollectorProvider collectorProvider;
 
+    @Setter(onMethod_ = @Autowired)
+    private LogStorageProvider storageProvider;
+
     /**
      * 如用用户没有指定排序条件，则构建默认的排序条件
      *
@@ -66,7 +72,19 @@ public class LogLogic {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
         }
-        return Orders.of(LogCollector.class).asc(LogCollector::getCode).asc(LogCollector::getName);
+        return Orders.of(LogCollector.class).asc(LogCollector::getCode);
+    }
+
+    /**
+     * 如用用户没有指定排序条件，则构建默认的排序条件
+     *
+     * @param orders 用户指定的排序条件
+     */
+    private Orders<LogStorage> getStorageDefaultOrders(@Nullable Orders<LogStorage> orders) {
+        if (Collectionx.isNullOrEmpty(orders)) {
+            return orders;
+        }
+        return Orders.of(LogStorage.class).asc(LogStorage::getCode);
     }
 
     /**
@@ -129,5 +147,68 @@ public class LogLogic {
      */
     public long deleteCollectorByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.collectorProvider.deleteByIds(ids, tenant);
+    }
+
+
+    /**
+     * 分页查询
+     *
+     * @param pageIndex  分页下标
+     * @param pageSize   分页大小
+     * @param conditions 筛选条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     * @return 分页数据
+     */
+    public Page<LogStorage> pageStorageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<LogStorage> conditions, @Nullable Orders<LogStorage> orders, @Nonnull String tenant) {
+        orders = this.getStorageDefaultOrders(orders);
+        return this.storageProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
+    }
+
+    /**
+     * 主键查询
+     *
+     * @param id     主键
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    public LogStorage findStorageById(@Nonnull String id, @Nonnull String tenant) {
+        return this.storageProvider.findById(id, tenant);
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param input     数据输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 插入后的数据
+     */
+    public LogStorage insertStorage(@Nonnull @Validated({Insert.class, Default.class}) LogStorageInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.storageProvider.insert(input, accountId, tenant);
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param input     数据输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 更新后的数据
+     */
+    public LogStorage updateStorage(@Nonnull @Validated({Update.class, Default.class}) LogStorageInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.storageProvider.update(input, accountId, tenant);
+    }
+
+    /**
+     * 根据主键删除数据
+     *
+     * @param ids       主键
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deleteStorageByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.storageProvider.deleteByIds(ids, tenant);
     }
 }
