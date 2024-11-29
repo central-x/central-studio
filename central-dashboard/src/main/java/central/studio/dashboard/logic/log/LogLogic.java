@@ -25,11 +25,9 @@
 package central.studio.dashboard.logic.log;
 
 import central.bean.Page;
-import central.data.log.LogCollector;
-import central.data.log.LogCollectorInput;
-import central.data.log.LogStorage;
-import central.data.log.LogStorageInput;
+import central.data.log.*;
 import central.provider.graphql.log.LogCollectorProvider;
+import central.provider.graphql.log.LogFilterProvider;
 import central.provider.graphql.log.LogStorageProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -63,6 +61,9 @@ public class LogLogic {
     @Setter(onMethod_ = @Autowired)
     private LogStorageProvider storageProvider;
 
+    @Setter(onMethod_ = @Autowired)
+    private LogFilterProvider filterProvider;
+
     /**
      * 如用用户没有指定排序条件，则构建默认的排序条件
      *
@@ -85,6 +86,18 @@ public class LogLogic {
             return orders;
         }
         return Orders.of(LogStorage.class).asc(LogStorage::getCode);
+    }
+
+    /**
+     * 如用用户没有指定排序条件，则构建默认的排序条件
+     *
+     * @param orders 用户指定的排序条件
+     */
+    private Orders<LogFilter> getFilterDefaultOrders(@Nullable Orders<LogFilter> orders) {
+        if (Collectionx.isNullOrEmpty(orders)) {
+            return orders;
+        }
+        return Orders.of(LogFilter.class).asc(LogFilter::getCode);
     }
 
     /**
@@ -210,5 +223,67 @@ public class LogLogic {
      */
     public long deleteStorageByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.storageProvider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param pageIndex  分页下标
+     * @param pageSize   分页大小
+     * @param conditions 筛选条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     * @return 分页数据
+     */
+    public Page<LogFilter> pageFilterBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<LogFilter> conditions, @Nullable Orders<LogFilter> orders, @Nonnull String tenant) {
+        orders = this.getFilterDefaultOrders(orders);
+        return this.filterProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
+    }
+
+    /**
+     * 主键查询
+     *
+     * @param id     主键
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    public LogFilter findFilterById(@Nonnull String id, @Nonnull String tenant) {
+        return this.filterProvider.findById(id, tenant);
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param input     数据输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 插入后的数据
+     */
+    public LogFilter insertFilter(@Nonnull @Validated({Insert.class, Default.class}) LogFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.filterProvider.insert(input, accountId, tenant);
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param input     数据输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 更新后的数据
+     */
+    public LogFilter updateFilter(@Nonnull @Validated({Update.class, Default.class}) LogFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.filterProvider.update(input, accountId, tenant);
+    }
+
+    /**
+     * 根据主键删除数据
+     *
+     * @param ids       主键
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deleteFilterByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.filterProvider.deleteByIds(ids, tenant);
     }
 }

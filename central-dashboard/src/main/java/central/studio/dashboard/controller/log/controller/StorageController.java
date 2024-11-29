@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Alan Yeh
  * @since 2024/11/28
  */
-@RestController
+@RestController("logStorageController")
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/log/storages")
 public class StorageController {

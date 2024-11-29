@@ -25,11 +25,11 @@
 package central.studio.dashboard.controller.log.controller;
 
 import central.bean.Page;
-import central.data.log.LogCollector;
+import central.data.log.LogFilter;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
-import central.studio.dashboard.controller.log.param.CollectorParams;
-import central.studio.dashboard.controller.log.query.CollectorPageQuery;
+import central.studio.dashboard.controller.log.param.FilterParams;
+import central.studio.dashboard.controller.log.query.FilterPageQuery;
 import central.studio.dashboard.logic.log.LogLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -42,17 +42,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Log Collector Controller
+ * Log Filter Controller
  * <p>
- * 日志采集器管理
+ * 日志过滤器管理
  *
  * @author Alan Yeh
- * @since 2024/11/24
+ * @since 2024/11/30
  */
-@RestController("logCollectorController")
+@RestController("logFilterController")
 @RequiresAuthentication
-@RequestMapping("/dashboard/api/log/collectors")
-public class CollectorController {
+@RequestMapping("/dashboard/api/log/filters")
+public class FilterController {
 
     @Setter(onMethod_ = @Autowired)
     private LogLogic logic;
@@ -65,8 +65,8 @@ public class CollectorController {
      * @return 分页结果
      */
     @GetMapping("/page")
-    public Page<LogCollector> page(@Validated CollectorPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.pageCollectorBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
+    public Page<LogFilter> page(@Validated FilterPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.pageFilterBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
     /**
@@ -77,8 +77,8 @@ public class CollectorController {
      * @return 详情
      */
     @GetMapping("/details")
-    public LogCollector details(@Validated IdQuery<LogCollector> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.findCollectorById(query.getId(), tenant);
+    public LogFilter details(@Validated IdQuery<LogFilter> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.findFilterById(query.getId(), tenant);
     }
 
     /**
@@ -90,8 +90,8 @@ public class CollectorController {
      * @return 新增后的数据
      */
     @PostMapping
-    public LogCollector add(@RequestBody @Validated({Insert.class, Default.class}) CollectorParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.insertCollector(params.toInput(), accountId, tenant);
+    public LogFilter add(@RequestBody @Validated({Insert.class, Default.class}) FilterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.insertFilter(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -103,8 +103,8 @@ public class CollectorController {
      * @return 更新后的数据
      */
     @PutMapping
-    public LogCollector update(@RequestBody @Validated({Update.class, Default.class}) CollectorParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.updateCollector(params.toInput(), accountId, tenant);
+    public LogFilter update(@RequestBody @Validated({Update.class, Default.class}) FilterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.updateFilter(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -117,6 +117,6 @@ public class CollectorController {
      */
     @DeleteMapping
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.deleteCollectorByIds(params.getIds(), accountId, tenant);
+        return this.logic.deleteFilterByIds(params.getIds(), accountId, tenant);
     }
 }
