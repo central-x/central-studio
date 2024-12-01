@@ -25,8 +25,11 @@
 package central.studio.dashboard.logic.organization;
 
 import central.bean.Page;
+import central.data.organization.Department;
+import central.data.organization.DepartmentInput;
 import central.data.organization.Unit;
 import central.data.organization.UnitInput;
+import central.provider.graphql.organization.DepartmentProvider;
 import central.provider.graphql.organization.UnitProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -57,16 +60,31 @@ public class UnitLogic {
     @Setter(onMethod_ = @Autowired)
     private UnitProvider provider;
 
+    @Setter(onMethod_ = @Autowired)
+    private DepartmentProvider departmentProvider;
+
     /**
      * 如用用户没有指定排序条件，则构建默认的排序条件
      *
      * @param orders 用户指定的排序条件
      */
-    private Orders<Unit> getDefaultOrders(Orders<Unit> orders) {
+    private Orders<Unit> getUnitDefaultOrders(Orders<Unit> orders) {
         if (Collectionx.isNotEmpty(orders)) {
             return orders;
         }
         return Orders.of(Unit.class).desc(Unit::getOrder).asc(Unit::getName);
+    }
+
+    /**
+     * 如用用户没有指定排序条件，则构建默认的排序条件
+     *
+     * @param orders 用户指定的排序条件
+     */
+    private Orders<Department> getDepartmentDefaultOrders(Orders<Department> orders) {
+        if (Collectionx.isNotEmpty(orders)) {
+            return orders;
+        }
+        return Orders.of(Department.class).desc(Department::getOrder).asc(Department::getName);
     }
 
     /**
@@ -80,7 +98,7 @@ public class UnitLogic {
      * @return 分页数据
      */
     public Page<Unit> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
-        orders = this.getDefaultOrders(orders);
+        orders = this.getUnitDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
@@ -93,7 +111,7 @@ public class UnitLogic {
      * @return 列表数据
      */
     public List<Unit> listBy(@Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
-        orders = this.getDefaultOrders(orders);
+        orders = this.getUnitDefaultOrders(orders);
         return this.provider.findBy(null, null, conditions, orders, tenant);
     }
 
@@ -142,5 +160,66 @@ public class UnitLogic {
      */
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
+    }
+
+
+    /**
+     * 列表查询
+     *
+     * @param conditions 筛选条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     * @return 列表数据
+     */
+    public List<Department> listDepartmentBy(@Nullable Conditions<Department> conditions, @Nullable Orders<Department> orders, @Nonnull String tenant) {
+        orders = this.getDepartmentDefaultOrders(orders);
+        return this.departmentProvider.findBy(null, null, conditions, orders, tenant);
+    }
+
+    /**
+     * 主键查询
+     *
+     * @param id     主键
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    public Department findDepartmentById(@Nonnull String id, @Nonnull String tenant) {
+        return this.departmentProvider.findById(id, tenant);
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param input     数据输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 插入后的数据
+     */
+    public Department insertDepartment(@Nonnull @Validated({Insert.class, Default.class}) DepartmentInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.departmentProvider.insert(input, accountId, tenant);
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param input     数据输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 更新后的数据
+     */
+    public Department updateDepartment(@Nonnull @Validated({Update.class, Default.class}) DepartmentInput input, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.departmentProvider.update(input, accountId, tenant);
+    }
+
+    /**
+     * 根据主键删除数据
+     *
+     * @param ids       主键
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deleteDepartmentByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.departmentProvider.deleteByIds(ids, tenant);
     }
 }

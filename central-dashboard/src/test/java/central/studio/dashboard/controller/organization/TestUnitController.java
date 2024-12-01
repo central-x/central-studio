@@ -26,6 +26,7 @@ package central.studio.dashboard.controller.organization;
 
 import central.data.organization.Area;
 import central.data.organization.AreaInput;
+import central.data.organization.Department;
 import central.data.organization.Unit;
 import central.data.organization.option.AreaType;
 import central.lang.reflect.TypeRef;
@@ -33,6 +34,7 @@ import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
 import central.studio.dashboard.controller.organization.controller.UnitController;
+import central.studio.dashboard.controller.organization.param.DepartmentParams;
 import central.studio.dashboard.logic.organization.AreaLogic;
 import central.util.Jsonx;
 import central.util.Mapx;
@@ -84,6 +86,10 @@ public class TestUnitController extends TestController {
     /**
      * @see UnitController#add
      * @see UnitController#details
+     * @see UnitController#addDepartment
+     * @see UnitController#detailsDepartment
+     * @see UnitController#listDepartments
+     * @see UnitController#deleteDepartment
      * @see UnitController#delete
      */
     @Test
@@ -109,7 +115,11 @@ public class TestUnitController extends TestController {
             var response = mvc.perform(addRequest)
                     .andExpect(status().is2xxSuccessful())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                    .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                    .andExpect(jsonPath("$.id").isNotEmpty())
+                    .andExpect(jsonPath("$.parentId").isEmpty())
+                    .andExpect(jsonPath("$.code").value("central-x"))
+                    .andExpect(jsonPath("$.areaId").value(area.getId()))
+                    .andExpect(jsonPath("$.order").value(0))
                     .andReturn().getResponse();
 
             var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Unit.class));
@@ -126,16 +136,127 @@ public class TestUnitController extends TestController {
                     .andExpect(status().is2xxSuccessful())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                     .andExpect(content().string(Matchers.not(Matchers.emptyString())))
-                    .andExpect(jsonPath("$.id").value(body.getId()));
+                    .andExpect(jsonPath("$.id").value(body.getId()))
+                    .andExpect(jsonPath("$.parentId").value(body.getParentId()))
+                    .andExpect(jsonPath("$.code").value(body.getCode()))
+                    .andExpect(jsonPath("$.areaId").value(body.getAreaId()))
+                    .andExpect(jsonPath("$.order").value(body.getOrder()));
 
-            // 删除数据
-            var deleteRequest = MockMvcRequestBuilders.delete(PATH)
-                    .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
-                    .queryParam("ids", body.getId())
+            // 添加部门
+            var addDepartmentRequest = MockMvcRequestBuilders.post(PATH + "/departments")
+                    .cookie(this.getSessionCookie(PATH + "/departments", mvc, cookieStore))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Jsonx.Default().serialize(DepartmentParams.builder()
+                            .unitId(body.getId())
+                            .parentId("")
+                            .code("00001")
+                            .name("测试部门")
+                            .order(0)
+                            .build()
+                    ))
                     .header(XForwardedHeaders.TENANT, "master")
                     .accept(MediaType.APPLICATION_JSON);
 
-            mvc.perform(deleteRequest)
+            var addDepartmentResponse = mvc.perform(addDepartmentRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.id").isNotEmpty())
+                    .andExpect(jsonPath("$.unitId").isNotEmpty())
+                    .andExpect(jsonPath("$.parentId").isEmpty())
+                    .andExpect(jsonPath("$.code").isNotEmpty())
+                    .andExpect(jsonPath("$.name").isNotEmpty())
+                    .andExpect(jsonPath("$.order").isNotEmpty())
+                    .andReturn().getResponse();
+
+            var departmentBody = Jsonx.Default().deserialize(addDepartmentResponse.getContentAsString(), TypeRef.of(Department.class));
+            assertNotNull(departmentBody);
+
+            // 部门详情查询
+            var departmentDetailsRequest = MockMvcRequestBuilders.get(PATH + "/departments/details")
+                    .cookie(this.getSessionCookie(PATH + "/departments/details", mvc, cookieStore))
+                    .queryParam("id", departmentBody.getId())
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .accept(MediaType.APPLICATION_JSON);
+
+            mvc.perform(departmentDetailsRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.id").value(departmentBody.getId()))
+                    .andExpect(jsonPath("$.unitId").value(body.getId()))
+                    .andExpect(jsonPath("$.parentId").value(departmentBody.getParentId()))
+                    .andExpect(jsonPath("$.code").value(departmentBody.getCode()))
+                    .andExpect(jsonPath("$.name").value(departmentBody.getName()))
+                    .andExpect(jsonPath("$.order").value(departmentBody.getOrder()));
+
+            // 查询部门列表
+            var listDepartmentsRequest = MockMvcRequestBuilders.get(PATH + "/departments")
+                    .cookie(this.getSessionCookie(PATH + "/departments", mvc, cookieStore))
+                    .queryParam("unitId", body.getId())
+                    .accept(MediaType.APPLICATION_JSON);
+
+            mvc.perform(listDepartmentsRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$[0].id").value(departmentBody.getId()))
+                    .andExpect(jsonPath("$[0].unitId").value(body.getId()))
+                    .andExpect(jsonPath("$[0].parentId").value(departmentBody.getParentId()))
+                    .andExpect(jsonPath("$[0].code").value(departmentBody.getCode()))
+                    .andExpect(jsonPath("$[0].name").value(departmentBody.getName()))
+                    .andExpect(jsonPath("$[0].order").value(departmentBody.getOrder()));
+
+            // 更新部门
+            var updateDepartmentsRequest = MockMvcRequestBuilders.put(PATH + "/departments")
+                    .cookie(this.getSessionCookie(PATH + "/departments", mvc, cookieStore))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Jsonx.Default().serialize(DepartmentParams.builder()
+                            .id(departmentBody.getId())
+                            .unitId(body.getId())
+                            .parentId("")
+                            .code("00002")
+                            .name("测试部门")
+                            .order(0)
+                            .build()
+                    ))
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .accept(MediaType.APPLICATION_JSON);
+            mvc.perform(updateDepartmentsRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.id").value(departmentBody.getId()))
+                    .andExpect(jsonPath("$.unitId").value(body.getId()))
+                    .andExpect(jsonPath("$.parentId").value(departmentBody.getParentId()))
+                    .andExpect(jsonPath("$.code").value("00002"))
+                    .andExpect(jsonPath("$.name").value(departmentBody.getName()))
+                    .andExpect(jsonPath("$.order").value(departmentBody.getOrder()));
+
+            // 再次查询详情
+            mvc.perform(departmentDetailsRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.id").value(departmentBody.getId()))
+                    .andExpect(jsonPath("$.unitId").value(body.getId()))
+                    .andExpect(jsonPath("$.parentId").value(departmentBody.getParentId()))
+                    .andExpect(jsonPath("$.code").value("00002"))
+                    .andExpect(jsonPath("$.name").value(departmentBody.getName()))
+                    .andExpect(jsonPath("$.order").value(departmentBody.getOrder()));
+
+            // 删除部门
+            mvc.perform(MockMvcRequestBuilders.delete(PATH + "/departments")
+                            .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                            .queryParam("ids", departmentBody.getId())
+                            .header(XForwardedHeaders.TENANT, "master")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string("1"));
+
+
+            // 删除数据
+            mvc.perform(MockMvcRequestBuilders.delete(PATH)
+                            .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                            .queryParam("ids", body.getId())
+                            .header(XForwardedHeaders.TENANT, "master")
+                            .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().is2xxSuccessful())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                     .andExpect(content().string("1"));
@@ -296,6 +417,134 @@ public class TestUnitController extends TestController {
                     .accept(MediaType.APPLICATION_JSON);
 
             mvc.perform(deleteRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string("1"));
+        } finally {
+            this.deleteArea(area.getId());
+        }
+    }
+
+    /**
+     * @see UnitController#add
+     * @see UnitController#details
+     * @see UnitController#addDepartment
+     * @see UnitController#detailsDepartment
+     * @see UnitController#deleteDepartment
+     * @see UnitController#delete
+     */
+    @Test
+    public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
+        // 新增行政区划
+        var area = this.getArea("0000000001");
+
+        try {
+            // 新增
+            var addRequest = MockMvcRequestBuilders.post(PATH)
+                    .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Jsonx.Default().serialize(Mapx.of(
+                            Mapx.entry("parentId", ""),
+                            Mapx.entry("code", "central-x"),
+                            Mapx.entry("name", "CentralX"),
+                            Mapx.entry("areaId", area.getId()),
+                            Mapx.entry("order", 0)
+                    )))
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .accept(MediaType.APPLICATION_JSON);
+
+            var response = mvc.perform(addRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.id").isNotEmpty())
+                    .andExpect(jsonPath("$.parentId").isEmpty())
+                    .andExpect(jsonPath("$.code").value("central-x"))
+                    .andExpect(jsonPath("$.areaId").value(area.getId()))
+                    .andExpect(jsonPath("$.order").value(0))
+                    .andReturn().getResponse();
+
+            var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Unit.class));
+            assertNotNull(body);
+
+            // 详情查询
+            var detailsRequest = MockMvcRequestBuilders.get(PATH + "/details")
+                    .cookie(this.getSessionCookie(PATH + "/details", mvc, cookieStore))
+                    .queryParam("id", body.getId())
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .accept(MediaType.APPLICATION_JSON);
+
+            mvc.perform(detailsRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                    .andExpect(jsonPath("$.id").value(body.getId()))
+                    .andExpect(jsonPath("$.parentId").value(body.getParentId()))
+                    .andExpect(jsonPath("$.code").value(body.getCode()))
+                    .andExpect(jsonPath("$.areaId").value(body.getAreaId()))
+                    .andExpect(jsonPath("$.order").value(body.getOrder()));
+
+            // 添加部门
+            var addDepartmentRequest = MockMvcRequestBuilders.post(PATH + "/departments")
+                    .cookie(this.getSessionCookie(PATH + "/departments", mvc, cookieStore))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Jsonx.Default().serialize(DepartmentParams.builder()
+                            .unitId(body.getId())
+                            .parentId("")
+                            .code("00001")
+                            .name("测试部门")
+                            .order(0)
+                            .build()
+                    ))
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .accept(MediaType.APPLICATION_JSON);
+
+            var addDepartmentResponse = mvc.perform(addDepartmentRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.id").isNotEmpty())
+                    .andExpect(jsonPath("$.unitId").isNotEmpty())
+                    .andExpect(jsonPath("$.parentId").isEmpty())
+                    .andExpect(jsonPath("$.code").isNotEmpty())
+                    .andExpect(jsonPath("$.name").isNotEmpty())
+                    .andExpect(jsonPath("$.order").isNotEmpty())
+                    .andReturn().getResponse();
+
+            var departmentBody = Jsonx.Default().deserialize(addDepartmentResponse.getContentAsString(), TypeRef.of(Department.class));
+            assertNotNull(departmentBody);
+
+            // 部门详情查询
+            var departmentDetailsRequest = MockMvcRequestBuilders.get(PATH + "/departments/details")
+                    .cookie(this.getSessionCookie(PATH + "/departments/details", mvc, cookieStore))
+                    .queryParam("id", departmentBody.getId())
+                    .header(XForwardedHeaders.TENANT, "master")
+                    .accept(MediaType.APPLICATION_JSON);
+
+            mvc.perform(departmentDetailsRequest)
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(jsonPath("$.id").value(departmentBody.getId()))
+                    .andExpect(jsonPath("$.unitId").value(body.getId()))
+                    .andExpect(jsonPath("$.parentId").value(departmentBody.getParentId()))
+                    .andExpect(jsonPath("$.code").value(departmentBody.getCode()))
+                    .andExpect(jsonPath("$.name").value(departmentBody.getName()))
+                    .andExpect(jsonPath("$.order").value(departmentBody.getOrder()));
+
+            // 删除部门
+            mvc.perform(MockMvcRequestBuilders.delete(PATH + "/departments")
+                            .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                            .queryParam("ids", departmentBody.getId())
+                            .header(XForwardedHeaders.TENANT, "master")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string("1"));
+
+
+            // 删除数据
+            mvc.perform(MockMvcRequestBuilders.delete(PATH)
+                            .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                            .queryParam("ids", body.getId())
+                            .header(XForwardedHeaders.TENANT, "master")
+                            .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().is2xxSuccessful())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                     .andExpect(content().string("1"));

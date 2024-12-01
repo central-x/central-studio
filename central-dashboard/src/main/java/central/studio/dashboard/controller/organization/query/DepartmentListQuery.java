@@ -24,31 +24,40 @@
 
 package central.studio.dashboard.controller.organization.query;
 
-import central.data.organization.Area;
-import central.data.organization.option.AreaType;
+import central.data.organization.Department;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
 import central.starter.web.query.ListQuery;
-import central.validation.Enums;
 import central.validation.Label;
+import central.validation.group.Insert;
+import central.validation.group.Update;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
 /**
- * Area List Query
+ * Department List Query
  * <p>
- * 行政区划列表查询
+ * 部门列表查询
  *
  * @author Alan Yeh
- * @since 2024/09/20
+ * @since 2024/12/01
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AreaListQuery extends ListQuery<Area> {
+public class DepartmentListQuery extends ListQuery<Department> {
     @Serial
-    private static final long serialVersionUID = -5166956508840261658L;
+    private static final long serialVersionUID = -5747968457061279810L;
+
+    @Label("单位主键")
+    @Null(groups = Insert.class)
+    @NotBlank(groups = Update.class)
+    @Size(min = 1, max = 32, groups = Insert.class)
+    private String unitId;
 
     @Label("父节点主键")
     private String parentId;
@@ -59,38 +68,32 @@ public class AreaListQuery extends ListQuery<Area> {
     @Label("名称")
     private String name;
 
-    @Label("区划代码")
+    @Label("标识")
     private String code;
 
-    @Label("类型")
-    @Enums(value = AreaType.class)
-    private String type;
-
     @Override
-    public Conditions<Area> build() {
-        var conditions = Conditions.of(Area.class);
+    public Conditions<Department> build() {
+        var conditions = Conditions.of(Department.class)
+                .eq(Department::getUnitId, this.getUnitId());
 
         if (Stringx.isNotEmpty(this.getParentId())) {
-            conditions.eq(Area::getParentId, this.getParentId());
+            conditions.eq(Department::getParentId, this.getParentId());
         }
 
         // 精确字段搜索
         if (Stringx.isNotEmpty(this.getId())) {
-            conditions.eq(Area::getId, this.getId());
+            conditions.eq(Department::getId, this.getId());
         }
         if (Stringx.isNotEmpty(this.getName())) {
-            conditions.like(Area::getName, this.getName());
+            conditions.like(Department::getName, this.getName());
         }
         if (Stringx.isNotEmpty(this.getCode())) {
-            conditions.like(Area::getCode, this.getCode());
-        }
-        if (Stringx.isNotEmpty(this.getType())) {
-            conditions.eq(Area::getType, this.getType());
+            conditions.like(Department::getCode, this.getCode());
         }
 
         // 模糊字段搜索
         for (String keyword : this.getKeywords()) {
-            conditions.and(filter -> filter.like(Area::getCode, keyword).or().like(Area::getName, keyword));
+            conditions.and(filter -> filter.like(Department::getCode, keyword).or().like(Department::getName, keyword));
         }
 
         return conditions;

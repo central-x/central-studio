@@ -24,10 +24,13 @@
 
 package central.studio.dashboard.controller.organization.controller;
 
+import central.data.organization.Department;
 import central.data.organization.Unit;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
+import central.studio.dashboard.controller.organization.param.DepartmentParams;
 import central.studio.dashboard.controller.organization.param.UnitParams;
+import central.studio.dashboard.controller.organization.query.DepartmentListQuery;
 import central.studio.dashboard.controller.organization.query.UnitListQuery;
 import central.studio.dashboard.logic.organization.UnitLogic;
 import central.validation.group.Insert;
@@ -54,12 +57,18 @@ import java.util.List;
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/organization/units")
 public class UnitController {
-    public interface Permissions {
 
+    public interface Permissions {
         String VIEW = "organization:unit:view";
         String ADD = "organization:unit:add";
         String EDIT = "organization:unit:edit";
         String DELETE = "organization:unit:delete";
+
+
+        String DEPARTMENT_VIEW = "organization:unit:department:view";
+        String DEPARTMENT_ADD = "organization:unit:department:add";
+        String DEPARTMENT_EDIT = "organization:unit:department:edit";
+        String DEPARTMENT_DELETE = "organization:unit:department:delete";
     }
 
     @Setter(onMethod_ = @Autowired)
@@ -127,4 +136,68 @@ public class UnitController {
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
+
+    /**
+     * 按条件查询组织机构列表
+     *
+     * @param query  查询
+     * @param tenant 租户标识
+     * @return 分页结果
+     */
+    @GetMapping("/departments")
+    public List<Department> listDepartments(@Validated DepartmentListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.listDepartmentBy(query.build(), null, tenant);
+    }
+
+    /**
+     * 根据主键查询组织机构详情
+     *
+     * @param query  查询
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    @GetMapping("/departments/details")
+    public Department detailsDepartment(@Validated IdQuery<Department> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.findDepartmentById(query.getId(), tenant);
+    }
+
+    /**
+     * 新增组织机构
+     *
+     * @param params    组织机构入参
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 新增后组织机构数据
+     */
+    @PostMapping("/departments")
+    public Department addDepartment(@RequestBody @Validated({Insert.class, Default.class}) DepartmentParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.insertDepartment(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 更新组织机构
+     *
+     * @param params    组织机构数据
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 更新后组织机构数据
+     */
+    @PutMapping("/departments")
+    public Department updateDepartment(@RequestBody @Validated({Update.class, Default.class}) DepartmentParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.updateDepartment(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 根据主键删除组织机构数据
+     *
+     * @param params    组织机构数据
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    @DeleteMapping("/departments")
+    public long deleteDepartment(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.deleteDepartmentByIds(params.getIds(), accountId, tenant);
+    }
+
 }
