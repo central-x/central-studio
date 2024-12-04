@@ -24,7 +24,7 @@
 
 package central.studio.dashboard.controller.organization.query;
 
-import central.data.organization.Department;
+import central.data.organization.Post;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
 import central.starter.web.query.ListQuery;
@@ -37,18 +37,18 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 
 /**
- * Department List Query
+ * Post List Query
  * <p>
- * 部门列表查询
+ * 职务列表查询
  *
  * @author Alan Yeh
- * @since 2024/12/01
+ * @since 2024/12/04
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DepartmentListQuery extends ListQuery<Department> {
+public class PostListQuery extends ListQuery<Post> {
     @Serial
-    private static final long serialVersionUID = -5747968457061279810L;
+    private static final long serialVersionUID = 2711389002177870461L;
 
     @Label("单位主键")
     @NotBlank
@@ -68,28 +68,24 @@ public class DepartmentListQuery extends ListQuery<Department> {
     private String code;
 
     @Override
-    public Conditions<Department> build() {
-        var conditions = Conditions.of(Department.class)
-                .eq(Department::getUnitId, this.getUnitId());
-
-        if (Stringx.isNotEmpty(this.getParentId())) {
-            conditions.eq(Department::getParentId, this.getParentId());
-        }
+    public Conditions<Post> build() {
+        var conditions = Conditions.of(Post.class)
+                .eq(Post::getUnitId, this.getUnitId());
 
         // 精确字段搜索
         if (Stringx.isNotEmpty(this.getId())) {
-            conditions.eq(Department::getId, this.getId());
+            conditions.eq(Post::getId, this.getId());
         }
         if (Stringx.isNotEmpty(this.getName())) {
-            conditions.like(Department::getName, this.getName());
+            conditions.like(Post::getName, this.getName());
         }
         if (Stringx.isNotEmpty(this.getCode())) {
-            conditions.like(Department::getCode, this.getCode());
+            conditions.like(Post::getCode, this.getCode());
         }
 
         // 模糊字段搜索
         for (String keyword : this.getKeywords()) {
-            conditions.and(filter -> filter.like(Department::getCode, keyword).or().like(Department::getName, keyword));
+            conditions.and(filter -> filter.like(Post::getCode, keyword).or().like(Post::getName, keyword));
         }
 
         return conditions;

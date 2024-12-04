@@ -25,9 +25,9 @@
 package central.studio.dashboard.logic.organization;
 
 import central.bean.Page;
-import central.data.organization.Area;
-import central.data.organization.AreaInput;
-import central.provider.graphql.organization.AreaProvider;
+import central.data.organization.Post;
+import central.data.organization.PostInput;
+import central.provider.graphql.organization.PostProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.util.Collectionx;
@@ -44,29 +44,29 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 /**
- * Area Logic
+ * Post Logic
  * <p>
- * 行政区划业务逻辑
+ * 职务业务逻辑
  *
  * @author Alan Yeh
- * @since 2024/09/14
+ * @since 2024/12/04
  */
 @Service
-public class AreaLogic {
+public class PostLogic {
 
     @Setter(onMethod_ = @Autowired)
-    private AreaProvider provider;
+    private PostProvider provider;
 
     /**
      * 如用用户没有指定排序条件，则构建默认的排序条件
      *
      * @param orders 用户指定的排序条件
      */
-    private Orders<Area> getDefaultOrders(Orders<Area> orders) {
+    private Orders<Post> getDefaultOrders(Orders<Post> orders) {
         if (Collectionx.isNotEmpty(orders)) {
             return orders;
         }
-        return Orders.of(Area.class).desc(Area::getOrder).asc(Area::getName);
+        return Orders.of(Post.class).desc(Post::getOrder).asc(Post::getName);
     }
 
     /**
@@ -79,7 +79,7 @@ public class AreaLogic {
      * @param tenant     租户标识
      * @return 分页数据
      */
-    public Page<Area> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Area> conditions, @Nullable Orders<Area> orders, @Nonnull String tenant) {
+    public Page<Post> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Post> conditions, @Nullable Orders<Post> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
@@ -92,7 +92,7 @@ public class AreaLogic {
      * @param tenant     租户标识
      * @return 列表数据
      */
-    public List<Area> listBy(@Nullable Conditions<Area> conditions, @Nullable Orders<Area> orders, @Nonnull String tenant) {
+    public List<Post> listBy(@Nullable Conditions<Post> conditions, @Nullable Orders<Post> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.findBy(null, null, conditions, orders, tenant);
     }
@@ -104,7 +104,7 @@ public class AreaLogic {
      * @param tenant 租户标识
      * @return 详情
      */
-    public Area findById(@Nonnull String id, @Nonnull String tenant) {
+    public Post findById(@Nonnull String id, @Nonnull String tenant) {
         return this.provider.findById(id, tenant);
     }
 
@@ -116,7 +116,7 @@ public class AreaLogic {
      * @param tenant    租户标识
      * @return 插入后的数据
      */
-    public Area insert(@Nonnull @Validated({Insert.class, Default.class}) AreaInput input, @Nonnull String accountId, @Nonnull String tenant) {
+    public Post insert(@Nonnull @Validated({Insert.class, Default.class}) PostInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.insert(input, accountId, tenant);
     }
 
@@ -128,7 +128,7 @@ public class AreaLogic {
      * @param tenant    租户标识
      * @return 更新后的数据
      */
-    public Area update(@Nonnull @Validated({Update.class, Default.class}) AreaInput input, @Nonnull String accountId, @Nonnull String tenant) {
+    public Post update(@Nonnull @Validated({Update.class, Default.class}) PostInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.update(input, accountId, tenant);
     }
 
@@ -142,27 +142,5 @@ public class AreaLogic {
      */
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
-    }
-
-    /**
-     * 根据主键删除数据
-     *
-     * @param codes     标识
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
-    public long deleteByCodes(@Nullable List<String> codes, @Nonnull String accountId, @Nonnull String tenant) {
-        return this.provider.deleteBy(Conditions.of(Area.class).in(Area::getCode, codes), tenant);
-    }
-
-    /**
-     * 查询符合条件的数据是否存在
-     *
-     * @param conditions 筛选条件
-     * @return 存在返回true，否则返回false
-     */
-    public boolean exists(@Nonnull Conditions<Area> conditions) {
-        return this.provider.countBy(conditions) > 0;
     }
 }

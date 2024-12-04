@@ -34,6 +34,7 @@ import central.provider.graphql.organization.UnitProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.util.Collectionx;
+import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import jakarta.annotation.Nonnull;
@@ -97,7 +98,7 @@ public class UnitLogic {
      * @param tenant     租户标识
      * @return 分页数据
      */
-    public Page<Unit> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
+    public @Nonnull Page<Unit> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
         orders = this.getUnitDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
@@ -110,7 +111,7 @@ public class UnitLogic {
      * @param tenant     租户标识
      * @return 列表数据
      */
-    public List<Unit> listBy(@Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
+    public @Nonnull List<Unit> listBy(@Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
         orders = this.getUnitDefaultOrders(orders);
         return this.provider.findBy(null, null, conditions, orders, tenant);
     }
@@ -122,8 +123,20 @@ public class UnitLogic {
      * @param tenant 租户标识
      * @return 详情
      */
-    public Unit findById(@Nonnull String id, @Nonnull String tenant) {
+    public @Nullable Unit findById(@Nonnull String id, @Nonnull String tenant) {
         return this.provider.findById(id, tenant);
+    }
+
+    /**
+     * 主键查询
+     *
+     * @param code   标识
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    public @Nullable Unit findByCode(@Nonnull String code, @Nonnull String tenant) {
+        var units = this.provider.findBy(1L, 0L, Conditions.of(Unit.class).eq(Unit::getCode, code), null, tenant);
+        return Listx.getFirstOrNull(units);
     }
 
     /**
@@ -160,6 +173,18 @@ public class UnitLogic {
      */
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 根据标识删除数据
+     *
+     * @param codes     标识
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deleteByCodes(@Nullable List<String> codes, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.provider.deleteBy(Conditions.of(Unit.class).in(Unit::getCode, codes));
     }
 
 
