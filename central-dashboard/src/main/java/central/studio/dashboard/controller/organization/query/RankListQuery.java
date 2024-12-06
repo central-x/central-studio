@@ -24,7 +24,7 @@
 
 package central.studio.dashboard.controller.organization.query;
 
-import central.data.organization.Post;
+import central.data.organization.Rank;
 import central.lang.Stringx;
 import central.sql.query.Conditions;
 import central.starter.web.query.ListQuery;
@@ -37,18 +37,18 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 
 /**
- * Post List Query
+ * Rank List Query
  * <p>
- * 职务列表查询
+ * 职级列表查询
  *
  * @author Alan Yeh
- * @since 2024/12/04
+ * @since 2024/12/06
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PostListQuery extends ListQuery<Post> {
+public class RankListQuery extends ListQuery<Rank> {
     @Serial
-    private static final long serialVersionUID = 2711389002177870461L;
+    private static final long serialVersionUID = -1145580825238818481L;
 
     @Label("单位主键")
     @NotBlank
@@ -65,24 +65,24 @@ public class PostListQuery extends ListQuery<Post> {
     private String code;
 
     @Override
-    public Conditions<Post> build() {
-        var conditions = Conditions.of(Post.class)
-                .eq(Post::getUnitId, this.getUnitId());
+    public Conditions<Rank> build() {
+        var conditions = Conditions.of(Rank.class)
+                .eq(Rank::getUnitId, this.getUnitId());
 
         // 精确字段搜索
         if (Stringx.isNotEmpty(this.getId())) {
-            conditions.eq(Post::getId, this.getId());
+            conditions.eq(Rank::getId, this.getId());
         }
         if (Stringx.isNotEmpty(this.getName())) {
-            conditions.like(Post::getName, this.getName());
+            conditions.like(Rank::getName, this.getName());
         }
         if (Stringx.isNotEmpty(this.getCode())) {
-            conditions.like(Post::getCode, this.getCode());
+            conditions.like(Rank::getCode, this.getCode());
         }
 
         // 模糊字段搜索
         for (String keyword : this.getKeywords()) {
-            conditions.and(filter -> filter.like(Post::getCode, keyword).or().like(Post::getName, keyword));
+            conditions.and(filter -> filter.like(Rank::getCode, keyword).or().like(Rank::getName, keyword));
         }
 
         return conditions;

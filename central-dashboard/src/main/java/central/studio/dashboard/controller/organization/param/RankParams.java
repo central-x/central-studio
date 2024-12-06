@@ -24,9 +24,7 @@
 
 package central.studio.dashboard.controller.organization.param;
 
-import central.data.organization.AreaInput;
-import central.data.organization.option.AreaType;
-import central.validation.Enums;
+import central.data.organization.RankInput;
 import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -37,28 +35,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Area Params
+ * Rank Params
  * <p>
- * 行政区划入参
+ * 职级入参
  *
  * @author Alan Yeh
- * @since 2024/09/14
+ * @since 2024/12/06
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AreaParams {
+public class RankParams {
 
     @Label("主键")
     @Null(groups = Insert.class)
     @NotBlank(groups = Update.class)
     @Size(min = 1, max = 32, groups = Insert.class)
     private String id;
-
-    @Label("父区划主键")
-    @Size(max = 32)
-    private String parentId;
 
     @Label("标识")
     @NotBlank
@@ -76,22 +70,21 @@ public class AreaParams {
     @Size(min = 1, max = 50)
     private String name;
 
-    @Label("类型")
+    @Label("单位主键")
     @NotBlank
-    @Enums(AreaType.class)
-    private String type;
+    @Size(min = 1, max = 32)
+    private String unitId;
 
     @Label("排序号")
     @NotNull
     private Integer order;
 
-    public AreaInput toInput() {
-        return AreaInput.builder()
+    public RankInput toInput() {
+        return RankInput.builder()
                 .id(this.getId())
-                .parentId(this.getParentId())
                 .code(this.getCode())
                 .name(this.getName())
-                .type(this.getType())
+                .unitId(this.getUnitId())
                 .order(this.getOrder())
                 .build();
     }

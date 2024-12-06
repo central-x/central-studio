@@ -29,7 +29,10 @@ import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Unit Params
@@ -40,6 +43,9 @@ import lombok.Data;
  * @since 2024/09/16
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UnitParams {
 
     @Label("主键")
