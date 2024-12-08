@@ -22,53 +22,56 @@
  * SOFTWARE.
  */
 
-package central.data.organization;
+package central.studio.dashboard.controller.organization.param;
 
+import central.data.organization.AccountUnitInput;
+import central.util.Listx;
 import central.validation.Label;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.util.List;
 
 /**
- * Account Department Input
- * <p>
- * 帐户与部门关系输入
- *
  * @author Alan Yeh
- * @since 2022/09/12
+ * @since 2024/12/08
  */
 @Data
-@Builder(toBuilder = true)
-@EqualsAndHashCode
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountDepartmentInput implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -3926795037316288441L;
-
-    @Label("帐户主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String accountId;
+public class AccountUnitParams {
 
     @Label("单位主键")
     @NotBlank
     @Size(min = 1, max = 32)
     private String unitId;
 
-    @Label("部门主键")
+    @Label("职级主键")
     @NotBlank
     @Size(min = 1, max = 32)
-    private String departmentId;
+    private String rankId;
 
-    @Label("职务主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String postId;
-
-    @Label("是否主部门")
+    @Label("是否主单位")
     @NotNull
     private Boolean primary;
+
+    @Valid
+    @Label("部门列表")
+    private List<AccountDepartmentParams> departments;
+
+    public AccountUnitInput toInput() {
+        return AccountUnitInput.builder()
+                .unitId(this.getUnitId())
+                .rankId(this.getRankId())
+                .primary(this.getPrimary())
+                .departments(Listx.asStream(this.getDepartments()).map(AccountDepartmentParams::toInput).toList())
+                .build();
+    }
 }

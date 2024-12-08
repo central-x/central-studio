@@ -27,15 +27,13 @@ package central.studio.dashboard.controller.index;
 import central.data.organization.Account;
 import central.lang.Stringx;
 import central.studio.dashboard.logic.organization.AccountLogic;
+import central.web.XForwardedHeaders;
 import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
 
@@ -68,10 +66,10 @@ public class IndexController {
      */
     @ResponseBody
     @GetMapping("/api/account")
-    public @Nullable Account getAccount(@RequestAttribute(required = false) String accountId) {
+    public @Nullable Account getAccount(@RequestAttribute(required = false) String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         if (Stringx.isNullOrBlank(accountId)) {
             return null;
         }
-        return accountLogic.findById(accountId);
+        return accountLogic.findById(accountId, tenant);
     }
 }

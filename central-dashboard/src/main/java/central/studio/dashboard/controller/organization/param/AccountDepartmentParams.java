@@ -22,36 +22,31 @@
  * SOFTWARE.
  */
 
-package central.data.organization;
+package central.studio.dashboard.controller.organization.param;
 
+import central.data.organization.AccountDepartmentInput;
 import central.validation.Label;
-import jakarta.validation.constraints.*;
-import lombok.*;
-
-import java.io.Serial;
-import java.io.Serializable;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * Account Department Input
+ * Account Department Params
  * <p>
- * 帐户与部门关系输入
+ * 帐户与部门关系入参
  *
  * @author Alan Yeh
- * @since 2022/09/12
+ * @since 2024/12/08
  */
 @Data
-@Builder(toBuilder = true)
-@EqualsAndHashCode
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountDepartmentInput implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -3926795037316288441L;
-
-    @Label("帐户主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String accountId;
+public class AccountDepartmentParams {
 
     @Label("单位主键")
     @NotBlank
@@ -71,4 +66,13 @@ public class AccountDepartmentInput implements Serializable {
     @Label("是否主部门")
     @NotNull
     private Boolean primary;
+
+    public AccountDepartmentInput toInput() {
+        return AccountDepartmentInput.builder()
+                .unitId(this.getUnitId())
+                .departmentId(this.getDepartmentId())
+                .postId(this.getPostId())
+                .primary(this.getPrimary())
+                .build();
+    }
 }

@@ -213,6 +213,18 @@ public class UnitLogic {
     }
 
     /**
+     * 标识查询
+     *
+     * @param code   标识
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    public @Nullable Department findDepartmentByCode(@Nonnull String code, @Nonnull String tenant) {
+        var departments = this.departmentProvider.findBy(1L, 0L, Conditions.of(Department.class).eq(Department::getCode, code), null, tenant);
+        return Listx.getFirstOrNull(departments);
+    }
+
+    /**
      * 插入数据
      *
      * @param input     数据输入
@@ -246,5 +258,17 @@ public class UnitLogic {
      */
     public long deleteDepartmentByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.departmentProvider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 根据标识删除数据
+     *
+     * @param codes     标识
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deleteDepartmentByCodes(@Nullable List<String> codes, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.departmentProvider.deleteBy(Conditions.of(Department.class).in(Department::getCode, codes), tenant);
     }
 }
