@@ -25,10 +25,13 @@
 package central.studio.dashboard.controller.authority.controller;
 
 import central.data.authority.Menu;
+import central.data.authority.Permission;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.authority.param.MenuParams;
+import central.studio.dashboard.controller.authority.param.PermissionParams;
 import central.studio.dashboard.controller.authority.query.MenuListQuery;
+import central.studio.dashboard.controller.authority.query.PermissionListQuery;
 import central.studio.dashboard.logic.authority.MenuLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -64,6 +67,8 @@ public class MenuController {
         String REMOVE = "${application}:authority:menu:remove";
         String ENABLE = "${application}:authority:menu:enable";
         String DISABLE = "${application}:authority:menu:disable";
+
+        String PERMISSION = "${application}:authority:menu:permission";
     }
 
 
@@ -79,7 +84,7 @@ public class MenuController {
      */
     @GetMapping
     public List<Menu> list(@Validated MenuListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.listBy(query.getLimit(), query.getOffset(), query.build(), null, tenant);
+        return this.logic.findBy(query.getLimit(), query.getOffset(), query.build(), null, tenant);
     }
 
     /**
@@ -132,4 +137,57 @@ public class MenuController {
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
+
+    /**
+     * 查询权限列表
+     *
+     * @param query  查询
+     * @param tenant 租户标识
+     * @return 列表结果
+     */
+    @GetMapping("/permissions")
+    public List<Permission> listPermissions(@Validated PermissionListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.findPermissionsBy(query.getLimit(), query.getOffset(), query.build(), null, tenant);
+    }
+
+    /**
+     * 添加权限数据
+     *
+     * @param params    权限入参
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 新增后数据
+     */
+    @PostMapping("/permissions")
+    public Permission addPermission(@RequestBody @Validated({Insert.class, Default.class}) PermissionParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.insertPermission(params.toInput(), accountId, tenant);
+    }
+
+
+    /**
+     * 更新权限数据
+     *
+     * @param params    权限入参
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 更新后数据
+     */
+    @PutMapping("/permissions")
+    public Permission updatePermission(@RequestBody @Validated({Update.class, Default.class}) PermissionParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.updatePermission(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 根据主键删除权限数据
+     *
+     * @param params    待删除主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    @DeleteMapping("/permissions")
+    public long deletePermissions(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.deletePermissionsByIds(params.getIds(), accountId, tenant);
+    }
+
 }

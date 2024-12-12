@@ -25,6 +25,7 @@
 package central.studio.dashboard.controller.authority;
 
 import central.data.authority.Menu;
+import central.data.authority.Permission;
 import central.data.authority.option.MenuType;
 import central.data.saas.Application;
 import central.lang.reflect.TypeRef;
@@ -36,6 +37,7 @@ import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
 import central.studio.dashboard.controller.authority.controller.MenuController;
 import central.studio.dashboard.controller.authority.param.MenuParams;
+import central.studio.dashboard.controller.authority.param.PermissionParams;
 import central.util.Jsonx;
 import central.util.Listx;
 import central.web.XForwardedHeaders;
@@ -84,7 +86,6 @@ public class TestMenuController extends TestController {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
         return container.getApplicationByCode("central-dashboard");
     }
-
 
     /**
      * @see MenuController#add
@@ -298,6 +299,154 @@ public class TestMenuController extends TestController {
                 .andExpect(jsonPath("$.enabled").value(body.getEnabled()))
                 .andExpect(jsonPath("$.order").value(body.getOrder()))
                 .andExpect(jsonPath("$.remark").value(body.getRemark()));
+
+        // 删除数据
+        var deleteRequest = MockMvcRequestBuilders.delete(PATH)
+                .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                .queryParam("ids", body.getId())
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(deleteRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("1"));
+    }
+
+
+    /**
+     * @see MenuController#add
+     * @see MenuController#addPermission
+     * @see MenuController#updatePermission
+     * @see MenuController#listPermissions
+     * @see MenuController#deletePermissions
+     * @see MenuController#delete
+     */
+    @Test
+    public void case2(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
+        var application = this.getApplication();
+
+        // 新增菜单
+        var addRequest = MockMvcRequestBuilders.post(PATH)
+                .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Jsonx.Default().serialize(MenuParams.builder()
+                        .applicationId(application.getId())
+                        .parentId("")
+                        .code("dashboard-test")
+                        .name("测试菜单")
+                        .icon("")
+                        .url("@/test/index")
+                        .type(MenuType.BACKEND.getValue())
+                        .enabled(Boolean.TRUE)
+                        .order(0)
+                        .remark("测试时使用的菜单")
+                        .build()))
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
+
+        var response = mvc.perform(addRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.applicationId").isNotEmpty())
+                .andExpect(jsonPath("$.code").isNotEmpty())
+                .andExpect(jsonPath("$.name").isNotEmpty())
+                .andExpect(jsonPath("$.icon").isEmpty())
+                .andExpect(jsonPath("$.url").isNotEmpty())
+                .andExpect(jsonPath("$.type").isNotEmpty())
+                .andExpect(jsonPath("$.enabled").isNotEmpty())
+                .andExpect(jsonPath("$.order").isNotEmpty())
+                .andExpect(jsonPath("$.remark").isNotEmpty())
+                .andReturn().getResponse();
+
+        var body = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Menu.class));
+        assertNotNull(body);
+
+        // 新增权限
+        var addPermissionRequest = MockMvcRequestBuilders.post(PATH + "/permissions")
+                .cookie(this.getSessionCookie(PATH + "/permissions", mvc, cookieStore))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Jsonx.Default().serialize(PermissionParams.builder()
+                        .applicationId(application.getId())
+                        .menuId(body.getId())
+                        .code("test")
+                        .name("测试权限")
+                        .build())
+                )
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
+
+        response = mvc.perform(addPermissionRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.applicationId").value(application.getId()))
+                .andExpect(jsonPath("$.menuId").value(body.getId()))
+                .andExpect(jsonPath("$.code").value("test"))
+                .andExpect(jsonPath("$.name").value("测试权限"))
+                .andReturn().getResponse();
+
+        var permissionBody = Jsonx.Default().deserialize(response.getContentAsString(), TypeRef.of(Permission.class));
+        assertNotNull(permissionBody);
+
+        // 更新权限(更新标识)
+        var updatePermissionRequest = MockMvcRequestBuilders.put(PATH + "/permissions")
+                .cookie(this.getSessionCookie(PATH + "/permissions", mvc, cookieStore))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Jsonx.Default().serialize(PermissionParams.builder()
+                        .id(permissionBody.getId())
+                        .applicationId(application.getId())
+                        .menuId(body.getId())
+                        .code("test2")
+                        .name("测试权限")
+                        .build())
+                )
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(updatePermissionRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                .andExpect(jsonPath("$.id").value(permissionBody.getId()))
+                .andExpect(jsonPath("$.applicationId").value(permissionBody.getApplicationId()))
+                .andExpect(jsonPath("$.menuId").value(permissionBody.getMenuId()))
+                .andExpect(jsonPath("$.code").value("test2"))
+                .andExpect(jsonPath("$.name").value(permissionBody.getName()));
+
+        // 列表查询
+        var listPermissionRequest = MockMvcRequestBuilders.get(PATH + "/permissions")
+                .cookie(this.getSessionCookie(PATH + "/permissions", mvc, cookieStore))
+                .queryParam("applicationId", application.getId())
+                .queryParam("menuId", permissionBody.getMenuId())
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(listPermissionRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(Matchers.not(Matchers.emptyString())))
+                .andExpect(jsonPath("$[0].id").value(permissionBody.getId()))
+                .andExpect(jsonPath("$[0].applicationId").value(permissionBody.getApplicationId()))
+                .andExpect(jsonPath("$[0].menuId").value(permissionBody.getMenuId()))
+                .andExpect(jsonPath("$[0].code").value("test2"))
+                .andExpect(jsonPath("$[0].name").value(permissionBody.getName()));
+
+        // 删除权限
+        var deletePermissionRequest = MockMvcRequestBuilders.delete(PATH + "/permissions")
+                .cookie(this.getSessionCookie(PATH+ "/permissions", mvc, cookieStore))
+                .queryParam("ids", permissionBody.getId())
+                .header(XForwardedHeaders.TENANT, "master")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(deletePermissionRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("1"));
+
 
         // 删除数据
         var deleteRequest = MockMvcRequestBuilders.delete(PATH)
