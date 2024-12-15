@@ -49,7 +49,9 @@ public class v0_0_1_initial extends Migration {
 
     @Override
     public void upgrade(Database database) throws SQLException {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // authority
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         {
             // 菜单
             var columns = List.of(
@@ -130,8 +132,80 @@ public class v0_0_1_initial extends Migration {
 
             database.addTable(table);
         }
+        {
+            // 角色与权限关联关系
+            var columns = List.of(
+                    Column.of("ID", true, SqlType.STRING, 32, "主键"),
+                    Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
+                    Column.of("ROLE_ID", SqlType.STRING, 32, "角色主键"),
+                    Column.of("PERMISSION_ID", SqlType.STRING, 32, "权限主键"),
+                    Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
+                    Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
+                    Column.of("TENANT_CODE", SqlType.STRING, 32, "租户编码")
+            );
 
+            var indies = List.of(
+                    Index.of("X_ARP_AI", false, "APPLICATION_ID"),
+                    Index.of("X_ARP_RI", false, "ROLE_ID"),
+                    Index.of("X_ARP_PI", false, "PERMISSION_ID")
+            );
+
+            var table = Table.of("X_AUTH_ROLE_PERMISSION", "角色与权限关联关系", columns, indies);
+
+            database.addTable(table);
+        }
+        {
+            // 角色与授权主体关联关系
+            var columns = List.of(
+                    Column.of("ID", true, SqlType.STRING, 32, "主键"),
+                    Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
+                    Column.of("ROLE_ID", SqlType.STRING, 32, "角色主键"),
+                    Column.of("PRINCIPAL_ID", SqlType.STRING, 32, "授权主体主键"),
+                    Column.of("TYPE", SqlType.STRING, 32, "主体类型"),
+                    Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
+                    Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
+                    Column.of("TENANT_CODE", SqlType.STRING, 32, "租户编码")
+            );
+
+            var indies = List.of(
+                    Index.of("X_ARPR_AI", false, "APPLICATION_ID"),
+                    Index.of("X_ARPR_RI", false, "ROLE_ID"),
+                    Index.of("X_ARPR_PI", false, "PRINCIPAL_ID")
+            );
+
+            var table = Table.of("X_AUTH_ROLE_PRINCIPAL", "角色与授权主体关联关系", columns, indies);
+
+            database.addTable(table);
+        }
+        {
+            // 角色与数据范围关联关系
+            var columns = List.of(
+                    Column.of("ID", true, SqlType.STRING, 32, "主键"),
+                    Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
+                    Column.of("ROLE_ID", SqlType.STRING, 32, "角色主键"),
+                    Column.of("CATEGORY", SqlType.STRING, 32, "范围分类"),
+                    Column.of("TYPE", SqlType.STRING, 32, "授权数据类型"),
+                    Column.of("DATA_ID", SqlType.STRING, 32, "数据主键"),
+                    Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
+                    Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
+                    Column.of("TENANT_CODE", SqlType.STRING, 32, "租户编码")
+            );
+
+            var indies = List.of(
+                    Index.of("X_ARR_AI", false, "APPLICATION_ID"),
+                    Index.of("X_ARR_RI", false, "ROLE_ID"),
+                    Index.of("X_ARR_CA", false, "CATEGORY"),
+                    Index.of("X_ARR_TY", false, "TYPE")
+            );
+
+            var table = Table.of("X_AUTH_ROLE_RANGE", "角色与数据范围关联关系", columns, indies);
+
+            database.addTable(table);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // organization
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         {
             // 行政区划
             var columns = List.of(
@@ -310,7 +384,7 @@ public class v0_0_1_initial extends Migration {
             database.addTable(table);
         }
         {
-            // 帐户单位关联关系
+            // 帐户部门关联关系
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("ACCOUNT_ID", SqlType.STRING, 32, "帐户主键"),
@@ -335,7 +409,9 @@ public class v0_0_1_initial extends Migration {
             database.addTable(table);
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // sys
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         {
             // 数据库
             var columns = List.of(
@@ -390,7 +466,9 @@ public class v0_0_1_initial extends Migration {
             database.addTable(table);
         }
 
-        // ten
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // saas
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         {
             // 应用
             var columns = List.of(

@@ -1,0 +1,59 @@
+"""
+角色与范围关联关系输入
+"""
+input RoleRangeInput {
+    "主键"
+    id:                     ID
+    "应用主键"
+    applicationId:          String
+    "角色主键"
+    roleId:                 String
+    "范围分类"
+    category:               String
+    "授权数据类型"
+    type:                   String
+    "数据主键"
+    dataId:                 String
+}
+
+"""
+角色与范围关联关系修改
+"""
+type RoleRangeMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: RoleRangeInput,
+        "操作人"
+        operator: String
+    ): RoleRange
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [RoleRangeInput],
+        "操作人"
+        operator: String
+    ): [RoleRange]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

@@ -22,18 +22,17 @@
  * SOFTWARE.
  */
 
-package central.studio.provider.graphql.authority.entity;
+package central.data.authority;
 
-import central.bean.Tenantable;
-import central.data.authority.RolePrincipalInput;
+import central.bean.Nonnull;
+import central.bean.Nullable;
 import central.data.authority.option.PrincipalType;
+import central.data.organization.Account;
+import central.data.organization.Department;
+import central.data.organization.Unit;
+import central.data.saas.Application;
 import central.sql.data.Entity;
-import central.validation.Enums;
-import central.validation.Label;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,54 +43,78 @@ import java.io.Serial;
 /**
  * Role Principal Relation
  * <p>
- * 角色与主体关联关系
+ * 角色与主体关联关系修改
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2024/12/14
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "X_AUTH_ROLE_PRINCIPAL")
 @EqualsAndHashCode(callSuper = true)
-public class RolePrincipalEntity extends Entity implements Tenantable {
+public class RolePrincipal extends Entity {
     @Serial
-    private static final long serialVersionUID = 5133609577351106865L;
+    private static final long serialVersionUID = -5715978926136309206L;
 
-    @Id
-    @Label("主键")
-    @Size(max = 32)
-    private String id;
-
-    @Label("应用主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
+    /**
+     * 应用主键
+     */
+    @Nonnull
     private String applicationId;
 
-    @Label("角色")
-    @NotBlank
-    @Size(min = 1, max = 32)
+    /**
+     * 应用
+     */
+    @Nonnull
+    private Application application;
+
+    /**
+     * 角色主键
+     */
+    @Nonnull
     private String roleId;
 
-    @Label("授权主体主键")
-    @NotBlank
-    @Size(min = 1, max = 32)
+    /**
+     * 角色
+     */
+    @Nonnull
+    private Role role;
+
+    /**
+     * 授权主体主键
+     */
+    @Nonnull
     private String principalId;
 
-    @Label("主体类型")
-    @NotBlank
-    @Enums(PrincipalType.class)
+    /**
+     * 授权主体类型
+     * @see PrincipalType
+     */
+    @Nonnull
     private String type;
 
-    @Label("租户标识")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String tenantCode;
+    /**
+     * 帐号信息（当 type 为 account 时）
+     */
+    @Nullable
+    private Account account;
 
-    public void fromInput(RolePrincipalInput input) {
-        this.setApplicationId(input.getApplicationId());
-        this.setRoleId(input.getRoleId());
-        this.setPrincipalId(input.getPrincipalId());
-        this.setType(input.getType());
-    }
+    /**
+     * 单位信息（当 type 为 unit 时）
+     */
+    @Nullable
+    private Unit unit;
+
+    /**
+     * 部门信息（当 type 为 department 时）
+     */
+    @Nullable
+    private Department department;
+
+    /**
+     * 创建人信息
+     */
+    @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Account creator;
 }

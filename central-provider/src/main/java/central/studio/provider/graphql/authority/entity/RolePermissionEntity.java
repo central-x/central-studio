@@ -25,6 +25,7 @@
 package central.studio.provider.graphql.authority.entity;
 
 import central.bean.Tenantable;
+import central.data.authority.RolePermissionInput;
 import central.sql.data.Entity;
 import central.validation.Label;
 import jakarta.persistence.Id;
@@ -39,7 +40,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 
 /**
- * 角色与权限关联
+ * Role Permission Relation
+ * <p>
+ * 角色与权限关联关系
  *
  * @author Alan Yeh
  * @since 2022/09/28
@@ -63,7 +66,7 @@ public class RolePermissionEntity extends Entity implements Tenantable {
     @Size(min = 1, max = 32)
     private String applicationId;
 
-    @Label("角色")
+    @Label("角色主键")
     @NotBlank
     @Size(min = 1, max = 32)
     private String roleId;
@@ -77,4 +80,10 @@ public class RolePermissionEntity extends Entity implements Tenantable {
     @NotBlank
     @Size(min = 1, max = 32)
     private String tenantCode;
+
+    public void fromInput(RolePermissionInput input) {
+        this.setApplicationId(input.getApplicationId());
+        this.setRoleId(input.getRoleId());
+        this.setPermissionId(input.getPermissionId());
+    }
 }

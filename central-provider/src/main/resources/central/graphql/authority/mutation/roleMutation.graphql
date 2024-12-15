@@ -23,6 +23,20 @@ input RoleInput {
 角色修改
 """
 type RoleMutation {
+    """
+    角色与权限关联关系
+    """
+    permissions: RolePermissionMutation
+
+    """
+    角色与主体关联关系
+    """
+    principals: RolePrincipalMutation
+
+    """
+    角色与范围关联关系
+    """
+    ranges: RoleRangeMutation
 
     """
     保存数据

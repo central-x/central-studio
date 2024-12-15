@@ -22,29 +22,22 @@
  * SOFTWARE.
  */
 
-package central.studio.provider.graphql.authority.entity;
+package central.data.authority;
 
-import central.bean.Tenantable;
-import central.data.authority.RoleRangeInput;
 import central.data.authority.option.RangeCategory;
 import central.data.authority.option.RangeType;
 import central.data.organization.Account;
 import central.data.organization.Area;
 import central.data.organization.Department;
 import central.data.organization.Unit;
-import central.sql.data.Entity;
 import central.validation.Enums;
 import central.validation.Label;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Role Range Relation
@@ -52,21 +45,16 @@ import java.io.Serial;
  * 角色与范围关联关系
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2024/12/14
  */
 @Data
+@Builder(toBuilder = true)
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "X_AUTH_ROLE_RANGE")
-@EqualsAndHashCode(callSuper = true)
-public class RoleRangeEntity extends Entity implements Tenantable {
+public class RoleRangeInput implements Serializable {
     @Serial
-    private static final long serialVersionUID = 2400532317294500859L;
-
-    @Id
-    @Label("主键")
-    @Size(max = 32)
-    private String id;
+    private static final long serialVersionUID = -3601193715982317662L;
 
     @Label("应用主键")
     @NotBlank
@@ -135,17 +123,4 @@ public class RoleRangeEntity extends Entity implements Tenantable {
     @Label("数据主键")
     @NotBlank
     private String dataId;
-
-    @Label("租户标识")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String tenantCode;
-
-    public void fromInput(RoleRangeInput input) {
-        this.setApplicationId(input.getApplicationId());
-        this.setRoleId(input.getRoleId());
-        this.setCategory(input.getCategory());
-        this.setType(input.getType());
-        this.setDataId(input.getDataId());
-    }
 }

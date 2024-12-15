@@ -1,0 +1,55 @@
+"""
+角色与权限关联关系输入
+"""
+input RolePermissionInput {
+    "主键"
+    id:                     ID
+    "应用主键"
+    applicationId:          String
+    "角色主键"
+    roleId:                 String
+    "权限主键"
+    permissionId:           String
+}
+
+"""
+角色与权限关联关系修改
+"""
+type RolePermissionMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: RolePermissionInput,
+        "操作人"
+        operator: String
+    ): RolePermission
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [RolePermissionInput],
+        "操作人"
+        operator: String
+    ): [RolePermission]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

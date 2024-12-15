@@ -41,8 +41,18 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 public enum RangeType implements OptionalEnum<String> {
-    ORG("组织架构", "org"),
-    DATA("数据", "data");
+    ACCOUNT("本人", "account"),
+    ACCOUNT_DEPARTMENT("本部门", "account_department"),
+    ACCOUNT_DEPARTMENT_RECURSION("本部门及子部门", "account_department_recursion"),
+    ACCOUNT_UNIT("本单位", "account_unit"),
+    ACCOUNT_UNIT_RECURSION("本单位及下级单位", "account_unit_recursion"),
+
+    DEPARTMENT("部门", "department"),
+    DEPARTMENT_RECURSION("部门（递归）", "department_recursion"),
+    UNIT("单位", "unit"),
+    UNIT_RECURSION("单位（递归）", "unit_recursion"),
+    AREA("行政区划", "area"),
+    AREA_RECURSION("行政区划（递归）", "area_recursion"),;
 
     private final String name;
     private final String value;

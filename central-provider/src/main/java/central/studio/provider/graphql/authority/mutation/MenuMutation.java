@@ -62,6 +62,7 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "authority/mutation", types = {MenuDTO.class, PermissionMutation.class})
 public class MenuMutation {
+
     @Setter(onMethod_ = @Autowired)
     private MenuMapper mapper;
 
@@ -178,7 +179,7 @@ public class MenuMutation {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 关联查询
+    // 关联关系
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**

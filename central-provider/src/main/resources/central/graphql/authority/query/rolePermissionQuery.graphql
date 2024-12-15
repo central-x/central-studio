@@ -1,25 +1,21 @@
 """
-角色
+角色与权限关联关系
 """
-type Role implements Entity & Modifiable {
+type RolePermission implements Entity {
     "主键"
     id:                     ID!
     "应用主键"
     applicationId:          String!
-    "应用信息"
+    "应用"
     application:            Application!
-    "所属单位主键"
-    unitId:                 String
-    "所属单位信息"
-    unit:                   Unit
-    "标识"
-    code:                   String!
-    "名称"
-    name:                   String!
-    "是否启用"
-    enabled:                Boolean!
-    "备注"
-    remark:                 String
+    "角色主键"
+    roleId:                 String!
+    "角色"
+    role:                   Role!
+    "权限主键"
+    permissionId:           String
+    "权限"
+    permission:             Permission!
 
     "创建帐户信息"
     creator:                Account!
@@ -27,32 +23,12 @@ type Role implements Entity & Modifiable {
     creatorId:              String!
     "创建时间"
     createDate:             Timestamp!
-    "修改帐户信息"
-    modifier:               Account!
-    "修改帐户主键"
-    modifierId:             String!
-    "修改时间"
-    modifyDate:             Timestamp!
 }
 
 """
-角色查询
+角色与权限关联关系查询
 """
-type RoleQuery {
-    """
-    角色与权限关联关系
-    """
-    permissions: RolePermissionQuery
-
-    """
-    角色与主体关联关系
-    """
-    principals: RolePrincipalQuery
-
-    """
-    角色与范围关联关系
-    """
-    ranges: RoleRangeQuery
+type RolePermissionQuery {
 
     """
     查询数据
@@ -60,7 +36,7 @@ type RoleQuery {
     findById(
         "主键"
         id: String
-    ): Role
+    ): RolePermission
 
     """
     查询数据
@@ -68,7 +44,7 @@ type RoleQuery {
     findByIds(
         "主键"
         ids: [String]
-    ): [Role]
+    ): [RolePermission]
 
     """
     查询数据
@@ -82,7 +58,7 @@ type RoleQuery {
         conditions: [ConditionInput] = [],
         "数据列表"
         orders: [OrderInput] = []
-    ): [Role]
+    ): [RolePermission]
 
     """
     查询数据

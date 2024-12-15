@@ -22,11 +22,45 @@
  * SOFTWARE.
  */
 
-package central.studio.provider.graphql.authority.entity;
+package central.data.authority;
+
+import central.validation.Label;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
+ * Role Permission Relation
+ * <p>
+ * 角色与权限关联关系修改
+ *
  * @author Alan Yeh
- * @since 2022/10/03
+ * @since 2024/12/14
  */
-public class RoleAccountEntity {
+@Data
+@Builder(toBuilder = true)
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+public class RolePermissionInput implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 3468906764396504541L;
+
+    @Label("应用主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String applicationId;
+
+    @Label("角色主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String roleId;
+
+    @Label("权限主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String permissionId;
 }

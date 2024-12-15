@@ -22,39 +22,76 @@
  * SOFTWARE.
  */
 
-package central.data.authority.option;
+package central.data.authority;
 
-import central.bean.OptionalEnum;
-import central.lang.Arrayx;
-import jakarta.annotation.Nullable;
+import central.bean.Nonnull;
+import central.data.organization.Account;
+import central.data.saas.Application;
+import central.sql.data.Entity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import java.util.Objects;
+import java.io.Serial;
 
 /**
- * 授权主体类型
+ * Role Permission Relation
+ * <p>
+ * 角色与权限关联关系修改
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2024/12/14
  */
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-public enum PrincipalType implements OptionalEnum<String> {
+@EqualsAndHashCode(callSuper = true)
+public class RolePermission extends Entity {
+    @Serial
+    private static final long serialVersionUID = 1793160992455377967L;
 
-    ACCOUNT("个人", "account"),
-    UNIT("单位", "unit"),
-    DEPARTMENT("部门", "department");
+    /**
+     * 应用主键
+     */
+    @Nonnull
+    private String applicationId;
 
-    private final String name;
-    private final String value;
+    /**
+     * 应用
+     */
+    @Nonnull
+    private Application application;
 
-    @Override
-    public String toString() {
-        return this.value;
-    }
+    /**
+     * 角色主键
+     */
+    @Nonnull
+    private String roleId;
 
-    public @Nullable static PrincipalType resolve(String value) {
-        return Arrayx.asStream(PrincipalType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
-    }
+    /**
+     * 角色
+     */
+    @Nonnull
+    private Role role;
+
+    /**
+     * 权限主键
+     */
+    @Nonnull
+    private String permissionId;
+
+    /**
+     * 权限
+     */
+    @Nonnull
+    private Permission permission;
+
+    /**
+     * 创建人信息
+     */
+    @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Account creator;
 }

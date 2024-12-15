@@ -53,6 +53,7 @@ import java.util.List;
  */
 @Component
 public class RoleService {
+
     @Setter(onMethod_ = @Autowired)
     private RoleMapper mapper;
 

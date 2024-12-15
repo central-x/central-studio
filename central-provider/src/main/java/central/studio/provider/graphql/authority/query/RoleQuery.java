@@ -59,8 +59,9 @@ import java.util.stream.Collectors;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(path = "authority/query", types = RoleDTO.class)
+@GraphQLSchema(path = "authority/query", types = {RoleDTO.class, RolePermissionQuery.class, RolePrincipalQuery.class, RoleRangeQuery.class})
 public class RoleQuery {
+
     @Setter(onMethod_ = @Autowired)
     private RoleService service;
 

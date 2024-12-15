@@ -61,6 +61,7 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "authority/mutation", types = PermissionDTO.class)
 public class PermissionMutation {
+
     @Setter(onMethod_ = @Autowired)
     private PermissionMapper mapper;
 

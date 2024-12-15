@@ -22,39 +22,52 @@
  * SOFTWARE.
  */
 
-package central.data.authority.option;
+package central.data.authority;
 
-import central.bean.OptionalEnum;
-import central.lang.Arrayx;
-import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import central.data.authority.option.PrincipalType;
+import central.validation.Enums;
+import central.validation.Label;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
-import java.util.Objects;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
- * 授权主体类型
+ * Role Principal Relation
+ * <p>
+ * 角色与主体关联关系修改
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2024/12/14
  */
-@Getter
+@Data
+@Builder(toBuilder = true)
+@EqualsAndHashCode
+@NoArgsConstructor
 @AllArgsConstructor
-public enum PrincipalType implements OptionalEnum<String> {
+public class RolePrincipalInput implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -857459902924798809L;
 
-    ACCOUNT("个人", "account"),
-    UNIT("单位", "unit"),
-    DEPARTMENT("部门", "department");
+    @Label("应用主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String applicationId;
 
-    private final String name;
-    private final String value;
+    @Label("角色")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String roleId;
 
-    @Override
-    public String toString() {
-        return this.value;
-    }
+    @Label("授权主体主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String principalId;
 
-    public @Nullable static PrincipalType resolve(String value) {
-        return Arrayx.asStream(PrincipalType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
-    }
+    @Label("主体类型")
+    @NotBlank
+    @Enums(PrincipalType.class)
+    private String type;
 }

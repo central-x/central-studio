@@ -24,15 +24,14 @@
 
 package central.studio.provider.graphql.authority.service;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
 import central.lang.Stringx;
-import central.studio.provider.graphql.authority.dto.MenuDTO;
-import central.studio.provider.graphql.authority.entity.MenuEntity;
-import central.studio.provider.graphql.authority.mapper.MenuMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
+import central.studio.provider.graphql.authority.dto.RolePermissionDTO;
+import central.studio.provider.graphql.authority.mapper.RolePermissionMapper;
 import central.util.Listx;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -44,18 +43,18 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Menu Service
+ * Role Permission Relation Service
  * <p>
- * 菜单服务
+ * 角色与权限关联关系服务
  *
  * @author Alan Yeh
- * @since 2023/02/07
+ * @since 2024/12/15
  */
 @Component
-public class MenuService {
+public class RolePermissionService {
 
     @Setter(onMethod_ = @Autowired)
-    private MenuMapper mapper;
+    private RolePermissionMapper mapper;
 
     /**
      * 根据主键查询数据
@@ -64,17 +63,17 @@ public class MenuService {
      * @param columns 字段列表
      * @param tenant  租户标识
      */
-    public @Nullable MenuDTO findById(@Nullable String id,
-                                      @Nullable Columns<MenuDTO> columns,
+    public @Nullable RolePermissionDTO findById(@Nullable String id,
+                                      @Nullable Columns<RolePermissionDTO> columns,
                                       @Nonnull String tenant) {
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
 
-        var conditions = Conditions.of(MenuEntity.class).eq(MenuEntity::getId, id).eq(MenuEntity::getTenantCode, tenant);
+        var conditions = Conditions.of(RolePermissionDTO.class).eq(RolePermissionDTO::getId, id).eq(RolePermissionDTO::getTenantCode, tenant);
         var entity = this.mapper.findFirstBy(columns, conditions);
 
-        return DTO.wrap(entity, MenuDTO.class);
+        return DTO.wrap(entity, RolePermissionDTO.class);
     }
 
     /**
@@ -84,17 +83,17 @@ public class MenuService {
      * @param columns 字段列表
      * @param tenant  租户标识
      */
-    public @Nonnull List<MenuDTO> findByIds(@Nullable List<String> ids,
-                                            @Nullable Columns<MenuDTO> columns,
+    public @Nonnull List<RolePermissionDTO> findByIds(@Nullable List<String> ids,
+                                            @Nullable Columns<RolePermissionDTO> columns,
                                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return Collections.emptyList();
         }
 
-        var conditions = Conditions.of(MenuEntity.class).in(MenuEntity::getId, ids).eq(MenuEntity::getTenantCode, tenant);
+        var conditions = Conditions.of(RolePermissionDTO.class).in(RolePermissionDTO::getId, ids).eq(RolePermissionDTO::getTenantCode, tenant);
         var entities = this.mapper.findBy(columns, conditions);
 
-        return DTO.wrap(entities, MenuDTO.class);
+        return DTO.wrap(entities, RolePermissionDTO.class);
     }
 
     /**
@@ -107,16 +106,16 @@ public class MenuService {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull List<MenuDTO> findBy(@Nullable Long limit,
+    public @Nonnull List<RolePermissionDTO> findBy(@Nullable Long limit,
                                          @Nullable Long offset,
-                                         @Nullable Columns<MenuDTO> columns,
-                                         @Nullable Conditions<MenuDTO> conditions,
-                                         @Nullable Orders<MenuDTO> orders,
+                                         @Nullable Columns<RolePermissionDTO> columns,
+                                         @Nullable Conditions<RolePermissionDTO> conditions,
+                                         @Nullable Orders<RolePermissionDTO> orders,
                                          @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
+        conditions = Conditions.group(conditions).eq(RolePermissionDTO::getTenantCode, tenant);
         var list = this.mapper.findBy(limit, offset, columns, conditions, orders);
 
-        return DTO.wrap(list, MenuDTO.class);
+        return DTO.wrap(list, RolePermissionDTO.class);
     }
 
     /**
@@ -129,16 +128,16 @@ public class MenuService {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull Page<MenuDTO> pageBy(@Nonnull Long pageIndex,
+    public @Nonnull Page<RolePermissionDTO> pageBy(@Nonnull Long pageIndex,
                                          @Nonnull Long pageSize,
-                                         @Nullable Columns<MenuDTO> columns,
-                                         @Nullable Conditions<MenuDTO> conditions,
-                                         @Nullable Orders<MenuDTO> orders,
+                                         @Nullable Columns<RolePermissionDTO> columns,
+                                         @Nullable Conditions<RolePermissionDTO> conditions,
+                                         @Nullable Orders<RolePermissionDTO> orders,
                                          @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
+        conditions = Conditions.group(conditions).eq(RolePermissionDTO::getTenantCode, tenant);
         var page = this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
 
-        return DTO.wrap(page, MenuDTO.class);
+        return DTO.wrap(page, RolePermissionDTO.class);
     }
 
     /**
@@ -147,9 +146,9 @@ public class MenuService {
      * @param conditions 筛选条件
      * @param tenant     租户标识
      */
-    public Long countBy(@Nullable Conditions<MenuDTO> conditions,
+    public Long countBy(@Nullable Conditions<RolePermissionDTO> conditions,
                         @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
+        conditions = Conditions.group(conditions).eq(RolePermissionDTO::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 }

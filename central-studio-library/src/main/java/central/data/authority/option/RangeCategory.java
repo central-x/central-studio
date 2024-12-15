@@ -33,18 +33,29 @@ import lombok.Getter;
 import java.util.Objects;
 
 /**
- * 授权主体类型
+ * Range Category
+ * <p>
+ * 授权范围分类
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2024/12/15
  */
 @Getter
 @AllArgsConstructor
-public enum PrincipalType implements OptionalEnum<String> {
+public enum RangeCategory implements OptionalEnum<String> {
+    /**
+     * 授权组织架构
+     * <p>
+     * 数据与组织架构相关时使用此授权类型
+     */
+    ORGANIZATION("组织架构授权", "organization"),
+    /**
+     * 直接授权指定的数据
+     * <p>
+     * 此时 dataId 为待授权的数据的主键
+     */
+    DATA("数据授权", "data");
 
-    ACCOUNT("个人", "account"),
-    UNIT("单位", "unit"),
-    DEPARTMENT("部门", "department");
 
     private final String name;
     private final String value;
@@ -54,7 +65,7 @@ public enum PrincipalType implements OptionalEnum<String> {
         return this.value;
     }
 
-    public @Nullable static PrincipalType resolve(String value) {
-        return Arrayx.asStream(PrincipalType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
+    public static @Nullable RangeCategory resolve(String value) {
+        return Arrayx.asStream(RangeCategory.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
     }
 }

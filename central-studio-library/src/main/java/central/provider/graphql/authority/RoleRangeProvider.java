@@ -22,39 +22,25 @@
  * SOFTWARE.
  */
 
-package central.data.authority.option;
+package central.provider.graphql.authority;
 
-import central.bean.OptionalEnum;
-import central.lang.Arrayx;
-import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import java.util.Objects;
+import central.data.authority.RoleRange;
+import central.data.authority.RoleRangeInput;
+import central.starter.graphql.stub.Provider;
+import central.starter.graphql.stub.annotation.BodyPath;
+import central.starter.graphql.stub.annotation.GraphQLStub;
+import org.springframework.stereotype.Repository;
 
 /**
- * 授权主体类型
+ * Role Range Relation
+ * <p>
+ * 角色与范围关联关系
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2024/12/15
  */
-@Getter
-@AllArgsConstructor
-public enum PrincipalType implements OptionalEnum<String> {
-
-    ACCOUNT("个人", "account"),
-    UNIT("单位", "unit"),
-    DEPARTMENT("部门", "department");
-
-    private final String name;
-    private final String value;
-
-    @Override
-    public String toString() {
-        return this.value;
-    }
-
-    public @Nullable static PrincipalType resolve(String value) {
-        return Arrayx.asStream(PrincipalType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
-    }
+@Repository
+@BodyPath("authority.roles.ranges")
+@GraphQLStub(path = "authority", client = "providerClient")
+public interface RoleRangeProvider extends Provider<RoleRange, RoleRangeInput> {
 }

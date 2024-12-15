@@ -22,39 +22,20 @@
  * SOFTWARE.
  */
 
-package central.data.authority.option;
+package central.studio.provider.graphql.authority.mapper;
 
-import central.bean.OptionalEnum;
-import central.lang.Arrayx;
-import jakarta.annotation.Nullable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import java.util.Objects;
+import central.sql.proxy.Mapper;
+import central.studio.provider.graphql.authority.entity.RolePermissionEntity;
+import org.springframework.stereotype.Repository;
 
 /**
- * 授权主体类型
+ * Role Permission Relation
+ * <p>
+ * 角色与权限关联关系
  *
  * @author Alan Yeh
- * @since 2022/09/28
+ * @since 2024/12/14
  */
-@Getter
-@AllArgsConstructor
-public enum PrincipalType implements OptionalEnum<String> {
-
-    ACCOUNT("个人", "account"),
-    UNIT("单位", "unit"),
-    DEPARTMENT("部门", "department");
-
-    private final String name;
-    private final String value;
-
-    @Override
-    public String toString() {
-        return this.value;
-    }
-
-    public @Nullable static PrincipalType resolve(String value) {
-        return Arrayx.asStream(PrincipalType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
-    }
+@Repository
+public interface RolePermissionMapper extends Mapper<RolePermissionEntity> {
 }

@@ -1,0 +1,57 @@
+"""
+角色与主体关联关系输入
+"""
+input RolePrincipalInput {
+    "主键"
+    id:                     ID
+    "应用主键"
+    applicationId:          String
+    "角色主键"
+    roleId:                 String
+    "授权主体主键"
+    principalId:            String
+    "主体类型"
+    type:                   String
+}
+
+"""
+角色与主体关联关系修改
+"""
+type RolePrincipalMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: RolePrincipalInput,
+        "操作人"
+        operator: String
+    ): RolePrincipal
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [RolePrincipalInput],
+        "操作人"
+        operator: String
+    ): [RolePrincipal]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

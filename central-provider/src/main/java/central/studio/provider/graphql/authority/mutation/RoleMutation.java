@@ -24,19 +24,20 @@
 
 package central.studio.provider.graphql.authority.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.authority.RoleInput;
 import central.lang.Stringx;
+import central.provider.graphql.DTO;
+import central.sql.query.Conditions;
+import central.starter.graphql.annotation.GraphQLFetcher;
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.authority.dto.RoleDTO;
 import central.studio.provider.graphql.authority.entity.RoleEntity;
 import central.studio.provider.graphql.authority.mapper.RoleMapper;
-import central.sql.query.Conditions;
-import central.starter.graphql.annotation.GraphQLFetcher;
-import central.starter.graphql.annotation.GraphQLSchema;
-import central.web.XForwardedHeaders;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
@@ -53,14 +54,16 @@ import java.util.Objects;
 
 /**
  * Role Mutation
+ * <p>
  * 角色修改
  *
  * @author Alan Yeh
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(path = "authority/mutation", types = RoleDTO.class)
+@GraphQLSchema(path = "authority/mutation", types = {RoleDTO.class, RolePermissionMutation.class, RolePrincipalMutation.class, RoleRangeMutation.class})
 public class RoleMutation {
+
     @Setter(onMethod_ = @Autowired)
     private RoleMapper mapper;
 
@@ -174,5 +177,39 @@ public class RoleMutation {
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         conditions = Conditions.group(conditions).eq(RoleEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 关联关系
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Role Permission Relation
+     * <p>
+     * 角色与权限关联关系
+     */
+    @GraphQLGetter
+    public RolePermissionMutation getPermissions(@Autowired RolePermissionMutation mutation) {
+        return mutation;
+    }
+
+    /**
+     * Role Principal Relation
+     * <p>
+     * 角色与主体关联关系
+     */
+    @GraphQLGetter
+    public RolePrincipalMutation getPrincipals(@Autowired RolePrincipalMutation mutation) {
+        return mutation;
+    }
+
+    /**
+     * Role Range Relation
+     * <p>
+     * 角色与范围关联关系
+     */
+    @GraphQLGetter
+    public RoleRangeMutation getRanges(@Autowired RoleRangeMutation mutation) {
+        return mutation;
     }
 }
