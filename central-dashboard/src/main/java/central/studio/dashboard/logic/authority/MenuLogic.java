@@ -25,6 +25,7 @@
 package central.studio.dashboard.logic.authority;
 
 import central.bean.Page;
+import central.bean.Treeable;
 import central.data.authority.Menu;
 import central.data.authority.MenuInput;
 import central.data.authority.Permission;
@@ -48,6 +49,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -183,6 +186,16 @@ public class MenuLogic {
     }
 
     /**
+     * 删除数据
+     *
+     * @param conditions 筛选条件
+     * @return 己删除的数据量
+     */
+    public long deleteBy(@Nonnull Conditions<Menu> conditions, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.provider.deleteBy(conditions, tenant);
+    }
+
+    /**
      * 列表查询
      *
      * @param limit      数据量（不传的话，就返回所有数据）
@@ -238,5 +251,48 @@ public class MenuLogic {
      */
     public long deletePermissionsByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.permissionProvider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 根据主键删除数据
+     *
+     * @param conditions 筛选条件
+     * @param accountId  操作帐号主键
+     * @param tenant     租户标识
+     * @return 受影响数据行数
+     */
+    public long deletePermissionsBy(@Nonnull Conditions<Permission> conditions, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.permissionProvider.deleteBy(conditions, tenant);
+    }
+
+    /**
+     * 根据权限主键查询菜单树
+     *
+     * @param permissionIds 权限主键
+     * @param tenant        租户标识
+     * @return 菜单树
+     */
+    public List<Menu> getMenuTreeByPermissionIds(@Nonnull List<String> permissionIds, @Nonnull String tenant) {
+        var permissions = this.permissionProvider.findByIds(permissionIds, tenant);
+
+        var menus = new ArrayList<Menu>();
+        // 保存那些已经查出来的菜单主键
+        var pendingIds = new HashSet<>(permissions.stream().map(Permission::getMenuId).toList());
+
+        // 循环向上获取菜单，直到没有父级菜单为止
+        while (!pendingIds.isEmpty()) {
+            var fetched = this.provider.findBy(null, null, Conditions.of(Menu.class).in(Menu::getId, pendingIds), null, tenant);
+            menus.addAll(fetched);
+
+            pendingIds.clear();
+            pendingIds.addAll(menus.stream().map(Menu::getParentId).filter(Stringx::isNotBlank).toList());
+        }
+
+        // 清空这些菜单下面的权限
+        menus.forEach(it -> it.getPermissions().clear());
+        // 将已经查出来的权限添加到菜单中
+        permissions.forEach(it -> menus.stream().filter(menu -> menu.getId().equals(it.getMenuId())).findFirst().ifPresent(menu -> menu.getPermissions().add(it)));
+
+        return Treeable.build(menus);
     }
 }

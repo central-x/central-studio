@@ -24,16 +24,22 @@
 
 package central.studio.dashboard.controller.organization;
 
-import central.data.organization.Account;
+import central.data.organization.*;
+import central.data.organization.option.AreaType;
 import central.lang.reflect.TypeRef;
 import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
 import central.studio.dashboard.controller.organization.controller.AccountController;
 import central.studio.dashboard.controller.organization.param.AccountParams;
+import central.studio.dashboard.logic.organization.AreaLogic;
+import central.studio.dashboard.logic.organization.UnitLogic;
 import central.util.Jsonx;
 import central.web.XForwardedHeaders;
+import lombok.Setter;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,6 +47,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,6 +66,47 @@ public class TestAccountController extends TestController {
 
     private static final String PATH = "/dashboard/api/organization/accounts";
 
+    @BeforeAll
+    public static void setup(@Autowired AreaLogic areaLogic, @Autowired UnitLogic unitLogic) {
+        var area = areaLogic.insert(AreaInput.builder()
+                .parentId(null)
+                .code("00001")
+                .name("中国")
+                .type(AreaType.COUNTRY.getValue())
+                .order(0)
+                .build(), "syssa", "master");
+
+        var unit = unitLogic.insert(UnitInput.builder()
+                .areaId(area.getId())
+                .parentId("")
+                .code("central-x")
+                .name("CentralX")
+                .order(0)
+                .build(), "syssa", "master");
+
+        unitLogic.insertDepartment(DepartmentInput.builder()
+                .unitId(unit.getId())
+                .parentId("")
+                .code("main")
+                .name("主部门")
+                .order(0)
+                .build(), "syssa", "master");
+    }
+
+    @AfterAll
+    public static void cleanup(@Autowired AreaLogic areaLogic, @Autowired UnitLogic unitLogic) {
+        unitLogic.deleteDepartmentByCodes(List.of("main"), "syssa", "master");
+        unitLogic.deleteByCodes(List.of("central-x"), "syssa", "master");
+        areaLogic.deleteByCodes(List.of("00001"), "syssa", "master");
+    }
+
+    @Setter(onMethod_ = @Autowired)
+    private UnitLogic unitLogic;
+
+    private Department getDepartment() {
+        return this.unitLogic.findDepartmentByCode("main", "master");
+    }
+
     /**
      * @see AccountController#add
      * @see AccountController#details
@@ -66,16 +115,18 @@ public class TestAccountController extends TestController {
      */
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
+        var department = this.getDepartment();
+
         // 新增
         var addRequest = MockMvcRequestBuilders.post(PATH)
                 .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Jsonx.Default().serialize(AccountParams.builder()
                         .username("centralx")
-                        .email("support@minstone.com.cn")
+                        .email("support@central-x.com")
                         .mobile("13000000000")
                         .name("CentralX")
-                        .avatar("1234")
+                        .avatar("man")
                         .enabled(Boolean.TRUE)
                         .deleted(Boolean.FALSE)
                         .build()))
@@ -162,6 +213,8 @@ public class TestAccountController extends TestController {
      */
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
+        var department = this.getDepartment();
+
         // 新增
         var addRequest = MockMvcRequestBuilders.post(PATH)
                 .cookie(this.getSessionCookie(PATH, mvc, cookieStore))
@@ -171,7 +224,7 @@ public class TestAccountController extends TestController {
                         .email("support@central-x.com")
                         .mobile("13000000000")
                         .name("CentralX")
-                        .avatar("1234")
+                        .avatar("man")
                         .enabled(Boolean.TRUE)
                         .deleted(Boolean.FALSE)
                         .build()))

@@ -25,10 +25,12 @@
 package central.studio.dashboard.logic.authority;
 
 import central.bean.Page;
-import central.data.authority.Role;
-import central.data.authority.RoleInput;
+import central.data.authority.*;
 import central.lang.Stringx;
+import central.provider.graphql.authority.RolePermissionProvider;
+import central.provider.graphql.authority.RolePrincipalProvider;
 import central.provider.graphql.authority.RoleProvider;
+import central.provider.graphql.authority.RoleRangeProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
@@ -60,6 +62,25 @@ public class RoleLogic {
 
     @Setter(onMethod_ = @Autowired)
     private RoleProvider provider;
+
+    /**
+     * 角色与权限关联关系
+     */
+    @Setter(onMethod_ = @Autowired)
+    private RolePermissionProvider permissionProvider;
+
+    /**
+     * 角色与授权主体关联关系
+     */
+    @Setter(onMethod_ = @Autowired)
+    private RolePrincipalProvider principalProvider;
+
+    /**
+     * 角色与授权范围关联关系
+     */
+    @Setter(onMethod_ = @Autowired)
+    private RoleRangeProvider rangeProvider;
+
 
     @Setter(onMethod_ = @Autowired)
     private DataContext context;
@@ -162,5 +183,109 @@ public class RoleLogic {
      */
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 获取角色已授权的权限
+     *
+     * @param id     角色主键
+     * @param tenant 租户标识
+     * @return 权限列表
+     */
+    public List<RolePermission> findPermissions(@Nonnull String id, @Nonnull String tenant) {
+        return this.permissionProvider.findBy(null, null, Conditions.of(RolePermission.class).eq(RolePermission::getRoleId, id), null, tenant);
+    }
+
+    /**
+     * 插入角色权限关联关系
+     *
+     * @param inputs 关联关系输入
+     * @param tenant 租户标识
+     * @return 已插入的数据
+     */
+    public List<RolePermission> insertPermissions(@Nonnull List<RolePermissionInput> inputs, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.permissionProvider.insertBatch(inputs, accountId, tenant);
+    }
+
+    /**
+     * 删除角色授权
+     *
+     * @param ids       待删除的授权主键
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deletePermissions(@Nonnull List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.permissionProvider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 查询角色已授权的授权主体
+     *
+     * @param id     角色主键
+     * @param tenant 租户标识
+     * @return 授权主体列表
+     */
+    public List<RolePrincipal> findPrincipals(@Nonnull String id, @Nonnull String tenant) {
+        return this.principalProvider.findBy(null, null, Conditions.of(RolePrincipal.class).eq(RolePrincipal::getRoleId, id), null, tenant);
+    }
+
+    /**
+     * 插入角色授权主体关联关系
+     *
+     * @param inputs    关联关系输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 已插入的数据
+     */
+    public List<RolePrincipal> insertPrincipals(@Nonnull List<RolePrincipalInput> inputs, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.principalProvider.insertBatch(inputs, accountId, tenant);
+    }
+
+    /**
+     * 删除授权主体关联关系
+     *
+     * @param ids       待删除的授权主体主键
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 受影响数据行数
+     */
+    public long deletePrincipals(@Nonnull List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.principalProvider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 查询角色已授权的数据范围
+     *
+     * @param id     角色主键
+     * @param tenant 租户标识
+     * @return 数据范围列表
+     */
+    public List<RoleRange> findRanges(@Nonnull String id, @Nonnull String tenant) {
+        return this.rangeProvider.findBy(null, null, Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, id), null, tenant);
+    }
+
+    /**
+     * 插入角色数据范围关联关系
+     *
+     * @param inputs    关联关系输入
+     * @param accountId 操作帐号主键
+     * @param tenant    租户标识
+     * @return 已插入的数据
+     */
+    public List<RoleRange> insertRanges(@Nonnull List<RoleRangeInput> inputs, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.rangeProvider.insertBatch(inputs, accountId, tenant);
+    }
+
+    /**
+     * 删除数据范围关联关系
+     *
+     * @param ids       待删除的数据范围主键
+     * @param accountId 操作帐号主键
+     * @param tenant    租主标识
+     * @return 受影响数据行数
+     */
+    public long deleteRanges(@Nonnull List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.rangeProvider.deleteByIds(ids, tenant);
     }
 }

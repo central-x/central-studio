@@ -157,10 +157,6 @@ public class Menu extends ModifiableEntity implements Codeable, Available, Remar
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public static class Tree {
-
-    }
-
     public MenuInput toInput() {
         return MenuInput.builder()
                 .id(this.getId())

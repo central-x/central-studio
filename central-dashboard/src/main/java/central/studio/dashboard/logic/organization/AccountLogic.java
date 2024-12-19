@@ -87,14 +87,16 @@ public class AccountLogic {
     /**
      * 列表查询
      *
+     * @param limit      数据量（不传的话，就返回所有数据）
+     * @param offset     偏移量（跳过前 N 条数据）
      * @param conditions 筛选条件
      * @param orders     排序条件
      * @param tenant     租户标识
      * @return 列表数据
      */
-    public List<Account> listBy(@Nullable Conditions<Account> conditions, @Nullable Orders<Account> orders, @Nonnull String tenant) {
+    public List<Account> findBy(Long limit, Long offset, @Nullable Conditions<Account> conditions, @Nullable Orders<Account> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
-        return this.provider.findBy(null, null, conditions, orders, tenant);
+        return this.provider.findBy(limit, offset, conditions, orders, tenant);
     }
 
     /**
@@ -142,5 +144,17 @@ public class AccountLogic {
      */
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
+    }
+
+    /**
+     * 删除数据
+     *
+     * @param conditions 条件
+     * @param accountId  操作帐号主键
+     * @param tenant     租户标识
+     * @return 受影响数据行数
+     */
+    public long deleteBy(@Nonnull Conditions<Account> conditions, @Nonnull String accountId, @Nonnull String tenant) {
+        return this.provider.deleteBy(conditions, tenant);
     }
 }

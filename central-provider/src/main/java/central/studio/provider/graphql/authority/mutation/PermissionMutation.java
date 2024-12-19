@@ -77,7 +77,8 @@ public class PermissionMutation {
                                          @RequestParam String operator,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         // 标识唯一性校验
-        if (this.mapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getCode, input.getCode()).eq(PermissionEntity::getTenantCode, tenant))) {
+        // 同一菜单下的权限不能有重复
+        if (this.mapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getMenuId, input.getMenuId()).eq(PermissionEntity::getCode, input.getCode()).eq(PermissionEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
         }
 
