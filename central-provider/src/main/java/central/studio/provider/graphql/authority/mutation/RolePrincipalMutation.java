@@ -29,10 +29,9 @@ import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.authority.RolePrincipalPersistence;
+import central.studio.provider.database.persistence.authority.entity.RolePrincipalEntity;
 import central.studio.provider.graphql.authority.dto.RolePrincipalDTO;
-import central.studio.provider.graphql.authority.entity.RolePrincipalEntity;
-import central.studio.provider.graphql.authority.mapper.RolePrincipalMapper;
-import central.util.Listx;
 import central.validation.group.Insert;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
@@ -59,7 +58,7 @@ import java.util.List;
 public class RolePrincipalMutation {
 
     @Setter(onMethod_ = @Autowired)
-    private RolePrincipalMapper mapper;
+    private RolePrincipalPersistence persistence;
 
     /**
      * 保存数据
@@ -70,15 +69,10 @@ public class RolePrincipalMutation {
      */
     @GraphQLFetcher
     public @Nonnull RolePrincipalDTO insert(@RequestParam @Validated({Insert.class, Default.class}) RolePrincipalInput input,
-                                             @RequestParam String operator,
-                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = new RolePrincipalEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, RolePrincipalDTO.class);
+                                            @RequestParam String operator,
+                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, RolePrincipalDTO.class);
     }
 
     /**
@@ -90,9 +84,10 @@ public class RolePrincipalMutation {
      */
     @GraphQLFetcher
     public @Nonnull List<RolePrincipalDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<RolePrincipalInput> inputs,
-                                                        @RequestParam String operator,
-                                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+                                                       @RequestParam String operator,
+                                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, RolePrincipalDTO.class);
     }
 
     /**
@@ -104,11 +99,7 @@ public class RolePrincipalMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(RolePrincipalEntity.class).in(RolePrincipalEntity::getId, ids).eq(RolePrincipalEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -120,7 +111,6 @@ public class RolePrincipalMutation {
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<RolePrincipalEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(RolePrincipalEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }

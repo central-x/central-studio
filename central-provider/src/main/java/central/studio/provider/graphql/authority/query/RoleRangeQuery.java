@@ -25,6 +25,7 @@
 package central.studio.provider.graphql.authority.query;
 
 import central.bean.Page;
+import central.provider.graphql.DTO;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -32,7 +33,7 @@ import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.authority.dto.RoleRangeDTO;
-import central.studio.provider.graphql.authority.service.RoleRangeService;
+import central.studio.provider.database.persistence.authority.RoleRangePersistence;
 import central.web.XForwardedHeaders;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
@@ -63,7 +64,7 @@ import java.util.stream.Collectors;
 public class RoleRangeQuery {
 
     @Setter(onMethod_ = @Autowired)
-    private RoleRangeService service;
+    private RoleRangePersistence persistence;
 
     /**
      * 批量数据加载器
@@ -74,15 +75,16 @@ public class RoleRangeQuery {
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, RoleRangeDTO> batchLoader(BatchLoaderEnvironment environment,
-                                                               @RequestParam List<String> ids,
-                                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                          @RequestParam List<String> ids,
+                                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var fields = environment.getKeyContextsList().stream().filter(it -> it instanceof DataFetchingEnvironment)
                 .map(it -> (DataFetchingEnvironment) it)
                 .flatMap(it -> it.getSelectionSet().getFields().stream())
                 .map(SelectedField::getName).distinct().toArray(String[]::new);
 
-        return this.service.findByIds(ids, Columns.of(RoleRangeDTO.class, fields), tenant)
-                .stream().collect(Collectors.toMap(RoleRangeDTO::getId, Function.identity()));
+        var data = this.persistence.findByIds(ids, Columns.of(RoleRangeDTO.class, fields), tenant);
+        return DTO.wrap(data, RoleRangeDTO.class).stream()
+                .collect(Collectors.toMap(RoleRangeDTO::getId, Function.identity()));
     }
 
     /**
@@ -94,13 +96,14 @@ public class RoleRangeQuery {
      */
     @GraphQLFetcher
     public @Nullable RoleRangeDTO findById(DataFetchingEnvironment environment,
-                                                @RequestParam String id,
-                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                           @RequestParam String id,
+                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var columns = Columns.of(RoleRangeDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "findById".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findById(id, columns, tenant);
+        var data = this.persistence.findById(id, columns, tenant);
+        return DTO.wrap(data, RoleRangeDTO.class);
     }
 
 
@@ -113,13 +116,14 @@ public class RoleRangeQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<RoleRangeDTO> findByIds(DataFetchingEnvironment environment,
-                                                      @RequestParam List<String> ids,
-                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                 @RequestParam List<String> ids,
+                                                 @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var columns = Columns.of(RoleRangeDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "findByIds".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findByIds(ids, columns, tenant);
+        var data = this.persistence.findByIds(ids, columns, tenant);
+        return DTO.wrap(data, RoleRangeDTO.class);
     }
 
     /**
@@ -134,16 +138,17 @@ public class RoleRangeQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<RoleRangeDTO> findBy(DataFetchingEnvironment environment,
-                                                   @RequestParam(required = false) Long limit,
-                                                   @RequestParam(required = false) Long offset,
-                                                   @RequestParam Conditions<RoleRangeDTO> conditions,
-                                                   @RequestParam Orders<RoleRangeDTO> orders,
-                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                              @RequestParam(required = false) Long limit,
+                                              @RequestParam(required = false) Long offset,
+                                              @RequestParam Conditions<RoleRangeDTO> conditions,
+                                              @RequestParam Orders<RoleRangeDTO> orders,
+                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var columns = Columns.of(RoleRangeDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "findBy".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findBy(limit, offset, columns, conditions, orders, tenant);
+        var data = this.persistence.findBy(limit, offset, columns, conditions, orders, tenant);
+        return DTO.wrap(data, RoleRangeDTO.class);
     }
 
     /**
@@ -158,17 +163,18 @@ public class RoleRangeQuery {
      */
     @GraphQLFetcher
     public @Nonnull Page<RoleRangeDTO> pageBy(DataFetchingEnvironment environment,
-                                                   @RequestParam long pageIndex,
-                                                   @RequestParam long pageSize,
-                                                   @RequestParam Conditions<RoleRangeDTO> conditions,
-                                                   @RequestParam Orders<RoleRangeDTO> orders,
-                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                              @RequestParam long pageIndex,
+                                              @RequestParam long pageSize,
+                                              @RequestParam Conditions<RoleRangeDTO> conditions,
+                                              @RequestParam Orders<RoleRangeDTO> orders,
+                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
 
         var columns = Columns.of(RoleRangeDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "Page.data".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        var data = this.persistence.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        return DTO.wrap(data, RoleRangeDTO.class);
     }
 
     /**
@@ -180,6 +186,6 @@ public class RoleRangeQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<RoleRangeDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.service.countBy(conditions, tenant);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

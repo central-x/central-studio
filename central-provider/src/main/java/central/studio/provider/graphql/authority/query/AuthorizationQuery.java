@@ -24,14 +24,16 @@
 
 package central.studio.provider.graphql.authority.query;
 
+import central.provider.graphql.DTO;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.authority.dto.MenuDTO;
 import central.studio.provider.graphql.authority.dto.PermissionDTO;
 import central.studio.provider.graphql.authority.dto.RoleDTO;
-import central.studio.provider.graphql.authority.service.AuthorizationService;
+import central.studio.provider.database.persistence.authority.AuthorizationPersistence;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import central.web.XForwardedHeaders;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -50,8 +52,9 @@ import java.util.List;
 @Component
 @GraphQLSchema(path = "authority/query")
 public class AuthorizationQuery {
-    @Autowired
-    private AuthorizationService service;
+
+    @Setter(onMethod_ = @Autowired)
+    private AuthorizationPersistence persistence;
 
     /**
      * 根据应用标识和应用密钥获取应用信息
@@ -62,7 +65,8 @@ public class AuthorizationQuery {
      */
     @GraphQLFetcher
     public ApplicationDTO findApplication(@RequestParam String code, @RequestParam String secret) {
-        return service.findApplication(code, secret);
+        var data = this.persistence.findApplication(code, secret);
+        return DTO.wrap(data, ApplicationDTO.class);
     }
 
     /**
@@ -73,23 +77,26 @@ public class AuthorizationQuery {
      * @param tenant    租户标识
      * @return 应用列表
      */
+    @GraphQLFetcher
     public List<ApplicationDTO> findApplications(@RequestParam String accountId, @RequestParam String type,
                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        var data = this.persistence.findApplications(accountId, type, tenant);
+        return DTO.wrap(data, ApplicationDTO.class);
     }
 
     /**
      * 获取指定帐户在指定应用下被授权的角色清单
      *
      * @param accountId     帐户主键
-     * @param permission    菜单权限。如果此值不为空，则返回包含该权限的角色；如果此值为空，则返回该帐户所有角色
      * @param applicationId 应用主键
      * @param tenant        租户标识
      * @return 角色清单
      */
-    public List<RoleDTO> findRoles(@RequestParam String accountId, @RequestParam(required = false) String permission, @RequestParam String applicationId,
+    @GraphQLFetcher
+    public List<RoleDTO> findRoles(@RequestParam String accountId, @RequestParam String applicationId,
                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        var data = this.persistence.findRoles(accountId, applicationId, tenant);
+        return DTO.wrap(data, RoleDTO.class);
     }
 
     /**
@@ -101,9 +108,11 @@ public class AuthorizationQuery {
      * @param tenant        租户标识
      * @return 菜单清单
      */
+    @GraphQLFetcher
     public List<MenuDTO> findMenus(@RequestParam String accountId, @RequestParam String type, @RequestParam String applicationId,
                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        var data = this.persistence.findMenus(accountId, type, applicationId, tenant);
+        return DTO.wrap(data, MenuDTO.class);
     }
 
     /**
@@ -114,8 +123,10 @@ public class AuthorizationQuery {
      * @param tenant        租户标识
      * @return 权限清单
      */
+    @GraphQLFetcher
     public List<PermissionDTO> findPermissions(@RequestParam String accountId, @RequestParam String applicationId,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        var data = this.persistence.findPermissions(accountId, applicationId, tenant);
+        return DTO.wrap(data, PermissionDTO.class);
     }
 }

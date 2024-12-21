@@ -26,15 +26,15 @@ package central.studio.provider.graphql.organization.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.dto.AccountUnitDTO;
-import central.studio.provider.graphql.organization.entity.AccountUnitEntity;
-import central.studio.provider.graphql.organization.mapper.AccountUnitMapper;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.organization.dto.AccountUnitDTO;
+import central.studio.provider.database.persistence.organization.AccountUnitPersistence;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -58,8 +59,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "organization/query", types = {AccountUnitDTO.class, AccountDepartmentQuery.class})
 public class AccountUnitQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private AccountUnitMapper mapper;
+    private AccountUnitPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -70,10 +72,9 @@ public class AccountUnitQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, AccountUnitDTO> batchLoader(@RequestParam List<String> ids,
                                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(AccountUnitEntity.class).in(AccountUnitEntity::getId, ids).eq(AccountUnitEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, AccountUnitDTO.class))
-                .collect(Collectors.toMap(AccountUnitDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, AccountUnitDTO.class).stream()
+                .collect(Collectors.toMap(AccountUnitDTO::getId, Function.identity()));
     }
 
     /**
@@ -85,8 +86,8 @@ public class AccountUnitQuery {
     @GraphQLFetcher
     public @Nullable AccountUnitDTO findById(@RequestParam String id,
                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(AccountUnitEntity.class).eq(AccountUnitEntity::getId, id).eq(AccountUnitEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, AccountUnitDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, AccountUnitDTO.class);
     }
 
 
@@ -99,9 +100,8 @@ public class AccountUnitQuery {
     @GraphQLFetcher
     public @Nonnull List<AccountUnitDTO> findByIds(@RequestParam List<String> ids,
                                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(AccountUnitEntity.class).in(AccountUnitEntity::getId, ids).eq(AccountUnitEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, AccountUnitDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, AccountUnitDTO.class);
     }
 
     /**
@@ -116,12 +116,11 @@ public class AccountUnitQuery {
     @GraphQLFetcher
     public @Nonnull List<AccountUnitDTO> findBy(@RequestParam(required = false) Long limit,
                                                 @RequestParam(required = false) Long offset,
-                                                @RequestParam Conditions<AccountUnitEntity> conditions,
-                                                @RequestParam Orders<AccountUnitEntity> orders,
+                                                @RequestParam Conditions<AccountUnitDTO> conditions,
+                                                @RequestParam Orders<AccountUnitDTO> orders,
                                                 @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AccountUnitEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, AccountUnitDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, AccountUnitDTO.class);
     }
 
     /**
@@ -136,12 +135,11 @@ public class AccountUnitQuery {
     @GraphQLFetcher
     public @Nonnull Page<AccountUnitDTO> pageBy(@RequestParam long pageIndex,
                                                 @RequestParam long pageSize,
-                                                @RequestParam Conditions<AccountUnitEntity> conditions,
-                                                @RequestParam Orders<AccountUnitEntity> orders,
+                                                @RequestParam Conditions<AccountUnitDTO> conditions,
+                                                @RequestParam Orders<AccountUnitDTO> orders,
                                                 @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AccountUnitEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, AccountUnitDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, AccountUnitDTO.class);
     }
 
     /**
@@ -151,10 +149,9 @@ public class AccountUnitQuery {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public Long countBy(@RequestParam Conditions<AccountUnitEntity> conditions,
+    public Long countBy(@RequestParam Conditions<AccountUnitDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AccountUnitEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

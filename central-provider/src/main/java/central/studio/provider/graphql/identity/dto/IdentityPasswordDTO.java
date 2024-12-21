@@ -26,7 +26,7 @@ package central.studio.provider.graphql.identity.dto;
 
 import central.provider.graphql.DTO;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.identity.entity.IdentityPasswordEntity;
+import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;

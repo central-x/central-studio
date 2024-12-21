@@ -25,9 +25,9 @@
 package central.studio.provider.graphql.authority.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.authority.entity.MenuEntity;
-import central.studio.provider.graphql.authority.service.MenuService;
-import central.studio.provider.graphql.authority.service.PermissionService;
+import central.studio.provider.database.persistence.authority.entity.MenuEntity;
+import central.studio.provider.database.persistence.authority.MenuPersistence;
+import central.studio.provider.database.persistence.authority.PermissionPersistence;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import central.sql.query.Columns;
@@ -84,13 +84,14 @@ public class MenuDTO extends MenuEntity implements DTO {
      */
     @GraphQLGetter
     public List<MenuDTO> getChildren(DataFetchingEnvironment environment,
-                                     @Autowired MenuService service,
+                                     @Autowired MenuPersistence persistence,
                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var columns = Columns.of(MenuDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "children".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return service.findBy(null, null, columns, Conditions.of(MenuDTO.class).eq(MenuDTO::getParentId, this.getId()), Orders.of(MenuDTO.class).asc(MenuDTO::getOrder).asc(MenuDTO::getCode), tenant);
+        var data = persistence.findBy(null, null, columns, Conditions.of(MenuDTO.class).eq(MenuDTO::getParentId, this.getId()), Orders.of(MenuDTO.class).asc(MenuDTO::getOrder).asc(MenuDTO::getCode), tenant);
+        return DTO.wrap(data, MenuDTO.class);
     }
 
     /**
@@ -98,13 +99,14 @@ public class MenuDTO extends MenuEntity implements DTO {
      */
     @GraphQLGetter
     public List<PermissionDTO> getPermissions(DataFetchingEnvironment environment,
-                                              @Autowired PermissionService service,
+                                              @Autowired PermissionPersistence persistence,
                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var columns = Columns.of(PermissionDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "permissions".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return service.findBy(null, null, columns, Conditions.of(PermissionDTO.class).eq(PermissionDTO::getMenuId, this.getId()), null, tenant);
+        var data = persistence.findBy(null, null, columns, Conditions.of(PermissionDTO.class).eq(PermissionDTO::getMenuId, this.getId()), null, tenant);
+        return DTO.wrap(data, PermissionDTO.class);
     }
 
     /**

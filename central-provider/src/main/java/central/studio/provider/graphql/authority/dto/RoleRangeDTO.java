@@ -26,7 +26,7 @@ package central.studio.provider.graphql.authority.dto;
 
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
-import central.studio.provider.graphql.authority.entity.RoleRangeEntity;
+import central.studio.provider.database.persistence.authority.entity.RoleRangeEntity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import lombok.EqualsAndHashCode;

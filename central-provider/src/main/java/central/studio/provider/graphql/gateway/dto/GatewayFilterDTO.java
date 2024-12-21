@@ -27,7 +27,7 @@ package central.studio.provider.graphql.gateway.dto;
 import central.data.gateway.GatewayPredicate;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.graphql.gateway.entity.GatewayFilterEntity;
+import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;

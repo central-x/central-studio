@@ -29,10 +29,9 @@ import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.authority.RoleRangePersistence;
+import central.studio.provider.database.persistence.authority.entity.RoleRangeEntity;
 import central.studio.provider.graphql.authority.dto.RoleRangeDTO;
-import central.studio.provider.graphql.authority.entity.RoleRangeEntity;
-import central.studio.provider.graphql.authority.mapper.RoleRangeMapper;
-import central.util.Listx;
 import central.validation.group.Insert;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
@@ -59,7 +58,7 @@ import java.util.List;
 public class RoleRangeMutation {
 
     @Setter(onMethod_ = @Autowired)
-    private RoleRangeMapper mapper;
+    private RoleRangePersistence persistence;
 
     /**
      * 保存数据
@@ -70,15 +69,10 @@ public class RoleRangeMutation {
      */
     @GraphQLFetcher
     public @Nonnull RoleRangeDTO insert(@RequestParam @Validated({Insert.class, Default.class}) RoleRangeInput input,
-                                             @RequestParam String operator,
-                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = new RoleRangeEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, RoleRangeDTO.class);
+                                        @RequestParam String operator,
+                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, RoleRangeDTO.class);
     }
 
     /**
@@ -90,9 +84,10 @@ public class RoleRangeMutation {
      */
     @GraphQLFetcher
     public @Nonnull List<RoleRangeDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<RoleRangeInput> inputs,
-                                                        @RequestParam String operator,
-                                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+                                                   @RequestParam String operator,
+                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, RoleRangeDTO.class);
     }
 
     /**
@@ -104,11 +99,7 @@ public class RoleRangeMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(RoleRangeEntity.class).in(RoleRangeEntity::getId, ids).eq(RoleRangeEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -120,7 +111,6 @@ public class RoleRangeMutation {
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<RoleRangeEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(RoleRangeEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }

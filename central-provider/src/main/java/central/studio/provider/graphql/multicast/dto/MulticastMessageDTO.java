@@ -24,7 +24,7 @@
 
 package central.studio.provider.graphql.multicast.dto;
 
-import central.studio.provider.graphql.multicast.entity.MulticastMessageEntity;
+import central.studio.provider.database.persistence.multicast.entity.MulticastMessageEntity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;

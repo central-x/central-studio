@@ -25,12 +25,12 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
+import central.studio.provider.database.persistence.organization.AccountPersistence;
 import central.studio.provider.graphql.authority.dto.RoleDTO;
-import central.studio.provider.graphql.authority.service.RoleService;
-import central.studio.provider.graphql.organization.entity.AccountEntity;
-import central.studio.provider.graphql.organization.entity.AccountUnitEntity;
+import central.studio.provider.database.persistence.authority.RolePersistence;
+import central.studio.provider.database.persistence.organization.entity.AccountEntity;
+import central.studio.provider.database.persistence.organization.entity.AccountUnitEntity;
 import central.studio.provider.graphql.organization.query.AccountUnitQuery;
-import central.studio.provider.graphql.organization.service.AccountService;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -65,11 +65,12 @@ public class AccountDTO extends AccountEntity implements DTO {
      * 是否超级管理员
      */
     @GraphQLGetter
-    public Boolean getSupervisor(@Autowired AccountService service) {
-        return service.isSupervisor(this.getId());
+    public Boolean getSupervisor(@Autowired AccountPersistence persistence) {
+        return persistence.isSupervisor(this.getId());
     }
 
     /**
+     * 。
      * 创建人信息
      */
     @GraphQLGetter
@@ -91,8 +92,8 @@ public class AccountDTO extends AccountEntity implements DTO {
     @GraphQLGetter
     public List<AccountUnitDTO> getUnits(@RequestParam(required = false) Long first,
                                          @RequestParam(required = false) Long offset,
-                                         @RequestParam Conditions<AccountUnitEntity> conditions,
-                                         @RequestParam Orders<AccountUnitEntity> orders,
+                                         @RequestParam Conditions<AccountUnitDTO> conditions,
+                                         @RequestParam Orders<AccountUnitDTO> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant,
                                          @Autowired AccountUnitQuery query) {
         return query.findBy(first, offset, Conditions.group(conditions).eq(AccountUnitEntity::getAccountId, this.getId()), orders, tenant);
@@ -108,11 +109,12 @@ public class AccountDTO extends AccountEntity implements DTO {
                                   @RequestParam Conditions<RoleDTO> conditions,
                                   @RequestParam Orders<RoleDTO> orders,
                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                                  @Autowired RoleService service) {
+                                  @Autowired RolePersistence persistence) {
         var columns = Columns.of(RoleDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "roles".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return service.findBy(first, offset, columns, Conditions.group(conditions).eq("account.id", this.getId()), orders, tenant);
+        var data = persistence.findBy(first, offset, columns, Conditions.group(conditions).eq("account.id", this.getId()), orders, tenant);
+        return DTO.wrap(data, RoleDTO.class);
     }
 }

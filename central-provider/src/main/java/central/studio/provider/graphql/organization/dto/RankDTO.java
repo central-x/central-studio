@@ -25,7 +25,7 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.entity.RankEntity;
+import central.studio.provider.database.persistence.organization.entity.RankEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;

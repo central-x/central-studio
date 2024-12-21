@@ -24,35 +24,31 @@
 
 package central.studio.provider.graphql.system.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.system.DatabaseInput;
-import central.lang.Stringx;
-import central.studio.provider.graphql.system.dto.DatabaseDTO;
-import central.studio.provider.graphql.system.entity.DatabaseEntity;
-import central.studio.provider.graphql.system.mapper.DatabaseMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.web.XForwardedHeaders;
-import central.util.Listx;
+import central.studio.provider.database.persistence.system.DatabasePersistence;
+import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
+import central.studio.provider.graphql.system.dto.DatabaseDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Database Mutation
+ * <p>
  * 数据库修改
  *
  * @author Alan Yeh
@@ -61,8 +57,9 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "system/mutation", types = DatabaseDTO.class)
 public class DatabaseMutation {
+
     @Setter(onMethod_ = @Autowired)
-    private DatabaseMapper mapper;
+    private DatabasePersistence persistence;
 
     /**
      * 保存数据
@@ -75,18 +72,8 @@ public class DatabaseMutation {
     public @Nonnull DatabaseDTO insert(@RequestParam @Validated({Insert.class, Default.class}) DatabaseInput input,
                                        @RequestParam String operator,
                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        // 标识唯一性校验
-        if (this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getCode, input.getCode()).eq(DatabaseEntity::getTenantCode, tenant))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
-        }
-
-        var entity = new DatabaseEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, DatabaseDTO.class);
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, DatabaseDTO.class);
     }
 
     /**
@@ -100,7 +87,8 @@ public class DatabaseMutation {
     public @Nonnull List<DatabaseDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<DatabaseInput> inputs,
                                                   @RequestParam String operator,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, DatabaseDTO.class);
     }
 
     /**
@@ -114,23 +102,8 @@ public class DatabaseMutation {
     public @Nonnull DatabaseDTO update(@RequestParam @Validated({Update.class, Default.class}) DatabaseInput input,
                                        @RequestParam String operator,
                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getId, input.getId()).eq(DatabaseEntity::getTenantCode, tenant));
-        if (entity == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
-        }
-
-        // 标识唯一性校验
-        if (!Objects.equals(entity.getCode(), input.getCode())) {
-            if (this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getCode, input.getCode()).eq(DatabaseEntity::getTenantCode, tenant))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
-            }
-        }
-
-        entity.fromInput(input);
-        entity.updateModifier(operator);
-        this.mapper.update(entity);
-
-        return DTO.wrap(entity, DatabaseDTO.class);
+        var data = this.persistence.update(input, operator, tenant);
+        return DTO.wrap(data, DatabaseDTO.class);
     }
 
     /**
@@ -144,7 +117,8 @@ public class DatabaseMutation {
     public @Nonnull List<DatabaseDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<DatabaseInput> inputs,
                                                   @RequestParam String operator,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
+        var data = this.persistence.updateBatch(inputs, operator, tenant);
+        return DTO.wrap(data, DatabaseDTO.class);
     }
 
     /**
@@ -156,11 +130,7 @@ public class DatabaseMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(DatabaseEntity.class).in(DatabaseEntity::getId, ids).eq(DatabaseEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -172,7 +142,6 @@ public class DatabaseMutation {
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<DatabaseEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DatabaseEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }

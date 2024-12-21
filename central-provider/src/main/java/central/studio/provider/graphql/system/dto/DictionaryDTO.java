@@ -31,7 +31,7 @@ import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
-import central.studio.provider.graphql.system.entity.DictionaryEntity;
+import central.studio.provider.database.persistence.system.entity.DictionaryEntity;
 import central.util.Jsonx;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;

@@ -25,8 +25,9 @@
 package central.studio.provider.graphql.authority.query;
 
 import central.bean.Page;
+import central.provider.graphql.DTO;
 import central.studio.provider.graphql.authority.dto.MenuDTO;
-import central.studio.provider.graphql.authority.service.MenuService;
+import central.studio.provider.database.persistence.authority.MenuPersistence;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -63,7 +64,7 @@ import java.util.stream.Collectors;
 public class MenuQuery {
 
     @Setter(onMethod_ = @Autowired)
-    private MenuService service;
+    private MenuPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -81,8 +82,9 @@ public class MenuQuery {
                 .flatMap(it -> it.getSelectionSet().getFields().stream())
                 .map(SelectedField::getName).distinct().toArray(String[]::new);
 
-        return this.service.findByIds(ids, Columns.of(MenuDTO.class, fields), tenant)
-                .stream().collect(Collectors.toMap(MenuDTO::getId, Function.identity()));
+        var data = this.persistence.findByIds(ids, Columns.of(MenuDTO.class, fields), tenant);
+        return DTO.wrap(data, MenuDTO.class).stream()
+                .collect(Collectors.toMap(MenuDTO::getId, Function.identity()));
     }
 
     /**
@@ -100,7 +102,8 @@ public class MenuQuery {
                 .filter(it -> "findById".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findById(id, columns, tenant);
+        var data = this.persistence.findById(id, columns, tenant);
+        return DTO.wrap(data, MenuDTO.class);
     }
 
 
@@ -119,7 +122,8 @@ public class MenuQuery {
                 .filter(it -> "findByIds".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findByIds(ids, columns, tenant);
+        var data = this.persistence.findByIds(ids, columns, tenant);
+        return DTO.wrap(data, MenuDTO.class);
     }
 
     /**
@@ -143,7 +147,8 @@ public class MenuQuery {
                 .filter(it -> "findBy".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findBy(limit, offset, columns, conditions, orders, tenant);
+        var data = this.persistence.findBy(limit, offset, columns, conditions, orders, tenant);
+        return DTO.wrap(data, MenuDTO.class);
     }
 
     /**
@@ -168,7 +173,8 @@ public class MenuQuery {
                 .filter(it -> "Page.data".equals(it.getParentField().getFullyQualifiedName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        var data = this.persistence.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        return DTO.wrap(data, MenuDTO.class);
     }
 
     /**
@@ -180,7 +186,7 @@ public class MenuQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<MenuDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.service.countBy(conditions, tenant);
+        return this.persistence.countBy(conditions, tenant);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -29,10 +29,9 @@ import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.authority.RolePermissionPersistence;
+import central.studio.provider.database.persistence.authority.entity.RolePermissionEntity;
 import central.studio.provider.graphql.authority.dto.RolePermissionDTO;
-import central.studio.provider.graphql.authority.entity.RolePermissionEntity;
-import central.studio.provider.graphql.authority.mapper.RolePermissionMapper;
-import central.util.Listx;
 import central.validation.group.Insert;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
@@ -59,7 +58,7 @@ import java.util.List;
 public class RolePermissionMutation {
 
     @Setter(onMethod_ = @Autowired)
-    private RolePermissionMapper mapper;
+    private RolePermissionPersistence persistence;
 
     /**
      * 保存数据
@@ -72,13 +71,8 @@ public class RolePermissionMutation {
     public @Nonnull RolePermissionDTO insert(@RequestParam @Validated({Insert.class, Default.class}) RolePermissionInput input,
                                              @RequestParam String operator,
                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = new RolePermissionEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, RolePermissionDTO.class);
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, RolePermissionDTO.class);
     }
 
     /**
@@ -92,7 +86,8 @@ public class RolePermissionMutation {
     public @Nonnull List<RolePermissionDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<RolePermissionInput> inputs,
                                                         @RequestParam String operator,
                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, RolePermissionDTO.class);
     }
 
     /**
@@ -104,11 +99,7 @@ public class RolePermissionMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(RolePermissionEntity.class).in(RolePermissionEntity::getId, ids).eq(RolePermissionEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -120,7 +111,6 @@ public class RolePermissionMutation {
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<RolePermissionEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(RolePermissionEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }

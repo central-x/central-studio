@@ -10,7 +10,7 @@
     "permissions": {},
     "children": [
       {
-        "code": "menu",
+        "code": "authority:menu",
         "name": "菜单管理",
         "icon": "",
         "url": "@/authority/menu",
@@ -18,15 +18,16 @@
         "enabled": true,
         "order": 0,
         "permissions": {
-          "add": "新增",
-          "delete": "删除",
-          "edit": "编辑",
-          "disable": "禁用",
-          "enable": "启用"
+          "authority:menu:view": "查看",
+          "authority:menu:add": "新增",
+          "authority:menu:delete": "删除",
+          "authority:menu:edit": "编辑",
+          "authority:menu:disable": "禁用",
+          "authority:menu:enable": "启用"
         }
       },
       {
-        "code": "role_system",
+        "code": "authority:system:role",
         "name": "系统角色管理",
         "icon": "",
         "url": "@/authority/role-system",
@@ -34,15 +35,16 @@
         "enabled": true,
         "order": 0,
         "permissions": {
-          "add": "新增",
-          "delete": "删除",
-          "edit": "编辑",
-          "disable": "禁用",
-          "enable": "启用"
+          "authority:system:role:view": "查看",
+          "authority:system:role:add": "新增",
+          "authority:system:role:delete": "删除",
+          "authority:system:role:edit": "编辑",
+          "authority:system:role:disable": "禁用",
+          "authority:system:role:enable": "启用"
         }
       },
       {
-        "code": "role",
+        "code": "authority:unit:role",
         "name": "单位角色管理",
         "icon": "",
         "url": "@/authority/role",
@@ -50,11 +52,12 @@
         "enabled": true,
         "order": 0,
         "permissions": {
-          "add": "新增",
-          "delete": "删除",
-          "edit": "编辑",
-          "disable": "禁用",
-          "enable": "启用"
+          "authority:unit:role:view": "查看",
+          "authority:unit:role:add": "新增",
+          "authority:unit:role:delete": "删除",
+          "authority:unit:role:edit": "编辑",
+          "authority:unit:role:disable": "禁用",
+          "authority:unit:role:enable": "启用"
         }
       }
     ]

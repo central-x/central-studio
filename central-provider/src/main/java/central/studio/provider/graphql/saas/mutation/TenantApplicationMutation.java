@@ -24,30 +24,26 @@
 
 package central.studio.provider.graphql.saas.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.saas.TenantApplicationInput;
 import central.lang.Assertx;
-import central.lang.Stringx;
-import central.studio.provider.graphql.saas.dto.TenantApplicationDTO;
-import central.studio.provider.graphql.saas.entity.TenantApplicationEntity;
-import central.studio.provider.graphql.saas.mapper.TenantApplicationMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.web.XForwardedHeaders;
-import central.util.Listx;
+import central.studio.provider.database.persistence.saas.TenantApplicationPersistence;
+import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
+import central.studio.provider.graphql.saas.dto.TenantApplicationDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -62,8 +58,9 @@ import java.util.List;
 @Component
 @GraphQLSchema(path = "saas/mutation", types = TenantApplicationDTO.class)
 public class TenantApplicationMutation {
+
     @Setter(onMethod_ = @Autowired)
-    private TenantApplicationMapper mapper;
+    private TenantApplicationPersistence persistence;
 
     /**
      * 保存数据
@@ -78,12 +75,8 @@ public class TenantApplicationMutation {
                                                 @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
 
-        var entity = new TenantApplicationEntity();
-        entity.fromInput(input);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, TenantApplicationDTO.class);
+        var data = this.persistence.insert(input, operator);
+        return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
     /**
@@ -98,7 +91,9 @@ public class TenantApplicationMutation {
                                                            @RequestParam String operator,
                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+
+        var data = this.persistence.insertBatch(inputs, operator);
+        return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
     /**
@@ -113,16 +108,9 @@ public class TenantApplicationMutation {
                                                 @RequestParam String operator,
                                                 @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entity = this.mapper.findFirstBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getId, input.getId()));
-        if (entity == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
-        }
 
-        entity.fromInput(input);
-        entity.updateModifier(operator);
-        this.mapper.update(entity);
-
-        return DTO.wrap(entity, TenantApplicationDTO.class);
+        var data = this.persistence.update(input, operator);
+        return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
     /**
@@ -137,7 +125,9 @@ public class TenantApplicationMutation {
                                                            @RequestParam String operator,
                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
+
+        var data = this.persistence.updateBatch(inputs, operator);
+        return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
     /**
@@ -150,11 +140,8 @@ public class TenantApplicationMutation {
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
 
-        return this.mapper.deleteByIds(ids);
+        return this.persistence.deleteByIds(ids);
     }
 
     /**
@@ -167,6 +154,7 @@ public class TenantApplicationMutation {
     public long deleteBy(@RequestParam Conditions<TenantApplicationEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return this.mapper.deleteBy(conditions);
+
+        return this.persistence.deleteBy(conditions);
     }
 }

@@ -26,14 +26,16 @@ package central.studio.provider.graphql.system.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.system.dto.DatabaseDTO;
-import central.studio.provider.graphql.system.entity.DatabaseEntity;
-import central.studio.provider.graphql.system.mapper.DatabaseMapper;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.system.DatabasePersistence;
+import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
+import central.studio.provider.graphql.system.dto.DatabaseDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -45,10 +47,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * Database Query
+ * <p>
  * 数据库查询
  *
  * @author Alan Yeh
@@ -57,8 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "system/query", types = DatabaseDTO.class)
 public class DatabaseQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private DatabaseMapper mapper;
+    private DatabasePersistence persistence;
 
     /**
      * 批量数据加载器
@@ -69,10 +74,8 @@ public class DatabaseQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, DatabaseDTO> batchLoader(@RequestParam List<String> ids,
                                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(DatabaseEntity.class).in(DatabaseEntity::getId, ids).eq(DatabaseEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, DatabaseDTO.class))
-                .collect(Collectors.toMap(DatabaseDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, DatabaseDTO.class).stream().collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -84,8 +87,8 @@ public class DatabaseQuery {
     @GraphQLFetcher
     public @Nullable DatabaseDTO findById(@RequestParam String id,
                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getId, id).eq(DatabaseEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, DatabaseDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, DatabaseDTO.class);
     }
 
 
@@ -98,9 +101,8 @@ public class DatabaseQuery {
     @GraphQLFetcher
     public @Nonnull List<DatabaseDTO> findByIds(@RequestParam List<String> ids,
                                                 @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(DatabaseEntity.class).in(DatabaseEntity::getId, ids).eq(DatabaseEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, DatabaseDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, DatabaseDTO.class);
     }
 
     /**
@@ -115,12 +117,11 @@ public class DatabaseQuery {
     @GraphQLFetcher
     public @Nonnull List<DatabaseDTO> findBy(@RequestParam(required = false) Long limit,
                                              @RequestParam(required = false) Long offset,
-                                             @RequestParam Conditions<DatabaseEntity> conditions,
-                                             @RequestParam Orders<DatabaseEntity> orders,
+                                             @RequestParam Conditions<DatabaseDTO> conditions,
+                                             @RequestParam Orders<DatabaseDTO> orders,
                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DatabaseEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, DatabaseDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, DatabaseDTO.class);
     }
 
     /**
@@ -138,9 +139,8 @@ public class DatabaseQuery {
                                              @RequestParam Conditions<DatabaseEntity> conditions,
                                              @RequestParam Orders<DatabaseEntity> orders,
                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DatabaseEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, DatabaseDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, DatabaseDTO.class);
     }
 
     /**
@@ -152,7 +152,6 @@ public class DatabaseQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<DatabaseEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DatabaseEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

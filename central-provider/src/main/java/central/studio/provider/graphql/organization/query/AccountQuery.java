@@ -25,8 +25,9 @@
 package central.studio.provider.graphql.organization.query;
 
 import central.bean.Page;
+import central.provider.graphql.DTO;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.organization.service.AccountService;
+import central.studio.provider.database.persistence.organization.AccountPersistence;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -64,7 +65,7 @@ import java.util.stream.Collectors;
 public class AccountQuery {
 
     @Setter(onMethod_ = @Autowired)
-    private AccountService service;
+    private AccountPersistence persistence;
 
 
     /**
@@ -83,8 +84,9 @@ public class AccountQuery {
                 .flatMap(it -> it.getSelectionSet().getFields().stream())
                 .map(SelectedField::getName).distinct().toArray(String[]::new);
 
-        return this.service.findByIds(ids.stream().toList(), Columns.of(AccountDTO.class, fields), tenant)
-                .stream().collect(Collectors.toMap(AccountDTO::getId, Function.identity()));
+        var data = this.persistence.findByIds(ids.stream().toList(), Columns.of(AccountDTO.class, fields), tenant);
+        return DTO.wrap(data, AccountDTO.class).stream()
+                .collect(Collectors.toMap(AccountDTO::getId, Function.identity()));
     }
 
     /**
@@ -102,7 +104,8 @@ public class AccountQuery {
                 .filter(it -> "findById".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findById(id, columns, tenant);
+        var data = this.persistence.findById(id, columns, tenant);
+        return DTO.wrap(data, AccountDTO.class);
     }
 
     /**
@@ -120,7 +123,8 @@ public class AccountQuery {
                 .filter(it -> "findByIds".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findByIds(ids, columns, tenant);
+        var data = this.persistence.findByIds(ids, columns, tenant);
+        return DTO.wrap(data, AccountDTO.class);
     }
 
     /**
@@ -144,7 +148,8 @@ public class AccountQuery {
                 .filter(it -> "findBy".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findBy(limit, offset, columns, conditions, orders, tenant);
+        var data = this.persistence.findBy(limit, offset, columns, conditions, orders, tenant);
+        return DTO.wrap(data, AccountDTO.class);
     }
 
     /**
@@ -168,7 +173,8 @@ public class AccountQuery {
                 .filter(it -> "Page.data".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        var data = this.persistence.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        return DTO.wrap(data, AccountDTO.class);
     }
 
     /**
@@ -180,7 +186,7 @@ public class AccountQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<AccountDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.service.countBy(conditions, tenant);
+        return this.persistence.countBy(conditions, tenant);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

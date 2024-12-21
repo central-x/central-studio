@@ -28,8 +28,8 @@ import central.data.log.LogPredicate;
 import central.sql.SqlExecutor;
 import central.sql.SqlType;
 import central.sql.datasource.migration.*;
-import central.studio.provider.graphql.log.entity.*;
-import central.studio.provider.graphql.log.mapper.*;
+import central.studio.provider.database.persistence.log.entity.*;
+import central.studio.provider.database.persistence.log.mapper.*;
 import central.util.Jsonx;
 import central.util.Version;
 
@@ -55,7 +55,7 @@ public class v0_0_3_log extends Migration {
             // 采集器
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("TYPE", SqlType.STRING, 32, "类型"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
@@ -79,7 +79,7 @@ public class v0_0_3_log extends Migration {
             // 过滤器
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
                     Column.of("REMARK", SqlType.STRING, 1024, "备注"),
@@ -102,7 +102,7 @@ public class v0_0_3_log extends Migration {
             // 存储器
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("TYPE", SqlType.STRING, 32, "类型"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),

@@ -276,7 +276,7 @@ public class MenuLogic {
         var permissions = this.permissionProvider.findByIds(permissionIds, tenant);
 
         var menus = new ArrayList<Menu>();
-        // 保存那些已经查出来的菜单主键
+        // 保存那些待查询的菜单主键
         var pendingIds = new HashSet<>(permissions.stream().map(Permission::getMenuId).toList());
 
         // 循环向上获取菜单，直到没有父级菜单为止
@@ -285,7 +285,7 @@ public class MenuLogic {
             menus.addAll(fetched);
 
             pendingIds.clear();
-            pendingIds.addAll(menus.stream().map(Menu::getParentId).filter(Stringx::isNotBlank).toList());
+            pendingIds.addAll(fetched.stream().map(Menu::getParentId).filter(Stringx::isNotBlank).toList());
         }
 
         // 清空这些菜单下面的权限

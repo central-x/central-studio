@@ -25,7 +25,7 @@
 package central.studio.provider.graphql.multicast.dto;
 
 import central.data.saas.Application;
-import central.studio.provider.graphql.multicast.entity.MulticastBroadcasterEntity;
+import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;

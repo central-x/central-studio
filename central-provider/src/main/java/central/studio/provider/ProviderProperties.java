@@ -1,5 +1,6 @@
 package central.studio.provider;
 
+import central.studio.provider.properties.AdminProperties;
 import central.studio.provider.properties.SupervisorProperties;
 import central.validation.Label;
 import jakarta.validation.Valid;
@@ -7,6 +8,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 数据服务中心配置
@@ -32,4 +36,10 @@ public class ProviderProperties {
      */
     @Valid
     private SupervisorProperties supervisor = new SupervisorProperties();
+
+    /**
+     * 普通管理员配置
+     */
+    @Valid
+    private Map<String, AdminProperties> admins = new HashMap<>();
 }

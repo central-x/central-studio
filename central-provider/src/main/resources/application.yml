@@ -1,0 +1,21 @@
+studio:
+  provider:
+    admins:
+      # 系统管理员
+      admin:
+        username: sysadm
+        permissions:
+          excludes:
+            - *:log:*
+      # 安全审计员
+      auditor:
+        username: sysaud
+        permissions:
+          includes:
+            - *:log:*
+      # 安全保密员
+      security:
+        username: syssec
+        permissions:
+          includes:
+            - identity:*

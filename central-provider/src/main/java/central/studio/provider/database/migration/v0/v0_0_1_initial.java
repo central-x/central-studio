@@ -58,7 +58,7 @@ public class v0_0_1_initial extends Migration {
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
                     Column.of("PARENT_ID", SqlType.STRING, 32, "父菜单主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("ICON", SqlType.STRING, 255, "图标"),
                     Column.of("URL", SqlType.STRING, 255, "地址"),
@@ -88,7 +88,7 @@ public class v0_0_1_initial extends Migration {
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
                     Column.of("MENU_ID", SqlType.STRING, 32, "菜单主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
                     Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
@@ -111,7 +111,7 @@ public class v0_0_1_initial extends Migration {
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("UNIT_ID", SqlType.STRING, 32, "单位主键"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
@@ -211,7 +211,7 @@ public class v0_0_1_initial extends Migration {
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("PARENT_ID", SqlType.STRING, 32, "父区划主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("TYPE", SqlType.STRING, 32, "类型"),
                     Column.of("ORDER", SqlType.INTEGER, "排序号"),
@@ -236,7 +236,7 @@ public class v0_0_1_initial extends Migration {
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("PARENT_ID", SqlType.STRING, 32, "父单位主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("AREA_ID", SqlType.STRING, 32, "行政区划主键"),
                     Column.of("ORDER", SqlType.INTEGER, "排序号"),
@@ -263,7 +263,7 @@ public class v0_0_1_initial extends Migration {
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("UNIT_ID", SqlType.STRING, 32, "单位主键"),
                     Column.of("PARENT_ID", SqlType.STRING, 32, "父部门主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("ORDER", SqlType.INTEGER, "排序号"),
                     Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
@@ -287,7 +287,7 @@ public class v0_0_1_initial extends Migration {
             // 职务
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("UNIT_ID", SqlType.STRING, 32, "单位主键"),
                     Column.of("ORDER", SqlType.INTEGER, "排序号"),
@@ -311,7 +311,7 @@ public class v0_0_1_initial extends Migration {
             // 职级
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("UNIT_ID", SqlType.STRING, 32, "单位主键"),
                     Column.of("ORDER", SqlType.INTEGER, "排序号"),
@@ -417,7 +417,7 @@ public class v0_0_1_initial extends Migration {
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("TYPE", SqlType.STRING, 32, "类型"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
@@ -445,7 +445,7 @@ public class v0_0_1_initial extends Migration {
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("APPLICATION_ID", SqlType.STRING, 32, "所属应用主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),
                     Column.of("REMARK", SqlType.STRING, 1024, "备注"),
@@ -473,7 +473,7 @@ public class v0_0_1_initial extends Migration {
             // 应用
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("LOGO_BYTES", SqlType.BLOB, "图标"),
                     Column.of("URL", SqlType.STRING, 1024, "服务地址"),
@@ -500,7 +500,7 @@ public class v0_0_1_initial extends Migration {
             // 租户
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("DATABASE_ID", SqlType.STRING, 32, "数据库主键"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),

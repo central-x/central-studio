@@ -28,10 +28,11 @@ import central.bean.InitializeException;
 import central.lang.Stringx;
 import central.sql.SqlExecutor;
 import central.sql.query.Conditions;
-import central.studio.provider.graphql.saas.entity.TenantApplicationEntity;
-import central.studio.provider.graphql.saas.entity.TenantEntity;
-import central.studio.provider.graphql.saas.mapper.TenantApplicationMapper;
-import central.studio.provider.graphql.saas.mapper.TenantMapper;
+import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
+import central.studio.provider.database.persistence.saas.entity.TenantEntity;
+import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
+import central.studio.provider.database.persistence.saas.mapper.TenantApplicationMapper;
+import central.studio.provider.database.persistence.saas.mapper.TenantMapper;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -51,6 +52,7 @@ public class TenantInitializer {
      */
     public void initialize(String tenant) {
         var tenantMapper = this.executor.getMapper(TenantMapper.class);
+        var applicationMapper = this.executor.getMapper(ApplicationMapper.class);
         var relMapper = this.executor.getMapper(TenantApplicationMapper.class);
 
         var tenantEntity = tenantMapper.findFirstBy(Conditions.of(TenantEntity.class).eq(TenantEntity::getCode, tenant));
@@ -64,7 +66,8 @@ public class TenantInitializer {
         // 初始化每个应用的业务数据
         var applicationInitializer = new ApplicationInitializer(this.executor);
         for (var relation : relations) {
-            applicationInitializer.initialize(tenant, relation.getApplicationId());
+            var applicationEntity = applicationMapper.findById(relation.getApplicationId());
+            applicationInitializer.initialize(tenant, applicationEntity);
         }
     }
 }

@@ -26,7 +26,7 @@ package central.studio.provider.graphql.saas.dto;
 
 import central.provider.graphql.DTO;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.saas.entity.TenantApplicationEntity;
+import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;

@@ -27,7 +27,7 @@ package central.studio.provider.graphql.authority.dto;
 import central.data.authority.option.PrincipalType;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
-import central.studio.provider.graphql.authority.entity.RolePrincipalEntity;
+import central.studio.provider.database.persistence.authority.entity.RolePrincipalEntity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.graphql.organization.dto.DepartmentDTO;
 import central.studio.provider.graphql.organization.dto.UnitDTO;

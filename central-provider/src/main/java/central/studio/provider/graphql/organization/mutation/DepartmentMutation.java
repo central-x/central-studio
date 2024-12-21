@@ -25,16 +25,12 @@
 package central.studio.provider.graphql.organization.mutation;
 
 import central.data.organization.DepartmentInput;
-import central.lang.Stringx;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.dto.DepartmentDTO;
-import central.studio.provider.graphql.organization.entity.AccountDepartmentEntity;
-import central.studio.provider.graphql.organization.entity.DepartmentEntity;
-import central.studio.provider.graphql.organization.mapper.DepartmentMapper;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.util.Listx;
+import central.studio.provider.database.persistence.organization.DepartmentPersistence;
+import central.studio.provider.graphql.organization.dto.DepartmentDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -42,15 +38,12 @@ import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Department Mutation
@@ -62,8 +55,9 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "organization/mutation", types = DepartmentDTO.class)
 public class DepartmentMutation {
+
     @Setter(onMethod_ = @Autowired)
-    private DepartmentMapper mapper;
+    private DepartmentPersistence persistence;
 
     /**
      * 保存数据
@@ -76,18 +70,8 @@ public class DepartmentMutation {
     public @Nonnull DepartmentDTO insert(@RequestParam @Validated({Insert.class, Default.class}) DepartmentInput input,
                                          @RequestParam String operator,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        // 标识唯一性校验
-        if (this.mapper.existsBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getCode, input.getCode()).eq(DepartmentEntity::getTenantCode, tenant))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
-        }
-
-        var entity = new DepartmentEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, DepartmentDTO.class);
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, DepartmentDTO.class);
     }
 
     /**
@@ -101,7 +85,8 @@ public class DepartmentMutation {
     public @Nonnull List<DepartmentDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<DepartmentInput> inputs,
                                                     @RequestParam String operator,
                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, DepartmentDTO.class);
     }
 
     /**
@@ -115,23 +100,8 @@ public class DepartmentMutation {
     public @Nonnull DepartmentDTO update(@RequestParam @Validated({Update.class, Default.class}) DepartmentInput input,
                                          @RequestParam String operator,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getId, input.getId()).eq(DepartmentEntity::getTenantCode, tenant));
-        if (entity == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
-        }
-
-        // 标识唯一性校验
-        if (!Objects.equals(entity.getCode(), input.getCode())) {
-            if (this.mapper.existsBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getCode, input.getCode()).eq(DepartmentEntity::getTenantCode, tenant))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
-            }
-        }
-
-        entity.fromInput(input);
-        entity.updateModifier(operator);
-        this.mapper.update(entity);
-
-        return DTO.wrap(entity, DepartmentDTO.class);
+        var data = this.persistence.update(input, operator, tenant);
+        return DTO.wrap(data, DepartmentDTO.class);
     }
 
     /**
@@ -145,7 +115,8 @@ public class DepartmentMutation {
     public @Nonnull List<DepartmentDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<DepartmentInput> inputs,
                                                     @RequestParam String operator,
                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
+        var data = this.persistence.updateBatch(inputs, operator, tenant);
+        return DTO.wrap(data, DepartmentDTO.class);
     }
 
     /**
@@ -156,19 +127,8 @@ public class DepartmentMutation {
      */
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
-                            @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                            @Autowired AccountDepartmentMutation mutation) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        var effected = this.mapper.deleteBy(Conditions.of(DepartmentEntity.class).in(DepartmentEntity::getId, ids).eq(DepartmentEntity::getTenantCode, tenant));
-
-        if (effected > 0L) {
-            // 级联删除
-            mutation.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getDepartmentId, ids), tenant);
-        }
-        return effected;
+                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -178,22 +138,8 @@ public class DepartmentMutation {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public long deleteBy(@RequestParam Conditions<DepartmentEntity> conditions,
-                         @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                         @Autowired AccountDepartmentMutation mutation) {
-        conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
-
-        var entities = this.mapper.findBy(conditions);
-        if (entities.isEmpty()) {
-            return 0L;
-        }
-
-        var effected = this.mapper.deleteBy(conditions);
-
-        // 级联删除
-        var ids = entities.stream().map(DepartmentEntity::getId).toList();
-        mutation.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getDepartmentId, ids), tenant);
-
-        return effected;
+    public long deleteBy(@RequestParam Conditions<DepartmentDTO> conditions,
+                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }

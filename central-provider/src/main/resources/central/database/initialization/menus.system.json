@@ -10,7 +10,7 @@
     "permissions": {},
     "children": [
       {
-        "code": "dictionary",
+        "code": "system:dictionary",
         "name": "字典管理",
         "icon": "",
         "url": "@/system/dictionary",
@@ -18,15 +18,16 @@
         "enabled": true,
         "order": 0,
         "permissions": {
-          "add": "新增",
-          "delete": "删除",
-          "edit": "编辑",
-          "disable": "禁用",
-          "enable": "启用"
+          "system:dictionary:view": "查看",
+          "system:dictionary:add": "新增",
+          "system:dictionary:delete": "删除",
+          "system:dictionary:edit": "编辑",
+          "system:dictionary:disable": "禁用",
+          "system:dictionary:enable": "启用"
         }
       },
       {
-        "code": "database",
+        "code": "system:database",
         "name": "系统角色管理",
         "icon": "",
         "url": "@/system/database",
@@ -34,11 +35,12 @@
         "enabled": true,
         "order": 0,
         "permissions": {
-          "add": "新增",
-          "delete": "删除",
-          "edit": "编辑",
-          "disable": "禁用",
-          "enable": "启用"
+          "system:database:view": "查看",
+          "system:database:add": "新增",
+          "system:database:delete": "删除",
+          "system:database:edit": "编辑",
+          "system:database:disable": "禁用",
+          "system:database:enable": "启用"
         }
       }
     ]

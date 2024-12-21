@@ -24,16 +24,16 @@
 
 package central.studio.provider.graphql.organization.query;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
-import central.studio.provider.graphql.organization.dto.DepartmentDTO;
-import central.studio.provider.graphql.organization.entity.DepartmentEntity;
-import central.studio.provider.graphql.organization.mapper.DepartmentMapper;
+import central.provider.graphql.DTO;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.organization.DepartmentPersistence;
+import central.studio.provider.graphql.organization.dto.DepartmentDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -57,8 +58,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "organization/query", types = DepartmentDTO.class)
 public class DepartmentQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private DepartmentMapper mapper;
+    private DepartmentPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -69,10 +71,9 @@ public class DepartmentQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, DepartmentDTO> batchLoader(@RequestParam List<String> ids,
                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(DepartmentEntity.class).in(DepartmentEntity::getId, ids).eq(DepartmentEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, DepartmentDTO.class))
-                .collect(Collectors.toMap(DepartmentDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, DepartmentDTO.class).stream()
+                .collect(Collectors.toMap(DepartmentDTO::getId, Function.identity()));
     }
 
     /**
@@ -84,8 +85,8 @@ public class DepartmentQuery {
     @GraphQLFetcher
     public @Nullable DepartmentDTO findById(@RequestParam String id,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getId, id).eq(DepartmentEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, DepartmentDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, DepartmentDTO.class);
     }
 
 
@@ -98,9 +99,8 @@ public class DepartmentQuery {
     @GraphQLFetcher
     public @Nonnull List<DepartmentDTO> findByIds(@RequestParam List<String> ids,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(DepartmentEntity.class).in(DepartmentEntity::getId, ids).eq(DepartmentEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, DepartmentDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, DepartmentDTO.class);
     }
 
     /**
@@ -115,12 +115,11 @@ public class DepartmentQuery {
     @GraphQLFetcher
     public @Nonnull List<DepartmentDTO> findBy(@RequestParam(required = false) Long limit,
                                                @RequestParam(required = false) Long offset,
-                                               @RequestParam Conditions<DepartmentEntity> conditions,
-                                               @RequestParam Orders<DepartmentEntity> orders,
+                                               @RequestParam Conditions<DepartmentDTO> conditions,
+                                               @RequestParam Orders<DepartmentDTO> orders,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, DepartmentDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, DepartmentDTO.class);
     }
 
     /**
@@ -135,12 +134,11 @@ public class DepartmentQuery {
     @GraphQLFetcher
     public @Nonnull Page<DepartmentDTO> pageBy(@RequestParam long pageIndex,
                                                @RequestParam long pageSize,
-                                               @RequestParam Conditions<DepartmentEntity> conditions,
-                                               @RequestParam Orders<DepartmentEntity> orders,
+                                               @RequestParam Conditions<DepartmentDTO> conditions,
+                                               @RequestParam Orders<DepartmentDTO> orders,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, DepartmentDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, DepartmentDTO.class);
     }
 
     /**
@@ -150,9 +148,8 @@ public class DepartmentQuery {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public Long countBy(@RequestParam Conditions<DepartmentEntity> conditions,
+    public Long countBy(@RequestParam Conditions<DepartmentDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

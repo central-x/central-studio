@@ -24,6 +24,7 @@
 
 package central.studio.dashboard;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -32,6 +33,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Alan Yeh
  * @since 2022/11/17
  */
+@Data
 @ConfigurationProperties("studio.dashboard")
 public class DashboardProperties {
+
+    /**
+     * 应用标识
+     */
+    private String code = "central-dashboard";
+
+    /**
+     * 应用密钥
+     */
+    private String secret;
 }

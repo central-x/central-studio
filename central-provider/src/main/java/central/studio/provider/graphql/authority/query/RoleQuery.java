@@ -25,8 +25,9 @@
 package central.studio.provider.graphql.authority.query;
 
 import central.bean.Page;
+import central.provider.graphql.DTO;
 import central.studio.provider.graphql.authority.dto.RoleDTO;
-import central.studio.provider.graphql.authority.service.RoleService;
+import central.studio.provider.database.persistence.authority.RolePersistence;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -63,7 +64,7 @@ import java.util.stream.Collectors;
 public class RoleQuery {
 
     @Setter(onMethod_ = @Autowired)
-    private RoleService service;
+    private RolePersistence persistence;
 
     /**
      * 批量数据加载器
@@ -81,8 +82,9 @@ public class RoleQuery {
                 .flatMap(it -> it.getSelectionSet().getFields().stream())
                 .map(SelectedField::getName).distinct().toArray(String[]::new);
 
-        return this.service.findByIds(ids, Columns.of(RoleDTO.class, fields), tenant)
-                .stream().collect(Collectors.toMap(RoleDTO::getId, Function.identity()));
+        var data = this.persistence.findByIds(ids, Columns.of(RoleDTO.class, fields), tenant);
+        return DTO.wrap(data, RoleDTO.class).stream()
+                .collect(Collectors.toMap(RoleDTO::getId, Function.identity()));
     }
 
     /**
@@ -100,7 +102,8 @@ public class RoleQuery {
                 .filter(it -> "findById".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findById(id, columns, tenant);
+        var data = this.persistence.findById(id, columns, tenant);
+        return DTO.wrap(data, RoleDTO.class);
     }
 
 
@@ -119,7 +122,8 @@ public class RoleQuery {
                 .filter(it -> "findByIds".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findByIds(ids, columns, tenant);
+        var data = this.persistence.findByIds(ids, columns, tenant);
+        return DTO.wrap(data, RoleDTO.class);
     }
 
     /**
@@ -143,7 +147,8 @@ public class RoleQuery {
                 .filter(it -> "findBy".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findBy(limit, offset, columns, conditions, orders, tenant);
+        var data = this.persistence.findBy(limit, offset, columns, conditions, orders, tenant);
+        return DTO.wrap(data, RoleDTO.class);
     }
 
     /**
@@ -168,7 +173,8 @@ public class RoleQuery {
                 .filter(it -> "Page.data".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        var data = this.persistence.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        return DTO.wrap(data, RoleDTO.class);
     }
 
     /**
@@ -180,7 +186,7 @@ public class RoleQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<RoleDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.service.countBy(conditions, tenant);
+        return this.persistence.countBy(conditions, tenant);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

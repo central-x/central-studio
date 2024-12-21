@@ -24,35 +24,27 @@
 
 package central.studio.provider.graphql.organization.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.organization.AccountInput;
-import central.lang.Stringx;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.organization.entity.AccountDepartmentEntity;
-import central.studio.provider.graphql.organization.entity.AccountEntity;
-import central.studio.provider.graphql.organization.entity.AccountUnitEntity;
-import central.studio.provider.graphql.organization.mapper.AccountMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.web.XForwardedHeaders;
-import central.util.Listx;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
+import central.studio.provider.database.persistence.organization.AccountPersistence;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Account Mutation
@@ -64,8 +56,9 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "organization/mutation", types = {AccountDTO.class, AccountUnitMutation.class})
 public class AccountMutation {
+
     @Setter(onMethod_ = @Autowired)
-    private AccountMapper mapper;
+    private AccountPersistence persistence;
 
     /**
      * 保存数据
@@ -78,29 +71,8 @@ public class AccountMutation {
     public @Nonnull AccountDTO insert(@RequestParam @Validated({Insert.class, Default.class}) AccountInput input,
                                       @RequestParam String operator,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        // 帐号唯一性校验
-        if (this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, input.getUsername()).eq(AccountEntity::getTenantCode, tenant))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在帐号[username={}]", input.getUsername()));
-        }
-
-        // 邮箱唯一性校验
-        if (this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getEmail, input.getEmail()).eq(AccountEntity::getTenantCode, tenant))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在帐号[email={}]", input.getEmail()));
-        }
-
-        // 手机号唯一性校验
-        if (this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getMobile, input.getMobile()).eq(AccountEntity::getTenantCode, tenant))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在帐号[mobile={}]", input.getMobile()));
-        }
-
-        var entity = new AccountEntity();
-        entity.fromInput(input);
-        entity.setAdmin(Boolean.FALSE);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, AccountDTO.class);
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, AccountDTO.class);
     }
 
     /**
@@ -114,7 +86,8 @@ public class AccountMutation {
     public @Nonnull List<AccountDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<AccountInput> inputs,
                                                  @RequestParam String operator,
                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, AccountDTO.class);
     }
 
     /**
@@ -128,37 +101,8 @@ public class AccountMutation {
     public @Nonnull AccountDTO update(@RequestParam @Validated({Update.class, Default.class}) AccountInput input,
                                       @RequestParam String operator,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getId, input.getId()).eq(AccountEntity::getTenantCode, tenant));
-        if (entity == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
-        }
-
-        // 帐号唯一性校验
-        if (!Objects.equals(entity.getUsername(), input.getUsername())) {
-            if (this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, input.getUsername()).eq(AccountEntity::getTenantCode, tenant))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在帐号[username={}]", input.getUsername()));
-            }
-        }
-
-        // 邮箱唯一性校验
-        if (Stringx.isNotBlank(input.getEmail()) && !Objects.equals(entity.getEmail(), input.getEmail())) {
-            if (this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getEmail, input.getEmail()).eq(AccountEntity::getTenantCode, tenant))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在帐号[email={}]", input.getEmail()));
-            }
-        }
-
-        // 手机号唯一性校验
-        if (Stringx.isNotBlank(input.getMobile()) && !Objects.equals(entity.getMobile(), input.getMobile())) {
-            if (this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getMobile, input.getMobile()).eq(AccountEntity::getTenantCode, tenant))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在帐号[mobile={}]", input.getMobile()));
-            }
-        }
-
-        entity.fromInput(input);
-        entity.updateModifier(operator);
-        this.mapper.update(entity);
-
-        return DTO.wrap(entity, AccountDTO.class);
+        var data = this.persistence.update(input, operator, tenant);
+        return DTO.wrap(data, AccountDTO.class);
     }
 
     /**
@@ -172,7 +116,8 @@ public class AccountMutation {
     public @Nonnull List<AccountDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<AccountInput> inputs,
                                                  @RequestParam String operator,
                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
+        var data = this.persistence.updateBatch(inputs, operator, tenant);
+        return DTO.wrap(data, AccountDTO.class);
     }
 
     /**
@@ -183,20 +128,8 @@ public class AccountMutation {
      */
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
-                            @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                            @Autowired AccountUnitMutation unitMutation,
-                            @Autowired AccountDepartmentMutation departmentMutation) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        var effected = this.mapper.deleteBy(Conditions.of(AccountEntity.class).in(AccountEntity::getId, ids).eq(AccountEntity::getTenantCode, tenant));
-        if (effected > 0L) {
-            // 级联删除
-            unitMutation.deleteBy(Conditions.of(AccountUnitEntity.class).in(AccountUnitEntity::getAccountId, ids), tenant);
-            departmentMutation.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getAccountId, ids), tenant);
-        }
-        return effected;
+                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -206,25 +139,9 @@ public class AccountMutation {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public long deleteBy(@RequestParam Conditions<AccountEntity> conditions,
-                         @RequestHeader(XForwardedHeaders.TENANT) String tenant,
-                         @Autowired AccountUnitMutation unitMutation,
-                         @Autowired AccountDepartmentMutation departmentMutation) {
-        conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
-
-        var entities = this.mapper.findBy(conditions);
-        if (entities.isEmpty()) {
-            return 0L;
-        }
-
-        var effected = this.mapper.deleteBy(conditions);
-
-        // 级联删除
-        var ids = entities.stream().map(AccountEntity::getId).toList();
-        unitMutation.deleteBy(Conditions.of(AccountUnitEntity.class).in(AccountUnitEntity::getAccountId, ids), tenant);
-        departmentMutation.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getAccountId, ids), tenant);
-
-        return effected;
+    public long deleteBy(@RequestParam Conditions<AccountDTO> conditions,
+                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.persistence.deleteBy(conditions, tenant);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

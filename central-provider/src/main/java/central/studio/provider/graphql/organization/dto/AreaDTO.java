@@ -25,7 +25,7 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.entity.AreaEntity;
+import central.studio.provider.database.persistence.organization.entity.AreaEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;

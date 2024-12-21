@@ -29,7 +29,7 @@ import central.data.system.DatabaseProperties;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.system.entity.DatabaseEntity;
+import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;

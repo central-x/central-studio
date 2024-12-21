@@ -26,14 +26,16 @@ package central.studio.provider.graphql.system.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.system.DictionaryPersistence;
+import central.studio.provider.database.persistence.system.entity.DictionaryEntity;
 import central.studio.provider.graphql.system.dto.DictionaryDTO;
-import central.studio.provider.graphql.system.entity.DictionaryEntity;
-import central.studio.provider.graphql.system.mapper.DictionaryMapper;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -45,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -58,8 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "system/query", types = DictionaryDTO.class)
 public class DictionaryQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private DictionaryMapper mapper;
+    private DictionaryPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -70,10 +74,8 @@ public class DictionaryQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, DictionaryDTO> batchLoader(@RequestParam List<String> ids,
                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(DictionaryEntity.class).in(DictionaryEntity::getId, ids).eq(DictionaryEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, DictionaryDTO.class))
-                .collect(Collectors.toMap(DictionaryDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, DictionaryDTO.class).stream().collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -85,8 +87,8 @@ public class DictionaryQuery {
     @GraphQLFetcher
     public @Nullable DictionaryDTO findById(@RequestParam String id,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getId, id).eq(DictionaryEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, DictionaryDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, DictionaryDTO.class);
     }
 
 
@@ -99,9 +101,8 @@ public class DictionaryQuery {
     @GraphQLFetcher
     public @Nonnull List<DictionaryDTO> findByIds(@RequestParam List<String> ids,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(DictionaryEntity.class).in(DictionaryEntity::getId, ids).eq(DictionaryEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, DictionaryDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, DictionaryDTO.class);
     }
 
     /**
@@ -119,9 +120,8 @@ public class DictionaryQuery {
                                                @RequestParam Conditions<DictionaryEntity> conditions,
                                                @RequestParam Orders<DictionaryEntity> orders,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DictionaryEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, DictionaryDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, DictionaryDTO.class);
     }
 
     /**
@@ -139,9 +139,8 @@ public class DictionaryQuery {
                                                @RequestParam Conditions<DictionaryEntity> conditions,
                                                @RequestParam Orders<DictionaryEntity> orders,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DictionaryEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, DictionaryDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, DictionaryDTO.class);
     }
 
     /**
@@ -153,7 +152,6 @@ public class DictionaryQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<DictionaryEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(DictionaryEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

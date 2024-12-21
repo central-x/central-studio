@@ -78,14 +78,13 @@ public interface AuthorizationProvider extends Provider<Menu, MenuInput> {
      * 获取指定帐户在指定应用下被授权的角色清单
      *
      * @param accountId     帐户主键
-     * @param permission    菜单权限。如果此值不为空，则返回包含该权限的角色；如果此值为空，则返回该帐户所有角色
      * @param applicationId 应用主键
      * @param tenant        租户标识
      * @return 角色清单
      */
-    List<Role> findRole(@RequestParam String accountId, @RequestParam(required = false) String permission, @RequestParam String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    List<Role> findRoles(@RequestParam String accountId, @RequestParam String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Role> findRole(@RequestParam String accountId, @RequestParam(required = false) String permission, @RequestParam String applicationId);
+    List<Role> findRoles(@RequestParam String accountId, @RequestParam String applicationId);
 
     /**
      * 获取指定帐户在指定应用下被授权的菜单清单

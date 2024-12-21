@@ -25,7 +25,7 @@
 package central.studio.provider.graphql.storage.dto;
 
 import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.storage.entity.StorageObjectEntity;
+import central.studio.provider.database.persistence.storage.entity.StorageObjectEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;

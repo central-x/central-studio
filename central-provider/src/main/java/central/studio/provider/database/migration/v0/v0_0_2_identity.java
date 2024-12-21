@@ -66,7 +66,7 @@ public class v0_0_2_identity extends Migration {
             // 策略
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("TYPE", SqlType.STRING, 32, "类型"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),

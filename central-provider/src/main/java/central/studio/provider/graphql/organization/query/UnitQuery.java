@@ -26,14 +26,14 @@ package central.studio.provider.graphql.organization.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.dto.UnitDTO;
-import central.studio.provider.graphql.organization.entity.UnitEntity;
-import central.studio.provider.graphql.organization.mapper.UnitMapper;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.organization.dto.UnitDTO;
+import central.studio.provider.database.persistence.organization.UnitPersistence;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -57,8 +58,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "organization/query", types = UnitDTO.class)
 public class UnitQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private UnitMapper mapper;
+    private UnitPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -69,10 +71,9 @@ public class UnitQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, UnitDTO> batchLoader(@RequestParam List<String> ids,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(UnitEntity.class).in(UnitEntity::getId, ids).eq(UnitEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, UnitDTO.class))
-                .collect(Collectors.toMap(UnitDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, UnitDTO.class).stream()
+                .collect(Collectors.toMap(UnitDTO::getId, Function.identity()));
     }
 
     /**
@@ -84,8 +85,8 @@ public class UnitQuery {
     @GraphQLFetcher
     public @Nullable UnitDTO findById(@RequestParam String id,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getId, id).eq(UnitEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, UnitDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, UnitDTO.class);
     }
 
 
@@ -98,9 +99,8 @@ public class UnitQuery {
     @GraphQLFetcher
     public @Nonnull List<UnitDTO> findByIds(@RequestParam List<String> ids,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(UnitEntity.class).in(UnitEntity::getId, ids).eq(UnitEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, UnitDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, UnitDTO.class);
     }
 
     /**
@@ -115,12 +115,11 @@ public class UnitQuery {
     @GraphQLFetcher
     public @Nonnull List<UnitDTO> findBy(@RequestParam(required = false) Long limit,
                                          @RequestParam(required = false) Long offset,
-                                         @RequestParam Conditions<UnitEntity> conditions,
-                                         @RequestParam Orders<UnitEntity> orders,
+                                         @RequestParam Conditions<UnitDTO> conditions,
+                                         @RequestParam Orders<UnitDTO> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, UnitDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, UnitDTO.class);
     }
 
     /**
@@ -135,12 +134,11 @@ public class UnitQuery {
     @GraphQLFetcher
     public @Nonnull Page<UnitDTO> pageBy(@RequestParam long pageIndex,
                                          @RequestParam long pageSize,
-                                         @RequestParam Conditions<UnitEntity> conditions,
-                                         @RequestParam Orders<UnitEntity> orders,
+                                         @RequestParam Conditions<UnitDTO> conditions,
+                                         @RequestParam Orders<UnitDTO> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, UnitDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, UnitDTO.class);
     }
 
     /**
@@ -150,9 +148,8 @@ public class UnitQuery {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public Long countBy(@RequestParam Conditions<UnitEntity> conditions,
+    public Long countBy(@RequestParam Conditions<UnitDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

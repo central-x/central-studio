@@ -24,17 +24,17 @@
 
 package central.studio.provider.graphql.saas.query;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
 import central.lang.Assertx;
-import central.studio.provider.graphql.saas.dto.TenantApplicationDTO;
-import central.studio.provider.graphql.saas.entity.TenantApplicationEntity;
-import central.studio.provider.graphql.saas.mapper.TenantApplicationMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.saas.TenantApplicationPersistence;
+import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
+import central.studio.provider.graphql.saas.dto.TenantApplicationDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -59,8 +60,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "saas/query", types = TenantApplicationDTO.class)
 public class TenantApplicationQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private TenantApplicationMapper mapper;
+    private TenantApplicationPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -72,10 +74,9 @@ public class TenantApplicationQuery {
     public @Nonnull Map<String, TenantApplicationDTO> batchLoader(@RequestParam List<String> ids,
                                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return this.mapper.findByIds(ids)
-                .stream()
-                .map(it -> DTO.wrap(it, TenantApplicationDTO.class))
-                .collect(Collectors.toMap(TenantApplicationDTO::getId, it -> it));
+
+        var data = this.persistence.findByIds(ids);
+        return DTO.wrap(data, TenantApplicationDTO.class).stream().collect(Collectors.toMap(TenantApplicationDTO::getId, Function.identity()));
     }
 
     /**
@@ -88,8 +89,9 @@ public class TenantApplicationQuery {
     public @Nullable TenantApplicationDTO findById(@RequestParam String id,
                                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entity = this.mapper.findById(id);
-        return DTO.wrap(entity, TenantApplicationDTO.class);
+
+        var data = this.persistence.findById(id);
+        return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
 
@@ -103,8 +105,9 @@ public class TenantApplicationQuery {
     public @Nonnull List<TenantApplicationDTO> findByIds(@RequestParam List<String> ids,
                                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entities = this.mapper.findByIds(ids);
-        return DTO.wrap(entities, TenantApplicationDTO.class);
+
+        var data = this.persistence.findByIds(ids);
+        return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
     /**
@@ -123,8 +126,9 @@ public class TenantApplicationQuery {
                                                       @RequestParam Orders<TenantApplicationEntity> orders,
                                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, TenantApplicationDTO.class);
+
+        var data = this.persistence.findBy(limit, offset, conditions, orders);
+        return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
     /**
@@ -143,8 +147,9 @@ public class TenantApplicationQuery {
                                                       @RequestParam Orders<TenantApplicationEntity> orders,
                                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, TenantApplicationDTO.class);
+
+        var data = this.persistence.findPageBy(pageIndex, pageSize, conditions, orders);
+        return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
     /**
@@ -157,6 +162,7 @@ public class TenantApplicationQuery {
     public Long countBy(@RequestParam Conditions<TenantApplicationEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return this.mapper.countBy(conditions);
+
+        return this.persistence.countBy(conditions);
     }
 }

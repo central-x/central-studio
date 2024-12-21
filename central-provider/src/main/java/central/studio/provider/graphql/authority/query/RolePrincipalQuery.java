@@ -25,6 +25,7 @@
 package central.studio.provider.graphql.authority.query;
 
 import central.bean.Page;
+import central.provider.graphql.DTO;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -32,7 +33,7 @@ import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.authority.dto.RolePrincipalDTO;
-import central.studio.provider.graphql.authority.service.RolePrincipalService;
+import central.studio.provider.database.persistence.authority.RolePrincipalPersistence;
 import central.web.XForwardedHeaders;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
@@ -63,7 +64,7 @@ import java.util.stream.Collectors;
 public class RolePrincipalQuery {
 
     @Setter(onMethod_ = @Autowired)
-    private RolePrincipalService service;
+    private RolePrincipalPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -74,15 +75,16 @@ public class RolePrincipalQuery {
      */
     @GraphQLBatchLoader
     public @Nonnull Map<String, RolePrincipalDTO> batchLoader(BatchLoaderEnvironment environment,
-                                                               @RequestParam List<String> ids,
-                                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                              @RequestParam List<String> ids,
+                                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var fields = environment.getKeyContextsList().stream().filter(it -> it instanceof DataFetchingEnvironment)
                 .map(it -> (DataFetchingEnvironment) it)
                 .flatMap(it -> it.getSelectionSet().getFields().stream())
                 .map(SelectedField::getName).distinct().toArray(String[]::new);
 
-        return this.service.findByIds(ids, Columns.of(RolePrincipalDTO.class, fields), tenant)
-                .stream().collect(Collectors.toMap(RolePrincipalDTO::getId, Function.identity()));
+        var data = this.persistence.findByIds(ids, Columns.of(RolePrincipalDTO.class, fields), tenant);
+        return DTO.wrap(data, RolePrincipalDTO.class).stream()
+                .collect(Collectors.toMap(RolePrincipalDTO::getId, Function.identity()));
     }
 
     /**
@@ -94,13 +96,14 @@ public class RolePrincipalQuery {
      */
     @GraphQLFetcher
     public @Nullable RolePrincipalDTO findById(DataFetchingEnvironment environment,
-                                                @RequestParam String id,
-                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                               @RequestParam String id,
+                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var columns = Columns.of(RolePrincipalDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "findById".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findById(id, columns, tenant);
+        var data = this.persistence.findById(id, columns, tenant);
+        return DTO.wrap(data, RolePrincipalDTO.class);
     }
 
 
@@ -113,13 +116,14 @@ public class RolePrincipalQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<RolePrincipalDTO> findByIds(DataFetchingEnvironment environment,
-                                                      @RequestParam List<String> ids,
-                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                     @RequestParam List<String> ids,
+                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var columns = Columns.of(RolePrincipalDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "findByIds".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findByIds(ids, columns, tenant);
+        var data = this.persistence.findByIds(ids, columns, tenant);
+        return DTO.wrap(data, RolePrincipalDTO.class);
     }
 
     /**
@@ -134,16 +138,17 @@ public class RolePrincipalQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<RolePrincipalDTO> findBy(DataFetchingEnvironment environment,
-                                                   @RequestParam(required = false) Long limit,
-                                                   @RequestParam(required = false) Long offset,
-                                                   @RequestParam Conditions<RolePrincipalDTO> conditions,
-                                                   @RequestParam Orders<RolePrincipalDTO> orders,
-                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                  @RequestParam(required = false) Long limit,
+                                                  @RequestParam(required = false) Long offset,
+                                                  @RequestParam Conditions<RolePrincipalDTO> conditions,
+                                                  @RequestParam Orders<RolePrincipalDTO> orders,
+                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var columns = Columns.of(RolePrincipalDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "findBy".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.findBy(limit, offset, columns, conditions, orders, tenant);
+        var data = this.persistence.findBy(limit, offset, columns, conditions, orders, tenant);
+        return DTO.wrap(data, RolePrincipalDTO.class);
     }
 
     /**
@@ -158,17 +163,18 @@ public class RolePrincipalQuery {
      */
     @GraphQLFetcher
     public @Nonnull Page<RolePrincipalDTO> pageBy(DataFetchingEnvironment environment,
-                                                   @RequestParam long pageIndex,
-                                                   @RequestParam long pageSize,
-                                                   @RequestParam Conditions<RolePrincipalDTO> conditions,
-                                                   @RequestParam Orders<RolePrincipalDTO> orders,
-                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+                                                  @RequestParam long pageIndex,
+                                                  @RequestParam long pageSize,
+                                                  @RequestParam Conditions<RolePrincipalDTO> conditions,
+                                                  @RequestParam Orders<RolePrincipalDTO> orders,
+                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
 
         var columns = Columns.of(RolePrincipalDTO.class, environment.getSelectionSet().getFields().stream()
                 .filter(it -> "Page.data".equals(it.getParentField().getName()))
                 .map(SelectedField::getName).toList().toArray(new String[0]));
 
-        return this.service.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        var data = this.persistence.pageBy(pageIndex, pageSize, columns, conditions, orders, tenant);
+        return DTO.wrap(data, RolePrincipalDTO.class);
     }
 
     /**
@@ -180,6 +186,6 @@ public class RolePrincipalQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<RolePrincipalDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.service.countBy(conditions, tenant);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

@@ -24,8 +24,8 @@
 
 package central.studio.provider.database.migration.v0;
 
-import central.studio.provider.graphql.storage.entity.StorageBucketEntity;
-import central.studio.provider.graphql.storage.mapper.StorageBucketMapper;
+import central.studio.provider.database.persistence.storage.entity.StorageBucketEntity;
+import central.studio.provider.database.persistence.storage.mapper.StorageBucketMapper;
 import central.sql.SqlExecutor;
 import central.sql.SqlType;
 import central.sql.datasource.migration.*;
@@ -54,7 +54,7 @@ public class v0_0_4_storage extends Migration {
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
                     Column.of("APPLICATION_ID", SqlType.STRING, 32, "应用主键"),
-                    Column.of("CODE", SqlType.STRING, 32, "标识"),
+                    Column.of("CODE", SqlType.STRING, 128, "标识"),
                     Column.of("NAME", SqlType.STRING, 50, "名称"),
                     Column.of("TYPE", SqlType.STRING, 32, "类型"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),

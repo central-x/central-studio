@@ -25,14 +25,13 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.entity.DepartmentEntity;
-import central.studio.provider.graphql.organization.entity.UnitEntity;
-import central.studio.provider.graphql.organization.query.DepartmentQuery;
-import central.studio.provider.graphql.organization.query.UnitQuery;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.organization.entity.UnitEntity;
+import central.studio.provider.graphql.organization.query.DepartmentQuery;
+import central.studio.provider.graphql.organization.query.UnitQuery;
 import central.web.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
@@ -77,7 +76,7 @@ public class UnitDTO extends UnitEntity implements DTO {
     @GraphQLGetter
     public List<UnitDTO> getChildren(@Autowired UnitQuery query,
                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return query.findBy(null, null, Conditions.of(UnitEntity.class).eq(UnitEntity::getParentId, this.getId()), Orders.of(UnitEntity.class).asc(UnitEntity::getOrder).asc(UnitEntity::getCode), tenant);
+        return query.findBy(null, null, Conditions.of(UnitDTO.class).eq(UnitDTO::getParentId, this.getId()), Orders.of(UnitDTO.class).asc(UnitDTO::getOrder).asc(UnitDTO::getCode), tenant);
     }
 
     /**
@@ -86,7 +85,7 @@ public class UnitDTO extends UnitEntity implements DTO {
     @GraphQLGetter
     public List<DepartmentDTO> getDepartments(@Autowired DepartmentQuery query,
                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return query.findBy(null, null, Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getUnitId, this.getId()), Orders.of(DepartmentEntity.class).asc(DepartmentEntity::getOrder).asc(DepartmentEntity::getCode), tenant);
+        return query.findBy(null, null, Conditions.of(DepartmentDTO.class).eq(DepartmentDTO::getUnitId, this.getId()), Orders.of(DepartmentDTO.class).asc(DepartmentDTO::getOrder).asc(DepartmentDTO::getCode), tenant);
     }
 
     /**

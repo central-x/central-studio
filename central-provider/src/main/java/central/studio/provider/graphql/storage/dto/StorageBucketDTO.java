@@ -26,7 +26,7 @@ package central.studio.provider.graphql.storage.dto;
 
 import central.data.saas.Application;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.storage.entity.StorageBucketEntity;
+import central.studio.provider.database.persistence.storage.entity.StorageBucketEntity;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;

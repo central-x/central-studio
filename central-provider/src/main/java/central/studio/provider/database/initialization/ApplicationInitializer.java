@@ -30,10 +30,11 @@ import central.data.authority.PermissionInput;
 import central.io.IOStreamx;
 import central.lang.reflect.TypeRef;
 import central.sql.SqlExecutor;
-import central.studio.provider.graphql.authority.entity.MenuEntity;
-import central.studio.provider.graphql.authority.entity.PermissionEntity;
-import central.studio.provider.graphql.authority.mapper.MenuMapper;
-import central.studio.provider.graphql.authority.mapper.PermissionMapper;
+import central.studio.provider.database.persistence.authority.entity.MenuEntity;
+import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
+import central.studio.provider.database.persistence.authority.mapper.MenuMapper;
+import central.studio.provider.database.persistence.authority.mapper.PermissionMapper;
+import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import central.util.Guidx;
 import central.util.Jsonx;
 import central.util.Listx;
@@ -61,23 +62,24 @@ import java.util.Map;
  */
 @RequiredArgsConstructor
 public class ApplicationInitializer {
+
     private final SqlExecutor executor;
 
     /**
      * 初始化
      *
-     * @param tenant        租户标识
-     * @param applicationId 应用主键
+     * @param tenant      租户标识
+     * @param application 应用
      */
-    public void initialize(String tenant, String applicationId) {
+    public void initialize(String tenant, ApplicationEntity application) {
         // 初始化菜单数据
-        this.initMenus(tenant, applicationId);
+        this.initMenus(tenant, application);
     }
 
     /**
      * 初始化菜单
      */
-    private void initMenus(String tenant, String applicationId) {
+    private void initMenus(String tenant, ApplicationEntity application) {
         var menuMapper = executor.getMapper(MenuMapper.class);
         var permissionMapper = executor.getMapper(PermissionMapper.class);
 
@@ -96,7 +98,7 @@ public class ApplicationInitializer {
             }
 
             // 将菜单配置变成菜单输入，并保存到数据
-            var inputs = buildInput(applicationId, "", configs);
+            var inputs = buildInput(application, "", configs);
 
             var menus = inputs.stream().map(input -> {
                 var entity = new MenuEntity();
@@ -128,20 +130,21 @@ public class ApplicationInitializer {
     /**
      * 构建菜单输入
      *
-     * @param applicationId 应用
-     * @param parentId      父菜单
-     * @param configs       菜单配置
+     * @param application 应用
+     * @param parentId    父菜单
+     * @param configs     菜单配置
      */
-    private List<MenuInput> buildInput(@Nonnull String applicationId, @Nullable String parentId, @Nonnull List<MenuConfig> configs) {
+    private List<MenuInput> buildInput(@Nonnull ApplicationEntity application, @Nullable String parentId, @Nonnull List<MenuConfig> configs) {
         var result = new ArrayList<MenuInput>();
 
         for (var config : configs) {
             // 解析菜单配置
             var menu = MenuInput.builder()
                     .id(Guidx.nextID())
-                    .applicationId(applicationId)
+                    .applicationId(application.getId())
                     .parentId(parentId)
-                    .code(config.getCode())
+                    // 菜单标识加上应用标识前缀
+                    .code(application.getCode() + ":" + config.getCode())
                     .name(config.getName())
                     .icon(config.getIcon())
                     .url(config.getUrl())
@@ -156,9 +159,10 @@ public class ApplicationInitializer {
                 for (var entry : config.getPermissions().entrySet()) {
                     var permission = PermissionInput.builder()
                             .id(Guidx.nextID())
-                            .applicationId(applicationId)
+                            .applicationId(application.getId())
                             .menuId(menu.getId())
-                            .code(entry.getKey())
+                            // 权限标识加上应用标识前缀
+                            .code(application.getCode() + ":" + entry.getKey())
                             .name(entry.getValue())
                             .build();
                     menu.getPermissions().add(permission);
@@ -166,7 +170,7 @@ public class ApplicationInitializer {
             }
 
             if (Listx.isNotEmpty(config.getChildren())) {
-                var children = this.buildInput(applicationId, menu.getId(), config.getChildren());
+                var children = this.buildInput(application, menu.getId(), config.getChildren());
                 result.addAll(children);
             }
 

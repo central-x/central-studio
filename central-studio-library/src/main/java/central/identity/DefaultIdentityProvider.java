@@ -24,9 +24,11 @@
 
 package central.identity;
 
+import central.data.authority.Permission;
 import central.lang.Stringx;
 import central.identity.client.Session;
 import central.identity.client.SessionClient;
+import central.provider.graphql.authority.AuthorizationProvider;
 import central.starter.identity.IdentityProvider;
 import central.util.CachedSupplier;
 import central.util.Objectx;
@@ -138,6 +140,9 @@ public class DefaultIdentityProvider implements IdentityProvider {
         }
     }
 
+    @Setter
+    private AuthorizationProvider provider;
+
     /**
      * 获取授权信息
      *
@@ -148,8 +153,9 @@ public class DefaultIdentityProvider implements IdentityProvider {
     public void onReceiveAuthorizationInfo(String token, SimpleAuthorizationInfo authorizationInfo) {
         var session = Session.of(token);
 
-        // TODO 暂末实现
-
+        var permissions = provider.findPermissions(session.getAccountId(), null, session.getTenantCode());
+        // 添加权限
+        authorizationInfo.addStringPermissions(permissions.stream().map(Permission::getCode).toList());
     }
 
     /**

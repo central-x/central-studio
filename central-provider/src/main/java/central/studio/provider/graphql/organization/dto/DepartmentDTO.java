@@ -25,7 +25,7 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.entity.DepartmentEntity;
+import central.studio.provider.database.persistence.organization.entity.DepartmentEntity;
 import central.studio.provider.graphql.organization.query.DepartmentQuery;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -75,7 +75,7 @@ public class DepartmentDTO extends DepartmentEntity implements DTO {
     @GraphQLGetter
     public List<DepartmentDTO> getChildren(@Autowired DepartmentQuery query,
                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return query.findBy(null, null, Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getParentId, this.getId()), Orders.of(DepartmentEntity.class).asc(DepartmentEntity::getOrder).asc(DepartmentEntity::getCode), tenant);
+        return query.findBy(null, null, Conditions.of(DepartmentDTO.class).eq(DepartmentDTO::getParentId, this.getId()), Orders.of(DepartmentDTO.class).asc(DepartmentDTO::getOrder).asc(DepartmentDTO::getCode), tenant);
     }
 
     /**

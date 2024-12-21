@@ -24,7 +24,7 @@
 
 package central.studio.provider.graphql.log.dto;
 
-import central.studio.provider.graphql.log.entity.LogCollectorEntity;
+import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;

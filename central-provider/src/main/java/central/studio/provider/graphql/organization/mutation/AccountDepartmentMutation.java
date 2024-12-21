@@ -24,17 +24,15 @@
 
 package central.studio.provider.graphql.organization.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.organization.AccountDepartmentInput;
-import central.studio.provider.graphql.organization.dto.AccountDepartmentDTO;
-import central.studio.provider.graphql.organization.entity.AccountDepartmentEntity;
-import central.studio.provider.graphql.organization.mapper.AccountDepartmentMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.web.XForwardedHeaders;
-import central.util.Listx;
+import central.studio.provider.graphql.organization.dto.AccountDepartmentDTO;
+import central.studio.provider.database.persistence.organization.AccountDepartmentPersistence;
 import central.validation.group.Insert;
+import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
@@ -48,6 +46,7 @@ import java.util.List;
 
 /**
  * AccountDepartment Mutation
+ * <p>
  * 帐户部门关联关系修改
  *
  * @author Alan Yeh
@@ -58,7 +57,7 @@ import java.util.List;
 public class AccountDepartmentMutation {
 
     @Setter(onMethod_ = @Autowired)
-    private AccountDepartmentMapper mapper;
+    private AccountDepartmentPersistence persistence;
 
     /**
      * 保存数据
@@ -71,12 +70,7 @@ public class AccountDepartmentMutation {
     public @Nonnull AccountDepartmentDTO insert(@RequestParam @Validated({Insert.class, Default.class}) AccountDepartmentInput input,
                                                 @RequestParam String operator,
                                                 @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = new AccountDepartmentEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
+        var entity = this.persistence.insert(input, operator, tenant);
         return DTO.wrap(entity, AccountDepartmentDTO.class);
     }
 
@@ -91,7 +85,8 @@ public class AccountDepartmentMutation {
     public @Nonnull List<AccountDepartmentDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<AccountDepartmentInput> inputs,
                                                            @RequestParam String operator,
                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var entities = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(entities, AccountDepartmentDTO.class);
     }
 
     /**
@@ -103,11 +98,7 @@ public class AccountDepartmentMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getId, ids).eq(AccountDepartmentEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -117,9 +108,8 @@ public class AccountDepartmentMutation {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public long deleteBy(@RequestParam Conditions<AccountDepartmentEntity> conditions,
+    public long deleteBy(@RequestParam Conditions<AccountDepartmentDTO> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AccountDepartmentEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }
