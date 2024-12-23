@@ -26,15 +26,14 @@ package central.studio.provider.graphql.identity.mutation;
 
 import central.data.identity.IdentityPasswordInput;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.identity.dto.IdentityPasswordDTO;
-import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
-import central.studio.provider.database.persistence.identity.mapper.IdentityPasswordMapper;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.web.XForwardedHeaders;
-import central.util.Listx;
+import central.studio.provider.database.persistence.identity.IdentityPasswordPersistence;
+import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
+import central.studio.provider.graphql.identity.dto.IdentityPasswordDTO;
 import central.validation.group.Insert;
+import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
@@ -57,8 +56,9 @@ import java.util.List;
 @Component
 @GraphQLSchema(path = "identity/mutation", types = IdentityPasswordDTO.class)
 public class IdentityPasswordMutation {
+
     @Setter(onMethod_ = @Autowired)
-    private IdentityPasswordMapper mapper;
+    private IdentityPasswordPersistence persistence;
 
     /**
      * 保存数据
@@ -71,13 +71,8 @@ public class IdentityPasswordMutation {
     public @Nonnull IdentityPasswordDTO insert(@RequestParam @Validated({Insert.class, Default.class}) IdentityPasswordInput input,
                                                @RequestParam String operator,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = new IdentityPasswordEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, IdentityPasswordDTO.class);
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
     /**
@@ -91,7 +86,8 @@ public class IdentityPasswordMutation {
     public @Nonnull List<IdentityPasswordDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<IdentityPasswordInput> inputs,
                                                           @RequestParam String operator,
                                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
     /**
@@ -103,11 +99,7 @@ public class IdentityPasswordMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(IdentityPasswordEntity.class).in(IdentityPasswordEntity::getId, ids).eq(IdentityPasswordEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -119,7 +111,6 @@ public class IdentityPasswordMutation {
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<IdentityPasswordEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(IdentityPasswordEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }

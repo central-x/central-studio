@@ -25,16 +25,18 @@
 package central.studio.provider.graphql.identity.query;
 
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
-import central.studio.provider.graphql.identity.dto.IdentityStrategyDTO;
-import central.studio.provider.database.persistence.identity.entity.IdentityStrategyEntity;
-import central.studio.provider.database.persistence.identity.mapper.IdentityStrategyMapper;
+import central.provider.graphql.DTO;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.identity.IdentityStrategyPersistence;
+import central.studio.provider.database.persistence.identity.entity.IdentityStrategyEntity;
+import central.studio.provider.graphql.identity.dto.IdentityStrategyDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -46,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -59,8 +62,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "identity/query", types = IdentityStrategyDTO.class)
 public class IdentityStrategyQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private IdentityStrategyMapper mapper;
+    private IdentityStrategyPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -71,10 +75,9 @@ public class IdentityStrategyQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, IdentityStrategyDTO> batchLoader(@RequestParam List<String> ids,
                                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(IdentityStrategyEntity.class).in(IdentityStrategyEntity::getId, ids).eq(IdentityStrategyEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, IdentityStrategyDTO.class))
-                .collect(Collectors.toMap(IdentityStrategyDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, IdentityStrategyDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -86,8 +89,8 @@ public class IdentityStrategyQuery {
     @GraphQLFetcher
     public @Nullable IdentityStrategyDTO findById(@RequestParam String id,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(IdentityStrategyEntity.class).eq(IdentityStrategyEntity::getId, id).eq(IdentityStrategyEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, IdentityStrategyDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
 
@@ -100,9 +103,8 @@ public class IdentityStrategyQuery {
     @GraphQLFetcher
     public @Nonnull List<IdentityStrategyDTO> findByIds(@RequestParam List<String> ids,
                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(IdentityStrategyEntity.class).in(IdentityStrategyEntity::getId, ids).eq(IdentityStrategyEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, IdentityStrategyDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
     /**
@@ -120,9 +122,8 @@ public class IdentityStrategyQuery {
                                                      @RequestParam Conditions<IdentityStrategyEntity> conditions,
                                                      @RequestParam Orders<IdentityStrategyEntity> orders,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(IdentityStrategyEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, IdentityStrategyDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
     /**
@@ -140,9 +141,8 @@ public class IdentityStrategyQuery {
                                                      @RequestParam Conditions<IdentityStrategyEntity> conditions,
                                                      @RequestParam Orders<IdentityStrategyEntity> orders,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(IdentityStrategyEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, IdentityStrategyDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
     /**
@@ -154,7 +154,6 @@ public class IdentityStrategyQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<IdentityStrategyEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(IdentityStrategyEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

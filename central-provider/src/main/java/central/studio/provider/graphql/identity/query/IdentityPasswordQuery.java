@@ -24,18 +24,18 @@
 
 package central.studio.provider.graphql.identity.query;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.identity.dto.IdentityPasswordDTO;
-import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
-import central.studio.provider.database.persistence.identity.mapper.IdentityPasswordMapper;
-import central.security.Passwordx;
+import central.provider.graphql.DTO;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.identity.IdentityPasswordPersistence;
+import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
+import central.studio.provider.graphql.identity.dto.IdentityPasswordDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -61,21 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "identity/query", types = IdentityPasswordDTO.class)
 public class IdentityPasswordQuery {
-    @Setter(onMethod_ = @Autowired)
-    private IdentityPasswordMapper mapper;
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
-
-    private IdentityPasswordDTO getSupervisorPassword(String tenant) {
-        var password = new IdentityPasswordEntity();
-        password.setId(properties.getSupervisor().getUsername());
-        password.setAccountId(properties.getSupervisor().getUsername());
-        password.setValue(Passwordx.encrypt(Passwordx.digest(properties.getSupervisor().getPassword())));
-        password.setTenantCode(tenant);
-        password.updateCreator(properties.getSupervisor().getUsername());
-        return DTO.wrap(password, IdentityPasswordDTO.class);
-    }
+    private IdentityPasswordPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -86,14 +74,9 @@ public class IdentityPasswordQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, IdentityPasswordDTO> batchLoader(@RequestParam List<String> ids,
                                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var result = this.mapper.findBy(Conditions.of(IdentityPasswordEntity.class).in(IdentityPasswordEntity::getId, ids).eq(IdentityPasswordEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, IdentityPasswordDTO.class))
-                .collect(Collectors.toMap(IdentityPasswordDTO::getId, it -> it));
-        if (ids.contains(properties.getSupervisor().getUsername())) {
-            result.put(properties.getSupervisor().getUsername(), getSupervisorPassword(tenant));
-        }
-        return result;
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, IdentityPasswordDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -105,12 +88,8 @@ public class IdentityPasswordQuery {
     @GraphQLFetcher
     public @Nullable IdentityPasswordDTO findById(@RequestParam String id,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Objects.equals(properties.getSupervisor().getUsername(), id)) {
-            return getSupervisorPassword(tenant);
-        } else {
-            var entity = this.mapper.findFirstBy(Conditions.of(IdentityPasswordEntity.class).eq(IdentityPasswordEntity::getId, id).eq(IdentityPasswordEntity::getTenantCode, tenant));
-            return DTO.wrap(entity, IdentityPasswordDTO.class);
-        }
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
 
@@ -123,9 +102,8 @@ public class IdentityPasswordQuery {
     @GraphQLFetcher
     public @Nonnull List<IdentityPasswordDTO> findByIds(@RequestParam List<String> ids,
                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(IdentityPasswordEntity.class).in(IdentityPasswordEntity::getId, ids).eq(IdentityPasswordEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, IdentityPasswordDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
     /**
@@ -143,9 +121,8 @@ public class IdentityPasswordQuery {
                                                      @RequestParam Conditions<IdentityPasswordEntity> conditions,
                                                      @RequestParam Orders<IdentityPasswordEntity> orders,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(IdentityPasswordEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, IdentityPasswordDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
     /**
@@ -163,9 +140,8 @@ public class IdentityPasswordQuery {
                                                      @RequestParam Conditions<IdentityPasswordEntity> conditions,
                                                      @RequestParam Orders<IdentityPasswordEntity> orders,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(IdentityPasswordEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, IdentityPasswordDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
     /**
@@ -177,7 +153,6 @@ public class IdentityPasswordQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<IdentityPasswordEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(IdentityPasswordEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }
