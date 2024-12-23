@@ -26,14 +26,16 @@ package central.studio.provider.graphql.gateway.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.gateway.dto.GatewayFilterDTO;
-import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
-import central.studio.provider.database.persistence.gateway.mapper.GatewayFilterMapper;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.gateway.GatewayFilterPersistence;
+import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
+import central.studio.provider.graphql.gateway.dto.GatewayFilterDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -45,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -58,8 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "gateway/query", types = GatewayFilterDTO.class)
 public class GatewayFilterQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private GatewayFilterMapper mapper;
+    private GatewayFilterPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -70,10 +74,9 @@ public class GatewayFilterQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, GatewayFilterDTO> batchLoader(@RequestParam List<String> ids,
                                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(GatewayFilterEntity.class).in(GatewayFilterEntity::getId, ids).eq(GatewayFilterEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, GatewayFilterDTO.class))
-                .collect(Collectors.toMap(GatewayFilterDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -85,8 +88,8 @@ public class GatewayFilterQuery {
     @GraphQLFetcher
     public @Nullable GatewayFilterDTO findById(@RequestParam String id,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getId, id).eq(GatewayFilterEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, GatewayFilterDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
 
@@ -98,10 +101,9 @@ public class GatewayFilterQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<GatewayFilterDTO> findByIds(@RequestParam List<String> ids,
-                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(GatewayFilterEntity.class).in(GatewayFilterEntity::getId, ids).eq(GatewayFilterEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, GatewayFilterDTO.class);
+                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
     /**
@@ -115,13 +117,12 @@ public class GatewayFilterQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<GatewayFilterDTO> findBy(@RequestParam(required = false) Long limit,
-                                                         @RequestParam(required = false) Long offset,
-                                                         @RequestParam Conditions<GatewayFilterEntity> conditions,
-                                                         @RequestParam Orders<GatewayFilterEntity> orders,
-                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(GatewayFilterEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, GatewayFilterDTO.class);
+                                                  @RequestParam(required = false) Long offset,
+                                                  @RequestParam Conditions<GatewayFilterEntity> conditions,
+                                                  @RequestParam Orders<GatewayFilterEntity> orders,
+                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
     /**
@@ -135,13 +136,12 @@ public class GatewayFilterQuery {
      */
     @GraphQLFetcher
     public @Nonnull Page<GatewayFilterDTO> pageBy(@RequestParam long pageIndex,
-                                                         @RequestParam long pageSize,
-                                                         @RequestParam Conditions<GatewayFilterEntity> conditions,
-                                                         @RequestParam Orders<GatewayFilterEntity> orders,
-                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(GatewayFilterEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, GatewayFilterDTO.class);
+                                                  @RequestParam long pageSize,
+                                                  @RequestParam Conditions<GatewayFilterEntity> conditions,
+                                                  @RequestParam Orders<GatewayFilterEntity> orders,
+                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
     /**
@@ -153,7 +153,6 @@ public class GatewayFilterQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<GatewayFilterEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(GatewayFilterEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

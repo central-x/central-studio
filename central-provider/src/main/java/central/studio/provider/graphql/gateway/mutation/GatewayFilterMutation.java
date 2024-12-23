@@ -24,16 +24,14 @@
 
 package central.studio.provider.graphql.gateway.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.gateway.GatewayFilterInput;
-import central.lang.Stringx;
-import central.studio.provider.graphql.gateway.dto.GatewayFilterDTO;
-import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
-import central.studio.provider.database.persistence.gateway.mapper.GatewayFilterMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.util.Listx;
+import central.studio.provider.database.persistence.gateway.GatewayFilterPersistence;
+import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
+import central.studio.provider.graphql.gateway.dto.GatewayFilterDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -41,12 +39,10 @@ import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -61,8 +57,9 @@ import java.util.List;
 @Component
 @GraphQLSchema(path = "gateway/mutation", types = GatewayFilterDTO.class)
 public class GatewayFilterMutation {
+
     @Setter(onMethod_ = @Autowired)
-    private GatewayFilterMapper mapper;
+    private GatewayFilterPersistence persistence;
 
     /**
      * 保存数据
@@ -75,13 +72,8 @@ public class GatewayFilterMutation {
     public @Nonnull GatewayFilterDTO insert(@RequestParam @Validated({Insert.class, Default.class}) GatewayFilterInput input,
                                             @RequestParam String operator,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = new GatewayFilterEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, GatewayFilterDTO.class);
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
     /**
@@ -95,7 +87,8 @@ public class GatewayFilterMutation {
     public @Nonnull List<GatewayFilterDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<GatewayFilterInput> inputs,
                                                        @RequestParam String operator,
                                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
     /**
@@ -109,17 +102,8 @@ public class GatewayFilterMutation {
     public @Nonnull GatewayFilterDTO update(@RequestParam @Validated({Update.class, Default.class}) GatewayFilterInput input,
                                             @RequestParam String operator,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getId, input.getId()).eq(GatewayFilterEntity::getTenantCode, tenant));
-        if (entity == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
-        }
-
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateModifier(operator);
-        this.mapper.update(entity);
-
-        return DTO.wrap(entity, GatewayFilterDTO.class);
+        var data = this.persistence.update(input, operator, tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
     /**
@@ -133,7 +117,8 @@ public class GatewayFilterMutation {
     public @Nonnull List<GatewayFilterDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<GatewayFilterInput> inputs,
                                                        @RequestParam String operator,
                                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
+        var data = this.persistence.updateBatch(inputs, operator, tenant);
+        return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
     /**
@@ -145,11 +130,7 @@ public class GatewayFilterMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(GatewayFilterEntity.class).in(GatewayFilterEntity::getId, ids).eq(GatewayFilterEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -161,12 +142,6 @@ public class GatewayFilterMutation {
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<GatewayFilterEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-
-        var entities = this.mapper.findBy(Conditions.group(conditions).eq(GatewayFilterEntity::getTenantCode, tenant));
-        if (entities.isEmpty()) {
-            return 0L;
-        }
-
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }
