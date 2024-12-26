@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.organization;
 import central.bean.Page;
 import central.data.organization.AccountInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -332,19 +333,8 @@ public class AccountPersistence {
     public long deleteBy(@Nonnull Conditions<? extends AccountEntity> conditions, @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
 
-        var entities = this.mapper.findBy(Columns.of(AccountEntity::getId), conditions);
-        if (entities.isEmpty()) {
-            return 0L;
-        }
-
-        var ids = entities.stream().map(AccountEntity::getId).toList();
-
-        var effected = this.mapper.deleteByIds(ids);
-
-        // 级联删除
-        accountUnitPersistence.deleteBy(Conditions.of(AccountUnitEntity.class).in(AccountUnitEntity::getAccountId, ids), tenant);
-        accountDepartmentPersistence.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getAccountId, ids), tenant);
-
-        return effected;
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), conditions).stream()
+                .map(Entity::getId).toList();
+        return this.deleteByIds(ids, tenant);
     }
 }

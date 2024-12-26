@@ -27,14 +27,16 @@ package central.studio.provider.graphql.log.query;
 import central.bean.Page;
 import central.lang.Assertx;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.log.dto.LogCollectorDTO;
-import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
-import central.studio.provider.database.persistence.log.mapper.LogCollectorMapper;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.log.LogCollectorPersistence;
+import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
+import central.studio.provider.graphql.log.dto.LogCollectorDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -46,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -59,8 +62,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "log/query", types = LogCollectorDTO.class)
 public class LogCollectorQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private LogCollectorMapper mapper;
+    private LogCollectorPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -72,10 +76,10 @@ public class LogCollectorQuery {
     public @Nonnull Map<String, LogCollectorDTO> batchLoader(@RequestParam List<String> ids,
                                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return this.mapper.findByIds(ids)
-                .stream()
-                .map(it -> DTO.wrap(it, LogCollectorDTO.class))
-                .collect(Collectors.toMap(LogCollectorDTO::getId, it -> it));
+
+        var data = this.persistence.findByIds(ids, Columns.all());
+        return DTO.wrap(data, LogCollectorDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -88,8 +92,9 @@ public class LogCollectorQuery {
     public @Nullable LogCollectorDTO findById(@RequestParam String id,
                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entity = this.mapper.findById(id);
-        return DTO.wrap(entity, LogCollectorDTO.class);
+
+        var data = this.persistence.findById(id, Columns.all());
+        return DTO.wrap(data, LogCollectorDTO.class);
     }
 
 
@@ -103,9 +108,9 @@ public class LogCollectorQuery {
     public @Nonnull List<LogCollectorDTO> findByIds(@RequestParam List<String> ids,
                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var entities = this.mapper.findByIds(ids);
 
-        return DTO.wrap(entities, LogCollectorDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all());
+        return DTO.wrap(data, LogCollectorDTO.class);
     }
 
     /**
@@ -124,8 +129,9 @@ public class LogCollectorQuery {
                                                  @RequestParam Orders<LogCollectorEntity> orders,
                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, LogCollectorDTO.class);
+
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders);
+        return DTO.wrap(data, LogCollectorDTO.class);
     }
 
     /**
@@ -144,8 +150,9 @@ public class LogCollectorQuery {
                                                  @RequestParam Orders<LogCollectorEntity> orders,
                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, LogCollectorDTO.class);
+
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders);
+        return DTO.wrap(data, LogCollectorDTO.class);
     }
 
     /**
@@ -158,6 +165,7 @@ public class LogCollectorQuery {
     public Long countBy(@RequestParam Conditions<LogCollectorEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
-        return this.mapper.countBy(conditions);
+
+        return this.persistence.countBy(conditions);
     }
 }
