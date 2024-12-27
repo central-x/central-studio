@@ -24,16 +24,14 @@
 
 package central.studio.provider.graphql.multicast.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.multicast.MulticastBroadcasterInput;
-import central.lang.Stringx;
-import central.studio.provider.graphql.multicast.dto.MulticastBroadcasterDTO;
-import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
-import central.studio.provider.database.persistence.multicast.mapper.MulticastBroadcasterMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.util.Listx;
+import central.studio.provider.database.persistence.multicast.MulticastBroadcasterPersistence;
+import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
+import central.studio.provider.graphql.multicast.dto.MulticastBroadcasterDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -41,20 +39,17 @@ import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Broadcaster Mutation
  * <p>
- * 广播器
+ * 广播器修改
  *
  * @author Alan Yeh
  * @since 2022/11/03
@@ -62,8 +57,9 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "multicast/mutation", types = MulticastBroadcasterDTO.class)
 public class MulticastBroadcasterMutation {
+
     @Setter(onMethod_ = @Autowired)
-    private MulticastBroadcasterMapper mapper;
+    private MulticastBroadcasterPersistence persistence;
 
     /**
      * 保存数据
@@ -76,18 +72,8 @@ public class MulticastBroadcasterMutation {
     public @Nonnull MulticastBroadcasterDTO insert(@RequestParam @Validated({Insert.class, Default.class}) MulticastBroadcasterInput input,
                                                    @RequestParam String operator,
                                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        // 标识唯一性校验
-        if (this.mapper.existsBy(Conditions.of(MulticastBroadcasterEntity.class).eq(MulticastBroadcasterEntity::getCode, input.getCode()).eq(MulticastBroadcasterEntity::getTenantCode, tenant))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
-        }
-
-        var entity = new MulticastBroadcasterEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, MulticastBroadcasterDTO.class);
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
     /**
@@ -101,7 +87,8 @@ public class MulticastBroadcasterMutation {
     public @Nonnull List<MulticastBroadcasterDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<MulticastBroadcasterInput> inputs,
                                                               @RequestParam String operator,
                                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
     /**
@@ -115,24 +102,8 @@ public class MulticastBroadcasterMutation {
     public @Nonnull MulticastBroadcasterDTO update(@RequestParam @Validated({Update.class, Default.class}) MulticastBroadcasterInput input,
                                                    @RequestParam String operator,
                                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(MulticastBroadcasterEntity.class).eq(MulticastBroadcasterEntity::getId, input.getId()).eq(MulticastBroadcasterEntity::getTenantCode, tenant));
-        if (entity == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
-        }
-
-        // 标识唯一性校验
-        if (!Objects.equals(entity.getCode(), input.getCode())) {
-            if (this.mapper.existsBy(Conditions.of(MulticastBroadcasterEntity.class).eq(MulticastBroadcasterEntity::getCode, input.getCode()))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
-            }
-        }
-
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateModifier(operator);
-        this.mapper.update(entity);
-
-        return DTO.wrap(entity, MulticastBroadcasterDTO.class);
+        var data = this.persistence.update(input, operator, tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
     /**
@@ -146,7 +117,8 @@ public class MulticastBroadcasterMutation {
     public @Nonnull List<MulticastBroadcasterDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<MulticastBroadcasterInput> inputs,
                                                               @RequestParam String operator,
                                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
+        var data = this.persistence.updateBatch(inputs, operator, tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
     /**
@@ -158,11 +130,7 @@ public class MulticastBroadcasterMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(MulticastBroadcasterEntity.class).in(MulticastBroadcasterEntity::getId, ids).eq(MulticastBroadcasterEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -174,12 +142,6 @@ public class MulticastBroadcasterMutation {
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<MulticastBroadcasterEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-
-        var entities = this.mapper.findBy(Conditions.group(conditions).eq(MulticastBroadcasterEntity::getTenantCode, tenant));
-        if (entities.isEmpty()) {
-            return 0L;
-        }
-
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }

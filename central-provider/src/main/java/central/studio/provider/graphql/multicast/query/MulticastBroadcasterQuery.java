@@ -26,14 +26,16 @@ package central.studio.provider.graphql.multicast.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.multicast.dto.MulticastBroadcasterDTO;
-import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
-import central.studio.provider.database.persistence.multicast.mapper.MulticastBroadcasterMapper;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.multicast.MulticastBroadcasterPersistence;
+import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
+import central.studio.provider.graphql.multicast.dto.MulticastBroadcasterDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -45,12 +47,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Multicast Broadcaster
+ * Broadcaster Query
  * <p>
- * 广播器
+ * 广播器查询
  *
  * @author Alan Yeh
  * @since 2022/11/03
@@ -58,8 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "multicast/query", types = MulticastBroadcasterDTO.class)
 public class MulticastBroadcasterQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private MulticastBroadcasterMapper mapper;
+    private MulticastBroadcasterPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -70,10 +74,9 @@ public class MulticastBroadcasterQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, MulticastBroadcasterDTO> batchLoader(@RequestParam List<String> ids,
                                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(MulticastBroadcasterEntity.class).in(MulticastBroadcasterEntity::getId, ids).eq(MulticastBroadcasterEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, MulticastBroadcasterDTO.class))
-                .collect(Collectors.toMap(MulticastBroadcasterDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -85,8 +88,8 @@ public class MulticastBroadcasterQuery {
     @GraphQLFetcher
     public @Nullable MulticastBroadcasterDTO findById(@RequestParam String id,
                                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(MulticastBroadcasterEntity.class).eq(MulticastBroadcasterEntity::getId, id).eq(MulticastBroadcasterEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, MulticastBroadcasterDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
 
@@ -98,10 +101,9 @@ public class MulticastBroadcasterQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<MulticastBroadcasterDTO> findByIds(@RequestParam List<String> ids,
-                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(MulticastBroadcasterEntity.class).in(MulticastBroadcasterEntity::getId, ids).eq(MulticastBroadcasterEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, MulticastBroadcasterDTO.class);
+                                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
     /**
@@ -115,13 +117,12 @@ public class MulticastBroadcasterQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<MulticastBroadcasterDTO> findBy(@RequestParam(required = false) Long limit,
-                                                  @RequestParam(required = false) Long offset,
-                                                  @RequestParam Conditions<MulticastBroadcasterEntity> conditions,
-                                                  @RequestParam Orders<MulticastBroadcasterEntity> orders,
-                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(MulticastBroadcasterEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, MulticastBroadcasterDTO.class);
+                                                         @RequestParam(required = false) Long offset,
+                                                         @RequestParam Conditions<MulticastBroadcasterEntity> conditions,
+                                                         @RequestParam Orders<MulticastBroadcasterEntity> orders,
+                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
     /**
@@ -135,13 +136,12 @@ public class MulticastBroadcasterQuery {
      */
     @GraphQLFetcher
     public @Nonnull Page<MulticastBroadcasterDTO> pageBy(@RequestParam long pageIndex,
-                                                  @RequestParam long pageSize,
-                                                  @RequestParam Conditions<MulticastBroadcasterEntity> conditions,
-                                                  @RequestParam Orders<MulticastBroadcasterEntity> orders,
-                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(MulticastBroadcasterEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, MulticastBroadcasterDTO.class);
+                                                         @RequestParam long pageSize,
+                                                         @RequestParam Conditions<MulticastBroadcasterEntity> conditions,
+                                                         @RequestParam Orders<MulticastBroadcasterEntity> orders,
+                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
     /**
@@ -153,7 +153,6 @@ public class MulticastBroadcasterQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<MulticastBroadcasterEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(MulticastBroadcasterEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }
