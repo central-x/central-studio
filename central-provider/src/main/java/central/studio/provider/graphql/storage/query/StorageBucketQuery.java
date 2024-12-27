@@ -24,16 +24,18 @@
 
 package central.studio.provider.graphql.storage.query;
 
-import central.provider.graphql.DTO;
 import central.bean.Page;
-import central.studio.provider.graphql.storage.dto.StorageBucketDTO;
-import central.studio.provider.database.persistence.storage.entity.StorageBucketEntity;
-import central.studio.provider.database.persistence.storage.mapper.StorageBucketMapper;
+import central.provider.graphql.DTO;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.storage.StorageBucketPersistence;
+import central.studio.provider.database.persistence.storage.entity.StorageBucketEntity;
+import central.studio.provider.graphql.storage.dto.StorageBucketDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -45,12 +47,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Storage Bucket
+ * Bucket Query
  * <p>
- * 存储桶
+ * 存储桶查询
  *
  * @author Alan Yeh
  * @since 2022/10/30
@@ -58,8 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "storage/query", types = StorageBucketDTO.class)
 public class StorageBucketQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private StorageBucketMapper mapper;
+    private StorageBucketPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -70,10 +74,9 @@ public class StorageBucketQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, StorageBucketDTO> batchLoader(@RequestParam List<String> ids,
                                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(StorageBucketEntity.class).in(StorageBucketEntity::getId, ids).eq(StorageBucketEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, StorageBucketDTO.class))
-                .collect(Collectors.toMap(StorageBucketDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, StorageBucketDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -85,8 +88,8 @@ public class StorageBucketQuery {
     @GraphQLFetcher
     public @Nullable StorageBucketDTO findById(@RequestParam String id,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getId, id).eq(StorageBucketEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, StorageBucketDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, StorageBucketDTO.class);
     }
 
 
@@ -99,9 +102,8 @@ public class StorageBucketQuery {
     @GraphQLFetcher
     public @Nonnull List<StorageBucketDTO> findByIds(@RequestParam List<String> ids,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(StorageBucketEntity.class).in(StorageBucketEntity::getId, ids).eq(StorageBucketEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, StorageBucketDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, StorageBucketDTO.class);
     }
 
     /**
@@ -119,9 +121,8 @@ public class StorageBucketQuery {
                                                   @RequestParam Conditions<StorageBucketEntity> conditions,
                                                   @RequestParam Orders<StorageBucketEntity> orders,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(StorageBucketEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, StorageBucketDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, StorageBucketDTO.class);
     }
 
     /**
@@ -139,9 +140,8 @@ public class StorageBucketQuery {
                                                   @RequestParam Conditions<StorageBucketEntity> conditions,
                                                   @RequestParam Orders<StorageBucketEntity> orders,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(StorageBucketEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, StorageBucketDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, StorageBucketDTO.class);
     }
 
     /**
@@ -153,7 +153,6 @@ public class StorageBucketQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<StorageBucketEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(StorageBucketEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

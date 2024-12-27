@@ -26,14 +26,16 @@ package central.studio.provider.graphql.storage.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.storage.dto.StorageFileDTO;
-import central.studio.provider.database.persistence.storage.entity.StorageFileEntity;
-import central.studio.provider.database.persistence.storage.mapper.StorageFileMapper;
+import central.sql.data.Entity;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.storage.StorageFilePersistence;
+import central.studio.provider.database.persistence.storage.entity.StorageFileEntity;
+import central.studio.provider.graphql.storage.dto.StorageFileDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -45,12 +47,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Storage File
+ * File Query
  * <p>
- * 文件
+ * 文件查询
  *
  * @author Alan Yeh
  * @since 2022/10/30
@@ -58,8 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "storage/query", types = StorageFileDTO.class)
 public class StorageFileQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private StorageFileMapper mapper;
+    private StorageFilePersistence persistence;
 
     /**
      * 批量数据加载器
@@ -70,10 +74,9 @@ public class StorageFileQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, StorageFileDTO> batchLoader(@RequestParam List<String> ids,
                                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(StorageFileEntity.class).in(StorageFileEntity::getId, ids).eq(StorageFileEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, StorageFileDTO.class))
-                .collect(Collectors.toMap(StorageFileDTO::getId, it -> it));
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, StorageFileDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
@@ -85,8 +88,8 @@ public class StorageFileQuery {
     @GraphQLFetcher
     public @Nullable StorageFileDTO findById(@RequestParam String id,
                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getId, id).eq(StorageFileEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, StorageFileDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, StorageFileDTO.class);
     }
 
 
@@ -98,10 +101,9 @@ public class StorageFileQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<StorageFileDTO> findByIds(@RequestParam List<String> ids,
-                                                     @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(StorageFileEntity.class).in(StorageFileEntity::getId, ids).eq(StorageFileEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, StorageFileDTO.class);
+                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, StorageFileDTO.class);
     }
 
     /**
@@ -115,13 +117,12 @@ public class StorageFileQuery {
      */
     @GraphQLFetcher
     public @Nonnull List<StorageFileDTO> findBy(@RequestParam(required = false) Long limit,
-                                                  @RequestParam(required = false) Long offset,
-                                                  @RequestParam Conditions<StorageFileEntity> conditions,
-                                                  @RequestParam Orders<StorageFileEntity> orders,
-                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(StorageFileEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, StorageFileDTO.class);
+                                                @RequestParam(required = false) Long offset,
+                                                @RequestParam Conditions<StorageFileEntity> conditions,
+                                                @RequestParam Orders<StorageFileEntity> orders,
+                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, StorageFileDTO.class);
     }
 
     /**
@@ -135,13 +136,12 @@ public class StorageFileQuery {
      */
     @GraphQLFetcher
     public @Nonnull Page<StorageFileDTO> pageBy(@RequestParam long pageIndex,
-                                                  @RequestParam long pageSize,
-                                                  @RequestParam Conditions<StorageFileEntity> conditions,
-                                                  @RequestParam Orders<StorageFileEntity> orders,
-                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(StorageFileEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, StorageFileDTO.class);
+                                                @RequestParam long pageSize,
+                                                @RequestParam Conditions<StorageFileEntity> conditions,
+                                                @RequestParam Orders<StorageFileEntity> orders,
+                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, StorageFileDTO.class);
     }
 
     /**
@@ -153,7 +153,6 @@ public class StorageFileQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<StorageFileEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(StorageFileEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

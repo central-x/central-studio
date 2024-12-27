@@ -24,16 +24,14 @@
 
 package central.studio.provider.graphql.storage.mutation;
 
-import central.provider.graphql.DTO;
 import central.data.storage.StorageFileInput;
-import central.lang.Stringx;
-import central.studio.provider.graphql.storage.dto.StorageFileDTO;
-import central.studio.provider.database.persistence.storage.entity.StorageFileEntity;
-import central.studio.provider.database.persistence.storage.mapper.StorageFileMapper;
+import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.util.Listx;
+import central.studio.provider.database.persistence.storage.StorageFilePersistence;
+import central.studio.provider.database.persistence.storage.entity.StorageFileEntity;
+import central.studio.provider.graphql.storage.dto.StorageFileDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -41,20 +39,17 @@ import jakarta.annotation.Nonnull;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
- * Storage File
+ * File Mutation
  * <p>
- * 文件
+ * 文件查询
  *
  * @author Alan Yeh
  * @since 2022/10/30
@@ -62,8 +57,9 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "storage/mutation", types = StorageFileDTO.class)
 public class StorageFileMutation {
+
     @Setter(onMethod_ = @Autowired)
-    private StorageFileMapper mapper;
+    private StorageFilePersistence persistence;
 
     /**
      * 保存数据
@@ -76,18 +72,8 @@ public class StorageFileMutation {
     public @Nonnull StorageFileDTO insert(@RequestParam @Validated({Insert.class, Default.class}) StorageFileInput input,
                                           @RequestParam String operator,
                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        // 标识唯一性校验
-        if (this.mapper.existsBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getCode, input.getCode()).eq(StorageFileEntity::getTenantCode, tenant))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
-        }
-
-        var entity = new StorageFileEntity();
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateCreator(operator);
-        this.mapper.insert(entity);
-
-        return DTO.wrap(entity, StorageFileDTO.class);
+        var data = this.persistence.insert(input, operator, tenant);
+        return DTO.wrap(data, StorageFileDTO.class);
     }
 
     /**
@@ -101,7 +87,8 @@ public class StorageFileMutation {
     public @Nonnull List<StorageFileDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<StorageFileInput> inputs,
                                                      @RequestParam String operator,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
+        var data = this.persistence.insertBatch(inputs, operator, tenant);
+        return DTO.wrap(data, StorageFileDTO.class);
     }
 
     /**
@@ -115,24 +102,8 @@ public class StorageFileMutation {
     public @Nonnull StorageFileDTO update(@RequestParam @Validated({Update.class, Default.class}) StorageFileInput input,
                                           @RequestParam String operator,
                                           @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getId, input.getId()).eq(StorageFileEntity::getTenantCode, tenant));
-        if (entity == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
-        }
-
-        // 标识唯一性校验
-        if (!Objects.equals(entity.getCode(), input.getCode())) {
-            if (this.mapper.existsBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getCode, input.getCode()))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
-            }
-        }
-
-        entity.fromInput(input);
-        entity.setTenantCode(tenant);
-        entity.updateModifier(operator);
-        this.mapper.update(entity);
-
-        return DTO.wrap(entity, StorageFileDTO.class);
+        var data = this.persistence.update(input, operator, tenant);
+        return DTO.wrap(data, StorageFileDTO.class);
     }
 
     /**
@@ -146,7 +117,8 @@ public class StorageFileMutation {
     public @Nonnull List<StorageFileDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<StorageFileInput> inputs,
                                                      @RequestParam String operator,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
+        var data = this.persistence.updateBatch(inputs, operator, tenant);
+        return DTO.wrap(data, StorageFileDTO.class);
     }
 
     /**
@@ -158,11 +130,7 @@ public class StorageFileMutation {
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        if (Listx.isNullOrEmpty(ids)) {
-            return 0;
-        }
-
-        return this.mapper.deleteBy(Conditions.of(StorageFileEntity.class).in(StorageFileEntity::getId, ids).eq(StorageFileEntity::getTenantCode, tenant));
+        return this.persistence.deleteByIds(ids, tenant);
     }
 
     /**
@@ -174,12 +142,6 @@ public class StorageFileMutation {
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<StorageFileEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-
-        var entities = this.mapper.findBy(Conditions.group(conditions).eq(StorageFileEntity::getTenantCode, tenant));
-        if (entities.isEmpty()) {
-            return 0L;
-        }
-
-        return this.mapper.deleteBy(conditions);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }
