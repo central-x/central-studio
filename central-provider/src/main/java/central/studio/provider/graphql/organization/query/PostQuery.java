@@ -26,6 +26,7 @@ package central.studio.provider.graphql.organization.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.studio.provider.graphql.organization.dto.PostDTO;
 import central.studio.provider.database.persistence.organization.entity.PostEntity;
 import central.studio.provider.database.persistence.organization.mapper.PostMapper;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +75,7 @@ public class PostQuery {
         return this.mapper.findBy(Conditions.of(PostEntity.class).in(PostEntity::getId, ids).eq(PostEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, PostDTO.class))
-                .collect(Collectors.toMap(PostDTO::getId, it -> it));
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

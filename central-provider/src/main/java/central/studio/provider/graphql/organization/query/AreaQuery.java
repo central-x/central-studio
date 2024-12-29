@@ -26,6 +26,7 @@ package central.studio.provider.graphql.organization.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.studio.provider.graphql.organization.dto.AreaDTO;
 import central.studio.provider.database.persistence.organization.entity.AreaEntity;
 import central.studio.provider.database.persistence.organization.mapper.AreaMapper;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +75,7 @@ public class AreaQuery {
         return this.mapper.findBy(Conditions.of(AreaEntity.class).in(AreaEntity::getId, ids).eq(AreaEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, AreaDTO.class))
-                .collect(Collectors.toMap(AreaDTO::getId, it -> it));
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

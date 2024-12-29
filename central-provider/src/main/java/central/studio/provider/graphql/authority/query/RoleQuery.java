@@ -26,6 +26,7 @@ package central.studio.provider.graphql.authority.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.studio.provider.graphql.authority.dto.RoleDTO;
 import central.studio.provider.database.persistence.authority.RolePersistence;
 import central.sql.query.Columns;
@@ -84,7 +85,7 @@ public class RoleQuery {
 
         var data = this.persistence.findByIds(ids, Columns.of(RoleDTO.class, fields), tenant);
         return DTO.wrap(data, RoleDTO.class).stream()
-                .collect(Collectors.toMap(RoleDTO::getId, Function.identity()));
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

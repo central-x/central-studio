@@ -26,6 +26,7 @@ package central.studio.provider.graphql.authority.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.studio.provider.graphql.authority.dto.PermissionDTO;
 import central.studio.provider.database.persistence.authority.PermissionPersistence;
 import central.sql.query.Columns;
@@ -84,7 +85,7 @@ public class PermissionQuery {
 
         var data = this.persistence.findByIds(ids, Columns.of(PermissionDTO.class, fields), tenant);
         return DTO.wrap(data, PermissionDTO.class).stream()
-                .collect(Collectors.toMap(PermissionDTO::getId, Function.identity()));
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

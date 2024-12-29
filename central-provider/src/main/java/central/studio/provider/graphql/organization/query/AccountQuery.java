@@ -26,6 +26,7 @@ package central.studio.provider.graphql.organization.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.database.persistence.organization.AccountPersistence;
 import central.sql.query.Columns;
@@ -86,7 +87,7 @@ public class AccountQuery {
 
         var data = this.persistence.findByIds(ids.stream().toList(), Columns.of(AccountDTO.class, fields), tenant);
         return DTO.wrap(data, AccountDTO.class).stream()
-                .collect(Collectors.toMap(AccountDTO::getId, Function.identity()));
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

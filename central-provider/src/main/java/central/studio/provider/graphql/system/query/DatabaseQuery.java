@@ -75,7 +75,8 @@ public class DatabaseQuery {
     public @Nonnull Map<String, DatabaseDTO> batchLoader(@RequestParam List<String> ids,
                                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.findByIds(ids, Columns.all(), tenant);
-        return DTO.wrap(data, DatabaseDTO.class).stream().collect(Collectors.toMap(Entity::getId, Function.identity()));
+        return DTO.wrap(data, DatabaseDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

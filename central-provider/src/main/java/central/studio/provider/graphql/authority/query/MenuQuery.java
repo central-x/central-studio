@@ -26,6 +26,7 @@ package central.studio.provider.graphql.authority.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.studio.provider.graphql.authority.dto.MenuDTO;
 import central.studio.provider.database.persistence.authority.MenuPersistence;
 import central.sql.query.Columns;
@@ -84,7 +85,7 @@ public class MenuQuery {
 
         var data = this.persistence.findByIds(ids, Columns.of(MenuDTO.class, fields), tenant);
         return DTO.wrap(data, MenuDTO.class).stream()
-                .collect(Collectors.toMap(MenuDTO::getId, Function.identity()));
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

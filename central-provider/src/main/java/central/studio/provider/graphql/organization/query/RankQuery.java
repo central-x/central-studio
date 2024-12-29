@@ -26,6 +26,7 @@ package central.studio.provider.graphql.organization.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.studio.provider.graphql.organization.dto.RankDTO;
 import central.studio.provider.database.persistence.organization.entity.RankEntity;
 import central.studio.provider.database.persistence.organization.mapper.RankMapper;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -74,7 +76,7 @@ public class RankQuery {
         return this.mapper.findBy(Conditions.of(RankEntity.class).in(RankEntity::getId, ids).eq(RankEntity::getTenantCode, tenant))
                 .stream()
                 .map(it -> DTO.wrap(it, RankDTO.class))
-                .collect(Collectors.toMap(RankDTO::getId, it -> it));
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

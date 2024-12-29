@@ -26,6 +26,7 @@ package central.studio.provider.graphql.organization.query;
 
 import central.bean.Page;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -74,7 +75,7 @@ public class AccountUnitQuery {
                                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.findByIds(ids, Columns.all(), tenant);
         return DTO.wrap(data, AccountUnitDTO.class).stream()
-                .collect(Collectors.toMap(AccountUnitDTO::getId, Function.identity()));
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

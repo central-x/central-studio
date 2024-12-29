@@ -27,6 +27,7 @@ package central.studio.provider.graphql.saas.query;
 import central.bean.Page;
 import central.lang.Assertx;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -77,7 +78,8 @@ public class TenantQuery {
                                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
         var data = this.persistence.findByIds(ids, Columns.all());
-        return DTO.wrap(data, TenantDTO.class).stream().collect(Collectors.toMap(TenantDTO::getId, Function.identity()));
+        return DTO.wrap(data, TenantDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**

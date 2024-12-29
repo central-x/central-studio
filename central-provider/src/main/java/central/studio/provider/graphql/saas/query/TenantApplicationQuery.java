@@ -27,6 +27,7 @@ package central.studio.provider.graphql.saas.query;
 import central.bean.Page;
 import central.lang.Assertx;
 import central.provider.graphql.DTO;
+import central.sql.data.Entity;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
@@ -76,7 +77,8 @@ public class TenantApplicationQuery {
         Assertx.mustEquals("master", tenant, "只有主租户[master]才允许访问本接口");
 
         var data = this.persistence.findByIds(ids);
-        return DTO.wrap(data, TenantApplicationDTO.class).stream().collect(Collectors.toMap(TenantApplicationDTO::getId, Function.identity()));
+        return DTO.wrap(data, TenantApplicationDTO.class).stream()
+                .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
     /**
