@@ -116,13 +116,12 @@ public class AccountUnit extends Entity {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public AccountUnitInput toInput() {
+    public AccountUnitInput.Builder toInput() {
         return AccountUnitInput.builder()
                 .accountId(this.getAccountId())
                 .unitId(this.getUnitId())
                 .rankId(this.getRankId())
                 .primary(this.getPrimary())
-                .departments(Listx.asStream(this.getDepartments()).map(AccountDepartment::toInput).toList())
-                .build();
+                .departments(Listx.asStream(this.getDepartments()).map(AccountDepartment::toInput).map(AccountDepartmentInput.Builder::build).toList());
     }
 }

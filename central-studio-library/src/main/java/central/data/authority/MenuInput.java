@@ -44,10 +44,10 @@ import java.util.List;
  * @since 2022/09/12
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class MenuInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 149311675845387166L;

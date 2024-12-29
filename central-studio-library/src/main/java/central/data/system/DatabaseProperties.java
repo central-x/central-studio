@@ -63,12 +63,11 @@ public class DatabaseProperties implements Serializable {
      */
     private String password;
 
-    public DatabasePropertiesInput toInput() {
+    public DatabasePropertiesInput.Builder toInput() {
         return DatabasePropertiesInput.builder()
                 .driver(this.getDriver())
                 .url(this.getUrl())
                 .username(this.getUsername())
-                .password(this.getPassword())
-                .build();
+                .password(this.getPassword());
     }
 }

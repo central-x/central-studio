@@ -76,12 +76,11 @@ public class ApplicationRoute implements Serializable, Available, Remarkable {
     @Nonnull
     private String remark;
 
-    public ApplicationRouteInput toInput() {
+    public ApplicationRouteInput.Builder toInput() {
         return ApplicationRouteInput.builder()
                 .contextPath(this.getContextPath())
                 .url(this.getUrl())
                 .enabled(this.getEnabled())
-                .remark(this.getRemark())
-                .build();
+                .remark(this.getRemark());
     }
 }

@@ -131,7 +131,7 @@ public class Database extends ModifiableEntity implements Codeable, Available, R
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public DatabaseInput toInput() {
+    public DatabaseInput.Builder toInput() {
         return DatabaseInput.builder()
                 .id(this.getId())
                 .applicationId(this.getApplicationId())
@@ -140,9 +140,8 @@ public class Database extends ModifiableEntity implements Codeable, Available, R
                 .type(this.getType())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .master(this.getMaster().toInput())
-                .slaves(Listx.asStream(this.getSlaves()).map(DatabaseProperties::toInput).toList())
-                .params(this.getParams())
-                .build();
+                .master(this.getMaster().toInput().build())
+                .slaves(Listx.asStream(this.getSlaves()).map(DatabaseProperties::toInput).map(DatabasePropertiesInput.Builder::build).toList())
+                .params(this.getParams());
     }
 }

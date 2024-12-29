@@ -41,10 +41,10 @@ import java.io.Serializable;
  * @since 2022/10/07
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class IdentityPasswordInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 3757147748065456405L;

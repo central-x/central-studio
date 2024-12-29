@@ -39,10 +39,10 @@ import java.io.Serializable;
  * @since 2022/10/25
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class LogPredicateInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 3560063797225131955L;

@@ -91,7 +91,7 @@ public class LogCollector extends ModifiableEntity implements Codeable, Availabl
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public LogCollectorInput toInput() {
+    public LogCollectorInput.Builder toInput() {
         return LogCollectorInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
@@ -99,7 +99,6 @@ public class LogCollector extends ModifiableEntity implements Codeable, Availabl
                 .type(this.getType())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .params(this.getParams())
-                .build();
+                .params(this.getParams());
     }
 }

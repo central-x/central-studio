@@ -127,14 +127,13 @@ public class Unit extends ModifiableEntity implements Codeable, Orderable<Unit>,
 
     }
 
-    public UnitInput toInput() {
+    public UnitInput.Builder toInput() {
         return UnitInput.builder()
                 .id(this.getId())
                 .parentId(this.getParentId())
                 .code(this.getCode())
                 .name(this.getName())
                 .areaId(this.getAreaId())
-                .order(this.getOrder())
-                .build();
+                .order(this.getOrder());
     }
 }

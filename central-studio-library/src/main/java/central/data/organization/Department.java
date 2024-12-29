@@ -117,14 +117,13 @@ public class Department extends ModifiableEntity implements Codeable, Orderable<
 
     }
 
-    public DepartmentInput toInput() {
+    public DepartmentInput.Builder toInput() {
         return DepartmentInput.builder()
                 .id(this.getId())
                 .unitId(this.getUnitId())
                 .parentId(this.getParentId())
                 .code(this.getCode())
                 .name(this.getName())
-                .order(this.getOrder())
-                .build();
+                .order(this.getOrder());
     }
 }

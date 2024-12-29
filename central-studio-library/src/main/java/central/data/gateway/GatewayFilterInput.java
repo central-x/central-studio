@@ -44,10 +44,10 @@ import java.util.List;
  * @since 2022/11/08
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class GatewayFilterInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 3224470673107616978L;

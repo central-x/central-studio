@@ -106,7 +106,7 @@ public class MulticastBroadcaster extends ModifiableEntity implements Codeable, 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public MulticastBroadcasterInput toInput() {
+    public MulticastBroadcasterInput.Builder toInput() {
         return MulticastBroadcasterInput.builder()
                 .id(this.getId())
                 .applicationId(this.getApplicationId())
@@ -115,7 +115,6 @@ public class MulticastBroadcaster extends ModifiableEntity implements Codeable, 
                 .type(this.getType())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .params(this.getParams())
-                .build();
+                .params(this.getParams());
     }
 }

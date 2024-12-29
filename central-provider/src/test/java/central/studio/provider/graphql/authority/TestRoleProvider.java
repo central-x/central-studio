@@ -619,7 +619,7 @@ public class TestRoleProvider extends TestProvider {
         assertNotNull(role);
         assertEquals(roleEntity.getId(), role.getId());
 
-        var roleInput = role.toInput().toBuilder()
+        var roleInput = role.toInput()
                 .code("10001")
                 .build();
 
@@ -697,7 +697,7 @@ public class TestRoleProvider extends TestProvider {
         assertNotNull(role);
         assertEquals(roleEntity.getId(), role.getId());
 
-        var roleInput = role.toInput().toBuilder()
+        var roleInput = role.toInput()
                 .code("10001")
                 .build();
 

@@ -355,7 +355,7 @@ public class TestLogStorageProvider {
         assertNotNull(storage);
         assertEquals(entity.getId(), storage.getId());
 
-        var input = storage.toInput().toBuilder()
+        var input = storage.toInput()
                 .code("test1")
                 .build();
 
@@ -393,7 +393,7 @@ public class TestLogStorageProvider {
         assertNotNull(storage);
         assertEquals(entity.getId(), storage.getId());
 
-        var input = storage.toInput().toBuilder()
+        var input = storage.toInput()
                 .code("test1")
                 .build();
 

@@ -386,7 +386,7 @@ public class TestApplicationProvider extends TestProvider {
         var application = this.provider.findById(entity.getId(), "master");
         assertNotNull(application);
 
-        var input = application.toInput().toBuilder()
+        var input = application.toInput()
                 .name("统一认证")
                 .url("http://127.0.0.1:4100")
                 .build();
@@ -427,7 +427,7 @@ public class TestApplicationProvider extends TestProvider {
         var application = this.provider.findById(entity.getId(), "master");
         assertNotNull(application);
 
-        var input = application.toInput().toBuilder()
+        var input = application.toInput()
                 .name("统一认证")
                 .url("http://127.0.0.1:4100")
                 .build();

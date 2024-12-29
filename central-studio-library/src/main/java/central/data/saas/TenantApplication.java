@@ -102,13 +102,12 @@ public class TenantApplication extends ModifiableEntity implements Available {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public TenantApplicationInput toInput() {
+    public TenantApplicationInput.Builder toInput() {
         return TenantApplicationInput.builder()
                 .id(this.getId())
                 .tenantId(this.getTenantId())
                 .applicationId(this.getApplicationId())
                 .enabled(this.getEnabled())
-                .primary(this.getPrimary())
-                .build();
+                .primary(this.getPrimary());
     }
 }

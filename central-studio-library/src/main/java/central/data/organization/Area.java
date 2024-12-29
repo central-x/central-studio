@@ -136,14 +136,13 @@ public class Area extends ModifiableEntity implements Codeable, Orderable<Area>,
         }
     }
 
-    public AreaInput toInput() {
+    public AreaInput.Builder toInput() {
         return AreaInput.builder()
                 .id(this.getId())
                 .parentId(this.getParentId())
                 .code(this.getCode())
                 .name(this.getName())
                 .type(this.getType())
-                .order(this.getOrder())
-                .build();
+                .order(this.getOrder());
     }
 }

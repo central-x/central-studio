@@ -80,12 +80,11 @@ public class DictionaryItem implements Serializable, Codeable, Orderable<Diction
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public DictionaryItemInput toInput() {
+    public DictionaryItemInput.Builder toInput() {
         return DictionaryItemInput.builder()
                 .code(this.getCode())
                 .name(this.getName())
                 .primary(this.getPrimary())
-                .order(this.getOrder())
-                .build();
+                .order(this.getOrder());
     }
 }

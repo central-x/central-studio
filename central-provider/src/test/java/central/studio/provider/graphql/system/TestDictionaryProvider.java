@@ -488,7 +488,7 @@ public class TestDictionaryProvider extends TestProvider {
         var dictionary = this.provider.findById(dictionaryEntity.getId(), "master");
         assertNotNull(dictionary);
 
-        var input = dictionary.toInput().toBuilder()
+        var input = dictionary.toInput()
                 .code("example")
                 .build();
 
@@ -538,7 +538,7 @@ public class TestDictionaryProvider extends TestProvider {
         var dictionary = this.provider.findById(dictionaryEntity.getId(), "master");
         assertNotNull(dictionary);
 
-        var input = dictionary.toInput().toBuilder()
+        var input = dictionary.toInput()
                 .code("example")
                 .build();
 

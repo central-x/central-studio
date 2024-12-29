@@ -93,13 +93,12 @@ public class Post extends ModifiableEntity implements Codeable, Orderable<Post> 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public PostInput toInput() {
+    public PostInput.Builder toInput() {
         return PostInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
                 .name(this.getName())
                 .unitId(this.getUnitId())
-                .order(this.getOrder())
-                .build();
+                .order(this.getOrder());
     }
 }

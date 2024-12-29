@@ -319,7 +319,7 @@ public class TestIdentityStrategyProvider {
         assertNotNull(strategy);
         assertEquals(entity.getId(), strategy.getId());
 
-        var input = strategy.toInput().toBuilder()
+        var input = strategy.toInput()
                 .code("test1")
                 .build();
 
@@ -353,7 +353,7 @@ public class TestIdentityStrategyProvider {
         assertNotNull(strategy);
         assertEquals(entity.getId(), strategy.getId());
 
-        var input = strategy.toInput().toBuilder()
+        var input = strategy.toInput()
                 .code("test1")
                 .build();
 

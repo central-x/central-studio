@@ -417,7 +417,7 @@ public class TestGatewayFilterProvider {
         assertNotNull(filter);
         assertEquals(entity.getId(), filter.getId());
 
-        var input = filter.toInput().toBuilder()
+        var input = filter.toInput()
                 .path("/test")
                 .build();
 
@@ -459,7 +459,7 @@ public class TestGatewayFilterProvider {
         assertNotNull(filter);
         assertEquals(entity.getId(), filter.getId());
 
-        var input = filter.toInput().toBuilder()
+        var input = filter.toInput()
                 .path("/test")
                 .build();
 

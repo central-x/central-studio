@@ -157,7 +157,7 @@ public class Menu extends ModifiableEntity implements Codeable, Available, Remar
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public MenuInput toInput() {
+    public MenuInput.Builder toInput() {
         return MenuInput.builder()
                 .id(this.getId())
                 .applicationId(this.getApplicationId())
@@ -170,7 +170,6 @@ public class Menu extends ModifiableEntity implements Codeable, Available, Remar
                 .enabled(this.getEnabled())
                 .order(this.getOrder())
                 .remark(this.getRemark())
-                .permissions(Listx.asStream(this.getPermissions()).map(Permission::toInput).toList())
-                .build();
+                .permissions(Listx.asStream(this.getPermissions()).map(Permission::toInput).map(PermissionInput.Builder::build).toList());
     }
 }

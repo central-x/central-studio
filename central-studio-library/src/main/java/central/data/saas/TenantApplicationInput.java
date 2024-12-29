@@ -43,10 +43,10 @@ import java.io.Serializable;
  * @since 2022/09/12
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class TenantApplicationInput implements Serializable {
     @Serial
     private static final long serialVersionUID = -4281770477133783048L;

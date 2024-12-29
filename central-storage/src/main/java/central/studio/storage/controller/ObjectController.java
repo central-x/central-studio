@@ -247,7 +247,7 @@ public class ObjectController {
                 Conditions.of(StorageObject.class).eq(StorageObject::getBucketId, bucket.getData().getId()).in(StorageObject::getId, params.getIds()),
                 null, tenant);
         var inputs = objects.stream()
-                .map(it -> it.toInput().toBuilder().confirmed(Boolean.TRUE).build())
+                .map(it -> it.toInput().confirmed(Boolean.TRUE).build())
                 .toList();
         return (long) this.provider.updateBatch(inputs, Objectx.getOrDefault(accountId, "syssa"), tenant).size();
     }

@@ -487,7 +487,7 @@ public class TestDepartmentProvider extends TestProvider {
         assertNotNull(department);
         assertNotNull(department.getId());
 
-        var input = department.toInput().toBuilder()
+        var input = department.toInput()
                 .code("20003")
                 .build();
 
@@ -537,7 +537,7 @@ public class TestDepartmentProvider extends TestProvider {
         assertNotNull(department);
         assertNotNull(department.getId());
 
-        var input = department.toInput().toBuilder()
+        var input = department.toInput()
                 .code("20003")
                 .build();
 

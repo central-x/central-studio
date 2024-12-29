@@ -45,9 +45,9 @@ import java.io.Serializable;
  * @since 2024/12/10
  */
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class ApplicationRouteInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 2736131525653405558L;

@@ -315,7 +315,7 @@ public class TestLogCollectorProvider {
         assertNotNull(collector);
         assertEquals(entity.getId(), collector.getId());
 
-        var input = collector.toInput().toBuilder()
+        var input = collector.toInput()
                 .code("test1")
                 .build();
 
@@ -348,7 +348,7 @@ public class TestLogCollectorProvider {
         assertNotNull(collector);
         assertEquals(entity.getId(), collector.getId());
 
-        var input = collector.toInput().toBuilder()
+        var input = collector.toInput()
                 .code("test1")
                 .build();
 

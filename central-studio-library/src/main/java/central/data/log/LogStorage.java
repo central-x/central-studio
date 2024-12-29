@@ -92,7 +92,7 @@ public class LogStorage extends ModifiableEntity implements Codeable, Remarkable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public LogStorageInput toInput() {
+    public LogStorageInput.Builder toInput() {
         return LogStorageInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
@@ -100,7 +100,6 @@ public class LogStorage extends ModifiableEntity implements Codeable, Remarkable
                 .type(this.getType())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .params(this.getParams())
-                .build();
+                .params(this.getParams());
     }
 }

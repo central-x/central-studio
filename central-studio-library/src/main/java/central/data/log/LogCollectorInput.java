@@ -40,10 +40,10 @@ import java.io.Serializable;
  * @since 2022/10/25
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class LogCollectorInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 6288318765960103194L;

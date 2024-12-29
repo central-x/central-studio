@@ -42,10 +42,10 @@ import java.io.Serializable;
  * @since 2022/10/30
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class StorageBucketInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 5843689960235570368L;

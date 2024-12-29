@@ -371,7 +371,7 @@ public class TestStorageBucketProvider {
         assertNotNull(bucket);
         assertEquals(entity.getId(), bucket.getId());
 
-        var input = bucket.toInput().toBuilder()
+        var input = bucket.toInput()
                 .code("test1")
                 .build();
 
@@ -406,7 +406,7 @@ public class TestStorageBucketProvider {
         assertNotNull(bucket);
         assertEquals(entity.getId(), bucket.getId());
 
-        var input = bucket.toInput().toBuilder()
+        var input = bucket.toInput()
                 .code("test1")
                 .build();
 

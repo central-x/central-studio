@@ -441,7 +441,7 @@ public class TestRankProvider extends TestProvider {
         var post = this.provider.findById(rankEntity.getId(), "master");
         assertNotNull(post);
 
-        var input = post.toInput().toBuilder()
+        var input = post.toInput()
                 .code("10001")
                 .build();
 
@@ -489,7 +489,7 @@ public class TestRankProvider extends TestProvider {
         var post = this.provider.findById(rankEntity.getId(), "master");
         assertNotNull(post);
 
-        var input = post.toInput().toBuilder()
+        var input = post.toInput()
                 .code("10001")
                 .build();
 

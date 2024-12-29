@@ -605,7 +605,7 @@ public class TestUnitProvider extends TestProvider {
         assertNotNull(unit);
         assertNotNull(unit.getId());
 
-        var unitInput = unit.toInput().toBuilder()
+        var unitInput = unit.toInput()
                 .code("10002")
                 .build();
 
@@ -655,7 +655,7 @@ public class TestUnitProvider extends TestProvider {
         assertNotNull(unit);
         assertNotNull(unit.getId());
 
-        var unitInput = unit.toInput().toBuilder()
+        var unitInput = unit.toInput()
                 .code("10002")
                 .build();
 

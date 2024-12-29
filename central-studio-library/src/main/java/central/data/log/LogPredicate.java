@@ -57,10 +57,9 @@ public class LogPredicate implements Serializable {
     @Nonnull
     private String params;
 
-    public LogPredicateInput toInput() {
+    public LogPredicateInput.Builder toInput() {
         return LogPredicateInput.builder()
                 .type(this.getType())
-                .params(this.getParams())
-                .build();
+                .params(this.getParams());
     }
 }

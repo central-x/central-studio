@@ -42,10 +42,10 @@ import java.util.List;
  * @since 2022/09/12
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class AccountInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 1132155902087028804L;

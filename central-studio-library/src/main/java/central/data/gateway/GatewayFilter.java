@@ -97,7 +97,7 @@ public class GatewayFilter extends ModifiableEntity implements Remarkable, Avail
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public GatewayFilterInput toInput() {
+    public GatewayFilterInput.Builder toInput() {
         return GatewayFilterInput.builder()
                 .id(this.getId())
                 .type(this.getType())
@@ -106,7 +106,6 @@ public class GatewayFilter extends ModifiableEntity implements Remarkable, Avail
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
                 .params(this.getParams())
-                .predicates(Listx.asStream(this.predicates).map(GatewayPredicate::toInput).toList())
-                .build();
+                .predicates(Listx.asStream(this.predicates).map(GatewayPredicate::toInput).map(GatewayPredicateInput.Builder::build).toList());
     }
 }

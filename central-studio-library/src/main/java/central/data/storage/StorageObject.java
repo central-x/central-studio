@@ -107,7 +107,7 @@ public class StorageObject extends ModifiableEntity {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public StorageObjectInput toInput() {
+    public StorageObjectInput.Builder toInput() {
         return StorageObjectInput.builder()
                 .id(this.getId())
                 .bucketId(this.getBucketId())
@@ -115,7 +115,6 @@ public class StorageObject extends ModifiableEntity {
                 .size(this.getSize())
                 .digest(this.getDigest())
                 .key(this.getKey())
-                .confirmed(this.getConfirmed())
-                .build();
+                .confirmed(this.getConfirmed());
     }
 }

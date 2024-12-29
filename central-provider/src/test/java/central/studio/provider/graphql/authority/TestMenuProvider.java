@@ -28,33 +28,29 @@ import central.data.authority.Menu;
 import central.data.authority.MenuInput;
 import central.data.authority.option.MenuType;
 import central.provider.graphql.authority.MenuProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.TestProvider;
+import central.studio.provider.database.persistence.authority.MenuPersistence;
 import central.studio.provider.database.persistence.authority.entity.MenuEntity;
-import central.studio.provider.database.persistence.authority.mapper.MenuMapper;
-import central.studio.provider.database.persistence.authority.mapper.PermissionMapper;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
-import central.util.Guidx;
-import central.util.Listx;
+import central.studio.provider.graphql.TestContext;
+import central.studio.provider.graphql.TestProvider;
 import lombok.Setter;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * MenuProvider Test Cases
- * 菜单
  *
  * @author Alan Yeh
  * @since 2022/09/27
@@ -63,470 +59,43 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestMenuProvider extends TestProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
-
-    @Setter(onMethod_ = @Autowired)
     private MenuProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private MenuMapper mapper;
+    private MenuPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private PermissionMapper permissionMapper;
+    private TestContext context;
 
-    @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
+    @BeforeAll
+    public static void setup(@Autowired DataContext context) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
+        }
+    }
 
     @BeforeEach
-    @AfterEach
     public void clear() {
-        // 清空测试数据
-        this.mapper.deleteAll();
-        this.applicationMapper.deleteAll();
-        this.permissionMapper.deleteAll();
-    }
-
-    /**
-     * @see MenuProvider#findById
-     */
-    @Test
-    public void case1() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var parentEntity = new MenuEntity();
-        parentEntity.setApplicationId(applicationEntity.getId());
-        parentEntity.setParentId("");
-        parentEntity.setCode("test-parent");
-        parentEntity.setName("测试父菜单");
-        parentEntity.setIcon("icon-parent");
-        parentEntity.setUrl("");
-        parentEntity.setType(MenuType.BACKEND.getValue());
-        parentEntity.setEnabled(Boolean.TRUE);
-        parentEntity.setOrder(0);
-        parentEntity.setRemark("父菜单");
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId(parentEntity.getId());
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        var childEntity = new MenuEntity();
-        childEntity.setApplicationId(applicationEntity.getId());
-        childEntity.setParentId(menuEntity.getId());
-        childEntity.setCode("test-child");
-        childEntity.setName("测试子菜单");
-        childEntity.setIcon("icon-child");
-        childEntity.setUrl("@/test-child");
-        childEntity.setType(MenuType.BACKEND.getValue());
-        childEntity.setEnabled(Boolean.TRUE);
-        childEntity.setOrder(0);
-        childEntity.setRemark("子菜单");
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        // 查询数据
-        var menu = this.provider.findById(menuEntity.getId(), "master");
-        assertNotNull(menu);
-        assertEquals(menu.getId(), menu.getId());
-        // 关联查询
-        assertNotNull(menu.getApplication());
-        assertEquals(applicationEntity.getId(), menu.getApplication().getId());
-        // 关联查询
-        assertNotNull(menu.getParent());
-        assertEquals(parentEntity.getId(), menu.getParent().getId());
-        // 关联查询
-        assertNotNull(menu.getChildren());
-        assertEquals(1, menu.getChildren().size());
-        assertTrue(menu.getChildren().stream().allMatch(it -> Objects.equals(childEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(menu.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), menu.getCreator().getId());
-        assertNotNull(menu.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), menu.getModifier().getId());
-    }
-
-    /**
-     * @see MenuProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var parentEntity = new MenuEntity();
-        parentEntity.setApplicationId(applicationEntity.getId());
-        parentEntity.setParentId("");
-        parentEntity.setCode("test-parent");
-        parentEntity.setName("测试父菜单");
-        parentEntity.setIcon("icon-parent");
-        parentEntity.setUrl("");
-        parentEntity.setType(MenuType.BACKEND.getValue());
-        parentEntity.setEnabled(Boolean.TRUE);
-        parentEntity.setOrder(0);
-        parentEntity.setRemark("父菜单");
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId(parentEntity.getId());
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        var childEntity = new MenuEntity();
-        childEntity.setApplicationId(applicationEntity.getId());
-        childEntity.setParentId(menuEntity.getId());
-        childEntity.setCode("test-child");
-        childEntity.setName("测试子菜单");
-        childEntity.setIcon("icon-child");
-        childEntity.setUrl("@/test-child");
-        childEntity.setType(MenuType.BACKEND.getValue());
-        childEntity.setEnabled(Boolean.TRUE);
-        childEntity.setOrder(0);
-        childEntity.setRemark("子菜单");
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        // 查询数据
-        var menus = this.provider.findByIds(List.of(menuEntity.getId()), "master");
-        assertNotNull(menus);
-        assertEquals(1, menus.size());
-
-        var menu = Listx.getFirstOrNull(menus);
-        assertNotNull(menu);
-        assertEquals(menu.getId(), menu.getId());
-        // 关联查询
-        assertNotNull(menu.getApplication());
-        assertEquals(applicationEntity.getId(), menu.getApplication().getId());
-        // 关联查询
-        assertNotNull(menu.getParent());
-        assertEquals(parentEntity.getId(), menu.getParent().getId());
-        // 关联查询
-        assertNotNull(menu.getChildren());
-        assertEquals(1, menu.getChildren().size());
-        assertTrue(menu.getChildren().stream().allMatch(it -> Objects.equals(childEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(menu.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), menu.getCreator().getId());
-        assertNotNull(menu.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), menu.getModifier().getId());
-    }
-
-    /**
-     * @see MenuProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var parentEntity = new MenuEntity();
-        parentEntity.setApplicationId(applicationEntity.getId());
-        parentEntity.setParentId("");
-        parentEntity.setCode("test-parent");
-        parentEntity.setName("测试父菜单");
-        parentEntity.setIcon("icon-parent");
-        parentEntity.setUrl("");
-        parentEntity.setType(MenuType.BACKEND.getValue());
-        parentEntity.setEnabled(Boolean.TRUE);
-        parentEntity.setOrder(0);
-        parentEntity.setRemark("父菜单");
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId(parentEntity.getId());
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        var childEntity = new MenuEntity();
-        childEntity.setApplicationId(applicationEntity.getId());
-        childEntity.setParentId(menuEntity.getId());
-        childEntity.setCode("test-child");
-        childEntity.setName("测试子菜单");
-        childEntity.setIcon("icon-child");
-        childEntity.setUrl("@/test-child");
-        childEntity.setType(MenuType.BACKEND.getValue());
-        childEntity.setEnabled(Boolean.TRUE);
-        childEntity.setOrder(0);
-        childEntity.setRemark("子菜单");
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        // 查询数据
-        var menus = this.provider.findBy(null, null, Conditions.of(Menu.class).eq("application.code", applicationEntity.getCode()), null, "master");
-        assertNotNull(menus);
-        assertEquals(3, menus.size());
-
-        var menu = menus.stream().filter(it -> Objects.equals(menuEntity.getId(), it.getId())).findFirst().orElse(null);
-        assertNotNull(menu);
-        assertEquals(menu.getId(), menu.getId());
-        // 关联查询
-        assertNotNull(menu.getApplication());
-        assertEquals(applicationEntity.getId(), menu.getApplication().getId());
-        // 关联查询
-        assertNotNull(menu.getParent());
-        assertEquals(parentEntity.getId(), menu.getParent().getId());
-        // 关联查询
-        assertNotNull(menu.getChildren());
-        assertEquals(1, menu.getChildren().size());
-        assertTrue(menu.getChildren().stream().allMatch(it -> Objects.equals(childEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(menu.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), menu.getCreator().getId());
-        assertNotNull(menu.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), menu.getModifier().getId());
-    }
-
-    /**
-     * @see MenuProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var parentEntity = new MenuEntity();
-        parentEntity.setApplicationId(applicationEntity.getId());
-        parentEntity.setParentId("");
-        parentEntity.setCode("test-parent");
-        parentEntity.setName("测试父菜单");
-        parentEntity.setIcon("icon-parent");
-        parentEntity.setUrl("");
-        parentEntity.setType(MenuType.BACKEND.getValue());
-        parentEntity.setEnabled(Boolean.TRUE);
-        parentEntity.setOrder(0);
-        parentEntity.setRemark("父菜单");
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId(parentEntity.getId());
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        var childEntity = new MenuEntity();
-        childEntity.setApplicationId(applicationEntity.getId());
-        childEntity.setParentId(menuEntity.getId());
-        childEntity.setCode("test-child");
-        childEntity.setName("测试子菜单");
-        childEntity.setIcon("icon-child");
-        childEntity.setUrl("@/test-child");
-        childEntity.setType(MenuType.BACKEND.getValue());
-        childEntity.setEnabled(Boolean.TRUE);
-        childEntity.setOrder(0);
-        childEntity.setRemark("子菜单");
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(Menu.class).eq("application.code", applicationEntity.getCode()), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(3, page.getPager().getItemCount());
-
-        var menu = page.getData().stream().filter(it -> Objects.equals(menuEntity.getId(), it.getId())).findFirst().orElse(null);
-        assertNotNull(menu);
-        assertEquals(menu.getId(), menu.getId());
-        // 关联查询
-        assertNotNull(menu.getApplication());
-        assertEquals(applicationEntity.getId(), menu.getApplication().getId());
-        // 关联查询
-        assertNotNull(menu.getParent());
-        assertEquals(parentEntity.getId(), menu.getParent().getId());
-        // 关联查询
-        assertNotNull(menu.getChildren());
-        assertEquals(1, menu.getChildren().size());
-        assertTrue(menu.getChildren().stream().allMatch(it -> Objects.equals(childEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(menu.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), menu.getCreator().getId());
-        assertNotNull(menu.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), menu.getModifier().getId());
-    }
-
-    /**
-     * @see MenuProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var parentEntity = new MenuEntity();
-        parentEntity.setApplicationId(applicationEntity.getId());
-        parentEntity.setParentId("");
-        parentEntity.setCode("test-parent");
-        parentEntity.setName("测试父菜单");
-        parentEntity.setIcon("icon-parent");
-        parentEntity.setUrl("");
-        parentEntity.setType(MenuType.BACKEND.getValue());
-        parentEntity.setEnabled(Boolean.TRUE);
-        parentEntity.setOrder(0);
-        parentEntity.setRemark("父菜单");
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId(parentEntity.getId());
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        var childEntity = new MenuEntity();
-        childEntity.setApplicationId(applicationEntity.getId());
-        childEntity.setParentId(menuEntity.getId());
-        childEntity.setCode("test-child");
-        childEntity.setName("测试子菜单");
-        childEntity.setIcon("icon-child");
-        childEntity.setUrl("@/test-child");
-        childEntity.setType(MenuType.BACKEND.getValue());
-        childEntity.setEnabled(Boolean.TRUE);
-        childEntity.setOrder(0);
-        childEntity.setRemark("子菜单");
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(Menu.class).eq("application.code", applicationEntity.getCode()), "master");
-        assertNotNull(count);
-        assertEquals(3, count);
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+        this.persistence.deleteBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
     }
 
     /**
      * @see MenuProvider#insert
+     * @see MenuProvider#findById
+     * @see MenuProvider#update
+     * @see MenuProvider#deleteByIds
      */
     @Test
-    public void case6() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+    public void case1() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
 
         var input = MenuInput.builder()
-                .applicationId(applicationEntity.getId())
+                .applicationId(application.getId())
                 .parentId("")
                 .code("test")
                 .name("测试菜单")
@@ -535,41 +104,87 @@ public class TestMenuProvider extends TestProvider {
                 .type(MenuType.BACKEND.getValue())
                 .enabled(Boolean.TRUE)
                 .order(0)
-                .remark("菜单")
+                .remark("测试菜单")
                 .build();
 
-        // 查询数据
-        var menu = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
+        // test insert
+        var data = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(data);
+        assertNotNull(data.getId());
+        assertEquals(input.getApplicationId(), data.getApplicationId());
+        assertEquals(input.getApplicationId(), data.getApplication().getId());
+        assertEquals(input.getParentId(), data.getParentId());
+        assertEquals(input.getCode(), data.getCode());
+        assertEquals(input.getName(), data.getName());
+        assertEquals(input.getUrl(), data.getUrl());
+        assertEquals(input.getType(), data.getType());
+        assertEquals(input.getEnabled(), data.getEnabled());
+        assertEquals(input.getOrder(), data.getOrder());
+        assertEquals(input.getRemark(), data.getRemark());
+        var entity = this.persistence.findById(data.getId(), Columns.all(), tenant.getCode());
+        assertNotNull(entity);
 
-        assertNotNull(menu);
-        assertNotNull(menu.getId());
+        // test findById
+        var fetched = this.provider.findById(data.getId(), tenant.getCode());
+        assertEquals(data.getId(), fetched.getId());
+        assertEquals(data.getApplicationId(), fetched.getApplicationId());
+        assertEquals(data.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(data.getParentId(), fetched.getParentId());
+        assertEquals(data.getCode(), fetched.getCode());
+        assertEquals(data.getName(), fetched.getName());
+        assertEquals(data.getUrl(), fetched.getUrl());
+        assertEquals(data.getType(), fetched.getType());
+        assertEquals(data.getEnabled(), fetched.getEnabled());
+        assertEquals(data.getOrder(), fetched.getOrder());
+        assertEquals(data.getRemark(), fetched.getRemark());
 
-        menu = this.provider.findById(menu.getId(), "master");
+        // test update
+        this.provider.update(fetched.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", tenant.getCode());
+        fetched = this.provider.findById(data.getId(), tenant.getCode());
+        assertEquals(data.getId(), fetched.getId());
+        assertEquals(data.getApplicationId(), fetched.getApplicationId());
+        assertEquals(data.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(data.getParentId(), fetched.getParentId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(data.getName(), fetched.getName());
+        assertEquals(data.getUrl(), fetched.getUrl());
+        assertEquals(data.getType(), fetched.getType());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(data.getOrder(), fetched.getOrder());
+        assertEquals(data.getRemark(), fetched.getRemark());
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, menu.getId())));
+        // test deleteById
+        this.provider.deleteByIds(List.of(data.getId()), tenant.getCode());
+        entity = this.persistence.findById(data.getId(), Columns.all(), tenant.getCode());
+        assertNull(entity);
     }
 
     /**
      * @see MenuProvider#insertBatch
+     * @see MenuProvider#findBy
+     * @see MenuProvider#updateBatch
+     * @see MenuProvider#pageBy
+     * @see MenuProvider#deleteBy
      */
     @Test
-    public void case7() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+    public void case2() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
 
+        var input_parent = MenuInput.builder()
+                .applicationId(application.getId())
+                .parentId("")
+                .code("test_parent")
+                .name("测试父菜单")
+                .icon("icon")
+                .url("@/parent")
+                .type(MenuType.BACKEND.getValue())
+                .enabled(Boolean.TRUE)
+                .order(0)
+                .remark("测试父菜单")
+                .build();
         var input = MenuInput.builder()
-                .applicationId(applicationEntity.getId())
+                .applicationId(application.getId())
                 .parentId("")
                 .code("test")
                 .name("测试菜单")
@@ -578,205 +193,54 @@ public class TestMenuProvider extends TestProvider {
                 .type(MenuType.BACKEND.getValue())
                 .enabled(Boolean.TRUE)
                 .order(0)
-                .remark("菜单")
+                .remark("测试菜单")
                 .build();
 
-        // 查询数据
-        var menus = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(menus);
-        assertEquals(1, menus.size());
+        // test insertBatch
+        var data = this.provider.insertBatch(List.of(input_parent, input), "syssa", tenant.getCode());
+        assertNotNull(data);
+        assertEquals(2, data.size());
+        assertTrue(data.stream().anyMatch(it -> it.getCode().equals("test")));
+        assertTrue(data.stream().anyMatch(it -> it.getCode().equals("test_parent")));
+        assertTrue(data.stream().noneMatch(it -> it.getParent() != null));
+        var count = this.persistence.countBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(2, count);
 
-        var menu = Listx.getFirstOrNull(menus);
-        assertNotNull(menu);
-        assertNotNull(menu.getId());
+        // test findBy
+        var fetched = this.provider.findBy(null, null, Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), null, tenant.getCode());
+        assertNotNull(fetched);
+        assertEquals(2, fetched.size());
+        assertTrue(fetched.stream().anyMatch(it -> it.getCode().equals("test")));
+        assertTrue(fetched.stream().anyMatch(it -> it.getCode().equals("test_parent")));
+        assertTrue(fetched.stream().noneMatch(it -> it.getParent() != null));
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, menu.getId())));
-    }
+        // test updateBatch
+        var parent = fetched.stream().filter(it -> it.getCode().equals("test_parent")).findFirst().orElse(null);
+        var child = fetched.stream().filter(it -> it.getCode().equals("test")).findFirst().orElse(null);
+        assertNotNull(parent);
+        assertNotNull(child);
 
-    /**
-     * @see MenuProvider#update
-     */
-    @Test
-    public void case8() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+        this.provider.updateBatch(List.of(child.toInput().parentId(parent.getId()).build()), "syssa", tenant.getCode());
+        var page = this.provider.pageBy(1L, 10L, Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), null, tenant.getCode());
+        assertNotNull(page);
+        assertEquals(1, page.getPager().getPageIndex());
+        assertEquals(10, page.getPager().getPageSize());
+        assertEquals(1, page.getPager().getPageCount());
+        assertEquals(2, page.getPager().getItemCount());
+        assertEquals(2, page.getData().size());
+        parent = page.getData().stream().filter(it -> it.getCode().equals("test_parent")).findFirst().orElse(null);
+        child = page.getData().stream().filter(it -> it.getCode().equals("test")).findFirst().orElse(null);
+        assertNotNull(parent);
+        assertNotNull(child);
+        assertNotNull(parent.getChildren());
+        assertEquals(1, parent.getChildren().size());
+        assertEquals(child.getId(), parent.getChildren().get(0).getId());
+        assertNotNull(child.getParent());
+        assertEquals(parent.getId(), child.getParent().getId());
 
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        // 查询数据
-        var menu = this.provider.findById(menuEntity.getId(), "master");
-        assertNotNull(menu);
-        assertEquals(menuEntity.getId(), menu.getId());
-
-        var input = menu.toInput().toBuilder()
-                .code("test1")
-                .build();
-
-        // 更新数据
-        menu = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(menu);
-        assertEquals(menuEntity.getId(), menu.getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getCode, "test1")));
-    }
-
-    /**
-     * @see MenuProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        // 查询数据
-        var menu = this.provider.findById(menuEntity.getId(), "master");
-        assertNotNull(menu);
-        assertEquals(menuEntity.getId(), menu.getId());
-
-        var input = menu.toInput().toBuilder()
-                .code("test1")
-                .build();
-
-        // 更新数据
-        var menus = this.provider.updateBatch(Listx.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(menus);
-        assertEquals(1, menus.size());
-
-        menu = Listx.getFirstOrNull(menus);
-        assertNotNull(menu);
-        assertEquals(menuEntity.getId(), menu.getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getCode, "test1")));
-    }
-
-    /**
-     * @see MenuProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        var deleted = this.provider.deleteByIds(List.of(menuEntity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, menuEntity.getId())));
-    }
-
-    /**
-     * @see MenuProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("@/test");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(menuEntity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(Menu.class).eq(Menu::getCode, menuEntity.getCode()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, menuEntity.getId())));
+        // test deleteBy
+        this.provider.deleteBy(Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 }

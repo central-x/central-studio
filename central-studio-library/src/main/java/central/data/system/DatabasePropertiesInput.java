@@ -39,10 +39,10 @@ import java.io.Serializable;
  * @since 2022/11/13
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class DatabasePropertiesInput implements Serializable {
     @Serial
     private static final long serialVersionUID = -5021500567067262588L;

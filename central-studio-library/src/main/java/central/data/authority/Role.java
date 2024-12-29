@@ -116,7 +116,7 @@ public class Role extends ModifiableEntity implements Codeable, Available, Remar
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public RoleInput toInput() {
+    public RoleInput.Builder toInput() {
         return RoleInput.builder()
                 .id(this.getId())
                 .applicationId(this.getApplicationId())
@@ -124,7 +124,6 @@ public class Role extends ModifiableEntity implements Codeable, Available, Remar
                 .name(this.getName())
                 .unitId(this.getUnitId())
                 .enabled(this.getEnabled())
-                .remark(this.getRemark())
-                .build();
+                .remark(this.getRemark());
     }
 }

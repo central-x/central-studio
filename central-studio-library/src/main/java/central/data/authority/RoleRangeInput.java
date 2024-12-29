@@ -48,10 +48,10 @@ import java.io.Serializable;
  * @since 2024/12/14
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class RoleRangeInput implements Serializable {
     @Serial
     private static final long serialVersionUID = -3601193715982317662L;

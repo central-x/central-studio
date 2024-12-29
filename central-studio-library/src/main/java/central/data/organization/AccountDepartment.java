@@ -120,13 +120,12 @@ public class AccountDepartment extends Entity {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public AccountDepartmentInput toInput() {
+    public AccountDepartmentInput.Builder toInput() {
         return AccountDepartmentInput.builder()
                 .accountId(this.getAccountId())
                 .unitId(this.getUnitId())
                 .departmentId(this.getDepartmentId())
                 .postId(this.getPostId())
-                .primary(this.getPrimary())
-                .build();
+                .primary(this.getPrimary());
     }
 }

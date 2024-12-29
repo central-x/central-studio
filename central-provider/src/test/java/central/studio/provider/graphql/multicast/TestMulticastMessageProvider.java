@@ -365,7 +365,7 @@ public class TestMulticastMessageProvider {
         assertNotNull(message);
         assertEquals(entity.getId(), message.getId());
 
-        var input = message.toInput().toBuilder()
+        var input = message.toInput()
                 .status(MessageStatus.SUCCEED.getValue())
                 .build();
 
@@ -397,7 +397,7 @@ public class TestMulticastMessageProvider {
         assertNotNull(message);
         assertEquals(entity.getId(), message.getId());
 
-        var input = message.toInput().toBuilder()
+        var input = message.toInput()
                 .status(MessageStatus.SUCCEED.getValue())
                 .build();
 

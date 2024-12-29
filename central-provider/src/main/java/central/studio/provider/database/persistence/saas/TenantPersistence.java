@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.saas;
 import central.bean.Page;
 import central.data.saas.TenantInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -229,12 +230,8 @@ public class TenantPersistence {
      * @param conditions 条件
      */
     public long deleteBy(@Nullable Conditions<? extends TenantEntity> conditions) {
-        var entities = this.mapper.findBy(conditions);
-        if (Listx.isNullOrEmpty(entities)) {
-            return 0;
-        }
-
-        var ids = entities.stream().map(TenantEntity::getId).toList();
+        var ids = this.mapper.findBy(Columns.of(TenantEntity::getId), conditions).stream()
+                .map(Entity::getId).toList();
         return this.deleteByIds(ids);
     }
 }

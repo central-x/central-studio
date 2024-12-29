@@ -130,7 +130,7 @@ public class Account extends ModifiableEntity implements Available, Deletable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public AccountInput toInput() {
+    public AccountInput.Builder toInput() {
         return AccountInput.builder()
                 .id(this.getId())
                 .username(this.getUsername())
@@ -140,7 +140,6 @@ public class Account extends ModifiableEntity implements Available, Deletable {
                 .avatar(this.getAvatar())
                 .enabled(this.getEnabled())
                 .deleted(this.getDeleted())
-                .units(Listx.asStream(this.getUnits()).map(AccountUnit::toInput).toList())
-                .build();
+                .units(Listx.asStream(this.getUnits()).map(AccountUnit::toInput).map(AccountUnitInput.Builder::build).toList());
     }
 }

@@ -43,10 +43,10 @@ import java.io.Serializable;
  * @since 2022/11/04
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class MulticastMessageInput implements Serializable {
     @Serial
     private static final long serialVersionUID = -6457292307996258219L;

@@ -352,7 +352,7 @@ public class TestStorageObjectProvider {
         assertNotNull(object);
         assertEquals(entity.getId(), object.getId());
 
-        var input = object.toInput().toBuilder()
+        var input = object.toInput()
                 .key("test1")
                 .build();
 
@@ -377,7 +377,7 @@ public class TestStorageObjectProvider {
         assertNotNull(object);
         assertEquals(entity.getId(), object.getId());
 
-        var input = object.toInput().toBuilder()
+        var input = object.toInput()
                 .key("test1")
                 .build();
 

@@ -424,7 +424,7 @@ public class TestMulticastBroadcasterProvider {
         assertNotNull(broadcaster);
         assertEquals(entity.getId(), broadcaster.getId());
 
-        var input = broadcaster.toInput().toBuilder()
+        var input = broadcaster.toInput()
                 .code("test1")
                 .build();
 
@@ -466,7 +466,7 @@ public class TestMulticastBroadcasterProvider {
         assertNotNull(broadcaster);
         assertEquals(entity.getId(), broadcaster.getId());
 
-        var input = broadcaster.toInput().toBuilder()
+        var input = broadcaster.toInput()
                 .code("test1")
                 .build();
 

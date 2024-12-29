@@ -456,7 +456,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         var tenantApplications = this.provider.findById(entity.getId(), "master");
         assertNotNull(tenantApplications);
 
-        var input = tenantApplications.toInput().toBuilder()
+        var input = tenantApplications.toInput()
                 .enabled(Boolean.FALSE)
                 .build();
         tenantApplications = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
@@ -496,7 +496,7 @@ public class TestTenantApplicationProvider extends TestProvider {
         var tenantApplications = this.provider.findById(entity.getId(), "master");
         assertNotNull(tenantApplications);
 
-        var input = tenantApplications.toInput().toBuilder()
+        var input = tenantApplications.toInput()
                 .enabled(Boolean.FALSE)
                 .build();
         var updated = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");

@@ -52,10 +52,9 @@ public class GatewayPredicate implements Serializable {
      */
     private String params;
 
-    public GatewayPredicateInput toInput() {
+    public GatewayPredicateInput.Builder toInput() {
         return GatewayPredicateInput.builder()
                 .type(this.getType())
-                .params(this.getParams())
-                .build();
+                .params(this.getParams());
     }
 }

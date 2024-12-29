@@ -101,13 +101,12 @@ public class Permission extends ModifiableEntity implements Codeable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public PermissionInput toInput() {
+    public PermissionInput.Builder toInput() {
         return PermissionInput.builder()
                 .id(this.getId())
                 .applicationId(this.getApplicationId())
                 .menuId(this.getMenuId())
                 .code(this.getCode())
-                .name(this.getName())
-                .build();
+                .name(this.getName());
     }
 }

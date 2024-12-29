@@ -106,7 +106,7 @@ public class StorageBucket extends ModifiableEntity implements Codeable, Remarka
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public StorageBucketInput toInput() {
+    public StorageBucketInput.Builder toInput() {
         return StorageBucketInput.builder()
                 .id(this.getId())
                 .applicationId(this.getApplicationId())
@@ -115,7 +115,6 @@ public class StorageBucket extends ModifiableEntity implements Codeable, Remarka
                 .type(this.getType())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .params(this.getParams())
-                .build();
+                .params(this.getParams());
     }
 }

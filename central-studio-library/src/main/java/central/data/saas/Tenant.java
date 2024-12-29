@@ -109,14 +109,13 @@ public class Tenant extends ModifiableEntity implements Codeable, Available, Rem
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public TenantInput toInput() {
+    public TenantInput.Builder toInput() {
         return TenantInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
                 .name(this.getName())
                 .databaseId(this.getDatabaseId())
                 .enabled(this.getEnabled())
-                .remark(this.getRemark())
-                .build();
+                .remark(this.getRemark());
     }
 }

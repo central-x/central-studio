@@ -34,7 +34,6 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 日志过滤器
@@ -43,10 +42,10 @@ import java.util.Set;
  * @since 2022/10/25
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class LogFilterInput implements Serializable {
     @Serial
     private static final long serialVersionUID = -1719713873601684029L;

@@ -448,7 +448,7 @@ public class TestAccountProvider extends TestProvider {
         assertNotNull(account);
 
         // 修改数据
-        var input = account.toInput().toBuilder()
+        var input = account.toInput()
                 .name("章三")
                 .build();
         var updated = this.provider.update(input, this.properties.getSupervisor().getUsername(), "master");
@@ -481,7 +481,7 @@ public class TestAccountProvider extends TestProvider {
         assertNotNull(account);
 
         // 修改数据
-        var input = account.toInput().toBuilder()
+        var input = account.toInput()
                 .name("章三")
                 .build();
 

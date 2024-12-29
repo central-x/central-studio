@@ -94,13 +94,12 @@ public class MulticastMessage extends ModifiableEntity {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public MulticastMessageInput toInput() {
+    public MulticastMessageInput.Builder toInput() {
         return MulticastMessageInput.builder()
                 .id(this.getId())
                 .broadcasterId(this.getBroadcasterId())
                 .body(this.getBody())
                 .mode(this.getMode())
-                .status(this.getStatus())
-                .build();
+                .status(this.getStatus());
     }
 }

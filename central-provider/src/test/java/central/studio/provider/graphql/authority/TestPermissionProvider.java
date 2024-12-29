@@ -473,7 +473,7 @@ public class TestPermissionProvider extends TestProvider {
         assertNotNull(permission);
         assertEquals(permissionEntity.getId(), permission.getId());
 
-        var input = permission.toInput().toBuilder()
+        var input = permission.toInput()
                 .code("test-delete")
                 .build();
 
@@ -533,7 +533,7 @@ public class TestPermissionProvider extends TestProvider {
         assertNotNull(permission);
         assertEquals(permissionEntity.getId(), permission.getId());
 
-        var input = permission.toInput().toBuilder()
+        var input = permission.toInput()
                 .code("test-delete")
                 .build();
 

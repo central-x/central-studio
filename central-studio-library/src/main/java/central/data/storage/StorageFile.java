@@ -119,7 +119,7 @@ public class StorageFile extends ModifiableEntity implements Codeable, Treeable<
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public StorageFileInput toInput() {
+    public StorageFileInput.Builder toInput() {
         return StorageFileInput.builder()
                 .id(this.getId())
                 .bucketId(this.getBucketId())
@@ -127,7 +127,6 @@ public class StorageFile extends ModifiableEntity implements Codeable, Treeable<
                 .code(this.getCode())
                 .name(this.getName())
                 .directory(this.getDirectory())
-                .confirmed(this.getConfirmed())
-                .build();
+                .confirmed(this.getConfirmed());
     }
 }

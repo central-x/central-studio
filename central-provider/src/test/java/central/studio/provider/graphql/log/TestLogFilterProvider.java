@@ -462,7 +462,7 @@ public class TestLogFilterProvider {
         assertNotNull(filter);
         assertEquals(id, filter.getId());
 
-        var input = filter.toInput().toBuilder()
+        var input = filter.toInput()
                 .code("test1")
                 .build();
 
@@ -488,7 +488,7 @@ public class TestLogFilterProvider {
         assertNotNull(filter);
         assertEquals(id, filter.getId());
 
-        var input = filter.toInput().toBuilder()
+        var input = filter.toInput()
                 .code("test1")
                 .build();
 

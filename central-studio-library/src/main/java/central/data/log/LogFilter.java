@@ -97,7 +97,7 @@ public class LogFilter extends ModifiableEntity implements Codeable, Available, 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public LogFilterInput toInput() {
+    public LogFilterInput.Builder toInput() {
         return LogFilterInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
@@ -106,7 +106,6 @@ public class LogFilter extends ModifiableEntity implements Codeable, Available, 
                 .remark(this.getRemark())
                 .collectorIds(Listx.asStream(this.getCollectors()).map(LogCollector::getId).toList())
                 .storageIds(Listx.asStream(this.getStorages()).map(LogStorage::getId).toList())
-                .predicates(Listx.asStream(this.getPredicates()).map(LogPredicate::toInput).toList())
-                .build();
+                .predicates(Listx.asStream(this.getPredicates()).map(LogPredicate::toInput).map(LogPredicateInput.Builder::build).toList());
     }
 }

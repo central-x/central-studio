@@ -93,13 +93,12 @@ public class Rank extends ModifiableEntity implements Codeable, Orderable<Rank> 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public RankInput toInput() {
+    public RankInput.Builder toInput() {
         return RankInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
                 .name(this.getName())
                 .unitId(this.getUnitId())
-                .order(this.getOrder())
-                .build();
+                .order(this.getOrder());
     }
 }

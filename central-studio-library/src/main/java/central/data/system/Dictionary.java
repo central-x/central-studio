@@ -125,7 +125,7 @@ public class Dictionary extends ModifiableEntity implements Codeable, Available,
         return Listx.asStream(this.items).anyMatch(it -> Objects.equals(it.getCode(), value));
     }
 
-    public DictionaryInput toInput() {
+    public DictionaryInput.Builder toInput() {
         return DictionaryInput.builder()
                 .id(this.getId())
                 .applicationId(this.getApplicationId())
@@ -133,7 +133,6 @@ public class Dictionary extends ModifiableEntity implements Codeable, Available,
                 .name(this.getName())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .items(Listx.asStream(this.getItems()).map(DictionaryItem::toInput).toList())
-                .build();
+                .items(Listx.asStream(this.getItems()).map(DictionaryItem::toInput).map(DictionaryItemInput.Builder::build).toList());
     }
 }

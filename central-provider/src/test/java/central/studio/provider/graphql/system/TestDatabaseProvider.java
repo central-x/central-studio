@@ -600,7 +600,7 @@ public class TestDatabaseProvider extends TestProvider {
         var database = this.provider.findById(databaseEntity.getId(), "master");
         assertNotNull(database);
 
-        var input = database.toInput().toBuilder()
+        var input = database.toInput()
                 .code("example")
                 .build();
 
@@ -656,7 +656,7 @@ public class TestDatabaseProvider extends TestProvider {
         var database = this.provider.findById(databaseEntity.getId(), "master");
         assertNotNull(database);
 
-        var input = database.toInput().toBuilder()
+        var input = database.toInput()
                 .code("example")
                 .build();
 

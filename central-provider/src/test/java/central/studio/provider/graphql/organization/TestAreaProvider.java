@@ -326,7 +326,7 @@ public class TestAreaProvider extends TestProvider {
         assertNotNull(area);
 
         // 修改数据
-        var input = area.toInput().toBuilder()
+        var input = area.toInput()
                 .name("美国")
                 .code("840")
                 .order(1)
@@ -374,7 +374,7 @@ public class TestAreaProvider extends TestProvider {
         assertNotNull(areas);
 
         // 修改数据
-        var inputs = areas.stream().map(it -> it.toInput().toBuilder().order(1).build()).toList();
+        var inputs = areas.stream().map(it -> it.toInput().order(1).build()).toList();
         var updated = this.provider.updateBatch(inputs, this.properties.getSupervisor().getUsername(), "master");
         assertNotNull(updated);
         assertTrue(updated.stream().allMatch(it -> Objects.equals(1, it.getOrder())));

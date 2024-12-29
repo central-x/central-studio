@@ -40,10 +40,10 @@ import java.io.Serializable;
  * @since 2022/09/13
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class RoleInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 7839500265618952568L;

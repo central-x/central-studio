@@ -31,6 +31,7 @@ import central.provider.graphql.saas.TenantProvider;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
 import central.studio.provider.ProviderProperties;
+import central.studio.provider.database.core.DatabaseType;
 import central.studio.provider.graphql.TestProvider;
 import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
@@ -113,7 +114,7 @@ public class TestTenantProvider extends TestProvider {
         databaseEntity.setApplicationId(application.getId());
         databaseEntity.setCode("test");
         databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
+        databaseEntity.setType(DatabaseType.H2.getValue());
         databaseEntity.setEnabled(Boolean.TRUE);
         databaseEntity.setRemark("测试");
         databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
@@ -404,7 +405,7 @@ public class TestTenantProvider extends TestProvider {
         var tenant = this.provider.findById(entity.getId(), "master");
         assertNotNull(tenant);
 
-        var input = tenant.toInput().toBuilder()
+        var input = tenant.toInput()
                 .code("master")
                 .build();
         tenant = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
@@ -436,7 +437,7 @@ public class TestTenantProvider extends TestProvider {
         var tenant = this.provider.findById(entity.getId(), "master");
         assertNotNull(tenant);
 
-        var input = tenant.toInput().toBuilder()
+        var input = tenant.toInput()
                 .code("master")
                 .build();
         var updated = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");

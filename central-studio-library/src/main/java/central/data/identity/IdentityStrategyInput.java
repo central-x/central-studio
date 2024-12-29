@@ -42,10 +42,10 @@ import java.io.Serializable;
  * @since 2022/10/24
  */
 @Data
-@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true, builderClassName = "Builder")
 public class IdentityStrategyInput implements Serializable {
     @Serial
     private static final long serialVersionUID = 2899160796868349040L;

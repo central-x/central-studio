@@ -119,7 +119,7 @@ public class Application extends ModifiableEntity implements Codeable, Available
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public ApplicationInput toInput() {
+    public ApplicationInput.Builder toInput() {
         return ApplicationInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
@@ -130,7 +130,6 @@ public class Application extends ModifiableEntity implements Codeable, Available
                 .secret(this.getSecret())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .routes(Listx.asStream(this.getRoutes()).map(ApplicationRoute::toInput).toList())
-                .build();
+                .routes(Listx.asStream(this.getRoutes()).map(ApplicationRoute::toInput).map(ApplicationRouteInput.Builder::build).toList());
     }
 }

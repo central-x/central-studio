@@ -442,7 +442,7 @@ public class TestPostProvider extends TestProvider {
         var post = this.provider.findById(postEntity.getId(), "master");
         assertNotNull(post);
 
-        var input = post.toInput().toBuilder()
+        var input = post.toInput()
                 .code("10001")
                 .build();
 
@@ -490,7 +490,7 @@ public class TestPostProvider extends TestProvider {
         var post = this.provider.findById(postEntity.getId(), "master");
         assertNotNull(post);
 
-        var input = post.toInput().toBuilder()
+        var input = post.toInput()
                 .code("10001")
                 .build();
 

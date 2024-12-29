@@ -94,7 +94,7 @@ public class IdentityStrategy extends ModifiableEntity implements Codeable, Rema
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public IdentityStrategyInput toInput() {
+    public IdentityStrategyInput.Builder toInput() {
         return IdentityStrategyInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
@@ -102,7 +102,6 @@ public class IdentityStrategy extends ModifiableEntity implements Codeable, Rema
                 .type(this.getType())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .params(this.getParams())
-                .build();
+                .params(this.getParams());
     }
 }
