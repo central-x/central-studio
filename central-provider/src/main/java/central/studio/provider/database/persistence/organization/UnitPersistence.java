@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.organization;
 import central.bean.Page;
 import central.data.organization.UnitInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -70,7 +71,9 @@ public class UnitPersistence {
      * @param columns 查询字段
      * @param tenant  租户标识
      */
-    public @Nullable UnitEntity findById(@Nullable String id, @Nonnull Columns<? extends UnitEntity> columns, @Nonnull String tenant) {
+    public @Nullable UnitEntity findById(@Nullable String id,
+                                         @Nonnull Columns<? extends UnitEntity> columns,
+                                         @Nonnull String tenant) {
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
@@ -85,7 +88,9 @@ public class UnitPersistence {
      * @param columns 查询字段
      * @param tenant  租户标识
      */
-    public @Nonnull List<UnitEntity> findByIds(@Nullable List<String> ids, @Nonnull Columns<? extends UnitEntity> columns, @Nonnull String tenant) {
+    public @Nonnull List<UnitEntity> findByIds(@Nullable List<String> ids,
+                                               @Nonnull Columns<? extends UnitEntity> columns,
+                                               @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return new ArrayList<>();
         }
@@ -103,7 +108,12 @@ public class UnitPersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull List<UnitEntity> findBy(@Nullable Long limit, @Nullable Long offset, @Nonnull Columns<? extends UnitEntity> columns, @Nullable Conditions<? extends UnitEntity> conditions, @Nullable Orders<? extends UnitEntity> orders, @Nonnull String tenant) {
+    public @Nonnull List<UnitEntity> findBy(@Nullable Long limit,
+                                            @Nullable Long offset,
+                                            @Nonnull Columns<? extends UnitEntity> columns,
+                                            @Nullable Conditions<? extends UnitEntity> conditions,
+                                            @Nullable Orders<? extends UnitEntity> orders,
+                                            @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
@@ -118,9 +128,14 @@ public class UnitPersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull Page<UnitEntity> pageBy(long pageIndex, long pageSize, @Nonnull Columns<? extends UnitEntity> columns, @Nullable Conditions<? extends UnitEntity> conditions, @Nullable Orders<? extends UnitEntity> orders, @Nonnull String tenant) {
+    public @Nonnull Page<UnitEntity> pageBy(long pageIndex,
+                                            long pageSize,
+                                            @Nonnull Columns<? extends UnitEntity> columns,
+                                            @Nullable Conditions<? extends UnitEntity> conditions,
+                                            @Nullable Orders<? extends UnitEntity> orders,
+                                            @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
-        return this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
+        return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
     /**
@@ -129,7 +144,8 @@ public class UnitPersistence {
      * @param conditions 筛选条件
      * @param tenant     租户标识
      */
-    public long countBy(@Nullable Conditions<? extends UnitEntity> conditions, @Nonnull String tenant) {
+    public long countBy(@Nullable Conditions<? extends UnitEntity> conditions,
+                        @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
@@ -141,7 +157,9 @@ public class UnitPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull UnitEntity insert(@Validated({Insert.class, Default.class}) UnitInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull UnitEntity insert(@Nonnull @Validated({Insert.class, Default.class}) UnitInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getCode, input.getCode()).eq(UnitEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -163,7 +181,9 @@ public class UnitPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<UnitEntity> insertBatch(@Validated({Insert.class, Default.class}) List<UnitInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<UnitEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<UnitInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -174,7 +194,9 @@ public class UnitPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull UnitEntity update(@Validated({Update.class, Default.class}) UnitInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull UnitEntity update(@Nonnull @Validated({Update.class, Default.class}) UnitInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getId, input.getId()).eq(UnitEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -201,7 +223,9 @@ public class UnitPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<UnitEntity> updateBatch(@Validated({Update.class, Default.class}) List<UnitInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<UnitEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<UnitInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -211,7 +235,8 @@ public class UnitPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -227,10 +252,10 @@ public class UnitPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends UnitEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
-
-        // TODO 级联删除？
-        return this.mapper.deleteBy(conditions);
+    public long deleteBy(@Nullable Conditions<? extends UnitEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
+        return this.deleteByIds(ids, tenant);
     }
 }

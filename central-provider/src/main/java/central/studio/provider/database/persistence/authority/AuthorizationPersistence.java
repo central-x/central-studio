@@ -91,7 +91,8 @@ public class AuthorizationPersistence {
      * @param code   应用标识
      * @param secret 应用密钥
      */
-    public @Nullable Application findApplication(@Nonnull String code, @Nonnull String secret) {
+    public @Nullable Application findApplication(@Nonnull String code,
+                                                 @Nonnull String secret) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
 
         var application = container.getApplicationByCode(code);
@@ -113,7 +114,9 @@ public class AuthorizationPersistence {
      * @param tenant    租户标识
      * @return 应用列表
      */
-    public @Nonnull List<Application> findApplications(@Nonnull String accountId, @Nonnull String type, @Nonnull String tenant) {
+    public @Nonnull List<Application> findApplications(@Nonnull String accountId,
+                                                       @Nonnull String type,
+                                                       @Nonnull String tenant) {
         var menus = this.findMenus(accountId, type, null, tenant);
 
         var applicationIds = Listx.asStream(menus).map(MenuEntity::getApplicationId).collect(Collectors.toSet());
@@ -201,7 +204,9 @@ public class AuthorizationPersistence {
      * @param tenant        租户标识
      * @return 已分配的角色清单
      */
-    public @Nonnull List<RoleEntity> findRoles(@Nonnull String accountId, @Nullable String applicationId, @Nonnull String tenant) {
+    public @Nonnull List<RoleEntity> findRoles(@Nonnull String accountId,
+                                               @Nullable String applicationId,
+                                               @Nonnull String tenant) {
         {
             // 检查帐号是否是超级管理员、三员
             // 超级管理员、三员都没有角色
@@ -231,7 +236,9 @@ public class AuthorizationPersistence {
      * @param tenant        租户标识
      * @return 已分配的权限清单
      */
-    public @Nonnull List<PermissionEntity> findPermissions(@Nonnull String accountId, @Nullable String applicationId, @Nonnull String tenant) {
+    public @Nonnull List<PermissionEntity> findPermissions(@Nonnull String accountId,
+                                                           @Nullable String applicationId,
+                                                           @Nonnull String tenant) {
         var conditions = Conditions.of(PermissionDTO.class);
 
         if (Stringx.isNotBlank(applicationId)) {

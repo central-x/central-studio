@@ -160,7 +160,9 @@ public class StorageFilePersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public StorageFileEntity insert(@Validated({Insert.class, Default.class}) StorageFileInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public StorageFileEntity insert(@Nonnull @Validated({Insert.class, Default.class}) StorageFileInput input,
+                                    @Nonnull String operator,
+                                    @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getCode, input.getCode()).eq(StorageFileEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -182,7 +184,9 @@ public class StorageFilePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<StorageFileEntity> insertBatch(@Validated({Insert.class, Default.class}) List<StorageFileInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<StorageFileEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<StorageFileInput> inputs,
+                                               @Nonnull String operator,
+                                               @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -193,7 +197,9 @@ public class StorageFilePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public StorageFileEntity update(@Validated({Update.class, Default.class}) StorageFileInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public StorageFileEntity update(@Nonnull @Validated({Update.class, Default.class}) StorageFileInput input,
+                                    @Nonnull String operator,
+                                    @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(StorageFileEntity.class).eq(StorageFileEntity::getId, input.getId()).eq(StorageFileEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -220,7 +226,9 @@ public class StorageFilePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<StorageFileEntity> updateBatch(@Validated({Update.class, Default.class}) List<StorageFileInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<StorageFileEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<StorageFileInput> inputs,
+                                               @Nonnull String operator,
+                                               @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -230,7 +238,8 @@ public class StorageFilePersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -244,7 +253,8 @@ public class StorageFilePersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends StorageFileEntity> conditions, @Nonnull String tenant) {
+    public long deleteBy(@Nullable Conditions<? extends StorageFileEntity> conditions,
+                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(StorageFileEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
     }

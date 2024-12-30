@@ -166,7 +166,9 @@ public class StorageBucketPersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public StorageBucketEntity insert(@Validated({Insert.class, Default.class}) StorageBucketInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public StorageBucketEntity insert(@Nonnull @Validated({Insert.class, Default.class}) StorageBucketInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getCode, input.getCode()).eq(StorageBucketEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -188,7 +190,9 @@ public class StorageBucketPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<StorageBucketEntity> insertBatch(@Validated({Insert.class, Default.class}) List<StorageBucketInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<StorageBucketEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<StorageBucketInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -199,7 +203,9 @@ public class StorageBucketPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public StorageBucketEntity update(@Validated({Update.class, Default.class}) StorageBucketInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public StorageBucketEntity update(@Nonnull @Validated({Update.class, Default.class}) StorageBucketInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getId, input.getId()).eq(StorageBucketEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -226,7 +232,9 @@ public class StorageBucketPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<StorageBucketEntity> updateBatch(@Validated({Update.class, Default.class}) List<StorageBucketInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<StorageBucketEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<StorageBucketInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -236,7 +244,8 @@ public class StorageBucketPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -256,7 +265,8 @@ public class StorageBucketPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends StorageBucketEntity> conditions, @Nonnull String tenant) {
+    public long deleteBy(@Nullable Conditions<? extends StorageBucketEntity> conditions,
+                         @Nonnull String tenant) {
         var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(StorageBucketEntity::getTenantCode, tenant)).stream()
                 .map(Entity::getId).toList();
         return this.deleteByIds(ids, tenant);

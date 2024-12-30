@@ -154,7 +154,9 @@ public class RoleRangePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull RoleRangeEntity insert(@Validated({Insert.class, Default.class}) RoleRangeInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull RoleRangeEntity insert(@Nonnull @Validated({Insert.class, Default.class}) RoleRangeInput input,
+                                           @Nonnull String operator,
+                                           @Nonnull String tenant) {
         var entity = new RoleRangeEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);
@@ -163,6 +165,7 @@ public class RoleRangePersistence {
 
         return entity;
     }
+
     /**
      * 批量保存数据
      *
@@ -170,29 +173,35 @@ public class RoleRangePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<RoleRangeEntity> insertBatch(@Validated({Insert.class, Default.class}) List<RoleRangeInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<RoleRangeEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<RoleRangeInput> inputs,
+                                                      @Nonnull String operator,
+                                                      @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
+
     /**
      * 根据主键删除数据
      *
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
 
         return this.mapper.deleteBy(Conditions.of(RoleRangeEntity.class).in(RoleRangeEntity::getId, ids).eq(RoleRangeEntity::getTenantCode, tenant));
     }
+
     /**
      * 根据条件删除数据
      *
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends RoleRangeEntity> conditions, @Nonnull String tenant) {
+    public long deleteBy(@Nullable Conditions<? extends RoleRangeEntity> conditions,
+                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(RoleRangeEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
     }

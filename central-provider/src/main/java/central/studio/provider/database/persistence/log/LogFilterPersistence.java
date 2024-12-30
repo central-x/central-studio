@@ -156,7 +156,8 @@ public class LogFilterPersistence {
      * @param operator 操作帐号
      * @return 保存后的数据
      */
-    public LogFilterEntity insert(@Validated({Insert.class, Default.class}) LogFilterInput input, @Nonnull String operator) {
+    public LogFilterEntity insert(@Nonnull @Validated({Insert.class, Default.class}) LogFilterInput input,
+                                  @Nonnull String operator) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getCode, input.getCode()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -178,7 +179,8 @@ public class LogFilterPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public List<LogFilterEntity> insertBatch(@Validated({Insert.class, Default.class}) List<LogFilterInput> inputs, @Nonnull String operator) {
+    public List<LogFilterEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<LogFilterInput> inputs,
+                                             @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
@@ -188,7 +190,8 @@ public class LogFilterPersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public LogFilterEntity update(@Validated({Update.class, Default.class}) LogFilterInput input, @Nonnull String operator) {
+    public LogFilterEntity update(@Nonnull @Validated({Update.class, Default.class}) LogFilterInput input,
+                                  @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getId, input.getId()));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -216,7 +219,8 @@ public class LogFilterPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public List<LogFilterEntity> updateBatch(@Validated({Update.class, Default.class}) List<LogFilterInput> inputs, @Nonnull String operator) {
+    public List<LogFilterEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<LogFilterInput> inputs,
+                                             @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 

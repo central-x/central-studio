@@ -76,10 +76,10 @@ public class LogStoragePersistence {
      */
     public @Nullable LogStorageEntity findById(@Nullable String id,
                                                @Nullable Columns<? extends LogStorageEntity> columns) {
-
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
+
         return this.mapper.findById(id, columns);
     }
 
@@ -145,7 +145,8 @@ public class LogStoragePersistence {
      * @param operator 操作帐号
      * @return 保存后的数据
      */
-    public LogStorageEntity insert(@Validated({Insert.class, Default.class}) LogStorageInput input, @Nonnull String operator) {
+    public LogStorageEntity insert(@Nonnull @Validated({Insert.class, Default.class}) LogStorageInput input,
+                                   @Nonnull String operator) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(LogStorageEntity.class).eq(LogStorageEntity::getCode, input.getCode()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -165,7 +166,8 @@ public class LogStoragePersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public List<LogStorageEntity> insertBatch(@Validated({Insert.class, Default.class}) List<LogStorageInput> inputs, @Nonnull String operator) {
+    public List<LogStorageEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<LogStorageInput> inputs,
+                                              @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
@@ -175,7 +177,8 @@ public class LogStoragePersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public LogStorageEntity update(@Validated({Update.class, Default.class}) LogStorageInput input, @Nonnull String operator) {
+    public LogStorageEntity update(@Nonnull @Validated({Update.class, Default.class}) LogStorageInput input,
+                                   @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(LogStorageEntity.class).eq(LogStorageEntity::getId, input.getId()));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -201,7 +204,8 @@ public class LogStoragePersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public List<LogStorageEntity> updateBatch(@Validated({Update.class, Default.class}) List<LogStorageInput> inputs, @Nonnull String operator) {
+    public List<LogStorageEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<LogStorageInput> inputs,
+                                              @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 
@@ -233,7 +237,6 @@ public class LogStoragePersistence {
     public long deleteBy(@Nullable Conditions<? extends LogStorageEntity> conditions) {
         var ids = this.mapper.findBy(Columns.of(LogStorageEntity::getId), conditions).stream()
                 .map(Entity::getId).toList();
-
         return this.deleteByIds(ids);
     }
 }

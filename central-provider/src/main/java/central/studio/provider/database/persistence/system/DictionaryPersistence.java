@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.system;
 import central.bean.Page;
 import central.data.system.DictionaryInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -160,7 +161,9 @@ public class DictionaryPersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public DictionaryEntity insert(@Validated({Insert.class, Default.class}) DictionaryInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public DictionaryEntity insert(@Nonnull @Validated({Insert.class, Default.class}) DictionaryInput input,
+                                   @Nonnull String operator,
+                                   @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getCode, input.getCode()).eq(DictionaryEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -182,7 +185,9 @@ public class DictionaryPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<DictionaryEntity> insertBatch(@Validated({Insert.class, Default.class}) List<DictionaryInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<DictionaryEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<DictionaryInput> inputs,
+                                              @Nonnull String operator,
+                                              @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -193,7 +198,9 @@ public class DictionaryPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public DictionaryEntity update(@Validated({Update.class, Default.class}) DictionaryInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public DictionaryEntity update(@Nonnull @Validated({Update.class, Default.class}) DictionaryInput input,
+                                   @Nonnull String operator,
+                                   @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getId, input.getId()).eq(DictionaryEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -220,7 +227,9 @@ public class DictionaryPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<DictionaryEntity> updateBatch(@Validated({Update.class, Default.class}) List<DictionaryInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<DictionaryEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<DictionaryInput> inputs,
+                                              @Nonnull String operator,
+                                              @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -230,7 +239,8 @@ public class DictionaryPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -244,8 +254,10 @@ public class DictionaryPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends DictionaryEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(DictionaryEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+    public long deleteBy(@Nullable Conditions<? extends DictionaryEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(DictionaryEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
+        return this.deleteByIds(ids, tenant);
     }
 }

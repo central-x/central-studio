@@ -75,7 +75,8 @@ public class ApplicationPersistence {
      * @param id      主键
      * @param columns 字段列表
      */
-    public @Nullable ApplicationEntity findById(@Nullable String id, @Nullable Columns<? extends ApplicationEntity> columns) {
+    public @Nullable ApplicationEntity findById(@Nullable String id,
+                                                @Nullable Columns<? extends ApplicationEntity> columns) {
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
@@ -89,7 +90,8 @@ public class ApplicationPersistence {
      * @param ids     主键
      * @param columns 字段列表
      */
-    public @Nonnull List<ApplicationEntity> findByIds(@Nullable List<String> ids, @Nullable Columns<? extends ApplicationEntity> columns) {
+    public @Nonnull List<ApplicationEntity> findByIds(@Nullable List<String> ids,
+                                                      @Nullable Columns<? extends ApplicationEntity> columns) {
         if (Listx.isNullOrEmpty(ids)) {
             return new ArrayList<>();
         }
@@ -106,7 +108,11 @@ public class ApplicationPersistence {
      * @param conditions 过滤条件
      * @param orders     排序条件
      */
-    public @Nonnull List<ApplicationEntity> findBy(@Nullable Long limit, @Nullable Long offset, @Nullable Columns<? extends ApplicationEntity> columns, @Nullable Conditions<? extends ApplicationEntity> conditions, @Nullable Orders<? extends ApplicationEntity> orders) {
+    public @Nonnull List<ApplicationEntity> findBy(@Nullable Long limit,
+                                                   @Nullable Long offset,
+                                                   @Nullable Columns<? extends ApplicationEntity> columns,
+                                                   @Nullable Conditions<? extends ApplicationEntity> conditions,
+                                                   @Nullable Orders<? extends ApplicationEntity> orders) {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
@@ -117,7 +123,9 @@ public class ApplicationPersistence {
      * @param conditions 过滤条件
      * @param orders     排序条件
      */
-    public @Nullable ApplicationEntity findFirstBy(@Nullable Columns<? extends ApplicationEntity> columns, @Nullable Conditions<? extends ApplicationEntity> conditions, @Nullable Orders<? extends ApplicationEntity> orders) {
+    public @Nullable ApplicationEntity findFirstBy(@Nullable Columns<? extends ApplicationEntity> columns,
+                                                   @Nullable Conditions<? extends ApplicationEntity> conditions,
+                                                   @Nullable Orders<? extends ApplicationEntity> orders) {
         return this.mapper.findFirstBy(columns, conditions, orders);
     }
 
@@ -129,7 +137,11 @@ public class ApplicationPersistence {
      * @param conditions 过滤条件
      * @param orders     排序条件
      */
-    public @Nonnull Page<ApplicationEntity> findPageBy(long pageIndex, long pageSize, @Nullable Columns<? extends ApplicationEntity> columns, @Nullable Conditions<? extends ApplicationEntity> conditions, @Nullable Orders<? extends ApplicationEntity> orders) {
+    public @Nonnull Page<ApplicationEntity> findPageBy(long pageIndex,
+                                                       long pageSize,
+                                                       @Nullable Columns<? extends ApplicationEntity> columns,
+                                                       @Nullable Conditions<? extends ApplicationEntity> conditions,
+                                                       @Nullable Orders<? extends ApplicationEntity> orders) {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
@@ -148,7 +160,8 @@ public class ApplicationPersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public @Nonnull ApplicationEntity insert(@Validated({Insert.class, Default.class}) ApplicationInput input, @Nonnull String operator) {
+    public @Nonnull ApplicationEntity insert(@Nonnull @Validated({Insert.class, Default.class}) ApplicationInput input,
+                                             @Nonnull String operator) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, input.getCode()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -168,7 +181,8 @@ public class ApplicationPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public @Nonnull List<ApplicationEntity> insertBatch(@Validated({Insert.class, Default.class}) List<ApplicationInput> inputs, @Nonnull String operator) {
+    public @Nonnull List<ApplicationEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<ApplicationInput> inputs,
+                                                        @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
@@ -178,7 +192,8 @@ public class ApplicationPersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public @Nonnull ApplicationEntity update(@Validated({Update.class, Default.class}) ApplicationInput input, @Nonnull String operator) {
+    public @Nonnull ApplicationEntity update(@Nonnull @Validated({Update.class, Default.class}) ApplicationInput input,
+                                             @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getId, input.getId()));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -204,7 +219,8 @@ public class ApplicationPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public @Nonnull List<ApplicationEntity> updateBatch(@Validated({Update.class, Default.class}) List<ApplicationInput> inputs, @Nonnull String operator) {
+    public @Nonnull List<ApplicationEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<ApplicationInput> inputs,
+                                                        @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 

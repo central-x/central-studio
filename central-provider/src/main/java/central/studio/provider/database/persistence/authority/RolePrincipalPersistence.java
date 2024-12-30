@@ -154,7 +154,9 @@ public class RolePrincipalPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull RolePrincipalEntity insert(@Validated({Insert.class, Default.class}) RolePrincipalInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull RolePrincipalEntity insert(@Nonnull @Validated({Insert.class, Default.class}) RolePrincipalInput input,
+                                               @Nonnull String operator,
+                                               @Nonnull String tenant) {
         var entity = new RolePrincipalEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);
@@ -170,7 +172,9 @@ public class RolePrincipalPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<RolePrincipalEntity> insertBatch(@Validated({Insert.class, Default.class}) List<RolePrincipalInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<RolePrincipalEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<RolePrincipalInput> inputs,
+                                                          @Nonnull String operator,
+                                                          @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -180,7 +184,8 @@ public class RolePrincipalPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -194,7 +199,8 @@ public class RolePrincipalPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends RolePrincipalEntity> conditions, @Nonnull String tenant) {
+    public long deleteBy(@Nullable Conditions<? extends RolePrincipalEntity> conditions,
+                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(RolePrincipalEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
     }

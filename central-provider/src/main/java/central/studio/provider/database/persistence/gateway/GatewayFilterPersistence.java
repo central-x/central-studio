@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.gateway;
 import central.bean.Page;
 import central.data.gateway.GatewayFilterInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -72,7 +73,6 @@ public class GatewayFilterPersistence {
     public @Nullable GatewayFilterEntity findById(@Nullable String id,
                                                   @Nullable Columns<? extends GatewayFilterEntity> columns,
                                                   @Nonnull String tenant) {
-
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
@@ -159,7 +159,9 @@ public class GatewayFilterPersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public GatewayFilterEntity insert(@Validated({Insert.class, Default.class}) GatewayFilterInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public GatewayFilterEntity insert(@Nonnull @Validated({Insert.class, Default.class}) GatewayFilterInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         var entity = new GatewayFilterEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);
@@ -176,7 +178,9 @@ public class GatewayFilterPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<GatewayFilterEntity> insertBatch(@Validated({Insert.class, Default.class}) List<GatewayFilterInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<GatewayFilterEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<GatewayFilterInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -187,7 +191,9 @@ public class GatewayFilterPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public GatewayFilterEntity update(@Validated({Update.class, Default.class}) GatewayFilterInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public GatewayFilterEntity update(@Nonnull @Validated({Update.class, Default.class}) GatewayFilterInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getId, input.getId()).eq(GatewayFilterEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -208,7 +214,9 @@ public class GatewayFilterPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<GatewayFilterEntity> updateBatch(@Validated({Update.class, Default.class}) List<GatewayFilterInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<GatewayFilterEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<GatewayFilterInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -218,7 +226,8 @@ public class GatewayFilterPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -232,8 +241,10 @@ public class GatewayFilterPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends GatewayFilterEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(GatewayFilterEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+    public long deleteBy(@Nullable Conditions<? extends GatewayFilterEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(GatewayFilterEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
+        return this.deleteByIds(ids, tenant);
     }
 }

@@ -80,6 +80,7 @@ public class LogCollectorPersistence {
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
+
         return this.mapper.findById(id, columns);
     }
 
@@ -148,7 +149,8 @@ public class LogCollectorPersistence {
      * @param operator 操作帐号
      * @return 保存后的数据
      */
-    public LogCollectorEntity insert(@Validated({Insert.class, Default.class}) LogCollectorInput input, @Nonnull String operator) {
+    public LogCollectorEntity insert(@Nonnull @Validated({Insert.class, Default.class}) LogCollectorInput input,
+                                     @Nonnull String operator) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(LogCollectorEntity.class).eq(LogCollectorEntity::getCode, input.getCode()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -168,7 +170,8 @@ public class LogCollectorPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public List<LogCollectorEntity> insertBatch(@Validated({Insert.class, Default.class}) List<LogCollectorInput> inputs, @Nonnull String operator) {
+    public List<LogCollectorEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<LogCollectorInput> inputs,
+                                                @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
@@ -178,7 +181,8 @@ public class LogCollectorPersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public LogCollectorEntity update(@Validated({Update.class, Default.class}) LogCollectorInput input, @Nonnull String operator) {
+    public LogCollectorEntity update(@Nonnull @Validated({Update.class, Default.class}) LogCollectorInput input,
+                                     @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(LogCollectorEntity.class).eq(LogCollectorEntity::getId, input.getId()));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -204,7 +208,8 @@ public class LogCollectorPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public List<LogCollectorEntity> updateBatch(@Validated({Update.class, Default.class}) List<LogCollectorInput> inputs, @Nonnull String operator) {
+    public List<LogCollectorEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<LogCollectorInput> inputs,
+                                                @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 

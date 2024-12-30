@@ -213,7 +213,9 @@ public class AccountPersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public @Nonnull AccountEntity insert(@Validated({Insert.class, Default.class}) AccountInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull AccountEntity insert(@Nonnull @Validated({Insert.class, Default.class}) AccountInput input,
+                                         @Nonnull String operator,
+                                         @Nonnull String tenant) {
         // 帐号唯一性校验
         if (this.mapper.existsBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, input.getUsername()).eq(AccountEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在帐号[username={}]", input.getUsername()));
@@ -246,7 +248,9 @@ public class AccountPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<AccountEntity> insertBatch(@Validated({Update.class, Default.class}) List<AccountInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<AccountEntity> insertBatch(@Nullable @Validated({Update.class, Default.class}) List<AccountInput> inputs,
+                                                    @Nonnull String operator,
+                                                    @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -257,7 +261,9 @@ public class AccountPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull AccountEntity update(@Validated({Update.class, Default.class}) AccountInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull AccountEntity update(@Nonnull @Validated({Update.class, Default.class}) AccountInput input,
+                                         @Nonnull String operator,
+                                         @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getId, input.getId()).eq(AccountEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -298,7 +304,9 @@ public class AccountPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<AccountEntity> updateBatch(@Validated({Update.class, Default.class}) List<AccountInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<AccountEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<AccountInput> inputs,
+                                                    @Nonnull String operator,
+                                                    @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -309,7 +317,8 @@ public class AccountPersistence {
      * @param tenant 租户标识
      * @return 受影响数据量
      */
-    public long deleteByIds(@Nonnull List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nonnull List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -330,10 +339,9 @@ public class AccountPersistence {
      * @param tenant     租户标识
      * @return 受影响数据量
      */
-    public long deleteBy(@Nonnull Conditions<? extends AccountEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant);
-
-        var ids = this.mapper.findBy(Columns.of(Entity::getId), conditions).stream()
+    public long deleteBy(@Nonnull Conditions<? extends AccountEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(AccountEntity::getTenantCode, tenant)).stream()
                 .map(Entity::getId).toList();
         return this.deleteByIds(ids, tenant);
     }

@@ -74,7 +74,6 @@ public class PermissionPersistence {
     public @Nullable PermissionEntity findById(@Nullable String id,
                                                @Nullable Columns<? extends PermissionEntity> columns,
                                                @Nonnull String tenant) {
-
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
@@ -176,7 +175,9 @@ public class PermissionPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull PermissionEntity insert(@Validated({Insert.class, Default.class}) PermissionInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull PermissionEntity insert(@Nonnull @Validated({Insert.class, Default.class}) PermissionInput input,
+                                            @Nonnull String operator,
+                                            @Nonnull String tenant) {
         // 标识唯一性校验
         // 同一菜单下的权限不能有重复
         if (this.mapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getMenuId, input.getMenuId()).eq(PermissionEntity::getCode, input.getCode()).eq(PermissionEntity::getTenantCode, tenant))) {
@@ -199,7 +200,9 @@ public class PermissionPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<PermissionEntity> insertBatch(@Validated({Insert.class, Default.class}) List<PermissionInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<PermissionEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<PermissionInput> inputs,
+                                                       @Nonnull String operator,
+                                                       @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -210,7 +213,9 @@ public class PermissionPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull PermissionEntity update(@Validated({Update.class, Default.class}) PermissionInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull PermissionEntity update(@Nonnull @Validated({Update.class, Default.class}) PermissionInput input,
+                                            @Nonnull String operator,
+                                            @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getId, input.getId()).eq(PermissionEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -237,7 +242,9 @@ public class PermissionPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<PermissionEntity> updateBatch(@Validated({Update.class, Default.class}) List<PermissionInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<PermissionEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<PermissionInput> inputs,
+                                                       @Nonnull String operator,
+                                                       @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -247,7 +254,8 @@ public class PermissionPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -263,14 +271,10 @@ public class PermissionPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends PermissionEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(PermissionEntity::getTenantCode, tenant);
-        var entities = this.mapper.findBy(Columns.of(Entity::getId), conditions);
-        if (Listx.isNullOrEmpty(entities)) {
-            return 0;
-        }
-
-        var ids = entities.stream().map(Entity::getId).toList();
+    public long deleteBy(@Nullable Conditions<? extends PermissionEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(PermissionEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
         return this.deleteByIds(ids, tenant);
     }
 }

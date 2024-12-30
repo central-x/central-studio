@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.organization;
 import central.bean.Page;
 import central.data.organization.DepartmentInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -74,7 +75,9 @@ public class DepartmentPersistence {
      * @param columns 查询字段
      * @param tenant  租户标识
      */
-    public @Nullable DepartmentEntity findById(@Nullable String id, @Nonnull Columns<? extends DepartmentEntity> columns, @Nonnull String tenant) {
+    public @Nullable DepartmentEntity findById(@Nullable String id,
+                                               @Nonnull Columns<? extends DepartmentEntity> columns,
+                                               @Nonnull String tenant) {
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
@@ -89,7 +92,9 @@ public class DepartmentPersistence {
      * @param columns 查询字段
      * @param tenant  租户标识
      */
-    public @Nonnull List<DepartmentEntity> findByIds(@Nullable List<String> ids, @Nonnull Columns<? extends DepartmentEntity> columns, @Nonnull String tenant) {
+    public @Nonnull List<DepartmentEntity> findByIds(@Nullable List<String> ids,
+                                                     @Nonnull Columns<? extends DepartmentEntity> columns,
+                                                     @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return new ArrayList<>();
         }
@@ -107,7 +112,12 @@ public class DepartmentPersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull List<DepartmentEntity> findBy(@Nullable Long limit, @Nullable Long offset, @Nonnull Columns<? extends DepartmentEntity> columns, @Nullable Conditions<? extends DepartmentEntity> conditions, @Nullable Orders<? extends DepartmentEntity> orders, @Nonnull String tenant) {
+    public @Nonnull List<DepartmentEntity> findBy(@Nullable Long limit,
+                                                  @Nullable Long offset,
+                                                  @Nonnull Columns<? extends DepartmentEntity> columns,
+                                                  @Nullable Conditions<? extends DepartmentEntity> conditions,
+                                                  @Nullable Orders<? extends DepartmentEntity> orders,
+                                                  @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
@@ -122,7 +132,12 @@ public class DepartmentPersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull Page<DepartmentEntity> pageBy(long pageIndex, long pageSize, @Nonnull Columns<? extends DepartmentEntity> columns, @Nullable Conditions<? extends DepartmentEntity> conditions, @Nullable Orders<? extends DepartmentEntity> orders, @Nonnull String tenant) {
+    public @Nonnull Page<DepartmentEntity> pageBy(long pageIndex,
+                                                  long pageSize,
+                                                  @Nonnull Columns<? extends DepartmentEntity> columns,
+                                                  @Nullable Conditions<? extends DepartmentEntity> conditions,
+                                                  @Nullable Orders<? extends DepartmentEntity> orders,
+                                                  @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
@@ -133,7 +148,8 @@ public class DepartmentPersistence {
      * @param conditions 筛选条件
      * @param tenant     租户标识
      */
-    public Long countBy(@Nullable Conditions<? extends DepartmentEntity> conditions, @Nonnull String tenant) {
+    public Long countBy(@Nullable Conditions<? extends DepartmentEntity> conditions,
+                        @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
@@ -145,7 +161,9 @@ public class DepartmentPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull DepartmentEntity insert(@Validated({Insert.class, Default.class}) DepartmentInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull DepartmentEntity insert(@Nonnull @Validated({Insert.class, Default.class}) DepartmentInput input,
+                                            @Nonnull String operator,
+                                            @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getCode, input.getCode()).eq(DepartmentEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -167,7 +185,9 @@ public class DepartmentPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<DepartmentEntity> insertBatch(@Validated({Insert.class, Default.class}) List<DepartmentInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<DepartmentEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<DepartmentInput> inputs,
+                                                       @Nonnull String operator,
+                                                       @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -178,7 +198,9 @@ public class DepartmentPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull DepartmentEntity update(@Validated({Update.class, Default.class}) DepartmentInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull DepartmentEntity update(@Nonnull @Validated({Update.class, Default.class}) DepartmentInput input,
+                                            @Nonnull String operator,
+                                            @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getId, input.getId()).eq(DepartmentEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -205,7 +227,9 @@ public class DepartmentPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<DepartmentEntity> updateBatch(@Validated({Update.class, Default.class}) List<DepartmentInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<DepartmentEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<DepartmentInput> inputs,
+                                                       @Nonnull String operator,
+                                                       @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -215,7 +239,8 @@ public class DepartmentPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -235,21 +260,10 @@ public class DepartmentPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends DepartmentEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
-
-        var entities = this.mapper.findBy(conditions);
-        if (entities.isEmpty()) {
-            return 0L;
-        }
-
-        var ids = entities.stream().map(DepartmentEntity::getId).toList();
-
-        var effected = this.mapper.deleteByIds(ids);
-
-        // 级联删除
-        accountDepartmentPersistence.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getDepartmentId, ids), tenant);
-
-        return effected;
+    public long deleteBy(@Nullable Conditions<? extends DepartmentEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
+        return this.deleteByIds(ids, tenant);
     }
 }

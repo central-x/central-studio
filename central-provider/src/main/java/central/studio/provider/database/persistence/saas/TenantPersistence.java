@@ -75,7 +75,8 @@ public class TenantPersistence {
      * @param id      主键
      * @param columns 字段列表
      */
-    public @Nullable TenantEntity findById(@Nullable String id, @Nullable Columns<? extends TenantEntity> columns) {
+    public @Nullable TenantEntity findById(@Nullable String id,
+                                           @Nullable Columns<? extends TenantEntity> columns) {
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
@@ -89,7 +90,8 @@ public class TenantPersistence {
      * @param ids     主键
      * @param columns 字段列表
      */
-    public @Nonnull List<TenantEntity> findByIds(@Nullable List<String> ids, @Nullable Columns<? extends TenantEntity> columns) {
+    public @Nonnull List<TenantEntity> findByIds(@Nullable List<String> ids,
+                                                 @Nullable Columns<? extends TenantEntity> columns) {
         if (Listx.isNullOrEmpty(ids)) {
             return new ArrayList<>();
         }
@@ -106,7 +108,11 @@ public class TenantPersistence {
      * @param conditions 过滤条件
      * @param orders     排序条件
      */
-    public @Nonnull List<TenantEntity> findBy(@Nullable Long limit, @Nullable Long offset, @Nullable Columns<? extends TenantEntity> columns, @Nullable Conditions<? extends TenantEntity> conditions, @Nullable Orders<? extends TenantEntity> orders) {
+    public @Nonnull List<TenantEntity> findBy(@Nullable Long limit,
+                                              @Nullable Long offset,
+                                              @Nullable Columns<? extends TenantEntity> columns,
+                                              @Nullable Conditions<? extends TenantEntity> conditions,
+                                              @Nullable Orders<? extends TenantEntity> orders) {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
@@ -117,7 +123,9 @@ public class TenantPersistence {
      * @param conditions 过滤条件
      * @param orders     排序条件
      */
-    public @Nullable TenantEntity findFirstBy(@Nullable Columns<? extends TenantEntity> columns, @Nullable Conditions<? extends TenantEntity> conditions, @Nullable Orders<? extends TenantEntity> orders) {
+    public @Nullable TenantEntity findFirstBy(@Nullable Columns<? extends TenantEntity> columns,
+                                              @Nullable Conditions<? extends TenantEntity> conditions,
+                                              @Nullable Orders<? extends TenantEntity> orders) {
         return this.mapper.findFirstBy(columns, conditions, orders);
     }
 
@@ -129,7 +137,11 @@ public class TenantPersistence {
      * @param conditions 过滤条件
      * @param orders     排序条件
      */
-    public @Nonnull Page<TenantEntity> findPageBy(long pageIndex, long pageSize, @Nullable Columns<? extends TenantEntity> columns, @Nullable Conditions<? extends TenantEntity> conditions, @Nullable Orders<? extends TenantEntity> orders) {
+    public @Nonnull Page<TenantEntity> findPageBy(long pageIndex,
+                                                  long pageSize,
+                                                  @Nullable Columns<? extends TenantEntity> columns,
+                                                  @Nullable Conditions<? extends TenantEntity> conditions,
+                                                  @Nullable Orders<? extends TenantEntity> orders) {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
@@ -148,7 +160,8 @@ public class TenantPersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public @Nonnull TenantEntity insert(@Validated({Insert.class, Default.class}) TenantInput input, @Nonnull String operator) {
+    public @Nonnull TenantEntity insert(@Nonnull @Validated({Insert.class, Default.class}) TenantInput input,
+                                        @Nonnull String operator) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(TenantEntity.class).eq(TenantEntity::getCode, input.getCode()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -168,7 +181,8 @@ public class TenantPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public @Nonnull List<TenantEntity> insertBatch(@Validated({Insert.class, Default.class}) List<TenantInput> inputs, @Nonnull String operator) {
+    public @Nonnull List<TenantEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<TenantInput> inputs,
+                                                   @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
@@ -178,7 +192,8 @@ public class TenantPersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public @Nonnull TenantEntity update(@Validated({Update.class, Default.class}) TenantInput input, @Nonnull String operator) {
+    public @Nonnull TenantEntity update(@Nonnull @Validated({Update.class, Default.class}) TenantInput input,
+                                        @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(TenantEntity.class).eq(TenantEntity::getId, input.getId()));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -204,7 +219,8 @@ public class TenantPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public @Nonnull List<TenantEntity> updateBatch(@Validated({Update.class, Default.class}) List<TenantInput> inputs, @Nonnull String operator) {
+    public @Nonnull List<TenantEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<TenantInput> inputs,
+                                                   @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 

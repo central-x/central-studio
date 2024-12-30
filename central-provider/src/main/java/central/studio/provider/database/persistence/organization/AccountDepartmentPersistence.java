@@ -26,6 +26,7 @@ package central.studio.provider.database.persistence.organization;
 
 import central.bean.Page;
 import central.data.organization.AccountDepartmentInput;
+import central.lang.Stringx;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -64,8 +65,15 @@ public class AccountDepartmentPersistence {
      * @param id     主键
      * @param tenant 租户标识
      */
-    public @Nullable AccountDepartmentEntity findById(@Nullable String id, @Nonnull Columns<? extends AccountDepartmentEntity> columns, @Nonnull String tenant) {
-        return this.mapper.findFirstBy(columns, Conditions.of(AccountDepartmentEntity.class).eq(AccountDepartmentEntity::getId, id).eq(AccountDepartmentEntity::getTenantCode, tenant));
+    public @Nullable AccountDepartmentEntity findById(@Nullable String id,
+                                                      @Nonnull Columns<? extends AccountDepartmentEntity> columns,
+                                                      @Nonnull String tenant) {
+        if (Stringx.isNullOrBlank(id)) {
+            return null;
+        }
+
+        var conditions = Conditions.of(AccountDepartmentEntity.class).eq(AccountDepartmentEntity::getId, id).eq(AccountDepartmentEntity::getTenantCode, tenant);
+        return this.mapper.findFirstBy(columns, conditions);
     }
 
     /**
@@ -74,7 +82,9 @@ public class AccountDepartmentPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public @Nonnull List<AccountDepartmentEntity> findByIds(@Nullable List<String> ids, @Nonnull Columns<? extends AccountDepartmentEntity> columns, @Nonnull String tenant) {
+    public @Nonnull List<AccountDepartmentEntity> findByIds(@Nullable List<String> ids,
+                                                            @Nonnull Columns<? extends AccountDepartmentEntity> columns,
+                                                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return new ArrayList<>();
         }
@@ -90,7 +100,12 @@ public class AccountDepartmentPersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull List<AccountDepartmentEntity> findBy(@Nullable Long limit, @Nullable Long offset, @Nullable Columns<? extends AccountDepartmentEntity> columns, @Nullable Conditions<? extends AccountDepartmentEntity> conditions, @Nullable Orders<? extends AccountDepartmentEntity> orders, @Nonnull String tenant) {
+    public @Nonnull List<AccountDepartmentEntity> findBy(@Nullable Long limit,
+                                                         @Nullable Long offset,
+                                                         @Nullable Columns<? extends AccountDepartmentEntity> columns,
+                                                         @Nullable Conditions<? extends AccountDepartmentEntity> conditions,
+                                                         @Nullable Orders<? extends AccountDepartmentEntity> orders,
+                                                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountDepartmentEntity::getTenantCode, tenant);
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
@@ -104,7 +119,12 @@ public class AccountDepartmentPersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull Page<AccountDepartmentEntity> pageBy(long pageIndex, long pageSize, @Nullable Columns<? extends AccountDepartmentEntity> columns, @Nullable Conditions<? extends AccountDepartmentEntity> conditions, @Nullable Orders<? extends AccountDepartmentEntity> orders, @Nonnull String tenant) {
+    public @Nonnull Page<AccountDepartmentEntity> pageBy(long pageIndex,
+                                                         long pageSize,
+                                                         @Nullable Columns<? extends AccountDepartmentEntity> columns,
+                                                         @Nullable Conditions<? extends AccountDepartmentEntity> conditions,
+                                                         @Nullable Orders<? extends AccountDepartmentEntity> orders,
+                                                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountDepartmentEntity::getTenantCode, tenant);
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
@@ -115,7 +135,8 @@ public class AccountDepartmentPersistence {
      * @param conditions 筛选条件
      * @param tenant     租户标识
      */
-    public Long countBy(@Nullable Conditions<? extends AccountDepartmentEntity> conditions, @Nonnull String tenant) {
+    public Long countBy(@Nullable Conditions<? extends AccountDepartmentEntity> conditions,
+                        @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountDepartmentEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
@@ -127,7 +148,9 @@ public class AccountDepartmentPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public AccountDepartmentEntity insert(@Validated({Insert.class, Default.class}) AccountDepartmentInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public AccountDepartmentEntity insert(@Nonnull @Validated({Insert.class, Default.class}) AccountDepartmentInput input,
+                                          @Nonnull String operator,
+                                          @Nonnull String tenant) {
         var entity = new AccountDepartmentEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);
@@ -145,7 +168,9 @@ public class AccountDepartmentPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<AccountDepartmentEntity> insertBatch(@Validated({Insert.class, Default.class}) List<AccountDepartmentInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<AccountDepartmentEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<AccountDepartmentInput> inputs,
+                                                              @Nonnull String operator,
+                                                              @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -155,7 +180,8 @@ public class AccountDepartmentPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -169,7 +195,8 @@ public class AccountDepartmentPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends AccountDepartmentEntity> conditions, @Nonnull String tenant) {
+    public long deleteBy(@Nullable Conditions<? extends AccountDepartmentEntity> conditions,
+                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountDepartmentEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
     }

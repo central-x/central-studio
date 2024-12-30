@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.authority;
 import central.bean.Page;
 import central.data.authority.RoleInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -73,7 +74,6 @@ public class RolePersistence {
     public @Nullable RoleEntity findById(@Nullable String id,
                                          @Nullable Columns<? extends RoleEntity> columns,
                                          @Nonnull String tenant) {
-
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
@@ -160,7 +160,9 @@ public class RolePersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public RoleEntity insert(@Validated({Insert.class, Default.class}) RoleInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public RoleEntity insert(@Nonnull @Validated({Insert.class, Default.class}) RoleInput input,
+                             @Nonnull String operator,
+                             @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, input.getCode()).eq(RoleEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -182,7 +184,9 @@ public class RolePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<RoleEntity> insertBatch(@Validated({Insert.class, Default.class}) List<RoleInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<RoleEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<RoleInput> inputs,
+                                        @Nonnull String operator,
+                                        @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -193,7 +197,9 @@ public class RolePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public RoleEntity update(@Validated({Update.class, Default.class}) RoleInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public RoleEntity update(@Nonnull @Validated({Update.class, Default.class}) RoleInput input,
+                             @Nonnull String operator,
+                             @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getId, input.getId()).eq(RoleEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -220,7 +226,9 @@ public class RolePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<RoleEntity> updateBatch(@Validated({Update.class, Default.class}) List<RoleInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<RoleEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<RoleInput> inputs,
+                                        @Nonnull String operator,
+                                        @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -230,7 +238,8 @@ public class RolePersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -244,8 +253,10 @@ public class RolePersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends RoleEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(RoleEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+    public long deleteBy(@Nullable Conditions<? extends RoleEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(RoleEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
+        return this.deleteByIds(ids, tenant);
     }
 }

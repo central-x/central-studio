@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.authority;
 import central.bean.Page;
 import central.data.authority.MenuInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -158,7 +159,9 @@ public class MenuPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull MenuEntity insert(@Validated({Insert.class, Default.class}) MenuInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull MenuEntity insert(@Nonnull @Validated({Insert.class, Default.class}) MenuInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getCode, input.getCode()).eq(MenuEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -180,7 +183,9 @@ public class MenuPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<MenuEntity> insertBatch(@Validated({Insert.class, Default.class}) List<MenuInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<MenuEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<MenuInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -191,7 +196,9 @@ public class MenuPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull MenuEntity update(@Validated({Update.class, Default.class}) MenuInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull MenuEntity update(@Nonnull @Validated({Update.class, Default.class}) MenuInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getId, input.getId()).eq(MenuEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -218,7 +225,9 @@ public class MenuPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<MenuEntity> updateBatch(@Validated({Update.class, Default.class}) List<MenuInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<MenuEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<MenuInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -228,7 +237,8 @@ public class MenuPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -244,15 +254,10 @@ public class MenuPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends MenuEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
-
-        var entities = this.mapper.findBy(Columns.of(MenuEntity::getId), conditions);
-        if (entities.isEmpty()) {
-            return 0;
-        }
-
-        var ids = entities.stream().map(MenuEntity::getId).toList();
+    public long deleteBy(@Nullable Conditions<? extends MenuEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
         return this.deleteByIds(ids, tenant);
     }
 }

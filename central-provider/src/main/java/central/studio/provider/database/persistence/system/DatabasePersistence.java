@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.system;
 import central.bean.Page;
 import central.data.system.DatabaseInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -160,7 +161,9 @@ public class DatabasePersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public DatabaseEntity insert(@Validated({Insert.class, Default.class}) DatabaseInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public DatabaseEntity insert(@Nonnull @Validated({Insert.class, Default.class}) DatabaseInput input,
+                                 @Nonnull String operator,
+                                 @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getCode, input.getCode()).eq(DatabaseEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -182,7 +185,9 @@ public class DatabasePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<DatabaseEntity> insertBatch(@Validated({Insert.class, Default.class}) List<DatabaseInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<DatabaseEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<DatabaseInput> inputs,
+                                            @Nonnull String operator,
+                                            @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -193,7 +198,9 @@ public class DatabasePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public DatabaseEntity update(@Validated({Update.class, Default.class}) DatabaseInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public DatabaseEntity update(@Nonnull @Validated({Update.class, Default.class}) DatabaseInput input,
+                                 @Nonnull String operator,
+                                 @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getId, input.getId()).eq(DatabaseEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -220,7 +227,9 @@ public class DatabasePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<DatabaseEntity> updateBatch(@Validated({Update.class, Default.class}) List<DatabaseInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<DatabaseEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<DatabaseInput> inputs,
+                                            @Nonnull String operator,
+                                            @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -230,7 +239,8 @@ public class DatabasePersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -244,8 +254,10 @@ public class DatabasePersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends DatabaseEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(DatabaseEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+    public long deleteBy(@Nullable Conditions<? extends DatabaseEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(DatabaseEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
+        return this.deleteByIds(ids, tenant);
     }
 }

@@ -89,8 +89,8 @@ public class StorageObjectPersistence {
      * @param tenant  租户标识
      */
     public @Nonnull List<StorageObjectEntity> findByIds(@Nullable List<String> ids,
-                                               @Nullable Columns<? extends StorageObjectEntity> columns,
-                                               @Nonnull String tenant) {
+                                                        @Nullable Columns<? extends StorageObjectEntity> columns,
+                                                        @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return Collections.emptyList();
         }
@@ -110,11 +110,11 @@ public class StorageObjectPersistence {
      * @param tenant     租户标识
      */
     public @Nonnull List<StorageObjectEntity> findBy(@Nullable Long limit,
-                                            @Nullable Long offset,
-                                            @Nullable Columns<? extends StorageObjectEntity> columns,
-                                            @Nullable Conditions<? extends StorageObjectEntity> conditions,
-                                            @Nullable Orders<? extends StorageObjectEntity> orders,
-                                            @Nonnull String tenant) {
+                                                     @Nullable Long offset,
+                                                     @Nullable Columns<? extends StorageObjectEntity> columns,
+                                                     @Nullable Conditions<? extends StorageObjectEntity> conditions,
+                                                     @Nullable Orders<? extends StorageObjectEntity> orders,
+                                                     @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(StorageObjectEntity::getTenantCode, tenant);
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
@@ -130,11 +130,11 @@ public class StorageObjectPersistence {
      * @param tenant     租户标识
      */
     public @Nonnull Page<StorageObjectEntity> pageBy(@Nonnull Long pageIndex,
-                                            @Nonnull Long pageSize,
-                                            @Nullable Columns<? extends StorageObjectEntity> columns,
-                                            @Nullable Conditions<? extends StorageObjectEntity> conditions,
-                                            @Nullable Orders<? extends StorageObjectEntity> orders,
-                                            @Nonnull String tenant) {
+                                                     @Nonnull Long pageSize,
+                                                     @Nullable Columns<? extends StorageObjectEntity> columns,
+                                                     @Nullable Conditions<? extends StorageObjectEntity> conditions,
+                                                     @Nullable Orders<? extends StorageObjectEntity> orders,
+                                                     @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(StorageObjectEntity::getTenantCode, tenant);
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
@@ -159,7 +159,9 @@ public class StorageObjectPersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public StorageObjectEntity insert(@Validated({Insert.class, Default.class}) StorageObjectInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public StorageObjectEntity insert(@Nonnull @Validated({Insert.class, Default.class}) StorageObjectInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         var entity = new StorageObjectEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);
@@ -176,7 +178,9 @@ public class StorageObjectPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<StorageObjectEntity> insertBatch(@Validated({Insert.class, Default.class}) List<StorageObjectInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<StorageObjectEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<StorageObjectInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -187,7 +191,9 @@ public class StorageObjectPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public StorageObjectEntity update(@Validated({Update.class, Default.class}) StorageObjectInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public StorageObjectEntity update(@Nonnull @Validated({Update.class, Default.class}) StorageObjectInput input,
+                                      @Nonnull String operator,
+                                      @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getId, input.getId()).eq(StorageObjectEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -207,7 +213,9 @@ public class StorageObjectPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<StorageObjectEntity> updateBatch(@Validated({Update.class, Default.class}) List<StorageObjectInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<StorageObjectEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<StorageObjectInput> inputs,
+                                                 @Nonnull String operator,
+                                                 @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -217,7 +225,8 @@ public class StorageObjectPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -231,7 +240,8 @@ public class StorageObjectPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends StorageObjectEntity> conditions, @Nonnull String tenant) {
+    public long deleteBy(@Nullable Conditions<? extends StorageObjectEntity> conditions,
+                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(StorageObjectEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
     }

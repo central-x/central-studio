@@ -175,7 +175,9 @@ public class IdentityPasswordPersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public IdentityPasswordEntity insert(@Validated({Insert.class, Default.class}) IdentityPasswordInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public IdentityPasswordEntity insert(@Nonnull @Validated({Insert.class, Default.class}) IdentityPasswordInput input,
+                                         @Nonnull String operator,
+                                         @Nonnull String tenant) {
         var entity = new IdentityPasswordEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);
@@ -192,7 +194,9 @@ public class IdentityPasswordPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<IdentityPasswordEntity> insertBatch(@Validated({Insert.class, Default.class}) List<IdentityPasswordInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<IdentityPasswordEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<IdentityPasswordInput> inputs,
+                                                    @Nonnull String operator,
+                                                    @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -202,7 +206,8 @@ public class IdentityPasswordPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -216,7 +221,8 @@ public class IdentityPasswordPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends IdentityPasswordEntity> conditions, @Nonnull String tenant) {
+    public long deleteBy(@Nullable Conditions<? extends IdentityPasswordEntity> conditions,
+                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(IdentityPasswordEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
     }

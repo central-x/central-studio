@@ -27,6 +27,7 @@ package central.studio.provider.database.persistence.multicast;
 import central.bean.Page;
 import central.data.multicast.MulticastBroadcasterInput;
 import central.lang.Stringx;
+import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -89,8 +90,8 @@ public class MulticastBroadcasterPersistence {
      * @param tenant  租户标识
      */
     public @Nonnull List<MulticastBroadcasterEntity> findByIds(@Nullable List<String> ids,
-                                               @Nullable Columns<? extends MulticastBroadcasterEntity> columns,
-                                               @Nonnull String tenant) {
+                                                               @Nullable Columns<? extends MulticastBroadcasterEntity> columns,
+                                                               @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return Collections.emptyList();
         }
@@ -110,11 +111,11 @@ public class MulticastBroadcasterPersistence {
      * @param tenant     租户标识
      */
     public @Nonnull List<MulticastBroadcasterEntity> findBy(@Nullable Long limit,
-                                            @Nullable Long offset,
-                                            @Nullable Columns<? extends MulticastBroadcasterEntity> columns,
-                                            @Nullable Conditions<? extends MulticastBroadcasterEntity> conditions,
-                                            @Nullable Orders<? extends MulticastBroadcasterEntity> orders,
-                                            @Nonnull String tenant) {
+                                                            @Nullable Long offset,
+                                                            @Nullable Columns<? extends MulticastBroadcasterEntity> columns,
+                                                            @Nullable Conditions<? extends MulticastBroadcasterEntity> conditions,
+                                                            @Nullable Orders<? extends MulticastBroadcasterEntity> orders,
+                                                            @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(MulticastBroadcasterEntity::getTenantCode, tenant);
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
@@ -130,11 +131,11 @@ public class MulticastBroadcasterPersistence {
      * @param tenant     租户标识
      */
     public @Nonnull Page<MulticastBroadcasterEntity> pageBy(@Nonnull Long pageIndex,
-                                            @Nonnull Long pageSize,
-                                            @Nullable Columns<? extends MulticastBroadcasterEntity> columns,
-                                            @Nullable Conditions<? extends MulticastBroadcasterEntity> conditions,
-                                            @Nullable Orders<? extends MulticastBroadcasterEntity> orders,
-                                            @Nonnull String tenant) {
+                                                            @Nonnull Long pageSize,
+                                                            @Nullable Columns<? extends MulticastBroadcasterEntity> columns,
+                                                            @Nullable Conditions<? extends MulticastBroadcasterEntity> conditions,
+                                                            @Nullable Orders<? extends MulticastBroadcasterEntity> orders,
+                                                            @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(MulticastBroadcasterEntity::getTenantCode, tenant);
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
@@ -159,7 +160,9 @@ public class MulticastBroadcasterPersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public MulticastBroadcasterEntity insert(@Validated({Insert.class, Default.class}) MulticastBroadcasterInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public MulticastBroadcasterEntity insert(@Nonnull @Validated({Insert.class, Default.class}) MulticastBroadcasterInput input,
+                                             @Nonnull String operator,
+                                             @Nonnull String tenant) {
         // 标识唯一性校验
         if (this.mapper.existsBy(Conditions.of(MulticastBroadcasterEntity.class).eq(MulticastBroadcasterEntity::getCode, input.getCode()).eq(MulticastBroadcasterEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
@@ -181,7 +184,9 @@ public class MulticastBroadcasterPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<MulticastBroadcasterEntity> insertBatch(@Validated({Insert.class, Default.class}) List<MulticastBroadcasterInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<MulticastBroadcasterEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<MulticastBroadcasterInput> inputs,
+                                                        @Nonnull String operator,
+                                                        @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -192,7 +197,9 @@ public class MulticastBroadcasterPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public MulticastBroadcasterEntity update(@Validated({Update.class, Default.class}) MulticastBroadcasterInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public MulticastBroadcasterEntity update(@Nonnull @Validated({Update.class, Default.class}) MulticastBroadcasterInput input,
+                                             @Nonnull String operator,
+                                             @Nonnull String tenant) {
         var entity = this.mapper.findFirstBy(Conditions.of(MulticastBroadcasterEntity.class).eq(MulticastBroadcasterEntity::getId, input.getId()).eq(MulticastBroadcasterEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -219,7 +226,9 @@ public class MulticastBroadcasterPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<MulticastBroadcasterEntity> updateBatch(@Validated({Update.class, Default.class}) List<MulticastBroadcasterInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public List<MulticastBroadcasterEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<MulticastBroadcasterInput> inputs,
+                                                        @Nonnull String operator,
+                                                        @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
@@ -229,7 +238,8 @@ public class MulticastBroadcasterPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -243,8 +253,10 @@ public class MulticastBroadcasterPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends MulticastBroadcasterEntity> conditions, @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(MulticastBroadcasterEntity::getTenantCode, tenant);
-        return this.mapper.deleteBy(conditions);
+    public long deleteBy(@Nullable Conditions<? extends MulticastBroadcasterEntity> conditions,
+                         @Nonnull String tenant) {
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(MulticastBroadcasterEntity::getTenantCode, tenant)).stream()
+                .map(Entity::getId).toList();
+        return this.deleteByIds(ids, tenant);
     }
 }

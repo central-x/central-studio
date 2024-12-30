@@ -66,7 +66,9 @@ public class AccountUnitPersistence {
      * @param columns 查询字段
      * @param tenant  租户标识
      */
-    public @Nullable AccountUnitEntity findById(@Nullable String id, @Nonnull Columns<? extends AccountUnitEntity> columns, @Nonnull String tenant) {
+    public @Nullable AccountUnitEntity findById(@Nullable String id,
+                                                @Nonnull Columns<? extends AccountUnitEntity> columns,
+                                                @Nonnull String tenant) {
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
@@ -80,7 +82,9 @@ public class AccountUnitPersistence {
      * @param columns 查询字段
      * @param tenant  租户标识
      */
-    public @Nonnull List<AccountUnitEntity> findByIds(@Nullable List<String> ids, @Nonnull Columns<? extends AccountUnitEntity> columns, @Nonnull String tenant) {
+    public @Nonnull List<AccountUnitEntity> findByIds(@Nullable List<String> ids,
+                                                      @Nonnull Columns<? extends AccountUnitEntity> columns,
+                                                      @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return new ArrayList<>();
         }
@@ -98,7 +102,12 @@ public class AccountUnitPersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull List<AccountUnitEntity> findBy(@Nullable Long limit, @Nullable Long offset, @Nonnull Columns<? extends AccountUnitEntity> columns, @Nullable Conditions<? extends AccountUnitEntity> conditions, @Nullable Orders<? extends AccountUnitEntity> orders, @Nonnull String tenant) {
+    public @Nonnull List<AccountUnitEntity> findBy(@Nullable Long limit,
+                                                   @Nullable Long offset,
+                                                   @Nonnull Columns<? extends AccountUnitEntity> columns,
+                                                   @Nullable Conditions<? extends AccountUnitEntity> conditions,
+                                                   @Nullable Orders<? extends AccountUnitEntity> orders,
+                                                   @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountUnitEntity::getTenantCode, tenant);
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
@@ -113,7 +122,11 @@ public class AccountUnitPersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull Page<AccountUnitEntity> pageBy(long pageIndex, long pageSize, @Nonnull Columns<? extends AccountUnitEntity> columns, @Nullable Conditions<? extends AccountUnitEntity> conditions, @Nullable Orders<? extends AccountUnitEntity> orders, @Nonnull String tenant) {
+    public @Nonnull Page<AccountUnitEntity> pageBy(long pageIndex, long pageSize,
+                                                   @Nonnull Columns<? extends AccountUnitEntity> columns,
+                                                   @Nullable Conditions<? extends AccountUnitEntity> conditions,
+                                                   @Nullable Orders<? extends AccountUnitEntity> orders,
+                                                   @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountUnitEntity::getTenantCode, tenant);
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
@@ -124,7 +137,8 @@ public class AccountUnitPersistence {
      * @param conditions 筛选条件
      * @param tenant     租户标识
      */
-    public Long countBy(@Nullable Conditions<? extends AccountUnitEntity> conditions, @Nonnull String tenant) {
+    public Long countBy(@Nullable Conditions<? extends AccountUnitEntity> conditions,
+                        @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountUnitEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
@@ -136,7 +150,9 @@ public class AccountUnitPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull AccountUnitEntity insert(@Validated({Insert.class, Default.class}) AccountUnitInput input, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull AccountUnitEntity insert(@Nonnull @Validated({Insert.class, Default.class}) AccountUnitInput input,
+                                             @Nonnull String operator,
+                                             @Nonnull String tenant) {
         var entity = new AccountUnitEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);
@@ -153,7 +169,9 @@ public class AccountUnitPersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public @Nonnull List<AccountUnitEntity> insertBatch(@Validated({Insert.class, Default.class}) List<AccountUnitInput> inputs, @Nonnull String operator, @Nonnull String tenant) {
+    public @Nonnull List<AccountUnitEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<AccountUnitInput> inputs,
+                                                        @Nonnull String operator,
+                                                        @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
@@ -163,7 +181,8 @@ public class AccountUnitPersistence {
      * @param ids    主键
      * @param tenant 租户标识
      */
-    public long deleteByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+    public long deleteByIds(@Nullable List<String> ids,
+                            @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
@@ -177,7 +196,8 @@ public class AccountUnitPersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends AccountUnitEntity> conditions, @Nonnull String tenant) {
+    public long deleteBy(@Nullable Conditions<? extends AccountUnitEntity> conditions,
+                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountUnitEntity::getTenantCode, tenant);
         return this.mapper.deleteBy(conditions);
     }

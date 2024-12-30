@@ -93,7 +93,10 @@ public class TenantApplicationPersistence {
      * @param conditions 过滤条件
      * @param orders     排序条件
      */
-    public @Nonnull List<TenantApplicationEntity> findBy(@Nullable Long limit, @Nullable Long offset, @Nullable Conditions<? extends TenantApplicationEntity> conditions, @Nullable Orders<? extends TenantApplicationEntity> orders) {
+    public @Nonnull List<TenantApplicationEntity> findBy(@Nullable Long limit,
+                                                         @Nullable Long offset,
+                                                         @Nullable Conditions<? extends TenantApplicationEntity> conditions,
+                                                         @Nullable Orders<? extends TenantApplicationEntity> orders) {
         return this.mapper.findBy(limit, offset, conditions, orders);
     }
 
@@ -105,7 +108,10 @@ public class TenantApplicationPersistence {
      * @param conditions 过滤条件
      * @param orders     排序条件
      */
-    public @Nonnull Page<TenantApplicationEntity> findPageBy(long pageIndex, long pageSize, @Nullable Conditions<? extends TenantApplicationEntity> conditions, @Nullable Orders<? extends TenantApplicationEntity> orders) {
+    public @Nonnull Page<TenantApplicationEntity> findPageBy(long pageIndex,
+                                                             long pageSize,
+                                                             @Nullable Conditions<? extends TenantApplicationEntity> conditions,
+                                                             @Nullable Orders<? extends TenantApplicationEntity> orders) {
         return this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
     }
 
@@ -124,7 +130,8 @@ public class TenantApplicationPersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public @Nonnull TenantApplicationEntity insert(@Validated({Insert.class, Default.class}) TenantApplicationInput input, @Nonnull String operator) {
+    public @Nonnull TenantApplicationEntity insert(@Nonnull @Validated({Insert.class, Default.class}) TenantApplicationInput input,
+                                                   @Nonnull String operator) {
         var entity = new TenantApplicationEntity();
         entity.fromInput(input);
         entity.updateCreator(operator);
@@ -138,7 +145,8 @@ public class TenantApplicationPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public @Nonnull List<TenantApplicationEntity> insertBatch(@Validated({Insert.class, Default.class}) List<TenantApplicationInput> inputs, @Nonnull String operator) {
+    public @Nonnull List<TenantApplicationEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<TenantApplicationInput> inputs,
+                                                              @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
@@ -148,7 +156,8 @@ public class TenantApplicationPersistence {
      * @param input    数据输入
      * @param operator 操作人
      */
-    public @Nonnull TenantApplicationEntity update(@Validated({Update.class, Default.class}) TenantApplicationInput input, @Nonnull String operator) {
+    public @Nonnull TenantApplicationEntity update(@Nonnull @Validated({Update.class, Default.class}) TenantApplicationInput input,
+                                                   @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getId, input.getId()));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
@@ -167,7 +176,8 @@ public class TenantApplicationPersistence {
      * @param inputs   数据输入
      * @param operator 操作人
      */
-    public @Nonnull List<TenantApplicationEntity> updateBatch(@Validated({Update.class, Default.class}) List<TenantApplicationInput> inputs, @Nonnull String operator) {
+    public @Nonnull List<TenantApplicationEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<TenantApplicationInput> inputs,
+                                                              @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 
