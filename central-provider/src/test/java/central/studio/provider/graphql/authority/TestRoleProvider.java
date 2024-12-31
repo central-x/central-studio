@@ -26,34 +26,37 @@ package central.studio.provider.graphql.authority;
 
 import central.data.authority.Role;
 import central.data.authority.RoleInput;
+import central.data.organization.AreaInput;
+import central.data.organization.UnitInput;
 import central.data.organization.option.AreaType;
 import central.provider.graphql.authority.RoleProvider;
-import central.provider.graphql.organization.PostProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.TestProvider;
+import central.studio.provider.database.persistence.authority.RolePersistence;
 import central.studio.provider.database.persistence.authority.entity.RoleEntity;
-import central.studio.provider.database.persistence.authority.mapper.RoleMapper;
+import central.studio.provider.database.persistence.organization.AreaPersistence;
+import central.studio.provider.database.persistence.organization.UnitPersistence;
 import central.studio.provider.database.persistence.organization.entity.AreaEntity;
 import central.studio.provider.database.persistence.organization.entity.UnitEntity;
-import central.studio.provider.database.persistence.organization.mapper.AreaMapper;
-import central.studio.provider.database.persistence.organization.mapper.UnitMapper;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
-import central.util.Guidx;
+import central.studio.provider.graphql.TestContext;
+import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Role Provider Test Cases
@@ -64,775 +67,235 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestRoleProvider extends TestProvider {
+
     @Setter(onMethod_ = @Autowired)
     private RoleProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
+    private RolePersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private RoleMapper mapper;
+    private TestContext context;
 
-    @Setter(onMethod_ = @Autowired)
-    private UnitMapper unitMapper;
+    @BeforeAll
+    public static void setup(@Autowired DataContext context,
+                             @Autowired TestContext testContext,
+                             @Autowired UnitPersistence unitPersistence,
+                             @Autowired AreaPersistence areaPersistence) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
+        }
 
-    @Setter(onMethod_ = @Autowired)
-    private AreaMapper areaMapper;
+        var tenant = testContext.getTenant();
+        var area = areaPersistence.insert(AreaInput.builder()
+                .parentId("")
+                .code("test")
+                .name("测试行政区划")
+                .type(AreaType.COUNTRY.getValue())
+                .order(0)
+                .build(), "syssa", tenant.getCode());
 
-    @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
+        var unit = unitPersistence.insert(UnitInput.builder()
+                .parentId("")
+                .areaId(area.getId())
+                .code("test")
+                .name("测试单位")
+                .order(0)
+                .build(), "syssa", tenant.getCode());
+    }
+
+    @AfterAll
+    public static void cleanup(@Autowired TestContext context,
+                               @Autowired UnitPersistence unitPersistence,
+                               @Autowired AreaPersistence areaPersistence) {
+        var tenant = context.getTenant();
+
+        unitPersistence.deleteBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getCode, "test"), tenant.getCode());
+        areaPersistence.deleteBy(Conditions.of(AreaEntity.class).eq(AreaEntity::getCode, "test"), tenant.getCode());
+    }
 
     @BeforeEach
-    @AfterEach
     public void clear() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+
         // 清空数据
-        mapper.deleteAll();
-        unitMapper.deleteAll();
-        areaMapper.deleteAll();
-        applicationMapper.deleteAll();
+        this.persistence.deleteBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()), tenant.getCode());
+    }
+
+    @Setter(onMethod_ = @Autowired)
+    private UnitPersistence unitPersistence;
+
+    public UnitEntity getUnit() {
+        return this.unitPersistence.findFirstBy(Columns.all(), Conditions.of(UnitEntity.class).eq(UnitEntity::getCode, "test"), null, this.context.getTenant().getCode());
     }
 
     /**
-     * @see PostProvider#findById
+     * @see RoleProvider#insert
+     * @see RoleProvider#findById
+     * @see RoleProvider#update
+     * @see RoleProvider#findByIds
+     * @see RoleProvider#countBy
+     * @see RoleProvider#deleteByIds
      */
     @Test
     public void case1() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+        var unit = this.getUnit();
 
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
+        var input = RoleInput.builder()
+                .applicationId(application.getId())
+                .unitId(unit.getId())
+                .code("test")
+                .name("测试角色")
+                .enabled(Boolean.TRUE)
+                .remark("测试角色")
+                .build();
 
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getUnitId(), insert.getUnitId());
+        assertEquals(input.getUnitId(), insert.getUnit().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
+        assertNotNull(entity);
 
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
+        // test findById
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
+        assertEquals(input.getApplicationId(), findById.getApplicationId());
+        assertEquals(input.getApplicationId(), findById.getApplication().getId());
+        assertEquals(input.getUnitId(), findById.getUnitId());
+        assertEquals(input.getUnitId(), findById.getUnit().getId());
+        assertEquals(input.getCode(), findById.getCode());
+        assertEquals(input.getName(), findById.getName());
+        assertEquals(input.getEnabled(), findById.getEnabled());
+        assertEquals(input.getRemark(), findById.getRemark());
 
-        // 查询数据
-        var role = this.provider.findById(roleEntity.getId(), "master");
-        assertNotNull(role);
-        assertEquals(roleEntity.getId(), role.getId());
-        // 关联查询
-        assertNotNull(role.getApplication());
-        assertEquals(applicationEntity.getId(), role.getApplication().getId());
-        // 关联查询
-        assertNotNull(role.getUnit());
-        assertEquals(unitEntity.getId(), role.getUnit().getId());
-        // 关联查询
-        assertNotNull(role.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), role.getCreator().getId());
-        assertNotNull(role.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), role.getModifier().getId());
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(input.getApplicationId(), fetched.getApplicationId());
+        assertEquals(input.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(input.getUnitId(), fetched.getUnitId());
+        assertEquals(input.getUnitId(), fetched.getUnit().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(input.getName(), fetched.getName());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(input.getRemark(), fetched.getRemark());
+
+        // test deleteById
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
-     * @see PostProvider#findByIds
+     * @see RoleProvider#insertBatch
+     * @see RoleProvider#findBy
+     * @see RoleProvider#updateBatch
+     * @see RoleProvider#pageBy
+     * @see RoleProvider#deleteBy
      */
     @Test
     public void case2() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+        var unit = this.getUnit();
 
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
+        var input = RoleInput.builder()
+                .applicationId(application.getId())
+                .unitId(unit.getId())
+                .code("test")
+                .name("测试角色")
+                .enabled(Boolean.TRUE)
+                .remark("测试角色")
+                .build();
 
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
+        // test insert
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getUnitId(), insert.getUnitId());
+        assertEquals(input.getUnitId(), insert.getUnit().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
+        assertNotNull(entity);
 
-        // 查询数据
-        var roles = this.provider.findByIds(List.of(roleEntity.getId()), "master");
-        assertNotNull(roles);
-        assertEquals(1, roles.size());
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-        var role = Listx.getFirstOrNull(roles);
-        assertNotNull(role);
-        assertEquals(roleEntity.getId(), role.getId());
-        // 关联查询
-        assertNotNull(role.getApplication());
-        assertEquals(applicationEntity.getId(), role.getApplication().getId());
-        // 关联查询
-        assertNotNull(role.getUnit());
-        assertEquals(unitEntity.getId(), role.getUnit().getId());
-        // 关联查询
-        assertNotNull(role.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), role.getCreator().getId());
-        assertNotNull(role.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), role.getModifier().getId());
-    }
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(input.getApplicationId(), fetched.getApplicationId());
+        assertEquals(input.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(input.getUnitId(), fetched.getUnitId());
+        assertEquals(input.getUnitId(), fetched.getUnit().getId());
+        assertEquals(input.getCode(), fetched.getCode());
+        assertEquals(input.getName(), fetched.getName());
+        assertEquals(input.getEnabled(), fetched.getEnabled());
+        assertEquals(input.getRemark(), fetched.getRemark());
 
-    /**
-     * @see PostProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+        // test updateBatch
+        this.provider.updateBatch(List.of(fetched.toInput().code("test2").enabled(Boolean.FALSE).build()), "syssa", tenant.getCode());
 
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(input.getApplicationId(), fetched.getApplicationId());
+        assertEquals(input.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(input.getUnitId(), fetched.getUnitId());
+        assertEquals(input.getUnitId(), fetched.getUnit().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(input.getName(), fetched.getName());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(input.getRemark(), fetched.getRemark());
 
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
-
-        // 查询数据
-        var roles = this.provider.findBy(null, null, Conditions.of(Role.class).eq(Role::getCode, "10000"), null, "master");
-        assertNotNull(roles);
-        assertEquals(1, roles.size());
-
-        var role = Listx.getFirstOrNull(roles);
-        assertNotNull(role);
-        assertEquals(roleEntity.getId(), role.getId());
-        // 关联查询
-        assertNotNull(role.getApplication());
-        assertEquals(applicationEntity.getId(), role.getApplication().getId());
-        // 关联查询
-        assertNotNull(role.getUnit());
-        assertEquals(unitEntity.getId(), role.getUnit().getId());
-        // 关联查询
-        assertNotNull(role.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), role.getCreator().getId());
-        assertNotNull(role.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), role.getModifier().getId());
-    }
-
-    /**
-     * @see PostProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
-
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(Role.class).eq(Role::getCode, "10000"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(1, page.getPager().getItemCount());
-
-        var role = Listx.getFirstOrNull(page.getData());
-        assertNotNull(role);
-        assertEquals(roleEntity.getId(), role.getId());
-        // 关联查询
-        assertNotNull(role.getApplication());
-        assertEquals(applicationEntity.getId(), role.getApplication().getId());
-        // 关联查询
-        assertNotNull(role.getUnit());
-        assertEquals(unitEntity.getId(), role.getUnit().getId());
-        // 关联查询
-        assertNotNull(role.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), role.getCreator().getId());
-        assertNotNull(role.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), role.getModifier().getId());
-    }
-
-    /**
-     * @see PostProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
-
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(Role.class).eq(Role::getCode, "10000"), "master");
-        assertNotNull(count);
+        // test deleteById
+        var count = this.provider.deleteBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), tenant.getCode());
         assertEquals(1, count);
-    }
 
-    /**
-     * @see PostProvider#insert
-     */
-    @Test
-    public void case6() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
-
-        var roleInput = RoleInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("10000")
-                .name("测试角色")
-                .unitId(unitEntity.getId())
-                .enabled(Boolean.TRUE)
-                .remark("测试角色")
-                .build();
-
-        // 查询数据
-        var role = this.provider.insert(roleInput, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(role);
-        assertNotNull(role.getId());
-        // 关联查询
-        assertNotNull(role.getApplication());
-        assertEquals(applicationEntity.getId(), role.getApplication().getId());
-        // 关联查询
-        assertNotNull(role.getUnit());
-        assertEquals(unitEntity.getId(), role.getUnit().getId());
-        // 关联查询
-        assertNotNull(role.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), role.getCreator().getId());
-        assertNotNull(role.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), role.getModifier().getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getId, role.getId())));
-    }
-
-    /**
-     * @see PostProvider#insertBatch
-     */
-    @Test
-    public void case7() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
-
-        var roleInput = RoleInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("10000")
-                .name("测试角色")
-                .unitId(unitEntity.getId())
-                .enabled(Boolean.TRUE)
-                .remark("测试角色")
-                .build();
-
-        // 查询数据
-        var roles = this.provider.insertBatch(List.of(roleInput), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(roles);
-        assertEquals(1, roles.size());
-        var role = Listx.getFirstOrNull(roles);
-
-        assertNotNull(role);
-        assertNotNull(role.getId());
-        // 关联查询
-        assertNotNull(role.getApplication());
-        assertEquals(applicationEntity.getId(), role.getApplication().getId());
-        // 关联查询
-        assertNotNull(role.getUnit());
-        assertEquals(unitEntity.getId(), role.getUnit().getId());
-        // 关联查询
-        assertNotNull(role.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), role.getCreator().getId());
-        assertNotNull(role.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), role.getModifier().getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getId, role.getId())));
-    }
-
-    /**
-     * @see PostProvider#update
-     */
-    @Test
-    public void case8() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
-
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
-
-        // 查询数据
-        var role = this.provider.findById(roleEntity.getId(), "master");
-        assertNotNull(role);
-        assertEquals(roleEntity.getId(), role.getId());
-
-        var roleInput = role.toInput()
-                .code("10001")
-                .build();
-
-        role = this.provider.update(roleInput, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(role);
-        assertEquals(roleEntity.getId(), role.getId());
-
-        // 关联查询
-        assertNotNull(role.getApplication());
-        assertEquals(applicationEntity.getId(), role.getApplication().getId());
-        // 关联查询
-        assertNotNull(role.getUnit());
-        assertEquals(unitEntity.getId(), role.getUnit().getId());
-        // 关联查询
-        assertNotNull(role.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), role.getCreator().getId());
-        assertNotNull(role.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), role.getModifier().getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, "10001")));
-    }
-
-    /**
-     * @see PostProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
-
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
-
-        // 查询数据
-        var role = this.provider.findById(roleEntity.getId(), "master");
-        assertNotNull(role);
-        assertEquals(roleEntity.getId(), role.getId());
-
-        var roleInput = role.toInput()
-                .code("10001")
-                .build();
-
-        var roles = this.provider.updateBatch(List.of(roleInput), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(roles);
-        assertEquals(1, roles.size());
-
-        role = Listx.getFirstOrNull(roles);
-        assertNotNull(role);
-        // 关联查询
-        assertNotNull(role.getApplication());
-        assertEquals(applicationEntity.getId(), role.getApplication().getId());
-        // 关联查询
-        assertNotNull(role.getUnit());
-        assertEquals(unitEntity.getId(), role.getUnit().getId());
-        // 关联查询
-        assertNotNull(role.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), role.getCreator().getId());
-        assertNotNull(role.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), role.getModifier().getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, "10001")));
-    }
-
-    /**
-     * @see PostProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
-
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
-
-        var deleted = this.provider.deleteByIds(List.of(roleEntity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getId, roleEntity.getId())));
-    }
-
-    /**
-     * @see PostProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId("");
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("100000");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.unitMapper.insert(unitEntity);
-
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("10000");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId(unitEntity.getId());
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(roleEntity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(Role.class).eq(Role::getCode, "10000"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getId, roleEntity.getId())));
+        count = this.persistence.countBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 }

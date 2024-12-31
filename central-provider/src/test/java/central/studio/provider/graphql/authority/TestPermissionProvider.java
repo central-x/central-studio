@@ -24,30 +24,31 @@
 
 package central.studio.provider.graphql.authority;
 
+import central.data.authority.MenuInput;
 import central.data.authority.Permission;
 import central.data.authority.PermissionInput;
 import central.data.authority.option.MenuType;
 import central.provider.graphql.authority.PermissionProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.TestProvider;
+import central.studio.provider.database.persistence.authority.MenuPersistence;
+import central.studio.provider.database.persistence.authority.PermissionPersistence;
 import central.studio.provider.database.persistence.authority.entity.MenuEntity;
 import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
-import central.studio.provider.database.persistence.authority.mapper.MenuMapper;
-import central.studio.provider.database.persistence.authority.mapper.PermissionMapper;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
-import central.util.Guidx;
+import central.studio.provider.graphql.TestContext;
+import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,589 +63,229 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestPermissionProvider extends TestProvider {
-    @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private PermissionProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private MenuMapper menuMapper;
+    private PermissionPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private PermissionMapper permissionMapper;
+    private MenuPersistence menuPersistence;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
+    private TestContext context;
+
+    @BeforeAll
+    public static void setup(@Autowired DataContext context) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
+        }
+    }
 
     @BeforeEach
-    @AfterEach
     public void clear() {
-        // 清空测试数据
-        this.menuMapper.deleteAll();
-        this.applicationMapper.deleteAll();
-        this.permissionMapper.deleteAll();
-    }
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
 
-    /**
-     * @see PermissionProvider#findById
-     */
-    @Test
-    public void case1() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
-
-        var permissionEntity = new PermissionEntity();
-        permissionEntity.setApplicationId(applicationEntity.getId());
-        permissionEntity.setMenuId(menuEntity.getId());
-        permissionEntity.setCode("test-add");
-        permissionEntity.setName("添加");
-        permissionEntity.setTenantCode("master");
-        permissionEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.permissionMapper.insert(permissionEntity);
-
-        // 查询数据
-        var permission = this.provider.findById(permissionEntity.getId(), "master");
-        assertNotNull(permission);
-        assertEquals(permissionEntity.getId(), permission.getId());
-        // 关联查询
-        assertNotNull(permission.getApplication());
-        assertEquals(applicationEntity.getId(), permission.getApplication().getId());
-        // 关联查询
-        assertNotNull(permission.getMenu());
-        assertEquals(menuEntity.getId(), permission.getMenu().getId());
-        // 关联查询
-        assertNotNull(permission.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), permission.getCreator().getId());
-        assertNotNull(permission.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), permission.getModifier().getId());
-    }
-
-    /**
-     * @see PermissionProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
-
-        var permissionEntity = new PermissionEntity();
-        permissionEntity.setApplicationId(applicationEntity.getId());
-        permissionEntity.setMenuId(menuEntity.getId());
-        permissionEntity.setCode("test-add");
-        permissionEntity.setName("添加");
-        permissionEntity.setTenantCode("master");
-        permissionEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.permissionMapper.insert(permissionEntity);
-
-        // 查询数据
-        var permissions = this.provider.findBy(null, null, Conditions.of(Permission.class).eq(Permission::getCode, "test-add"), null, "master");
-        assertNotNull(permissions);
-        assertEquals(1, permissions.size());
-
-        var permission = Listx.getFirstOrNull(permissions);
-        assertNotNull(permission);
-        assertEquals(permissionEntity.getId(), permission.getId());
-        // 关联查询
-        assertNotNull(permission.getApplication());
-        assertEquals(applicationEntity.getId(), permission.getApplication().getId());
-        // 关联查询
-        assertNotNull(permission.getMenu());
-        assertEquals(menuEntity.getId(), permission.getMenu().getId());
-        // 关联查询
-        assertNotNull(permission.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), permission.getCreator().getId());
-        assertNotNull(permission.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), permission.getModifier().getId());
-    }
-
-    /**
-     * @see PermissionProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
-
-        var permissionEntity = new PermissionEntity();
-        permissionEntity.setApplicationId(applicationEntity.getId());
-        permissionEntity.setMenuId(menuEntity.getId());
-        permissionEntity.setCode("test-add");
-        permissionEntity.setName("添加");
-        permissionEntity.setTenantCode("master");
-        permissionEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.permissionMapper.insert(permissionEntity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(Permission.class).eq(Permission::getCode, "test-add"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(1, page.getPager().getItemCount());
-
-        var permission = Listx.getFirstOrNull(page.getData());
-        assertNotNull(permission);
-        assertEquals(permissionEntity.getId(), permission.getId());
-        // 关联查询
-        assertNotNull(permission.getApplication());
-        assertEquals(applicationEntity.getId(), permission.getApplication().getId());
-        // 关联查询
-        assertNotNull(permission.getMenu());
-        assertEquals(menuEntity.getId(), permission.getMenu().getId());
-        // 关联查询
-        assertNotNull(permission.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), permission.getCreator().getId());
-        assertNotNull(permission.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), permission.getModifier().getId());
-    }
-
-    /**
-     * @see PermissionProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
-
-        var permissionEntity = new PermissionEntity();
-        permissionEntity.setApplicationId(applicationEntity.getId());
-        permissionEntity.setMenuId(menuEntity.getId());
-        permissionEntity.setCode("test-add");
-        permissionEntity.setName("添加");
-        permissionEntity.setTenantCode("master");
-        permissionEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.permissionMapper.insert(permissionEntity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(Permission.class).eq(Permission::getCode, "test-add"), "master");
-        assertNotNull(count);
-        assertEquals(1, count);
+        this.persistence.deleteBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getApplicationId, application.getId()), tenant.getCode());
+        this.menuPersistence.deleteBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
     }
 
     /**
      * @see PermissionProvider#insert
+     * @see PermissionProvider#findById
+     * @see PermissionProvider#update
+     * @see PermissionProvider#findByIds
+     * @see PermissionProvider#countBy
+     * @see PermissionProvider#deleteByIds
      */
     @Test
-    public void case6() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+    public void case1() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
 
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
+        var menu = this.menuPersistence.insert(MenuInput.builder()
+                .applicationId(application.getId())
+                .parentId("")
+                .code("test")
+                .name("测试菜单")
+                .icon("icon")
+                .url("@/test")
+                .type(MenuType.BACKEND.getValue())
+                .enabled(Boolean.TRUE)
+                .order(0)
+                .remark("测试菜单")
+                .build(), "syssa", tenant.getCode());
 
         var input = PermissionInput.builder()
-                .applicationId(applicationEntity.getId())
-                .menuId(menuEntity.getId())
-                .code("test-add")
+                .applicationId(application.getId())
+                .menuId(menu.getId())
+                .code("add")
                 .name("添加")
                 .build();
 
-        // 查询数据
-        var permission = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getMenuId(), insert.getMenuId());
+        assertEquals(input.getMenuId(), insert.getMenu().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals("syssa", insert.getCreatorId());
+        assertEquals("syssa", insert.getModifierId());
+        var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
+        assertNotNull(entity);
 
-        assertNotNull(permission);
-        assertNotNull(permission.getId());
+        // test findById
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplication().getId(), findById.getApplication().getId());
+        assertEquals(insert.getMenuId(), findById.getMenuId());
+        assertEquals(insert.getMenu().getId(), findById.getMenu().getId());
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getCreatorId(), findById.getCreatorId());
+        assertEquals(insert.getModifierId(), findById.getModifierId());
 
-        // 查询数据库
-        assertTrue(this.permissionMapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getId, permission.getId())));
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().code("add2").name("添加2").build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplication().getId(), fetched.getApplication().getId());
+        assertEquals(insert.getMenuId(), fetched.getMenuId());
+        assertEquals(insert.getMenu().getId(), fetched.getMenu().getId());
+        assertEquals("add2", fetched.getCode());
+        assertEquals("添加2", fetched.getName());
+        assertEquals(insert.getCreatorId(), fetched.getCreatorId());
+        assertEquals(insert.getModifierId(), fetched.getModifierId());
+        assertNotEquals(fetched.getCreateDate(), fetched.getModifyDate()); // 修改日期不同
+
+        // test deleteById
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
      * @see PermissionProvider#insertBatch
+     * @see PermissionProvider#findBy
+     * @see PermissionProvider#updateBatch
+     * @see PermissionProvider#pageBy
+     * @see PermissionProvider#deleteBy
      */
     @Test
-    public void case7() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+    public void case2() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
 
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
+        var menu = this.menuPersistence.insert(MenuInput.builder()
+                .applicationId(application.getId())
+                .parentId("")
+                .code("test")
+                .name("测试菜单")
+                .icon("icon")
+                .url("@/test")
+                .type(MenuType.BACKEND.getValue())
+                .enabled(Boolean.TRUE)
+                .order(0)
+                .remark("测试菜单")
+                .build(), "syssa", tenant.getCode());
 
         var input = PermissionInput.builder()
-                .applicationId(applicationEntity.getId())
-                .menuId(menuEntity.getId())
-                .code("test-add")
+                .applicationId(application.getId())
+                .menuId(menu.getId())
+                .code("add")
                 .name("添加")
                 .build();
 
-        // 查询数据
-        var permissions = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(permissions);
-        assertEquals(1, permissions.size());
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        var permission = Listx.getFirstOrNull(permissions);
-        assertNotNull(permission);
-        assertNotNull(permission.getId());
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getMenuId(), insert.getMenuId());
+        assertEquals(input.getMenuId(), insert.getMenu().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals("syssa", insert.getCreatorId());
+        assertEquals("syssa", insert.getModifierId());
+        var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
+        assertNotNull(entity);
 
-        // 查询数据库
-        assertTrue(this.permissionMapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getId, permission.getId())));
-    }
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-    /**
-     * @see PermissionProvider#update
-     */
-    @Test
-    public void case8() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplication().getId(), fetched.getApplication().getId());
+        assertEquals(insert.getMenuId(), fetched.getMenuId());
+        assertEquals(insert.getMenu().getId(), fetched.getMenu().getId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getCreatorId(), fetched.getCreatorId());
+        assertEquals(insert.getModifierId(), fetched.getModifierId());
 
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
+        // test updateBatch
+        this.provider.updateBatch(List.of(insert.toInput().code("add2").name("添加2").build()), "syssa", tenant.getCode());
 
-        var permissionEntity = new PermissionEntity();
-        permissionEntity.setApplicationId(applicationEntity.getId());
-        permissionEntity.setMenuId(menuEntity.getId());
-        permissionEntity.setCode("test-add");
-        permissionEntity.setName("添加");
-        permissionEntity.setTenantCode("master");
-        permissionEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.permissionMapper.insert(permissionEntity);
 
-        // 查询数据
-        var permission = this.provider.findById(permissionEntity.getId(), "master");
-        assertNotNull(permission);
-        assertEquals(permissionEntity.getId(), permission.getId());
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        var input = permission.toInput()
-                .code("test-delete")
-                .build();
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplication().getId(), fetched.getApplication().getId());
+        assertEquals(insert.getMenuId(), fetched.getMenuId());
+        assertEquals(insert.getMenu().getId(), fetched.getMenu().getId());
+        assertEquals("add2", fetched.getCode());
+        assertEquals("添加2", fetched.getName());
+        assertEquals(insert.getCreatorId(), fetched.getCreatorId());
+        assertEquals(insert.getModifierId(), fetched.getModifierId());
+        assertNotEquals(fetched.getCreateDate(), fetched.getModifyDate());
 
-        // 更新数据
-        permission = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(permission);
-        assertEquals(permissionEntity.getId(), permission.getId());
+        // test deleteById
+        var count = this.provider.deleteBy(Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(1, count);
 
-        // 查询数据库
-        assertTrue(this.permissionMapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getCode, "test-delete")));
-    }
-
-    /**
-     * @see PermissionProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
-
-        var permissionEntity = new PermissionEntity();
-        permissionEntity.setApplicationId(applicationEntity.getId());
-        permissionEntity.setMenuId(menuEntity.getId());
-        permissionEntity.setCode("test-add");
-        permissionEntity.setName("添加");
-        permissionEntity.setTenantCode("master");
-        permissionEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.permissionMapper.insert(permissionEntity);
-
-        // 查询数据
-        var permission = this.provider.findById(permissionEntity.getId(), "master");
-        assertNotNull(permission);
-        assertEquals(permissionEntity.getId(), permission.getId());
-
-        var input = permission.toInput()
-                .code("test-delete")
-                .build();
-
-        // 更新数据
-        var permissions = this.provider.updateBatch(Listx.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(permissions);
-        assertEquals(1, permissions.size());
-
-        permission = Listx.getFirstOrNull(permissions);
-        assertNotNull(permission);
-        assertEquals(permissionEntity.getId(), permission.getId());
-
-        // 查询数据库
-        assertTrue(this.permissionMapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getCode, "test-delete")));
-    }
-
-    /**
-     * @see PermissionProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
-
-        var permissionEntity = new PermissionEntity();
-        permissionEntity.setApplicationId(applicationEntity.getId());
-        permissionEntity.setMenuId(menuEntity.getId());
-        permissionEntity.setCode("test-add");
-        permissionEntity.setName("添加");
-        permissionEntity.setTenantCode("master");
-        permissionEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.permissionMapper.insert(permissionEntity);
-
-        var deleted = this.provider.deleteByIds(List.of(permissionEntity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.permissionMapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getId, permissionEntity.getId())));
-    }
-
-    /**
-     * @see PermissionProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证中心");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("用于所有应用的认证处理");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.menuMapper.insert(menuEntity);
-
-        var permissionEntity = new PermissionEntity();
-        permissionEntity.setApplicationId(applicationEntity.getId());
-        permissionEntity.setMenuId(menuEntity.getId());
-        permissionEntity.setCode("test-add");
-        permissionEntity.setName("添加");
-        permissionEntity.setTenantCode("master");
-        permissionEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.permissionMapper.insert(permissionEntity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(Permission.class).eq(Permission::getCode, permissionEntity.getCode()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.permissionMapper.existsBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getId, permissionEntity.getId())));
+        count = this.persistence.countBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 }

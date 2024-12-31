@@ -38,6 +38,7 @@ import central.studio.provider.database.persistence.authority.MenuPersistence;
 import central.studio.provider.database.persistence.authority.entity.MenuEntity;
 import central.studio.provider.graphql.TestContext;
 import central.studio.provider.graphql.TestProvider;
+import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,6 +88,8 @@ public class TestMenuProvider extends TestProvider {
      * @see MenuProvider#insert
      * @see MenuProvider#findById
      * @see MenuProvider#update
+     * @see MenuProvider#findByIds
+     * @see MenuProvider#countBy
      * @see MenuProvider#deleteByIds
      */
     @Test
@@ -108,54 +111,72 @@ public class TestMenuProvider extends TestProvider {
                 .build();
 
         // test insert
-        var data = this.provider.insert(input, "syssa", tenant.getCode());
-        assertNotNull(data);
-        assertNotNull(data.getId());
-        assertEquals(input.getApplicationId(), data.getApplicationId());
-        assertEquals(input.getApplicationId(), data.getApplication().getId());
-        assertEquals(input.getParentId(), data.getParentId());
-        assertEquals(input.getCode(), data.getCode());
-        assertEquals(input.getName(), data.getName());
-        assertEquals(input.getUrl(), data.getUrl());
-        assertEquals(input.getType(), data.getType());
-        assertEquals(input.getEnabled(), data.getEnabled());
-        assertEquals(input.getOrder(), data.getOrder());
-        assertEquals(input.getRemark(), data.getRemark());
-        var entity = this.persistence.findById(data.getId(), Columns.all(), tenant.getCode());
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getParentId(), insert.getParentId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getUrl(), insert.getUrl());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getOrder(), insert.getOrder());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals("syssa", insert.getCreatorId());
+        assertEquals("syssa", insert.getModifierId());
+        var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNotNull(entity);
 
         // test findById
-        var fetched = this.provider.findById(data.getId(), tenant.getCode());
-        assertEquals(data.getId(), fetched.getId());
-        assertEquals(data.getApplicationId(), fetched.getApplicationId());
-        assertEquals(data.getApplicationId(), fetched.getApplication().getId());
-        assertEquals(data.getParentId(), fetched.getParentId());
-        assertEquals(data.getCode(), fetched.getCode());
-        assertEquals(data.getName(), fetched.getName());
-        assertEquals(data.getUrl(), fetched.getUrl());
-        assertEquals(data.getType(), fetched.getType());
-        assertEquals(data.getEnabled(), fetched.getEnabled());
-        assertEquals(data.getOrder(), fetched.getOrder());
-        assertEquals(data.getRemark(), fetched.getRemark());
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplicationId(), findById.getApplication().getId());
+        assertEquals(insert.getParentId(), findById.getParentId());
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getUrl(), findById.getUrl());
+        assertEquals(insert.getType(), findById.getType());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getOrder(), findById.getOrder());
+        assertEquals(insert.getRemark(), findById.getRemark());
+        assertEquals(insert.getCreatorId(), findById.getCreatorId());
+        assertEquals(insert.getModifierId(), findById.getModifierId());
+
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(1, count);
 
         // test update
-        this.provider.update(fetched.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", tenant.getCode());
-        fetched = this.provider.findById(data.getId(), tenant.getCode());
-        assertEquals(data.getId(), fetched.getId());
-        assertEquals(data.getApplicationId(), fetched.getApplicationId());
-        assertEquals(data.getApplicationId(), fetched.getApplication().getId());
-        assertEquals(data.getParentId(), fetched.getParentId());
+        this.provider.update(insert.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getParentId(), fetched.getParentId());
         assertEquals("test2", fetched.getCode());
-        assertEquals(data.getName(), fetched.getName());
-        assertEquals(data.getUrl(), fetched.getUrl());
-        assertEquals(data.getType(), fetched.getType());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getUrl(), fetched.getUrl());
+        assertEquals(insert.getType(), fetched.getType());
         assertEquals(Boolean.FALSE, fetched.getEnabled());
-        assertEquals(data.getOrder(), fetched.getOrder());
-        assertEquals(data.getRemark(), fetched.getRemark());
+        assertEquals(insert.getOrder(), fetched.getOrder());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getCreatorId(), fetched.getCreatorId());
+        assertEquals(insert.getModifierId(), fetched.getModifierId());
+        assertNotEquals(fetched.getCreateDate(), fetched.getModifyDate()); // 修改日期不同
 
         // test deleteById
-        this.provider.deleteByIds(List.of(data.getId()), tenant.getCode());
-        entity = this.persistence.findById(data.getId(), Columns.all(), tenant.getCode());
+        this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNull(entity);
     }
 
@@ -197,39 +218,40 @@ public class TestMenuProvider extends TestProvider {
                 .build();
 
         // test insertBatch
-        var data = this.provider.insertBatch(List.of(input_parent, input), "syssa", tenant.getCode());
-        assertNotNull(data);
-        assertEquals(2, data.size());
-        assertTrue(data.stream().anyMatch(it -> it.getCode().equals("test")));
-        assertTrue(data.stream().anyMatch(it -> it.getCode().equals("test_parent")));
-        assertTrue(data.stream().noneMatch(it -> it.getParent() != null));
-        var count = this.persistence.countBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
-        assertEquals(2, count);
+        var insertBatch = this.provider.insertBatch(List.of(input_parent, input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(2, insertBatch.size());
+
+        assertTrue(insertBatch.stream().anyMatch(it -> it.getCode().equals("test")));
+        assertTrue(insertBatch.stream().anyMatch(it -> it.getCode().equals("test_parent")));
+        assertTrue(insertBatch.stream().noneMatch(it -> it.getParent() != null));
 
         // test findBy
-        var fetched = this.provider.findBy(null, null, Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), null, tenant.getCode());
-        assertNotNull(fetched);
-        assertEquals(2, fetched.size());
-        assertTrue(fetched.stream().anyMatch(it -> it.getCode().equals("test")));
-        assertTrue(fetched.stream().anyMatch(it -> it.getCode().equals("test_parent")));
-        assertTrue(fetched.stream().noneMatch(it -> it.getParent() != null));
+        var findBy = this.provider.findBy(null, null, Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(2, findBy.size());
+        assertTrue(findBy.stream().anyMatch(it -> it.getCode().equals("test")));
+        assertTrue(findBy.stream().anyMatch(it -> it.getCode().equals("test_parent")));
+        assertTrue(findBy.stream().noneMatch(it -> it.getParent() != null));
 
         // test updateBatch
-        var parent = fetched.stream().filter(it -> it.getCode().equals("test_parent")).findFirst().orElse(null);
-        var child = fetched.stream().filter(it -> it.getCode().equals("test")).findFirst().orElse(null);
+        var parent = findBy.stream().filter(it -> it.getCode().equals("test_parent")).findFirst().orElse(null);
+        var child = findBy.stream().filter(it -> it.getCode().equals("test")).findFirst().orElse(null);
         assertNotNull(parent);
         assertNotNull(child);
 
         this.provider.updateBatch(List.of(child.toInput().parentId(parent.getId()).build()), "syssa", tenant.getCode());
-        var page = this.provider.pageBy(1L, 10L, Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), null, tenant.getCode());
-        assertNotNull(page);
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(10, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(2, page.getPager().getItemCount());
-        assertEquals(2, page.getData().size());
-        parent = page.getData().stream().filter(it -> it.getCode().equals("test_parent")).findFirst().orElse(null);
-        child = page.getData().stream().filter(it -> it.getCode().equals("test")).findFirst().orElse(null);
+
+        // test pageBy
+        var pageBy = this.provider.pageBy(1L, 10L, Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(2, pageBy.getPager().getItemCount());
+        assertEquals(2, pageBy.getData().size());
+        parent = pageBy.getData().stream().filter(it -> it.getCode().equals("test_parent")).findFirst().orElse(null);
+        child = pageBy.getData().stream().filter(it -> it.getCode().equals("test")).findFirst().orElse(null);
         assertNotNull(parent);
         assertNotNull(child);
         assertNotNull(parent.getChildren());
@@ -239,7 +261,9 @@ public class TestMenuProvider extends TestProvider {
         assertEquals(parent.getId(), child.getParent().getId());
 
         // test deleteBy
-        this.provider.deleteBy(Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), tenant.getCode());
+        var count = this.provider.deleteBy(Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(1, count);
+
         count = this.persistence.countBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
         assertEquals(0, count);
     }

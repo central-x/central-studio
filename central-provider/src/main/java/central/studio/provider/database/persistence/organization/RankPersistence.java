@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package central.studio.provider.database.persistence.authority;
+package central.studio.provider.database.persistence.organization;
 
 import central.bean.Page;
-import central.data.authority.RoleInput;
+import central.data.organization.RankInput;
 import central.lang.Stringx;
 import central.sql.data.Entity;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
-import central.studio.provider.database.persistence.authority.entity.RoleEntity;
-import central.studio.provider.database.persistence.authority.mapper.RoleMapper;
+import central.studio.provider.database.persistence.organization.entity.RankEntity;
+import central.studio.provider.database.persistence.organization.mapper.RankMapper;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -51,18 +51,18 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Role Persistence
+ * Rank Persistence
  * <p>
- * 角色持久化
+ * 职级持久化
  *
  * @author Alan Yeh
- * @since 2023/02/10
+ * @since 2024/12/31
  */
 @Component
-public class RolePersistence {
+public class RankPersistence {
 
     @Setter(onMethod_ = @Autowired)
-    private RoleMapper mapper;
+    private RankMapper mapper;
 
     /**
      * 根据主键查询数据
@@ -71,14 +71,14 @@ public class RolePersistence {
      * @param columns 字段列表
      * @param tenant  租户标识
      */
-    public @Nullable RoleEntity findById(@Nullable String id,
-                                         @Nullable Columns<? extends RoleEntity> columns,
+    public @Nullable RankEntity findById(@Nullable String id,
+                                         @Nullable Columns<? extends RankEntity> columns,
                                          @Nonnull String tenant) {
         if (Stringx.isNullOrBlank(id)) {
             return null;
         }
 
-        var conditions = Conditions.of(RoleEntity.class).eq(RoleEntity::getId, id).eq(RoleEntity::getTenantCode, tenant);
+        var conditions = Conditions.of(RankEntity.class).eq(RankEntity::getId, id).eq(RankEntity::getTenantCode, tenant);
         return this.mapper.findFirstBy(columns, conditions);
     }
 
@@ -89,14 +89,14 @@ public class RolePersistence {
      * @param columns 字段列表
      * @param tenant  租户标识
      */
-    public @Nonnull List<RoleEntity> findByIds(@Nullable List<String> ids,
-                                               @Nullable Columns<? extends RoleEntity> columns,
+    public @Nonnull List<RankEntity> findByIds(@Nullable List<String> ids,
+                                               @Nullable Columns<? extends RankEntity> columns,
                                                @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
             return Collections.emptyList();
         }
 
-        var conditions = Conditions.of(RoleEntity.class).in(RoleEntity::getId, ids).eq(RoleEntity::getTenantCode, tenant);
+        var conditions = Conditions.of(RankEntity.class).in(RankEntity::getId, ids).eq(RankEntity::getTenantCode, tenant);
         return this.mapper.findBy(columns, conditions);
     }
 
@@ -110,13 +110,13 @@ public class RolePersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull List<RoleEntity> findBy(@Nullable Long limit,
+    public @Nonnull List<RankEntity> findBy(@Nullable Long limit,
                                             @Nullable Long offset,
-                                            @Nullable Columns<? extends RoleEntity> columns,
-                                            @Nullable Conditions<? extends RoleEntity> conditions,
-                                            @Nullable Orders<? extends RoleEntity> orders,
+                                            @Nullable Columns<? extends RankEntity> columns,
+                                            @Nullable Conditions<? extends RankEntity> conditions,
+                                            @Nullable Orders<? extends RankEntity> orders,
                                             @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(RoleEntity::getTenantCode, tenant);
+        conditions = Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant);
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
@@ -128,11 +128,11 @@ public class RolePersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nullable RoleEntity findFirstBy(@Nullable Columns<? extends RoleEntity> columns,
-                                            @Nullable Conditions<? extends RoleEntity> conditions,
-                                            @Nullable Orders<? extends RoleEntity> orders,
+    public @Nullable RankEntity findFirstBy(@Nullable Columns<? extends RankEntity> columns,
+                                            @Nullable Conditions<? extends RankEntity> conditions,
+                                            @Nullable Orders<? extends RankEntity> orders,
                                             @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(RoleEntity::getTenantCode, tenant);
+        conditions = Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant);
         return this.mapper.findFirstBy(columns, conditions, orders);
     }
 
@@ -146,13 +146,13 @@ public class RolePersistence {
      * @param orders     排序条件
      * @param tenant     租户标识
      */
-    public @Nonnull Page<RoleEntity> pageBy(@Nonnull Long pageIndex,
+    public @Nonnull Page<RankEntity> pageBy(@Nonnull Long pageIndex,
                                             @Nonnull Long pageSize,
-                                            @Nullable Columns<? extends RoleEntity> columns,
-                                            @Nullable Conditions<? extends RoleEntity> conditions,
-                                            @Nullable Orders<? extends RoleEntity> orders,
+                                            @Nullable Columns<? extends RankEntity> columns,
+                                            @Nullable Conditions<? extends RankEntity> conditions,
+                                            @Nullable Orders<? extends RankEntity> orders,
                                             @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(RoleEntity::getTenantCode, tenant);
+        conditions = Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant);
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
@@ -162,9 +162,9 @@ public class RolePersistence {
      * @param conditions 筛选条件
      * @param tenant     租户标识
      */
-    public Long countBy(@Nullable Conditions<? extends RoleEntity> conditions,
+    public Long countBy(@Nullable Conditions<? extends RankEntity> conditions,
                         @Nonnull String tenant) {
-        conditions = Conditions.group(conditions).eq(RoleEntity::getTenantCode, tenant);
+        conditions = Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
@@ -176,15 +176,15 @@ public class RolePersistence {
      * @param tenant   租户标识
      * @return 保存后的数据
      */
-    public RoleEntity insert(@Nonnull @Validated({Insert.class, Default.class}) RoleInput input,
+    public RankEntity insert(@Nonnull @Validated({Insert.class, Default.class}) RankInput input,
                              @Nonnull String operator,
                              @Nonnull String tenant) {
         // 标识唯一性校验
-        if (this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, input.getCode()).eq(RoleEntity::getTenantCode, tenant))) {
+        if (this.mapper.existsBy(Conditions.of(RankEntity.class).eq(RankEntity::getCode, input.getCode()).eq(RankEntity::getTenantCode, tenant))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
         }
 
-        var entity = new RoleEntity();
+        var entity = new RankEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);
         entity.updateCreator(operator);
@@ -200,7 +200,7 @@ public class RolePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<RoleEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<RoleInput> inputs,
+    public List<RankEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<RankInput> inputs,
                                         @Nonnull String operator,
                                         @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
@@ -213,17 +213,17 @@ public class RolePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public RoleEntity update(@Nonnull @Validated({Update.class, Default.class}) RoleInput input,
+    public RankEntity update(@Nonnull @Validated({Update.class, Default.class}) RankInput input,
                              @Nonnull String operator,
                              @Nonnull String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getId, input.getId()).eq(RoleEntity::getTenantCode, tenant));
+        var entity = this.mapper.findFirstBy(Conditions.of(RankEntity.class).eq(RankEntity::getId, input.getId()).eq(RankEntity::getTenantCode, tenant));
         if (entity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("数据[id={}]不存在", input.getId()));
         }
 
         // 标识唯一性校验
         if (!Objects.equals(entity.getCode(), input.getCode())) {
-            if (this.mapper.existsBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, input.getCode()).eq(RoleEntity::getTenantCode, tenant))) {
+            if (this.mapper.existsBy(Conditions.of(RankEntity.class).eq(RankEntity::getCode, input.getCode()).eq(RankEntity::getTenantCode, tenant))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("已存在相同标识[code={}]的数据", input.getCode()));
             }
         }
@@ -242,7 +242,7 @@ public class RolePersistence {
      * @param operator 操作人
      * @param tenant   租户标识
      */
-    public List<RoleEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<RoleInput> inputs,
+    public List<RankEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<RankInput> inputs,
                                         @Nonnull String operator,
                                         @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
@@ -260,7 +260,7 @@ public class RolePersistence {
             return 0;
         }
 
-        return this.mapper.deleteBy(Conditions.of(RoleEntity.class).in(RoleEntity::getId, ids).eq(RoleEntity::getTenantCode, tenant));
+        return this.mapper.deleteBy(Conditions.of(RankEntity.class).in(RankEntity::getId, ids).eq(RankEntity::getTenantCode, tenant));
     }
 
     /**
@@ -269,9 +269,9 @@ public class RolePersistence {
      * @param conditions 条件
      * @param tenant     租户标识
      */
-    public long deleteBy(@Nullable Conditions<? extends RoleEntity> conditions,
+    public long deleteBy(@Nullable Conditions<? extends RankEntity> conditions,
                          @Nonnull String tenant) {
-        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(RoleEntity::getTenantCode, tenant)).stream()
+        var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant)).stream()
                 .map(Entity::getId).toList();
         return this.deleteByIds(ids, tenant);
     }

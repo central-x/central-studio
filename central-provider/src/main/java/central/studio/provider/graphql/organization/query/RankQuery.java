@@ -27,14 +27,15 @@ package central.studio.provider.graphql.organization.query;
 import central.bean.Page;
 import central.provider.graphql.DTO;
 import central.sql.data.Entity;
-import central.studio.provider.graphql.organization.dto.RankDTO;
-import central.studio.provider.database.persistence.organization.entity.RankEntity;
-import central.studio.provider.database.persistence.organization.mapper.RankMapper;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.organization.RankPersistence;
+import central.studio.provider.database.persistence.organization.entity.RankEntity;
+import central.studio.provider.graphql.organization.dto.RankDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -60,8 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "organization/query", types = RankDTO.class)
 public class RankQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private RankMapper mapper;
+    private RankPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -73,9 +75,8 @@ public class RankQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, RankDTO> batchLoader(@RequestParam List<String> ids,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(RankEntity.class).in(RankEntity::getId, ids).eq(RankEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, RankDTO.class))
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, RankDTO.class).stream()
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
@@ -88,8 +89,8 @@ public class RankQuery {
     @GraphQLFetcher
     public @Nullable RankDTO findById(@RequestParam String id,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(RankEntity.class).eq(RankEntity::getId, id).eq(RankEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, RankDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, RankDTO.class);
     }
 
 
@@ -102,9 +103,8 @@ public class RankQuery {
     @GraphQLFetcher
     public @Nonnull List<RankDTO> findByIds(@RequestParam List<String> ids,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(RankEntity.class).in(RankEntity::getId, ids).eq(RankEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, RankDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, RankDTO.class);
     }
 
     /**
@@ -122,9 +122,8 @@ public class RankQuery {
                                          @RequestParam Conditions<RankEntity> conditions,
                                          @RequestParam Orders<RankEntity> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, RankDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, RankDTO.class);
     }
 
     /**
@@ -142,9 +141,8 @@ public class RankQuery {
                                          @RequestParam Conditions<RankEntity> conditions,
                                          @RequestParam Orders<RankEntity> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, RankDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, RankDTO.class);
     }
 
     /**
@@ -156,7 +154,6 @@ public class RankQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<RankEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

@@ -24,34 +24,32 @@
 
 package central.studio.provider.graphql.authority;
 
-import central.data.authority.RoleRange;
-import central.data.authority.RoleRangeInput;
+import central.data.authority.*;
 import central.data.authority.option.MenuType;
 import central.data.authority.option.RangeCategory;
 import central.data.authority.option.RangeType;
+import central.data.organization.AccountInput;
 import central.provider.graphql.authority.RoleRangeProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.database.persistence.authority.entity.MenuEntity;
-import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
-import central.studio.provider.database.persistence.authority.entity.RoleEntity;
-import central.studio.provider.database.persistence.authority.mapper.MenuMapper;
-import central.studio.provider.database.persistence.authority.mapper.PermissionMapper;
-import central.studio.provider.database.persistence.authority.mapper.RoleMapper;
-import central.studio.provider.database.persistence.authority.mapper.RoleRangeMapper;
+import central.studio.provider.database.persistence.authority.MenuPersistence;
+import central.studio.provider.database.persistence.authority.PermissionPersistence;
+import central.studio.provider.database.persistence.authority.RolePersistence;
+import central.studio.provider.database.persistence.authority.RoleRangePersistence;
+import central.studio.provider.database.persistence.authority.entity.*;
+import central.studio.provider.database.persistence.organization.AccountPersistence;
 import central.studio.provider.database.persistence.organization.entity.AccountEntity;
-import central.studio.provider.database.persistence.organization.mapper.AccountMapper;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
-import central.util.Guidx;
+import central.studio.provider.graphql.TestContext;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,109 +65,107 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class TestRoleRangeProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
-
-    @Setter(onMethod_ = @Autowired)
     private RoleRangeProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private RoleRangeMapper mapper;
+    private RoleRangePersistence persistence;
+
+    @Setter(onMethod_ = @Autowired)
+    private TestContext context;
 
     @BeforeAll
-    public static void setup(@Autowired ProviderProperties properties,
-                             @Autowired ApplicationMapper applicationMapper,
-                             @Autowired MenuMapper menuMapper,
-                             @Autowired RoleMapper roleMapper,
-                             @Autowired AccountMapper accountMapper) {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("test");
-        applicationEntity.setName("测试应用");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/test");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("测试应用");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        applicationMapper.insert(applicationEntity);
+    public static void setup(@Autowired DataContext context,
+                             @Autowired TestContext testContext,
+                             @Autowired MenuPersistence menuPersistence,
+                             @Autowired PermissionPersistence permissionPersistence,
+                             @Autowired RolePersistence rolePersistence,
+                             @Autowired AccountPersistence accountPersistence) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
+        }
 
-        var menuEntity = new MenuEntity();
-        menuEntity.setApplicationId(applicationEntity.getId());
-        menuEntity.setParentId("");
-        menuEntity.setCode("test");
-        menuEntity.setName("测试菜单");
-        menuEntity.setIcon("icon");
-        menuEntity.setUrl("");
-        menuEntity.setType(MenuType.BACKEND.getValue());
-        menuEntity.setEnabled(Boolean.TRUE);
-        menuEntity.setOrder(0);
-        menuEntity.setRemark("菜单");
-        menuEntity.setTenantCode("master");
-        menuEntity.updateCreator(properties.getSupervisor().getUsername());
-        menuMapper.insert(menuEntity);
+        var tenant = testContext.getTenant();
+        var application = testContext.getApplication();
 
-        var roleEntity = new RoleEntity();
-        roleEntity.setApplicationId(applicationEntity.getId());
-        roleEntity.setCode("test");
-        roleEntity.setName("测试角色");
-        roleEntity.setUnitId("");
-        roleEntity.setEnabled(Boolean.TRUE);
-        roleEntity.setRemark("测试角色");
-        roleEntity.setTenantCode("master");
-        roleEntity.updateCreator(properties.getSupervisor().getUsername());
-        roleMapper.insert(roleEntity);
+        var menu = menuPersistence.insert(MenuInput.builder()
+                .applicationId(application.getId())
+                .parentId("")
+                .code("test")
+                .name("测试菜单")
+                .icon("icon")
+                .url("@/test")
+                .type(MenuType.BACKEND.getValue())
+                .enabled(Boolean.TRUE)
+                .order(0)
+                .remark("测试菜单")
+                .build(), "syssa", tenant.getCode());
 
-        var accountEntity = new AccountEntity();
-        accountEntity.setUsername("test");
-        accountEntity.setEmail("test@central-x.com");
-        accountEntity.setMobile("18888888888");
-        accountEntity.setName("测试帐号");
-        accountEntity.setAvatar("1234");
-        accountEntity.setAdmin(Boolean.FALSE);
-        accountEntity.setEnabled(Boolean.TRUE);
-        accountEntity.setDeleted(Boolean.FALSE);
-        accountEntity.setTenantCode("master");
-        accountEntity.updateCreator(properties.getSupervisor().getUsername());
-        accountMapper.insert(accountEntity);
+        permissionPersistence.insert(PermissionInput.builder()
+                .applicationId(application.getId())
+                .menuId(menu.getId())
+                .code("add")
+                .name("添加")
+                .build(), "syssa", tenant.getCode());
+
+        rolePersistence.insert(RoleInput.builder()
+                .applicationId(application.getId())
+                .code("test")
+                .name("测试角色")
+                .unitId("")
+                .enabled(Boolean.TRUE)
+                .remark("测试角色")
+                .build(), "syssa", tenant.getCode());
+
+        accountPersistence.insert(AccountInput.builder()
+                .username("test")
+                .email("test@central-x.com")
+                .mobile("18888888888")
+                .name("测试帐号")
+                .avatar("1234")
+                .enabled(Boolean.TRUE)
+                .deleted(Boolean.FALSE)
+                .build(), "syssa", tenant.getCode());
     }
 
     @AfterAll
-    public static void cleanup(@Autowired ApplicationMapper applicationMapper,
-                               @Autowired MenuMapper menuMapper,
-                               @Autowired PermissionMapper permissionMapper,
-                               @Autowired RoleMapper roleMapper) {
-        applicationMapper.deleteBy(Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "test"));
-        menuMapper.deleteBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getCode, "test"));
-        roleMapper.deleteBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, "test"));
-        permissionMapper.deleteBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getCode, "test-add"));
+    public static void cleanup(@Autowired TestContext testContext,
+                               @Autowired MenuPersistence menuPersistence,
+                               @Autowired PermissionPersistence permissionPersistence,
+                               @Autowired RolePersistence rolePersistence,
+                               @Autowired AccountPersistence accountPersistence) {
+        var tenant = testContext.getTenant();
+        var application = testContext.getApplication();
+
+        menuPersistence.deleteBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
+        permissionPersistence.deleteBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getApplicationId, application.getId()), tenant.getCode());
+        rolePersistence.deleteBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()), tenant.getCode());
+        accountPersistence.deleteBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, "test"), tenant.getCode());
     }
 
     @BeforeEach
     @AfterEach
     public void clear() {
-        this.mapper.deleteAll();
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+
+        this.persistence.deleteBy(Conditions.of(RoleRangeEntity.class).eq(RoleRangeEntity::getApplicationId, application.getId()), tenant.getCode());
     }
 
-    @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
-
-    private ApplicationEntity getApplication() {
-        return applicationMapper.findFirstBy(Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "test"));
-    }
 
     @Setter(onMethod_ = @Autowired)
-    private RoleMapper roleMapper;
+    private RolePersistence rolePersistence;
 
     private RoleEntity getRole() {
-        return roleMapper.findFirstBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, "test"));
+        return rolePersistence.findFirstBy(Columns.all(), Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, "test"), null, this.context.getTenant().getCode());
     }
 
     @Setter(onMethod_ = @Autowired)
-    private AccountMapper accountMapper;
+    private AccountPersistence accountPersistence;
 
-    private AccountEntity getAccount(){
-        return accountMapper.findFirstBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, "test"));
+    private AccountEntity getAccount() {
+        return accountPersistence.findFirstBy(Columns.all(), Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, "test"), null, this.context.getTenant().getCode());
     }
 
     /**
@@ -180,7 +176,8 @@ public class TestRoleRangeProvider {
      */
     @Test
     public void case1() {
-        var application = this.getApplication();
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
         var role = this.getRole();
         var account = this.getAccount();
 
@@ -192,17 +189,19 @@ public class TestRoleRangeProvider {
                 .dataId(account.getId())
                 .build();
 
-        var inserted = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(inserted);
-        assertEquals(input.getApplicationId(), inserted.getApplicationId());
-        assertEquals(input.getApplicationId(), inserted.getApplication().getId());
-        assertEquals(input.getRoleId(), inserted.getRoleId());
-        assertEquals(input.getRoleId(), inserted.getRole().getId());
-        assertEquals(input.getCategory(), inserted.getCategory());
-        assertEquals(input.getType(), inserted.getType());
-        assertEquals(input.getDataId(), inserted.getDataId());
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getRoleId(), insert.getRoleId());
+        assertEquals(input.getRoleId(), insert.getRole().getId());
+        assertEquals(input.getCategory(), insert.getCategory());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getDataId(), insert.getDataId());
 
-        var found = this.provider.findById(inserted.getId(), "master");
+        // test findById
+        var found = this.provider.findById(insert.getId(), tenant.getCode());
         assertNotNull(found);
         assertEquals(input.getApplicationId(), found.getApplicationId());
         assertEquals(input.getApplicationId(), found.getApplication().getId());
@@ -212,11 +211,16 @@ public class TestRoleRangeProvider {
         assertEquals(input.getType(), found.getType());
         assertEquals(input.getDataId(), found.getDataId());
 
-        var count = this.provider.countBy(Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), "master");
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), tenant.getCode());
         assertEquals(1, count);
 
-        var deleted = this.provider.deleteByIds(List.of(inserted.getId()), "master");
-        assertEquals(1, deleted);
+        // test deleteByIds
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(RoleRangeEntity.class).eq(RoleRangeEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
@@ -228,7 +232,8 @@ public class TestRoleRangeProvider {
      */
     @Test
     public void case2() {
-        var application = this.getApplication();
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
         var role = this.getRole();
         var account = this.getAccount();
 
@@ -240,62 +245,74 @@ public class TestRoleRangeProvider {
                 .dataId(account.getId())
                 .build();
 
-        // insertBatch
-        var batch = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(batch);
-        assertEquals(1, batch.size());
-        var inserted = Listx.getFirstOrNull(batch);
-        assertEquals(input.getApplicationId(), inserted.getApplicationId());
-        assertEquals(input.getApplicationId(), inserted.getApplication().getId());
-        assertEquals(input.getRoleId(), inserted.getRoleId());
-        assertEquals(input.getRoleId(), inserted.getRole().getId());
-        assertEquals(input.getCategory(), inserted.getCategory());
-        assertEquals(input.getType(), inserted.getType());
-        assertEquals(input.getDataId(), inserted.getDataId());
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        // findByIds
-        var found = this.provider.findByIds(List.of(inserted.getId()), "master");
-        assertNotNull(found);
-        assertEquals(1, found.size());
-        inserted = Listx.getFirstOrNull(found);
-        assertEquals(input.getApplicationId(), inserted.getApplicationId());
-        assertEquals(input.getApplicationId(), inserted.getApplication().getId());
-        assertEquals(input.getRoleId(), inserted.getRoleId());
-        assertEquals(input.getRoleId(), inserted.getRole().getId());
-        assertEquals(input.getCategory(), inserted.getCategory());
-        assertEquals(input.getType(), inserted.getType());
-        assertEquals(input.getDataId(), inserted.getDataId());
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getRoleId(), insert.getRoleId());
+        assertEquals(input.getRoleId(), insert.getRole().getId());
+        assertEquals(input.getCategory(), insert.getCategory());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getDataId(), insert.getDataId());
 
-        // findBy
-        var list = this.provider.findBy(null, null, Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), null, "master");
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        inserted = Listx.getFirstOrNull(list);
-        assertEquals(input.getApplicationId(), inserted.getApplicationId());
-        assertEquals(input.getApplicationId(), inserted.getApplication().getId());
-        assertEquals(input.getRoleId(), inserted.getRoleId());
-        assertEquals(input.getRoleId(), inserted.getRole().getId());
-        assertEquals(input.getCategory(), inserted.getCategory());
-        assertEquals(input.getType(), inserted.getType());
-        assertEquals(input.getDataId(), inserted.getDataId());
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
 
-        // pageBy
-        var page = this.provider.pageBy(1, 20, Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), null, "master");
-        assertNotNull(page);
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(1, page.getPager().getItemCount());
-        inserted = Listx.getFirstOrNull(page.getData());
-        assertEquals(input.getApplicationId(), inserted.getApplicationId());
-        assertEquals(input.getApplicationId(), inserted.getApplication().getId());
-        assertEquals(input.getRoleId(), inserted.getRoleId());
-        assertEquals(input.getRoleId(), inserted.getRole().getId());
-        assertEquals(input.getCategory(), inserted.getCategory());
-        assertEquals(input.getType(), inserted.getType());
-        assertEquals(input.getDataId(), inserted.getDataId());
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getRoleId(), fetched.getRoleId());
+        assertEquals(insert.getRoleId(), fetched.getRole().getId());
+        assertEquals(insert.getCategory(), fetched.getCategory());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(insert.getDataId(), fetched.getDataId());
 
-        var deleted = this.provider.deleteBy(Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), "master");
-        assertEquals(1, deleted);
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
+
+        fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getRoleId(), fetched.getRoleId());
+        assertEquals(insert.getRoleId(), fetched.getRole().getId());
+        assertEquals(insert.getCategory(), fetched.getCategory());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(insert.getDataId(), fetched.getDataId());
+
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 20, Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(20, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getRoleId(), fetched.getRoleId());
+        assertEquals(insert.getRoleId(), fetched.getRole().getId());
+        assertEquals(insert.getCategory(), fetched.getCategory());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(insert.getDataId(), fetched.getDataId());
+
+        // test deleteBy
+        var count = this.provider.deleteBy(Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(RoleRangeEntity.class).eq(RoleRangeEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 }

@@ -27,14 +27,15 @@ package central.studio.provider.graphql.organization.query;
 import central.bean.Page;
 import central.provider.graphql.DTO;
 import central.sql.data.Entity;
-import central.studio.provider.graphql.organization.dto.AreaDTO;
-import central.studio.provider.database.persistence.organization.entity.AreaEntity;
-import central.studio.provider.database.persistence.organization.mapper.AreaMapper;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.organization.AreaPersistence;
+import central.studio.provider.database.persistence.organization.entity.AreaEntity;
+import central.studio.provider.graphql.organization.dto.AreaDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
 
 /**
  * Area Query
+ * <p>
  * 行政区划查询
  *
  * @author Alan Yeh
@@ -61,7 +63,7 @@ import java.util.stream.Collectors;
 public class AreaQuery {
 
     @Setter(onMethod_ = @Autowired)
-    private AreaMapper mapper;
+    private AreaPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -72,9 +74,8 @@ public class AreaQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, AreaDTO> batchLoader(@RequestParam List<String> ids,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(AreaEntity.class).in(AreaEntity::getId, ids).eq(AreaEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, AreaDTO.class))
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, AreaDTO.class).stream()
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
@@ -87,8 +88,8 @@ public class AreaQuery {
     @GraphQLFetcher
     public @Nullable AreaDTO findById(@RequestParam String id,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(AreaEntity.class).eq(AreaEntity::getId, id).eq(AreaEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, AreaDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, AreaDTO.class);
     }
 
 
@@ -101,9 +102,8 @@ public class AreaQuery {
     @GraphQLFetcher
     public @Nonnull List<AreaDTO> findByIds(@RequestParam List<String> ids,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(AreaEntity.class).in(AreaEntity::getId, ids).eq(AreaEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, AreaDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, AreaDTO.class);
     }
 
     /**
@@ -121,9 +121,8 @@ public class AreaQuery {
                                          @RequestParam Conditions<AreaEntity> conditions,
                                          @RequestParam Orders<AreaEntity> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AreaEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, AreaDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, AreaDTO.class);
     }
 
     /**
@@ -141,9 +140,8 @@ public class AreaQuery {
                                          @RequestParam Conditions<AreaEntity> conditions,
                                          @RequestParam Orders<AreaEntity> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AreaEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, AreaDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, AreaDTO.class);
     }
 
     /**
@@ -155,7 +153,6 @@ public class AreaQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<AreaEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(AreaEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

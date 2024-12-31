@@ -27,14 +27,15 @@ package central.studio.provider.graphql.organization.query;
 import central.bean.Page;
 import central.provider.graphql.DTO;
 import central.sql.data.Entity;
-import central.studio.provider.graphql.organization.dto.PostDTO;
-import central.studio.provider.database.persistence.organization.entity.PostEntity;
-import central.studio.provider.database.persistence.organization.mapper.PostMapper;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.organization.PostPersistence;
+import central.studio.provider.database.persistence.organization.entity.PostEntity;
+import central.studio.provider.graphql.organization.dto.PostDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -60,8 +61,9 @@ import java.util.stream.Collectors;
 @Component
 @GraphQLSchema(path = "organization/query", types = PostDTO.class)
 public class PostQuery {
+
     @Setter(onMethod_ = @Autowired)
-    private PostMapper mapper;
+    private PostPersistence persistence;
 
     /**
      * 批量数据加载器
@@ -72,9 +74,8 @@ public class PostQuery {
     @GraphQLBatchLoader
     public @Nonnull Map<String, PostDTO> batchLoader(@RequestParam List<String> ids,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.mapper.findBy(Conditions.of(PostEntity.class).in(PostEntity::getId, ids).eq(PostEntity::getTenantCode, tenant))
-                .stream()
-                .map(it -> DTO.wrap(it, PostDTO.class))
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, PostDTO.class).stream()
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
@@ -87,8 +88,8 @@ public class PostQuery {
     @GraphQLFetcher
     public @Nullable PostDTO findById(@RequestParam String id,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entity = this.mapper.findFirstBy(Conditions.of(PostEntity.class).eq(PostEntity::getId, id).eq(PostEntity::getTenantCode, tenant));
-        return DTO.wrap(entity, PostDTO.class);
+        var data = this.persistence.findById(id, Columns.all(), tenant);
+        return DTO.wrap(data, PostDTO.class);
     }
 
 
@@ -101,9 +102,8 @@ public class PostQuery {
     @GraphQLFetcher
     public @Nonnull List<PostDTO> findByIds(@RequestParam List<String> ids,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var entities = this.mapper.findBy(Conditions.of(PostEntity.class).in(PostEntity::getId, ids).eq(PostEntity::getTenantCode, tenant));
-
-        return DTO.wrap(entities, PostDTO.class);
+        var data = this.persistence.findByIds(ids, Columns.all(), tenant);
+        return DTO.wrap(data, PostDTO.class);
     }
 
     /**
@@ -121,9 +121,8 @@ public class PostQuery {
                                          @RequestParam Conditions<PostEntity> conditions,
                                          @RequestParam Orders<PostEntity> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(PostEntity::getTenantCode, tenant);
-        var list = this.mapper.findBy(limit, offset, conditions, orders);
-        return DTO.wrap(list, PostDTO.class);
+        var data = this.persistence.findBy(limit, offset, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, PostDTO.class);
     }
 
     /**
@@ -141,9 +140,8 @@ public class PostQuery {
                                          @RequestParam Conditions<PostEntity> conditions,
                                          @RequestParam Orders<PostEntity> orders,
                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(PostEntity::getTenantCode, tenant);
-        var page = this.mapper.findPageBy(pageIndex, pageSize, conditions, orders);
-        return DTO.wrap(page, PostDTO.class);
+        var data = this.persistence.pageBy(pageIndex, pageSize, Columns.all(), conditions, orders, tenant);
+        return DTO.wrap(data, PostDTO.class);
     }
 
     /**
@@ -155,7 +153,6 @@ public class PostQuery {
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<PostEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        conditions = Conditions.group(conditions).eq(PostEntity::getTenantCode, tenant);
-        return this.mapper.countBy(conditions);
+        return this.persistence.countBy(conditions, tenant);
     }
 }

@@ -123,6 +123,22 @@ public class DepartmentPersistence {
     }
 
     /**
+     * 根据条件查询第一条数据
+     *
+     * @param columns    字段列表
+     * @param conditions 过滤条件
+     * @param orders     排序条件
+     * @param tenant     租户标识
+     */
+    public @Nullable DepartmentEntity findFirstBy(@Nullable Columns<? extends DepartmentEntity> columns,
+                                                  @Nullable Conditions<? extends DepartmentEntity> conditions,
+                                                  @Nullable Orders<? extends DepartmentEntity> orders,
+                                                  @Nonnull String tenant) {
+        conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
+        return this.mapper.findFirstBy(columns, conditions, orders);
+    }
+
+    /**
      * 分页查询数据
      *
      * @param pageIndex  分页下标
