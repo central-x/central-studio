@@ -43,8 +43,8 @@ import central.studio.provider.graphql.TestContext;
 import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -85,7 +85,7 @@ public class TestPermissionProvider extends TestProvider {
         }
     }
 
-    @BeforeEach
+    @AfterEach
     public void clear() {
         var tenant = this.context.getTenant();
         var application = this.context.getApplication();
@@ -258,7 +258,6 @@ public class TestPermissionProvider extends TestProvider {
         // test updateBatch
         this.provider.updateBatch(List.of(insert.toInput().code("add2").name("添加2").build()), "syssa", tenant.getCode());
 
-
         // test pageBy
         var pageBy = this.provider.pageBy(1, 10, Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), null, tenant.getCode());
         assertNotNull(pageBy);
@@ -281,7 +280,7 @@ public class TestPermissionProvider extends TestProvider {
         assertEquals(insert.getModifierId(), fetched.getModifierId());
         assertNotEquals(fetched.getCreateDate(), fetched.getModifyDate());
 
-        // test deleteById
+        // test deleteBy
         var count = this.provider.deleteBy(Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), tenant.getCode());
         assertEquals(1, count);
 

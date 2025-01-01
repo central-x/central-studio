@@ -26,20 +26,21 @@ package central.studio.provider.graphql.gateway;
 
 import central.data.gateway.GatewayFilter;
 import central.data.gateway.GatewayFilterInput;
-import central.data.gateway.GatewayPredicate;
 import central.data.gateway.GatewayPredicateInput;
-import central.lang.reflect.TypeRef;
 import central.provider.graphql.gateway.GatewayFilterProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
+import central.studio.provider.database.persistence.gateway.GatewayFilterPersistence;
 import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
-import central.studio.provider.database.persistence.gateway.mapper.GatewayFilterMapper;
+import central.studio.provider.graphql.TestContext;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,7 +48,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * GatewayFilterProvider Test Cases
@@ -57,274 +59,44 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestGatewayFilterProvider {
-    @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private GatewayFilterProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private GatewayFilterMapper mapper;
+    private GatewayFilterPersistence persistence;
 
-    @BeforeEach
+    @Setter(onMethod_ = @Autowired)
+    private TestContext context;
+
+    @BeforeAll
+    public static void setup(@Autowired DataContext context) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
+        }
+    }
+
     @AfterEach
     public void clear() throws Exception {
+        var tenant = this.context.getTenant();
         // 清空测试数据
-        this.mapper.deleteAll();
-    }
-
-
-    /**
-     * @see GatewayFilterProvider#findById
-     */
-    @Test
-    public void case1() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var filter = this.provider.findById(entity.getId(), "master");
-        assertNotNull(filter);
-        assertEquals(entity.getId(), filter.getId());
-        assertNotNull(filter.getType());
-        assertNotNull(filter.getPath());
-        assertNotNull(filter.getOrder());
-        assertNotNull(filter.getEnabled());
-        assertNotNull(filter.getRemark());
-        assertNotNull(filter.getParams());
-        var params = Jsonx.Default().deserialize(filter.getParams(), TypeRef.ofMap(String.class, Object.class));
-        assertNotNull(params);
-        assertEquals(2, params.size());
-
-        // 断言
-        assertNotNull(filter.getPredicates());
-        assertEquals(1, filter.getPredicates().size());
-        assertEquals("host", filter.getPredicates().get(0).getType());
-
-        // 关联查询
-        assertNotNull(filter.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getCreator().getId());
-        assertNotNull(filter.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getModifier().getId());
-    }
-
-    /**
-     * @see GatewayFilterProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var filters = this.provider.findByIds(List.of(entity.getId()), "master");
-        assertNotNull(filters);
-        assertEquals(1, filters.size());
-
-        var filter = Listx.getFirstOrNull(filters);
-        assertNotNull(filter);
-        assertEquals(entity.getId(), filter.getId());
-        assertNotNull(filter.getType());
-        assertNotNull(filter.getPath());
-        assertNotNull(filter.getOrder());
-        assertNotNull(filter.getEnabled());
-        assertNotNull(filter.getRemark());
-        assertNotNull(filter.getParams());
-        var params = Jsonx.Default().deserialize(filter.getParams(), TypeRef.ofMap(String.class, Object.class));
-        assertNotNull(params);
-        assertEquals(2, params.size());
-
-        // 断言
-        assertNotNull(filter.getPredicates());
-        assertEquals(1, filter.getPredicates().size());
-        assertEquals("host", filter.getPredicates().get(0).getType());
-
-        // 关联查询
-        assertNotNull(filter.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getCreator().getId());
-        assertNotNull(filter.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getModifier().getId());
-    }
-
-    /**
-     * @see GatewayFilterProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var filters = this.provider.findBy(null, null, Conditions.of(GatewayFilter.class).eq(GatewayFilter::getType, "add_request_header"), null, "master");
-        assertNotNull(filters);
-        assertEquals(1, filters.size());
-
-        var filter = Listx.getFirstOrNull(filters);
-        assertNotNull(filter);
-        assertEquals(entity.getId(), filter.getId());
-        assertNotNull(filter.getType());
-        assertNotNull(filter.getPath());
-        assertNotNull(filter.getOrder());
-        assertNotNull(filter.getEnabled());
-        assertNotNull(filter.getRemark());
-        assertNotNull(filter.getParams());
-        var params = Jsonx.Default().deserialize(filter.getParams(), TypeRef.ofMap(String.class, Object.class));
-        assertNotNull(params);
-        assertEquals(2, params.size());
-
-        // 断言
-        assertNotNull(filter.getPredicates());
-        assertEquals(1, filter.getPredicates().size());
-        assertEquals("host", filter.getPredicates().get(0).getType());
-
-        // 关联查询
-        assertNotNull(filter.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getCreator().getId());
-        assertNotNull(filter.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getModifier().getId());
-    }
-
-    /**
-     * @see GatewayFilterProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(GatewayFilter.class).eq(GatewayFilter::getType, "add_request_header"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(1, page.getPager().getItemCount());
-
-        var filter = Listx.getFirstOrNull(page.getData());
-        assertNotNull(filter);
-        assertEquals(entity.getId(), filter.getId());
-        assertNotNull(filter.getType());
-        assertNotNull(filter.getPath());
-        assertNotNull(filter.getOrder());
-        assertNotNull(filter.getEnabled());
-        assertNotNull(filter.getRemark());
-        assertNotNull(filter.getParams());
-        var params = Jsonx.Default().deserialize(filter.getParams(), TypeRef.ofMap(String.class, Object.class));
-        assertNotNull(params);
-        assertEquals(2, params.size());
-
-        // 断言
-        assertNotNull(filter.getPredicates());
-        assertEquals(1, filter.getPredicates().size());
-        assertEquals("host", filter.getPredicates().get(0).getType());
-
-        // 关联查询
-        assertNotNull(filter.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getCreator().getId());
-        assertNotNull(filter.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getModifier().getId());
-    }
-
-    /**
-     * @see GatewayFilterProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(GatewayFilter.class).eq(GatewayFilter::getType, "add_request_header"), "master");
-        assertNotNull(count);
-        assertEquals(1, count);
+        this.persistence.deleteBy(Conditions.of(GatewayFilterEntity.class), tenant.getCode());
     }
 
     /**
      * @see GatewayFilterProvider#insert
+     * @see GatewayFilterProvider#findById
+     * @see GatewayFilterProvider#update
+     * @see GatewayFilterProvider#findByIds
+     * @see GatewayFilterProvider#countBy
+     * @see GatewayFilterProvider#deleteByIds
      */
     @Test
-    public void case6() {
+    public void case1() {
+        var tenant = this.context.getTenant();
+
         var input = GatewayFilterInput.builder()
                 .type("add_request_header")
                 .path("/")
@@ -335,28 +107,76 @@ public class TestGatewayFilterProvider {
                         "header", "test",
                         "value", "test_value"
                 )))
-                .predicates(List.of(
-                        new GatewayPredicateInput("host", Jsonx.Default().serialize(Map.of(
+                .predicates(List.of(GatewayPredicateInput.builder()
+                        .type("host")
+                        .params(Jsonx.Default().serialize(Map.of(
                                 "regexp", "127.0.0.1"
-                        )))
-                ))
+                        ))).build()))
                 .build();
 
-        // 查询数据
-        var entity = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getPath(), insert.getPath());
+        assertEquals(input.getOrder(), insert.getOrder());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getParams(), insert.getParams());
+        assertEquals(1, insert.getPredicates().size());
+        assertEquals("host", insert.getPredicates().get(0).getType());
 
-        assertNotNull(entity);
-        assertNotNull(entity.getId());
+        // test findById
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getType(), findById.getType());
+        assertEquals(insert.getPath(), findById.getPath());
+        assertEquals(insert.getOrder(), findById.getOrder());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getParams(), findById.getParams());
+        assertEquals(insert.getPredicates(), findById.getPredicates());
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getId, entity.getId())));
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(GatewayFilter.class), tenant.getCode());
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().path("/test").enabled(Boolean.FALSE).build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals("/test", fetched.getPath());
+        assertEquals(insert.getOrder(), fetched.getOrder());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getParams(), fetched.getParams());
+        assertEquals(insert.getPredicates(), fetched.getPredicates());
+
+        // test deleteById
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(GatewayFilterEntity.class), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
      * @see GatewayFilterProvider#insertBatch
+     * @see GatewayFilterProvider#findBy
+     * @see GatewayFilterProvider#updateBatch
+     * @see GatewayFilterProvider#pageBy
+     * @see GatewayFilterProvider#deleteBy
      */
     @Test
-    public void case7() {
+    public void case2() {
+        var tenant = this.context.getTenant();
+
         var input = GatewayFilterInput.builder()
                 .type("add_request_header")
                 .path("/")
@@ -367,174 +187,73 @@ public class TestGatewayFilterProvider {
                         "header", "test",
                         "value", "test_value"
                 )))
-                .predicates(List.of(
-                        new GatewayPredicateInput("host", Jsonx.Default().serialize(Map.of(
+                .predicates(List.of(GatewayPredicateInput.builder()
+                        .type("host")
+                        .params(Jsonx.Default().serialize(Map.of(
                                 "regexp", "127.0.0.1"
-                        )))
-                ))
+                        ))).build()))
                 .build();
 
-        // 查询数据
-        var entities = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        assertNotNull(entities);
-        assertEquals(1, entities.size());
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getPath(), insert.getPath());
+        assertEquals(input.getOrder(), insert.getOrder());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getParams(), insert.getParams());
+        assertEquals(1, insert.getPredicates().size());
+        assertEquals("host", insert.getPredicates().get(0).getType());
 
-        var entity = Listx.getFirstOrNull(entities);
-        assertNotNull(entity);
-        assertNotNull(entity.getId());
+        // test findBy
+        var findBy = this.provider.findBy(null, null, null, null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getId, entity.getId())));
-    }
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(insert.getPath(), fetched.getPath());
+        assertEquals(insert.getOrder(), fetched.getOrder());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getParams(), fetched.getParams());
+        assertEquals(insert.getPredicates().size(), fetched.getPredicates().size());
+        assertEquals(insert.getPredicates().get(0).getType(), fetched.getPredicates().get(0).getType());
 
-    /**
-     * @see GatewayFilterProvider#update
-     */
-    @Test
-    public void case8() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
+        // test updateBatch
+        this.provider.updateBatch(List.of(insert.toInput().path("/test").enabled(Boolean.FALSE).build()), "syssa", tenant.getCode());
 
-        // 查询数据
-        var filter = this.provider.findById(entity.getId(), "master");
-        assertNotNull(filter);
-        assertEquals(entity.getId(), filter.getId());
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, null, null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        var input = filter.toInput()
-                .path("/test")
-                .build();
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals("/test", fetched.getPath());
+        assertEquals(insert.getOrder(), fetched.getOrder());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getParams(), fetched.getParams());
+        assertEquals(insert.getPredicates().size(), fetched.getPredicates().size());
+        assertEquals(insert.getPredicates().get(0).getType(), fetched.getPredicates().get(0).getType());
 
-        // 更新数据
-        filter = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(filter);
-        assertEquals(entity.getId(), filter.getId());
+        // test deleteBy
+        var count = this.provider.deleteBy(Conditions.of(GatewayFilter.class).eq(GatewayFilter::getPath, "/test"), tenant.getCode());
+        assertEquals(1, count);
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getPath, "/test")));
-    }
-
-    /**
-     * @see GatewayFilterProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var filter = this.provider.findById(entity.getId(), "master");
-        assertNotNull(filter);
-        assertEquals(entity.getId(), filter.getId());
-
-        var input = filter.toInput()
-                .path("/test")
-                .build();
-
-        // 更新数据
-        var filters = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(filters);
-        assertEquals(1, filters.size());
-
-        filter = Listx.getFirstOrNull(filters);
-        assertNotNull(filter);
-        assertEquals(entity.getId(), filter.getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getPath, "/test")));
-    }
-
-    /**
-     * @see GatewayFilterProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var deleted = this.provider.deleteByIds(List.of(entity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getId, entity.getId())));
-    }
-
-    /**
-     * @see GatewayFilterProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-        var entity = new GatewayFilterEntity();
-        entity.setType("add_request_header");
-        entity.setPath("/");
-        entity.setOrder(0);
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("添加请求头");
-        entity.setParams(Jsonx.Default().serialize(Map.of(
-                "header", "test",
-                "value", "test_value"
-        )));
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new GatewayPredicate("host", Jsonx.Default().serialize(Map.of(
-                        "regexp", "127.0.0.1"
-                )))
-        )));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(GatewayFilter.class).eq(GatewayFilter::getType, "add_request_header"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(GatewayFilterEntity.class).eq(GatewayFilterEntity::getId, entity.getId())));
+        count = this.persistence.countBy(Conditions.of(GatewayFilterEntity.class), tenant.getCode());
+        assertEquals(0, count);
     }
 }

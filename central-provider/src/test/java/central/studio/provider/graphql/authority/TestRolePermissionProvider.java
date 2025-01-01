@@ -37,10 +37,7 @@ import central.studio.provider.database.persistence.authority.MenuPersistence;
 import central.studio.provider.database.persistence.authority.PermissionPersistence;
 import central.studio.provider.database.persistence.authority.RolePermissionPersistence;
 import central.studio.provider.database.persistence.authority.RolePersistence;
-import central.studio.provider.database.persistence.authority.entity.MenuEntity;
-import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
-import central.studio.provider.database.persistence.authority.entity.RoleEntity;
-import central.studio.provider.database.persistence.authority.entity.RolePermissionEntity;
+import central.studio.provider.database.persistence.authority.entity.*;
 import central.studio.provider.graphql.TestContext;
 import central.util.Listx;
 import lombok.Setter;
@@ -129,7 +126,6 @@ public class TestRolePermissionProvider {
         rolePersistence.deleteBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()), tenant.getCode());
     }
 
-    @BeforeEach
     @AfterEach
     public void clear() {
         var tenant = this.context.getTenant();
@@ -197,8 +193,11 @@ public class TestRolePermissionProvider {
         assertEquals(1, count);
 
         // test deleteByIds
-        var deleted = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
-        assertEquals(1, deleted);
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(RolePermissionEntity.class).eq(RolePermissionEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
@@ -280,7 +279,11 @@ public class TestRolePermissionProvider {
         assertEquals(insert.getPermissionId(), fetched.getPermissionId());
         assertEquals(insert.getPermissionId(), fetched.getPermission().getId());
 
-        var deleted = this.provider.deleteBy(Conditions.of(RolePermission.class).eq(RolePermission::getRoleId, role.getId()), tenant.getCode());
-        assertEquals(1, deleted);
+        // test deleteBy
+        var count = this.provider.deleteBy(Conditions.of(RolePermission.class).eq(RolePermission::getRoleId, role.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(RolePermissionEntity.class).eq(RolePermissionEntity::getApplicationId, application.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 }

@@ -40,8 +40,8 @@ import central.studio.provider.graphql.TestContext;
 import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -77,7 +77,7 @@ public class TestMenuProvider extends TestProvider {
         }
     }
 
-    @BeforeEach
+    @AfterEach
     public void clear() {
         var tenant = this.context.getTenant();
         var application = this.context.getApplication();

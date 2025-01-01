@@ -144,7 +144,6 @@ public class TestRoleRangeProvider {
         accountPersistence.deleteBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, "test"), tenant.getCode());
     }
 
-    @BeforeEach
     @AfterEach
     public void clear() {
         var tenant = this.context.getTenant();

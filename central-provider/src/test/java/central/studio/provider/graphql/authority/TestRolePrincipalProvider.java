@@ -179,7 +179,6 @@ public class TestRolePrincipalProvider {
         departmentPersistence.deleteBy(Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getCode, "test"), tenant.getCode());
     }
 
-    @BeforeEach
     @AfterEach
     public void clear() {
         var tenant = this.context.getTenant();
@@ -337,14 +336,14 @@ public class TestRolePrincipalProvider {
         assertEquals(insert.getPrincipalId(), fetched.getAccount().getId());
 
         // test pageBy
-        var page = this.provider.pageBy(1, 20, Conditions.of(RolePrincipal.class).eq(RolePrincipal::getRoleId, role.getId()), null, tenant.getCode());
-        assertNotNull(page);
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(1, page.getPager().getItemCount());
+        var pageBy = this.provider.pageBy(1, 20, Conditions.of(RolePrincipal.class).eq(RolePrincipal::getRoleId, role.getId()), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(20, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
 
-        fetched = Listx.getFirstOrNull(page.getData());
+        fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
         assertEquals(insert.getApplicationId(), fetched.getApplicationId());
         assertEquals(insert.getApplicationId(), fetched.getApplication().getId());

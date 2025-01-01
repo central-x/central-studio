@@ -46,10 +46,7 @@ import central.studio.provider.graphql.TestContext;
 import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -116,7 +113,7 @@ public class TestRoleProvider extends TestProvider {
         areaPersistence.deleteBy(Conditions.of(AreaEntity.class).eq(AreaEntity::getCode, "test"), tenant.getCode());
     }
 
-    @BeforeEach
+    @AfterEach
     public void clear() {
         var tenant = this.context.getTenant();
         var application = this.context.getApplication();
@@ -291,7 +288,7 @@ public class TestRoleProvider extends TestProvider {
         assertEquals(Boolean.FALSE, fetched.getEnabled());
         assertEquals(input.getRemark(), fetched.getRemark());
 
-        // test deleteById
+        // test deleteBy
         var count = this.provider.deleteBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), tenant.getCode());
         assertEquals(1, count);
 
