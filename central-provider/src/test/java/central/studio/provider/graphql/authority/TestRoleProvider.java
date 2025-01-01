@@ -231,7 +231,7 @@ public class TestRoleProvider extends TestProvider {
                 .remark("测试角色")
                 .build();
 
-        // test insert
+        // test insertBatch
         var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
         assertNotNull(insertBatch);
         assertEquals(1, insertBatch.size());
