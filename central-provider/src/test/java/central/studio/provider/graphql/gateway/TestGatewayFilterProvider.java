@@ -158,7 +158,7 @@ public class TestGatewayFilterProvider {
         assertEquals(insert.getParams(), fetched.getParams());
         assertEquals(insert.getPredicates(), fetched.getPredicates());
 
-        // test deleteById
+        // test deleteByIds
         count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
         assertEquals(1, count);
 
