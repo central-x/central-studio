@@ -26,34 +26,29 @@ package central.studio.provider.graphql.storage;
 
 import central.data.storage.StorageBucket;
 import central.data.storage.StorageBucketInput;
-import central.lang.reflect.TypeRef;
 import central.provider.graphql.storage.StorageBucketProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
-import central.studio.provider.database.persistence.saas.mapper.TenantMapper;
+import central.studio.provider.database.persistence.storage.StorageBucketPersistence;
 import central.studio.provider.database.persistence.storage.entity.StorageBucketEntity;
-import central.studio.provider.database.persistence.storage.mapper.StorageBucketMapper;
-import central.util.Guidx;
+import central.studio.provider.graphql.TestContext;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * StorageBucketProvider Test Cases
@@ -67,408 +62,195 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestStorageBucketProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
-
-    @Setter(onMethod_ = @Autowired)
     private StorageBucketProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private StorageBucketMapper mapper;
+    private StorageBucketPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
+    private TestContext context;
 
-    @Setter(onMethod_ = @Autowired)
-    private TenantMapper tenantMapper;
-
-    private static ApplicationEntity applicationEntity;
-
-    @Setter(onMethod_ = @Autowired)
-    private DataContext context;
-
-    @BeforeEach
-    @AfterEach
-    public void clear() throws Exception {
-        // 清空测试数据
-        this.mapper.deleteAll();
-
-        if (applicationEntity == null) {
-            this.applicationMapper.deleteAll();
-            this.tenantMapper.deleteAll();
-            applicationEntity = new ApplicationEntity();
-            applicationEntity.setCode("central-security");
-            applicationEntity.setName("统一认证中心");
-            applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-            applicationEntity.setUrl("http://127.0.0.1:3100");
-            applicationEntity.setContextPath("/security");
-            applicationEntity.setSecret(Guidx.nextID());
-            applicationEntity.setEnabled(Boolean.TRUE);
-            applicationEntity.setRemark("用于所有应用的认证处理");
-            applicationEntity.setRoutesJson("[]");
-            applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-            this.applicationMapper.insert(applicationEntity);
-
-            SaasContainer container = null;
-            while (container == null || container.getApplications().isEmpty()) {
-                Thread.sleep(100);
-                container = context.getData(DataFetcherType.SAAS);
-            }
+    @BeforeAll
+    public static void setup(@Autowired DataContext context) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
         }
     }
 
-
-    /**
-     * @see StorageBucketProvider#findById
-     */
-    @Test
-    public void case1() {
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var bucket = this.provider.findById(entity.getId(), "master");
-        assertNotNull(bucket);
-        assertEquals(entity.getId(), bucket.getId());
-        assertNotNull(bucket.getCode());
-        assertNotNull(bucket.getName());
-        assertNotNull(bucket.getType());
-        assertNotNull(bucket.getEnabled());
-        assertNotNull(bucket.getRemark());
-        assertNotNull(bucket.getParams());
-        var params = Jsonx.Default().deserialize(bucket.getParams(), TypeRef.ofMap(String.class, Object.class));
-        assertNotNull(params);
-        assertEquals(1, params.size());
-        // 关联查询
-        assertNotNull(bucket.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), bucket.getCreator().getId());
-        assertNotNull(bucket.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), bucket.getModifier().getId());
-    }
-
-    /**
-     * @see StorageBucketProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var buckets = this.provider.findByIds(List.of(entity.getId()), "master");
-        assertNotNull(buckets);
-        assertEquals(1, buckets.size());
-
-        var bucket = Listx.getFirstOrNull(buckets);
-        assertNotNull(bucket);
-        assertEquals(entity.getId(), bucket.getId());
-        assertNotNull(bucket.getCode());
-        assertNotNull(bucket.getName());
-        assertNotNull(bucket.getType());
-        assertNotNull(bucket.getEnabled());
-        assertNotNull(bucket.getRemark());
-        assertNotNull(bucket.getParams());
-        // 关联查询
-        assertNotNull(bucket.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), bucket.getCreator().getId());
-        assertNotNull(bucket.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), bucket.getModifier().getId());
-    }
-
-    /**
-     * @see StorageBucketProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var buckets = this.provider.findBy(null, null, Conditions.of(StorageBucket.class).eq(StorageBucket::getCode, "local"), null, "master");
-        assertNotNull(buckets);
-        assertEquals(1, buckets.size());
-
-        var bucket = Listx.getFirstOrNull(buckets);
-        assertNotNull(bucket);
-        assertEquals(entity.getId(), bucket.getId());
-        assertNotNull(bucket.getCode());
-        assertNotNull(bucket.getName());
-        assertNotNull(bucket.getType());
-        assertNotNull(bucket.getEnabled());
-        assertNotNull(bucket.getRemark());
-        assertNotNull(bucket.getParams());
-        // 关联查询
-        assertNotNull(bucket.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), bucket.getCreator().getId());
-        assertNotNull(bucket.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), bucket.getModifier().getId());
-    }
-
-    /**
-     * @see StorageBucketProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(StorageBucket.class).eq(StorageBucket::getCode, "local"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(1, page.getPager().getItemCount());
-
-        var bucket = Listx.getFirstOrNull(page.getData());
-        assertNotNull(bucket);
-        assertEquals(entity.getId(), bucket.getId());
-        assertNotNull(bucket.getCode());
-        assertNotNull(bucket.getName());
-        assertNotNull(bucket.getType());
-        assertNotNull(bucket.getEnabled());
-        assertNotNull(bucket.getRemark());
-        assertNotNull(bucket.getParams());
-        // 关联查询
-        assertNotNull(bucket.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), bucket.getCreator().getId());
-        assertNotNull(bucket.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), bucket.getModifier().getId());
-    }
-
-    /**
-     * @see StorageBucketProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(StorageBucket.class).eq(StorageBucket::getCode, "local"), "master");
-        assertNotNull(count);
-        assertEquals(1, count);
+    @AfterEach
+    public void clear() throws Exception {
+        var tenant = this.context.getTenant();
+        // 清空测试数据
+        this.persistence.deleteBy(Conditions.of(StorageBucketEntity.class).like(StorageBucketEntity::getCode, "test%"), tenant.getCode());
     }
 
     /**
      * @see StorageBucketProvider#insert
+     * @see StorageBucketProvider#findById
+     * @see StorageBucketProvider#update
+     * @see StorageBucketProvider#findByIds
+     * @see StorageBucketProvider#countBy
+     * @see StorageBucketProvider#deleteByIds
      */
     @Test
-    public void case6() {
+    public void case1() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+
         var input = StorageBucketInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("local")
-                .name("本地文件存储")
+                .applicationId(application.getId())
+                .code("test")
+                .name("测试文件存储")
                 .type("local")
                 .enabled(Boolean.TRUE)
-                .remark("本地文件存储")
+                .remark("测试文件存储")
                 .params(Jsonx.Default().serialize(Map.of("path", "./storage")))
                 .build();
 
-        // 查询数据
-        var entity = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(input.getParams(), insert.getParams());
 
-        assertNotNull(entity);
-        assertNotNull(entity.getId());
+        // test findById
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplicationId(), findById.getApplication().getId());
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getType(), findById.getType());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getRemark(), findById.getRemark());
+        assertEquals(insert.getParams(), findById.getParams());
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getId, entity.getId())));
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(StorageBucket.class).like(StorageBucket::getCode, "test%"), tenant.getCode());
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getParams(), fetched.getParams());
+
+        // test deleteByIds
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(StorageBucketEntity.class).like(StorageBucketEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
      * @see StorageBucketProvider#insertBatch
+     * @see StorageBucketProvider#findBy
+     * @see StorageBucketProvider#updateBatch
+     * @see StorageBucketProvider#pageBy
+     * @see StorageBucketProvider#deleteBy
      */
     @Test
-    public void case7() {
+    public void case2() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+
         var input = StorageBucketInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("local")
-                .name("本地文件存储")
+                .applicationId(application.getId())
+                .code("test")
+                .name("测试文件存储")
                 .type("local")
                 .enabled(Boolean.TRUE)
-                .remark("本地文件存储")
+                .remark("测试文件存储")
                 .params(Jsonx.Default().serialize(Map.of("path", "./storage")))
                 .build();
 
-        // 查询数据
-        var entities = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        assertNotNull(entities);
-        assertEquals(1, entities.size());
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(input.getParams(), insert.getParams());
 
-        var entity = Listx.getFirstOrNull(entities);
-        assertNotNull(entity);
-        assertNotNull(entity.getId());
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(StorageBucket.class).like(StorageBucket::getCode, "test%"), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getId, entity.getId())));
-    }
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getParams(), fetched.getParams());
 
-    /**
-     * @see StorageBucketProvider#update
-     */
-    @Test
-    public void case8() {
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
+        // test updateBatch
+        this.provider.updateBatch(List.of(insert.toInput().code("test2").enabled(Boolean.FALSE).build()), "syssa", tenant.getCode());
 
-        // 查询数据
-        var bucket = this.provider.findById(entity.getId(), "master");
-        assertNotNull(bucket);
-        assertEquals(entity.getId(), bucket.getId());
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(StorageBucket.class).like(StorageBucket::getCode, "test%"), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        var input = bucket.toInput()
-                .code("test1")
-                .build();
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getParams(), fetched.getParams());
 
-        // 更新数据
-        bucket = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(bucket);
-        assertEquals(entity.getId(), bucket.getId());
+        // test deleteBy
+        var count = this.provider.deleteBy(Conditions.of(StorageBucket.class).like(StorageBucket::getCode, "test%"), tenant.getCode());
+        assertEquals(1, count);
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getCode, "test1")));
-    }
-
-    /**
-     * @see StorageBucketProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var bucket = this.provider.findById(entity.getId(), "master");
-        assertNotNull(bucket);
-        assertEquals(entity.getId(), bucket.getId());
-
-        var input = bucket.toInput()
-                .code("test1")
-                .build();
-
-        // 更新数据
-        var buckets = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(buckets);
-        assertEquals(1, buckets.size());
-
-        bucket = Listx.getFirstOrNull(buckets);
-        assertNotNull(bucket);
-        assertEquals(entity.getId(), bucket.getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getCode, "test1")));
-    }
-
-    /**
-     * @see StorageBucketProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var deleted = this.provider.deleteByIds(List.of(entity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getId, entity.getId())));
-    }
-
-    /**
-     * @see StorageBucketProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-
-        var entity = new StorageBucketEntity();
-        entity.setApplicationId(applicationEntity.getId());
-        entity.setCode("local");
-        entity.setName("本地文件存储");
-        entity.setType("local");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("本地文件存储");
-        entity.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(StorageBucket.class).eq(StorageBucket::getCode, "local"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(StorageBucketEntity.class).eq(StorageBucketEntity::getId, entity.getId())));
+        count = this.persistence.countBy(Conditions.of(StorageBucketEntity.class).like(StorageBucketEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 }

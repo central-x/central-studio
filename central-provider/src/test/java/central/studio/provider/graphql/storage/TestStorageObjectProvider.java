@@ -24,6 +24,7 @@
 
 package central.studio.provider.graphql.storage;
 
+import central.data.storage.StorageBucketInput;
 import central.data.storage.StorageObject;
 import central.data.storage.StorageObjectInput;
 import central.provider.graphql.storage.StorageObjectProvider;
@@ -33,20 +34,16 @@ import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.security.Digestx;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
-import central.studio.provider.database.persistence.saas.mapper.TenantMapper;
+import central.studio.provider.database.persistence.storage.StorageBucketPersistence;
+import central.studio.provider.database.persistence.storage.StorageObjectPersistence;
 import central.studio.provider.database.persistence.storage.entity.StorageBucketEntity;
 import central.studio.provider.database.persistence.storage.entity.StorageObjectEntity;
-import central.studio.provider.database.persistence.storage.mapper.StorageBucketMapper;
-import central.studio.provider.database.persistence.storage.mapper.StorageObjectMapper;
-import central.util.Guidx;
+import central.studio.provider.graphql.TestContext;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,7 +52,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * StorageObjectProvider Test Cases
@@ -67,358 +65,211 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestStorageObjectProvider {
-    @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private StorageObjectProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private StorageObjectMapper mapper;
+    private StorageObjectPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private StorageBucketMapper bucketMapper;
+    private StorageBucketPersistence bucketPersistence;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
+    private TestContext context;
 
-    @Setter(onMethod_ = @Autowired)
-    private TenantMapper tenantMapper;
-
-    private static ApplicationEntity applicationEntity;
-
-    @Setter(onMethod_ = @Autowired)
-    private DataContext context;
-
-    @BeforeEach
-    @AfterEach
-    public void clear() throws Exception {
-        // 清空测试数据
-        this.bucketMapper.deleteAll();
-        this.mapper.deleteAll();
-
-        if (applicationEntity == null) {
-            this.applicationMapper.deleteAll();
-            this.tenantMapper.deleteAll();
-            applicationEntity = new ApplicationEntity();
-            applicationEntity.setCode("central-security");
-            applicationEntity.setName("统一认证中心");
-            applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-            applicationEntity.setUrl("http://127.0.0.1:3100");
-            applicationEntity.setContextPath("/security");
-            applicationEntity.setSecret(Guidx.nextID());
-            applicationEntity.setEnabled(Boolean.TRUE);
-            applicationEntity.setRemark("用于所有应用的认证处理");
-            applicationEntity.setRoutesJson("[]");
-            applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-            this.applicationMapper.insert(applicationEntity);
-
-            SaasContainer container = null;
-            while (container == null || container.getApplications().isEmpty()) {
-                Thread.sleep(100);
-                container = context.getData(DataFetcherType.SAAS);
-            }
+    @BeforeAll
+    public static void setup(@Autowired DataContext context) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
         }
     }
 
-    private StorageObjectEntity init() {
-        var bucket = new StorageBucketEntity();
-        bucket.setApplicationId(applicationEntity.getId());
-        bucket.setCode("local");
-        bucket.setName("本地文件存储");
-        bucket.setType("local");
-        bucket.setEnabled(Boolean.TRUE);
-        bucket.setRemark("本地文件存储");
-        bucket.setParams(Jsonx.Default().serialize(Map.of("path", "./storage")));
-        bucket.setTenantCode("master");
-        bucket.updateCreator(properties.getSupervisor().getUsername());
-        this.bucketMapper.insert(bucket);
-
-        var entity = new StorageObjectEntity();
-        entity.setBucketId(bucket.getId());
-        entity.setName("测试文件.txt");
-        entity.setSize(5 * 1024 * 1024L);
-        entity.setDigest(Digestx.SHA256.digest("test", StandardCharsets.UTF_8));
-        entity.setKey("test");
-        entity.setConfirmed(Boolean.TRUE);
-        entity.setTenantCode("master");
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-        return entity;
-    }
-
-    /**
-     * @see StorageObjectProvider#findById
-     */
-    @Test
-    public void case1() {
-        var entity = this.init();
-
-        // 查询数据
-        var object = this.provider.findById(entity.getId(), "master");
-        assertNotNull(object);
-        assertEquals(entity.getId(), object.getId());
-        assertNotNull(object.getBucketId());
-        assertNotNull(object.getBucket());
-        assertEquals(entity.getBucketId(), object.getBucket().getId());
-        assertNotNull(object.getName());
-        assertNotNull(object.getExtension());
-        assertNotNull(object.getSize());
-        assertNotNull(object.getDigest());
-        assertNotNull(object.getKey());
-        assertNotNull(object.getConfirmed());
-        // 关联查询
-        assertNotNull(object.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), object.getCreator().getId());
-        assertNotNull(object.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), object.getModifier().getId());
-    }
-
-    /**
-     * @see StorageObjectProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var entity = this.init();
-
-        // 查询数据
-        var objects = this.provider.findByIds(List.of(entity.getId()), "master");
-        assertNotNull(objects);
-        assertEquals(1, objects.size());
-
-        var object = Listx.getFirstOrNull(objects);
-        assertNotNull(object);
-        assertEquals(entity.getId(), object.getId());
-        assertNotNull(object.getBucketId());
-        assertNotNull(object.getBucket());
-        assertEquals(entity.getBucketId(), object.getBucket().getId());
-        assertNotNull(object.getName());
-        assertNotNull(object.getExtension());
-        assertNotNull(object.getSize());
-        assertNotNull(object.getDigest());
-        assertNotNull(object.getKey());
-        assertNotNull(object.getConfirmed());
-        // 关联查询
-        assertNotNull(object.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), object.getCreator().getId());
-        assertNotNull(object.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), object.getModifier().getId());
-    }
-
-    /**
-     * @see StorageObjectProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var entity = this.init();
-
-        // 查询数据
-        var objects = this.provider.findBy(null, null, Conditions.of(StorageObject.class).eq(StorageObject::getKey, "test"), null, "master");
-        assertNotNull(objects);
-        assertEquals(1, objects.size());
-
-        var object = Listx.getFirstOrNull(objects);
-        assertNotNull(object);
-        assertEquals(entity.getId(), object.getId());
-        assertNotNull(object.getBucketId());
-        assertNotNull(object.getBucket());
-        assertEquals(entity.getBucketId(), object.getBucket().getId());
-        assertNotNull(object.getName());
-        assertNotNull(object.getExtension());
-        assertNotNull(object.getSize());
-        assertNotNull(object.getDigest());
-        assertNotNull(object.getKey());
-        assertNotNull(object.getConfirmed());
-        // 关联查询
-        assertNotNull(object.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), object.getCreator().getId());
-        assertNotNull(object.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), object.getModifier().getId());
-    }
-
-    /**
-     * @see StorageObjectProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var entity = init();
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(StorageObject.class).eq(StorageObject::getKey, "test"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(1, page.getPager().getItemCount());
-
-        var object = Listx.getFirstOrNull(page.getData());
-        assertNotNull(object);
-        assertEquals(entity.getId(), object.getId());
-        assertNotNull(object.getBucketId());
-        assertNotNull(object.getBucket());
-        assertEquals(entity.getBucketId(), object.getBucket().getId());
-        assertNotNull(object.getName());
-        assertNotNull(object.getExtension());
-        assertNotNull(object.getSize());
-        assertNotNull(object.getDigest());
-        assertNotNull(object.getKey());
-        assertNotNull(object.getConfirmed());
-        // 关联查询
-        assertNotNull(object.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), object.getCreator().getId());
-        assertNotNull(object.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), object.getModifier().getId());
-    }
-
-    /**
-     * @see StorageObjectProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var entity = this.init();
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(StorageObject.class).eq(StorageObject::getKey, "test"), "master");
-        assertNotNull(count);
-        assertEquals(1, count);
+    @AfterEach
+    public void clear() throws Exception {
+        var tenant = this.context.getTenant();
+        // 清空测试数据
+        this.persistence.deleteBy(Conditions.of(StorageObjectEntity.class), tenant.getCode());
+        this.bucketPersistence.deleteBy(Conditions.of(StorageBucketEntity.class).like(StorageBucketEntity::getCode, "test%"), tenant.getCode());
     }
 
     /**
      * @see StorageObjectProvider#insert
+     * @see StorageObjectProvider#findById
+     * @see StorageObjectProvider#update
+     * @see StorageObjectProvider#findByIds
+     * @see StorageObjectProvider#countBy
+     * @see StorageObjectProvider#deleteByIds
      */
     @Test
-    public void case6() {
-        var entity = this.init();
+    public void case1() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+        var bucket = this.bucketPersistence.insert(StorageBucketInput.builder()
+                .applicationId(application.getId())
+                .code("test")
+                .name("测试文件存储")
+                .type("local")
+                .enabled(Boolean.TRUE)
+                .remark("测试文件存储")
+                .params(Jsonx.Default().serialize(Map.of("path", "./storage")))
+                .build(), "syssa", tenant.getCode());
 
         var input = StorageObjectInput.builder()
-                .bucketId(entity.getBucketId())
+                .bucketId(bucket.getId())
                 .name("测试文件.txt")
                 .size(5 * 1024 * 1024L)
                 .digest(Digestx.SHA256.digest("test", StandardCharsets.UTF_8))
                 .key("test")
-                .confirmed(Boolean.TRUE)
+                .confirmed(Boolean.FALSE)
                 .build();
 
-        // 查询数据
-        var object = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getBucketId(), insert.getBucketId());
+        assertEquals(input.getBucketId(), insert.getBucket().getId());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getSize(), insert.getSize());
+        assertEquals(input.getDigest(), insert.getDigest());
+        assertEquals(input.getKey(), insert.getKey());
+        assertEquals(input.getConfirmed(), insert.getConfirmed());
 
-        assertNotNull(object);
-        assertNotNull(object.getId());
+        // test findById
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertEquals(insert.getId(), findById.getId());
+        assertNotNull(findById.getId());
+        assertEquals(input.getBucketId(), findById.getBucketId());
+        assertEquals(input.getBucketId(), findById.getBucket().getId());
+        assertEquals(input.getName(), findById.getName());
+        assertEquals(input.getSize(), findById.getSize());
+        assertEquals(input.getDigest(), findById.getDigest());
+        assertEquals(input.getKey(), findById.getKey());
+        assertEquals(input.getConfirmed(), findById.getConfirmed());
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getId, object.getId())));
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(StorageObject.class).like(StorageObject::getBucketId, bucket.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().confirmed(Boolean.TRUE).build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(input.getBucketId(), fetched.getBucketId());
+        assertEquals(input.getBucketId(), fetched.getBucket().getId());
+        assertEquals(input.getName(), fetched.getName());
+        assertEquals(input.getSize(), fetched.getSize());
+        assertEquals(input.getDigest(), fetched.getDigest());
+        assertEquals(input.getKey(), fetched.getKey());
+        assertEquals(Boolean.TRUE, fetched.getConfirmed());
+
+        // test deleteByIds
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(StorageObjectEntity.class).like(StorageObjectEntity::getBucketId, bucket.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
      * @see StorageObjectProvider#insertBatch
+     * @see StorageObjectProvider#findBy
+     * @see StorageObjectProvider#updateBatch
+     * @see StorageObjectProvider#pageBy
+     * @see StorageObjectProvider#deleteBy
      */
     @Test
-    public void case7() {
-        var entity = this.init();
+    public void case2() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+        var bucket = this.bucketPersistence.insert(StorageBucketInput.builder()
+                .applicationId(application.getId())
+                .code("test")
+                .name("测试文件存储")
+                .type("local")
+                .enabled(Boolean.TRUE)
+                .remark("测试文件存储")
+                .params(Jsonx.Default().serialize(Map.of("path", "./storage")))
+                .build(), "syssa", tenant.getCode());
 
         var input = StorageObjectInput.builder()
-                .bucketId(entity.getBucketId())
+                .bucketId(bucket.getId())
                 .name("测试文件.txt")
                 .size(5 * 1024 * 1024L)
                 .digest(Digestx.SHA256.digest("test", StandardCharsets.UTF_8))
                 .key("test")
-                .confirmed(Boolean.TRUE)
+                .confirmed(Boolean.FALSE)
                 .build();
 
-        // 查询数据
-        var entities = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
+        // test insert
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        assertNotNull(entities);
-        assertEquals(1, entities.size());
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getBucketId(), insert.getBucketId());
+        assertEquals(input.getBucketId(), insert.getBucket().getId());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getSize(), insert.getSize());
+        assertEquals(input.getDigest(), insert.getDigest());
+        assertEquals(input.getKey(), insert.getKey());
+        assertEquals(input.getConfirmed(), insert.getConfirmed());
 
-        var object = Listx.getFirstOrNull(entities);
-        assertNotNull(object);
-        assertNotNull(object.getId());
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(StorageObject.class).like(StorageObject::getBucketId, bucket.getId()), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getId, object.getId())));
-    }
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(input.getBucketId(), fetched.getBucketId());
+        assertEquals(input.getBucketId(), fetched.getBucket().getId());
+        assertEquals(input.getName(), fetched.getName());
+        assertEquals(input.getSize(), fetched.getSize());
+        assertEquals(input.getDigest(), fetched.getDigest());
+        assertEquals(input.getKey(), fetched.getKey());
+        assertEquals(input.getConfirmed(), fetched.getConfirmed());
 
-    /**
-     * @see StorageObjectProvider#update
-     */
-    @Test
-    public void case8() {
-        var entity = init();
+        // test updateBatch
+        this.provider.updateBatch(List.of(insert.toInput().confirmed(Boolean.TRUE).build()), "syssa", tenant.getCode());
 
-        // 查询数据
-        var object = this.provider.findById(entity.getId(), "master");
-        assertNotNull(object);
-        assertEquals(entity.getId(), object.getId());
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(StorageObject.class).like(StorageObject::getBucketId, bucket.getId()), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        var input = object.toInput()
-                .key("test1")
-                .build();
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(input.getBucketId(), fetched.getBucketId());
+        assertEquals(input.getBucketId(), fetched.getBucket().getId());
+        assertEquals(input.getName(), fetched.getName());
+        assertEquals(input.getSize(), fetched.getSize());
+        assertEquals(input.getDigest(), fetched.getDigest());
+        assertEquals(input.getKey(), fetched.getKey());
+        assertEquals(Boolean.TRUE, fetched.getConfirmed());
 
-        // 更新数据
-        object = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(object);
-        assertEquals(entity.getId(), object.getId());
+        // test deleteBy
+        var count = this.provider.deleteBy(Conditions.of(StorageObject.class).like(StorageObject::getBucketId, bucket.getId()), tenant.getCode());
+        assertEquals(1, count);
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getKey, "test1")));
-    }
-
-    /**
-     * @see StorageObjectProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var entity = this.init();
-
-        // 查询数据
-        var object = this.provider.findById(entity.getId(), "master");
-        assertNotNull(object);
-        assertEquals(entity.getId(), object.getId());
-
-        var input = object.toInput()
-                .key("test1")
-                .build();
-
-        // 更新数据
-        var objects = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(objects);
-        assertEquals(1, objects.size());
-
-        object = Listx.getFirstOrNull(objects);
-        assertNotNull(object);
-        assertEquals(entity.getId(), object.getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getKey, "test1")));
-    }
-
-    /**
-     * @see StorageObjectProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var entity = this.init();
-
-        var deleted = this.provider.deleteByIds(List.of(entity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getId, entity.getId())));
-    }
-
-    /**
-     * @see StorageObjectProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-        var entity = this.init();
-
-        var deleted = this.provider.deleteBy(Conditions.of(StorageObject.class).eq(StorageObject::getKey, "test"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getId, entity.getId())));
+        count = this.persistence.countBy(Conditions.of(StorageObjectEntity.class).like(StorageObjectEntity::getBucketId, bucket.getId()), tenant.getCode());
+        assertEquals(0, count);
     }
 }

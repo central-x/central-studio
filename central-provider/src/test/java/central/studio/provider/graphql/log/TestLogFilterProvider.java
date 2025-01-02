@@ -59,7 +59,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestLogFilterProvider {
 
-
     @Setter(onMethod_ = @Autowired)
     private LogFilterProvider provider;
 
