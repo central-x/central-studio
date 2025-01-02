@@ -24,21 +24,20 @@
 
 package central.studio.provider.graphql.log;
 
-import central.data.log.LogFilter;
-import central.data.log.LogFilterInput;
-import central.data.log.LogPredicate;
-import central.data.log.LogPredicateInput;
+import central.data.log.*;
 import central.provider.graphql.log.LogFilterProvider;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.database.persistence.log.entity.*;
-import central.studio.provider.database.persistence.log.mapper.*;
+import central.studio.provider.database.persistence.log.LogCollectorPersistence;
+import central.studio.provider.database.persistence.log.LogFilterPersistence;
+import central.studio.provider.database.persistence.log.LogStoragePersistence;
+import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
+import central.studio.provider.database.persistence.log.entity.LogFilterEntity;
+import central.studio.provider.database.persistence.log.entity.LogStorageEntity;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,480 +59,253 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestLogFilterProvider {
 
-    @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
 
     @Setter(onMethod_ = @Autowired)
     private LogFilterProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private LogFilterMapper mapper;
+    private LogFilterPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private LogCollectorMapper collectorMapper;
+    private LogCollectorPersistence collectorPersistence;
 
     @Setter(onMethod_ = @Autowired)
-    private LogCollectorFilterMapper collectorRelMapper;
+    private LogStoragePersistence storagePersistence;
 
-    @Setter(onMethod_ = @Autowired)
-    private LogStorageMapper storageMapper;
-
-    @Setter(onMethod_ = @Autowired)
-    private LogStorageFilterMapper storageRelMapper;
-
-    @BeforeEach
     @AfterEach
     public void clear() {
         // 清空测试数据
-        this.mapper.deleteAll();
-        this.collectorMapper.deleteAll();
-        this.collectorRelMapper.deleteAll();
-        this.storageMapper.deleteAll();
-        this.storageRelMapper.deleteAll();
-    }
-
-    private String initData() {
-        // 采集器
-        var collectorEntity = new LogCollectorEntity();
-        collectorEntity.setCode("http");
-        collectorEntity.setName("Http 采集器");
-        collectorEntity.setType("http");
-        collectorEntity.setEnabled(Boolean.TRUE);
-        collectorEntity.setRemark("Http 采集器");
-        collectorEntity.setParams(Jsonx.Default().serialize(Map.of("path", "central")));
-        collectorEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.collectorMapper.insert(collectorEntity);
-
-        // 存储器
-        var storageEntity = new LogStorageEntity();
-        storageEntity.setCode("file");
-        storageEntity.setName("文件存储器");
-        storageEntity.setType("file");
-        storageEntity.setEnabled(Boolean.TRUE);
-        storageEntity.setRemark("文件存储器");
-        storageEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "path", "./path",
-                "rollingPolicy", "daily",
-                "compressPolicy", "gzip",
-                "maxSize", "1024",
-                "maxHistory", "7")));
-        storageEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.storageMapper.insert(storageEntity);
-
-        // 过滤器
-        var entity = new LogFilterEntity();
-        entity.setCode("central.x");
-        entity.setName("CentralX");
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("CentralX");
-        entity.setPredicateJson(Jsonx.Default().serialize(List.of(
-                new LogPredicate("tenant", Jsonx.Default().serialize(Map.of("tenantCode", "master"))),
-                new LogPredicate("level", Jsonx.Default().serialize(Map.of("levels", List.of("info", "error"))))
-        )));
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 采集器与过滤器的关联关系
-        var collectorRel = new LogCollectorFilterEntity();
-        collectorRel.setCollectorId(collectorEntity.getId());
-        collectorRel.setFilterId(entity.getId());
-        collectorRel.updateCreator(properties.getSupervisor().getUsername());
-        this.collectorRelMapper.insert(collectorRel);
-
-        // 存储器与过滤器的关联关系
-        var storageRel = new LogStorageFilterEntity();
-        storageRel.setStorageId(storageEntity.getId());
-        storageRel.setFilterId(entity.getId());
-        storageRel.updateCreator(properties.getSupervisor().getUsername());
-        this.storageRelMapper.insert(storageRel);
-
-        return entity.getId();
-    }
-
-    /**
-     * @see LogFilterProvider#findById
-     */
-    @Test
-    public void case1() {
-        String id = this.initData();
-
-        // 查询数据
-        var filter = this.provider.findById(id, "master");
-        assertNotNull(filter);
-        assertEquals(id, filter.getId());
-        assertNotNull(filter.getCode());
-        assertNotNull(filter.getName());
-        assertNotNull(filter.getEnabled());
-        assertNotNull(filter.getRemark());
-        assertNotNull(filter.getPredicates());
-
-        // 断言关联查询
-        assertEquals(2, filter.getPredicates().size());
-        assertTrue(filter.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
-        assertTrue(filter.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
-
-        // 采集器关联查询
-        assertNotNull(filter.getCollectors());
-        assertEquals(1, filter.getCollectors().size());
-        assertTrue(filter.getCollectors().stream().anyMatch(it -> Objects.equals("http", it.getCode())));
-
-        // 存储器关联查询
-        assertNotNull(filter.getStorages());
-        assertEquals(1, filter.getStorages().size());
-        assertTrue(filter.getStorages().stream().anyMatch(it -> Objects.equals("file", it.getCode())));
-
-        // 关联查询
-        assertNotNull(filter.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getCreator().getId());
-        assertNotNull(filter.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getModifier().getId());
-    }
-
-    /**
-     * @see LogFilterProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        String id = this.initData();
-
-        // 查询数据
-        var filters = this.provider.findByIds(List.of(id), "master");
-        assertNotNull(filters);
-
-        var filter = Listx.getFirstOrNull(filters);
-
-        assertNotNull(filter);
-        assertEquals(id, filter.getId());
-        assertNotNull(filter.getCode());
-        assertNotNull(filter.getName());
-        assertNotNull(filter.getEnabled());
-        assertNotNull(filter.getRemark());
-        assertNotNull(filter.getPredicates());
-
-        // 断言关联查询
-        assertEquals(2, filter.getPredicates().size());
-        assertTrue(filter.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
-        assertTrue(filter.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
-
-        // 采集器关联查询
-        assertNotNull(filter.getCollectors());
-        assertEquals(1, filter.getCollectors().size());
-        assertTrue(filter.getCollectors().stream().anyMatch(it -> Objects.equals("http", it.getCode())));
-
-        // 存储器关联查询
-        assertNotNull(filter.getStorages());
-        assertEquals(1, filter.getStorages().size());
-        assertTrue(filter.getStorages().stream().anyMatch(it -> Objects.equals("file", it.getCode())));
-
-        // 关联查询
-        assertNotNull(filter.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getCreator().getId());
-        assertNotNull(filter.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getModifier().getId());
-    }
-
-    /**
-     * @see LogFilterProvider#findBy
-     */
-    @Test
-    public void case3() {
-        String id = this.initData();
-
-        // 查询数据
-        var filters = this.provider.findBy(null, null, Conditions.of(LogFilter.class).eq(LogFilter::getCode, "central.x"), null, "master");
-        assertNotNull(filters);
-        assertEquals(1, filters.size());
-
-        var filter = Listx.getFirstOrNull(filters);
-        assertNotNull(filter);
-        assertEquals(id, filter.getId());
-        assertNotNull(filter.getCode());
-        assertNotNull(filter.getName());
-        assertNotNull(filter.getEnabled());
-        assertNotNull(filter.getRemark());
-        assertNotNull(filter.getPredicates());
-
-        // 断言关联查询
-        assertEquals(2, filter.getPredicates().size());
-        assertTrue(filter.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
-        assertTrue(filter.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
-
-        // 采集器关联查询
-        assertNotNull(filter.getCollectors());
-        assertEquals(1, filter.getCollectors().size());
-        assertTrue(filter.getCollectors().stream().anyMatch(it -> Objects.equals("http", it.getCode())));
-
-        // 存储器关联查询
-        assertNotNull(filter.getStorages());
-        assertEquals(1, filter.getStorages().size());
-        assertTrue(filter.getStorages().stream().anyMatch(it -> Objects.equals("file", it.getCode())));
-
-        // 关联查询
-        assertNotNull(filter.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getCreator().getId());
-        assertNotNull(filter.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getModifier().getId());
-    }
-
-    /**
-     * @see LogFilterProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        String id = this.initData();
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(LogFilter.class).eq(LogFilter::getCode, "central.x"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1, page.getPager().getPageIndex());
-        assertEquals(20, page.getPager().getPageSize());
-        assertEquals(1, page.getPager().getPageCount());
-        assertEquals(1, page.getPager().getItemCount());
-
-        var filter = Listx.getFirstOrNull(page.getData());
-        assertNotNull(filter);
-        assertEquals(id, filter.getId());
-        assertNotNull(filter.getCode());
-        assertNotNull(filter.getName());
-        assertNotNull(filter.getEnabled());
-        assertNotNull(filter.getRemark());
-        assertNotNull(filter.getPredicates());
-
-        // 断言关联查询
-        assertEquals(2, filter.getPredicates().size());
-        assertTrue(filter.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
-        assertTrue(filter.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
-
-        // 采集器关联查询
-        assertNotNull(filter.getCollectors());
-        assertEquals(1, filter.getCollectors().size());
-        assertTrue(filter.getCollectors().stream().anyMatch(it -> Objects.equals("http", it.getCode())));
-
-        // 存储器关联查询
-        assertNotNull(filter.getStorages());
-        assertEquals(1, filter.getStorages().size());
-        assertTrue(filter.getStorages().stream().anyMatch(it -> Objects.equals("file", it.getCode())));
-
-        // 关联查询
-        assertNotNull(filter.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getCreator().getId());
-        assertNotNull(filter.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), filter.getModifier().getId());
-    }
-
-    /**
-     * @see LogFilterProvider#countBy
-     */
-    @Test
-    public void case5() {
-        this.initData();
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(LogFilter.class).eq(LogFilter::getCode, "central.x"), "master");
-        assertNotNull(count);
-        assertEquals(1, count);
+        this.persistence.deleteBy(Conditions.of(LogFilterEntity.class).like(LogFilterEntity::getCode, "test%"));
+        this.collectorPersistence.deleteBy(Conditions.of(LogCollectorEntity.class).like(LogCollectorEntity::getCode, "test%"));
+        this.storagePersistence.deleteBy(Conditions.of(LogStorageEntity.class).like(LogStorageEntity::getCode, "test%"));
     }
 
     /**
      * @see LogFilterProvider#insert
+     * @see LogFilterProvider#findById
+     * @see LogFilterProvider#update
+     * @see LogFilterProvider#findByIds
+     * @see LogFilterProvider#countBy
+     * @see LogFilterProvider#deleteByIds
      */
     @Test
-    public void case6() {
+    public void case1() {
         // 采集器
-        var collectorEntity = new LogCollectorEntity();
-        collectorEntity.setCode("http");
-        collectorEntity.setName("Http 采集器");
-        collectorEntity.setType("http");
-        collectorEntity.setEnabled(Boolean.TRUE);
-        collectorEntity.setRemark("Http 采集器");
-        collectorEntity.setParams(Jsonx.Default().serialize(Map.of("path", "central")));
-        collectorEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.collectorMapper.insert(collectorEntity);
+        var collector = this.collectorPersistence.insert(LogCollectorInput.builder()
+                .code("test")
+                .name("测试采集器")
+                .type("http")
+                .enabled(Boolean.TRUE)
+                .remark("测试采集器")
+                .params(Jsonx.Default().serialize(Map.of("path", "central")))
+                .build(), "syssa");
 
         // 存储器
-        var storageEntity = new LogStorageEntity();
-        storageEntity.setCode("file");
-        storageEntity.setName("文件存储器");
-        storageEntity.setType("file");
-        storageEntity.setEnabled(Boolean.TRUE);
-        storageEntity.setRemark("文件存储器");
-        storageEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "path", "./path",
-                "rollingPolicy", "daily",
-                "compressPolicy", "gzip",
-                "maxSize", "1024",
-                "maxHistory", "7")));
-        storageEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.storageMapper.insert(storageEntity);
+        var storage = this.storagePersistence.insert(LogStorageInput.builder()
+                .code("test")
+                .name("测试存储器")
+                .type("file")
+                .enabled(Boolean.TRUE)
+                .remark("测试存储器")
+                .params(Jsonx.Default().serialize(Map.of(
+                        "path", "./path",
+                        "rollingPolicy", "daily",
+                        "compressPolicy", "gzip",
+                        "maxSize", "1024",
+                        "maxHistory", "7")))
+                .build(), "syssa");
 
         // 过滤器
         var input = LogFilterInput.builder()
-                .code("centralx")
-                .name("CentralX")
+                .code("test")
+                .name("测试日志过滤器")
                 .enabled(Boolean.TRUE)
-                .remark("CentralX")
-                .collectorIds(List.of(collectorEntity.getId()))
-                .storageIds(List.of(storageEntity.getId()))
+                .remark("测试日志过滤器")
+                .collectorIds(List.of(collector.getId()))
+                .storageIds(List.of(storage.getId()))
                 .predicates(List.of(
                         new LogPredicateInput("tenant", Jsonx.Default().serialize(Map.of("tenantCode", "master"))),
                         new LogPredicateInput("level", Jsonx.Default().serialize(Map.of("levels", List.of("info", "error"))))
                 ))
                 .build();
 
-        // 查询数据
-        var entity = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
+        // test insert
+        var insert = this.provider.insert(input, "syssa", "master");
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(1, insert.getCollectors().size());
+        assertTrue(insert.getCollectors().stream().anyMatch(it -> it.getId().equals(collector.getId())));
+        assertTrue(insert.getStorages().stream().anyMatch(it -> it.getId().equals(storage.getId())));
+        assertEquals(2, insert.getPredicates().size());
+        assertTrue(insert.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
+        assertTrue(insert.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
 
-        assertNotNull(entity);
-        assertNotNull(entity.getId());
+        // test findById
+        var findById = this.provider.findById(insert.getId(), "master");
+        assertNotNull(findById);
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getRemark(), findById.getRemark());
+        assertEquals(1, findById.getCollectors().size());
+        assertTrue(findById.getCollectors().stream().anyMatch(it -> it.getId().equals(collector.getId())));
+        assertTrue(findById.getStorages().stream().anyMatch(it -> it.getId().equals(storage.getId())));
+        assertEquals(2, findById.getPredicates().size());
+        assertTrue(findById.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
+        assertTrue(findById.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getId, entity.getId())));
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(LogFilter.class).eq(LogFilter::getCode, "test"), "master");
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", "master");
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), "master");
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(1, fetched.getCollectors().size());
+        assertTrue(fetched.getCollectors().stream().anyMatch(it -> it.getId().equals(collector.getId())));
+        assertTrue(fetched.getStorages().stream().anyMatch(it -> it.getId().equals(storage.getId())));
+        assertEquals(2, fetched.getPredicates().size());
+        assertTrue(fetched.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
+        assertTrue(fetched.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
+
+        // test deleteByIds
+        count = this.provider.deleteByIds(List.of(insert.getId()), "master");
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(LogFilterEntity.class).like(LogFilterEntity::getCode, "test%"));
+        assertEquals(0, count);
     }
 
     /**
      * @see LogFilterProvider#insertBatch
+     * @see LogFilterProvider#findBy
+     * @see LogFilterProvider#updateBatch
+     * @see LogFilterProvider#pageBy
+     * @see LogFilterProvider#deleteBy
      */
     @Test
-    public void case7() {
+    public void case2() {
         // 采集器
-        var collectorEntity = new LogCollectorEntity();
-        collectorEntity.setCode("http");
-        collectorEntity.setName("Http 采集器");
-        collectorEntity.setType("http");
-        collectorEntity.setEnabled(Boolean.TRUE);
-        collectorEntity.setRemark("Http 采集器");
-        collectorEntity.setParams(Jsonx.Default().serialize(Map.of("path", "central")));
-        collectorEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.collectorMapper.insert(collectorEntity);
+        var collector = this.collectorPersistence.insert(LogCollectorInput.builder()
+                .code("test")
+                .name("测试采集器")
+                .type("http")
+                .enabled(Boolean.TRUE)
+                .remark("测试采集器")
+                .params(Jsonx.Default().serialize(Map.of("path", "central")))
+                .build(), "syssa");
 
         // 存储器
-        var storageEntity = new LogStorageEntity();
-        storageEntity.setCode("file");
-        storageEntity.setName("文件存储器");
-        storageEntity.setType("file");
-        storageEntity.setEnabled(Boolean.TRUE);
-        storageEntity.setRemark("文件存储器");
-        storageEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "path", "./path",
-                "rollingPolicy", "daily",
-                "compressPolicy", "gzip",
-                "maxSize", "1024",
-                "maxHistory", "7")));
-        storageEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.storageMapper.insert(storageEntity);
+        var storage = this.storagePersistence.insert(LogStorageInput.builder()
+                .code("test")
+                .name("测试存储器")
+                .type("file")
+                .enabled(Boolean.TRUE)
+                .remark("测试存储器")
+                .params(Jsonx.Default().serialize(Map.of(
+                        "path", "./path",
+                        "rollingPolicy", "daily",
+                        "compressPolicy", "gzip",
+                        "maxSize", "1024",
+                        "maxHistory", "7")))
+                .build(), "syssa");
 
         // 过滤器
         var input = LogFilterInput.builder()
-                .code("centralx")
-                .name("CentralX")
+                .code("test")
+                .name("测试日志过滤器")
                 .enabled(Boolean.TRUE)
-                .remark("CentralX")
-                .collectorIds(List.of(collectorEntity.getId()))
-                .storageIds(List.of(storageEntity.getId()))
+                .remark("测试日志过滤器")
+                .collectorIds(List.of(collector.getId()))
+                .storageIds(List.of(storage.getId()))
                 .predicates(List.of(
                         new LogPredicateInput("tenant", Jsonx.Default().serialize(Map.of("tenantCode", "master"))),
                         new LogPredicateInput("level", Jsonx.Default().serialize(Map.of("levels", List.of("info", "error"))))
                 ))
                 .build();
 
-        // 查询数据
-        var entities = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(entities);
-        assertEquals(1, entities.size());
+        // test insert
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", "master");
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        var entity = Listx.getFirstOrNull(entities);
-        assertNotNull(entity);
-        assertNotNull(entity.getId());
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(1, insert.getCollectors().size());
+        assertTrue(insert.getCollectors().stream().anyMatch(it -> it.getId().equals(collector.getId())));
+        assertTrue(insert.getStorages().stream().anyMatch(it -> it.getId().equals(storage.getId())));
+        assertEquals(2, insert.getPredicates().size());
+        assertTrue(insert.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
+        assertTrue(insert.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getId, entity.getId())));
-    }
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(LogFilter.class).like(LogFilter::getCode, "test%"), null, "master");
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-    /**
-     * @see LogFilterProvider#update
-     */
-    @Test
-    public void case8() {
-        var id = this.initData();
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(1, fetched.getCollectors().size());
+        assertTrue(fetched.getCollectors().stream().anyMatch(it -> it.getId().equals(collector.getId())));
+        assertTrue(fetched.getStorages().stream().anyMatch(it -> it.getId().equals(storage.getId())));
+        assertEquals(2, fetched.getPredicates().size());
+        assertTrue(fetched.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
+        assertTrue(fetched.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
 
-        // 查询数据
-        var filter = this.provider.findById(id, "master");
-        assertNotNull(filter);
-        assertEquals(id, filter.getId());
+        // test updateBatch
+        this.provider.updateBatch(List.of(insert.toInput().code("test2").enabled(Boolean.FALSE).build()), "syssa", "master");
 
-        var input = filter.toInput()
-                .code("test1")
-                .build();
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(LogFilter.class).like(LogFilter::getCode, "test%"), null, "master");
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        // 更新数据
-        filter = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(filter);
-        assertEquals(id, filter.getId());
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(1, fetched.getCollectors().size());
+        assertTrue(fetched.getCollectors().stream().anyMatch(it -> it.getId().equals(collector.getId())));
+        assertTrue(fetched.getStorages().stream().anyMatch(it -> it.getId().equals(storage.getId())));
+        assertEquals(2, fetched.getPredicates().size());
+        assertTrue(fetched.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
+        assertTrue(fetched.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
 
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getCode, "test1")));
-    }
+        // test deleteByIds
+        var count = this.provider.deleteBy(Conditions.of(LogFilter.class).like(LogFilter::getCode, "test%"), "master");
+        assertEquals(1, count);
 
-    /**
-     * @see LogFilterProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-
-        var id = this.initData();
-
-        // 查询数据
-        var filter = this.provider.findById(id, "master");
-        assertNotNull(filter);
-        assertEquals(id, filter.getId());
-
-        var input = filter.toInput()
-                .code("test1")
-                .build();
-
-        // 更新数据
-        var filters = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(filters);
-        assertEquals(1, filters.size());
-
-        filter = Listx.getFirstOrNull(filters);
-        assertNotNull(filter);
-        assertEquals(id, filter.getId());
-
-        // 查询数据库
-        assertTrue(this.mapper.existsBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getCode, "test1")));
-    }
-
-    /**
-     * @see LogFilterProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var id = this.initData();
-
-        var deleted = this.provider.deleteByIds(List.of(id), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getId, id)));
-        assertFalse(this.collectorRelMapper.existsBy(Conditions.of(LogCollectorFilterEntity.class).eq(LogCollectorFilterEntity::getFilterId, id)));
-        assertFalse(this.storageRelMapper.existsBy(Conditions.of(LogStorageFilterEntity.class).eq(LogStorageFilterEntity::getFilterId, id)));
-    }
-
-    /**
-     * @see LogFilterProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-        var id = this.initData();
-
-        var deleted = this.provider.deleteBy(Conditions.of(LogFilter.class).eq(LogFilter::getCode, "central.x"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getId, id)));
-        assertFalse(this.collectorRelMapper.existsBy(Conditions.of(LogCollectorFilterEntity.class).eq(LogCollectorFilterEntity::getFilterId, id)));
-        assertFalse(this.storageRelMapper.existsBy(Conditions.of(LogStorageFilterEntity.class).eq(LogStorageFilterEntity::getFilterId, id)));
+        count = this.persistence.countBy(Conditions.of(LogFilterEntity.class).like(LogFilterEntity::getCode, "test%"));
+        assertEquals(0, count);
     }
 }
