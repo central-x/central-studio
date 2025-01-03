@@ -32,7 +32,9 @@ import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.studio.provider.database.persistence.authority.entity.MenuEntity;
+import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
 import central.studio.provider.database.persistence.authority.mapper.MenuMapper;
+import central.studio.provider.database.persistence.authority.mapper.PermissionMapper;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -63,6 +65,9 @@ public class MenuPersistence {
 
     @Setter(onMethod_ = @Autowired)
     private MenuMapper mapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private PermissionMapper permissionMapper;
 
     /**
      * 根据主键查询数据
@@ -243,7 +248,8 @@ public class MenuPersistence {
             return 0;
         }
 
-        // TODO 删除关联关系
+        // 删除关联关系
+        this.permissionMapper.deleteBy(Conditions.of(PermissionEntity.class).in(PermissionEntity::getMenuId, ids).eq(PermissionEntity::getTenantCode, tenant));
 
         return this.mapper.deleteBy(Conditions.of(MenuEntity.class).in(MenuEntity::getId, ids).eq(MenuEntity::getTenantCode, tenant));
     }

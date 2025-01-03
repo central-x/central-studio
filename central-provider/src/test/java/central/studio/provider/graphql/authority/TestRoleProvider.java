@@ -170,7 +170,7 @@ public class TestRoleProvider extends TestProvider {
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
         assertNotNull(findById);
-        assertEquals(input.getId(), findById.getId());
+        assertEquals(insert.getId(), findById.getId());
         assertEquals(insert.getApplicationId(), findById.getApplicationId());
         assertEquals(insert.getApplicationId(), findById.getApplication().getId());
         assertEquals(insert.getUnitId(), findById.getUnitId());
@@ -194,7 +194,7 @@ public class TestRoleProvider extends TestProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
-        assertEquals(input.getId(), fetched.getId());
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getApplicationId(), fetched.getApplicationId());
         assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
         assertEquals(insert.getUnitId(), fetched.getUnitId());
@@ -241,6 +241,7 @@ public class TestRoleProvider extends TestProvider {
 
         var insert = Listx.getFirstOrNull(insertBatch);
         assertNotNull(insert);
+        assertNotNull(insert.getId());
         assertEquals(input.getApplicationId(), insert.getApplicationId());
         assertEquals(input.getApplicationId(), insert.getApplication().getId());
         assertEquals(input.getUnitId(), insert.getUnitId());

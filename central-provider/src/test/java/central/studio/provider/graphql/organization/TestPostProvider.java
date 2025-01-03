@@ -174,7 +174,7 @@ public class TestPostProvider extends TestProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
-        assertEquals(input.getId(), fetched.getId());
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getUnitId(), fetched.getUnitId());
         assertEquals(insert.getUnitId(), fetched.getUnit().getId());
         assertEquals("test2", fetched.getCode());

@@ -147,7 +147,7 @@ public class TestMenuProvider extends TestProvider {
         assertEquals(insert.getModifierId(), findById.getModifierId());
 
         // test countBy
-        var count = this.provider.countBy(Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), tenant.getCode());
+        var count = this.provider.countBy(Conditions.of(Menu.class).like(Menu::getCode, "test%"), tenant.getCode());
         assertEquals(1, count);
 
         // test update
@@ -176,9 +176,11 @@ public class TestMenuProvider extends TestProvider {
         assertNotEquals(fetched.getCreateDate(), fetched.getModifyDate()); // 修改日期不同
 
         // test deleteById
-        this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
-        entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
-        assertNull(entity);
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(MenuEntity.class).like(MenuEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
@@ -205,6 +207,7 @@ public class TestMenuProvider extends TestProvider {
                 .order(0)
                 .remark("测试父菜单")
                 .build();
+
         var input = MenuInput.builder()
                 .applicationId(application.getId())
                 .parentId("")
@@ -228,7 +231,7 @@ public class TestMenuProvider extends TestProvider {
         assertTrue(insertBatch.stream().noneMatch(it -> it.getParent() != null));
 
         // test findBy
-        var findBy = this.provider.findBy(null, null, Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), null, tenant.getCode());
+        var findBy = this.provider.findBy(null, null, Conditions.of(Menu.class).like(Menu::getCode, "test%"), null, tenant.getCode());
         assertNotNull(findBy);
         assertEquals(2, findBy.size());
         assertTrue(findBy.stream().anyMatch(it -> it.getCode().equals("test")));
@@ -244,7 +247,7 @@ public class TestMenuProvider extends TestProvider {
         this.provider.updateBatch(List.of(child.toInput().parentId(parent.getId()).build()), "syssa", tenant.getCode());
 
         // test pageBy
-        var pageBy = this.provider.pageBy(1L, 10L, Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), null, tenant.getCode());
+        var pageBy = this.provider.pageBy(1L, 10L, Conditions.of(Menu.class).like(Menu::getCode, "test%"), null, tenant.getCode());
         assertNotNull(pageBy);
         assertEquals(1, pageBy.getPager().getPageIndex());
         assertEquals(10, pageBy.getPager().getPageSize());
@@ -262,10 +265,10 @@ public class TestMenuProvider extends TestProvider {
         assertEquals(parent.getId(), child.getParent().getId());
 
         // test deleteBy
-        var count = this.provider.deleteBy(Conditions.of(Menu.class).eq(Menu::getApplicationId, application.getId()), tenant.getCode());
-        assertEquals(1, count);
+        var count = this.provider.deleteBy(Conditions.of(Menu.class).like(Menu::getCode, "test%"), tenant.getCode());
+        assertEquals(2, count);
 
-        count = this.persistence.countBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(MenuEntity.class).like(MenuEntity::getCode, "test%"), tenant.getCode());
         assertEquals(0, count);
     }
 }

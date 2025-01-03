@@ -32,7 +32,13 @@ import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.studio.provider.database.persistence.authority.entity.RoleEntity;
+import central.studio.provider.database.persistence.authority.entity.RolePermissionEntity;
+import central.studio.provider.database.persistence.authority.entity.RolePrincipalEntity;
+import central.studio.provider.database.persistence.authority.entity.RoleRangeEntity;
 import central.studio.provider.database.persistence.authority.mapper.RoleMapper;
+import central.studio.provider.database.persistence.authority.mapper.RolePermissionMapper;
+import central.studio.provider.database.persistence.authority.mapper.RolePrincipalMapper;
+import central.studio.provider.database.persistence.authority.mapper.RoleRangeMapper;
 import central.util.Listx;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -63,6 +69,15 @@ public class RolePersistence {
 
     @Setter(onMethod_ = @Autowired)
     private RoleMapper mapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private RolePrincipalMapper principalMapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private RolePermissionMapper permissionMapper;
+
+    @Setter(onMethod_ = @Autowired)
+    private RoleRangeMapper rangeMapper;
 
     /**
      * 根据主键查询数据
@@ -259,6 +274,11 @@ public class RolePersistence {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
         }
+
+        // 级联删除
+        this.principalMapper.deleteBy(Conditions.of(RolePrincipalEntity.class).in(RolePrincipalEntity::getRoleId, ids).eq(RolePrincipalEntity::getTenantCode, tenant));
+        this.permissionMapper.deleteBy(Conditions.of(RolePermissionEntity.class).in(RolePermissionEntity::getRoleId, ids).eq(RolePermissionEntity::getTenantCode, tenant));
+        this.rangeMapper.deleteBy(Conditions.of(RoleRangeEntity.class).in(RoleRangeEntity::getRoleId, ids).eq(RoleRangeEntity::getTenantCode, tenant));
 
         return this.mapper.deleteBy(Conditions.of(RoleEntity.class).in(RoleEntity::getId, ids).eq(RoleEntity::getTenantCode, tenant));
     }
