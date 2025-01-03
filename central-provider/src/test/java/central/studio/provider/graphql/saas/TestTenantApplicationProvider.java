@@ -24,356 +24,115 @@
 
 package central.studio.provider.graphql.saas;
 
-import central.data.saas.TenantApplication;
-import central.data.saas.TenantApplicationInput;
-import central.data.system.DatabaseProperties;
+import central.data.saas.*;
+import central.data.system.DatabaseInput;
+import central.data.system.DatabasePropertiesInput;
 import central.provider.graphql.saas.TenantApplicationProvider;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.TestProvider;
+import central.studio.provider.database.core.DatabaseType;
+import central.studio.provider.database.persistence.saas.ApplicationPersistence;
+import central.studio.provider.database.persistence.saas.TenantApplicationPersistence;
+import central.studio.provider.database.persistence.saas.TenantPersistence;
 import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
 import central.studio.provider.database.persistence.saas.entity.TenantEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
-import central.studio.provider.database.persistence.saas.mapper.TenantApplicationMapper;
-import central.studio.provider.database.persistence.saas.mapper.TenantMapper;
+import central.studio.provider.database.persistence.system.DatabasePersistence;
 import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
-import central.studio.provider.database.persistence.system.mapper.DatabaseMapper;
+import central.studio.provider.graphql.TestProvider;
 import central.util.Guidx;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tenant Application Provider Test Cases
- * 租户与应用关联关系
  *
  * @author Alan Yeh
  * @since 2022/10/06
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestTenantApplicationProvider extends TestProvider {
+
     @Setter(onMethod_ = @Autowired)
     private TenantApplicationProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
+    private TenantApplicationPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private TenantMapper tenantMapper;
+    private TenantPersistence tenantPersistence;
 
     @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
+    private ApplicationPersistence applicationPersistence;
 
     @Setter(onMethod_ = @Autowired)
-    private TenantApplicationMapper mapper;
+    private DatabasePersistence databasePersistence;
 
-    @Setter(onMethod_ = @Autowired)
-    private DatabaseMapper databaseMapper;
-
-    @BeforeEach
     @AfterEach
     public void clear() {
         // 清空数据
-        mapper.deleteAll();
-        tenantMapper.deleteAll();
-        applicationMapper.deleteAll();
-        databaseMapper.deleteAll();
-    }
-
-    private ApplicationEntity buildApplication() {
-        var application = new ApplicationEntity();
-        application.setCode("central-identity");
-        application.setName("统一认证");
-        application.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        application.setUrl("http://127.0.0.1:3110");
-        application.setContextPath("/identity");
-        application.setSecret(Guidx.nextID());
-        application.setEnabled(Boolean.TRUE);
-        application.setRemark("统一认证");
-        application.setRoutesJson("[]");
-        application.updateCreator(properties.getSupervisor().getUsername());
-        return application;
-    }
-
-    private DatabaseEntity buildDatabase(ApplicationEntity application) {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(application.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        return databaseEntity;
-    }
-
-    /**
-     * @see TenantApplicationProvider#findById
-     */
-    @Test
-    public void case1() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
-
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
-
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
-
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-
-        // 查询数据
-        var rel = this.provider.findById(entity.getId(), "master");
-        assertNotNull(rel);
-        assertEquals(entity.getId(), rel.getId());
-        // 关联查询
-        assertNotNull(rel.getTenant());
-        assertEquals(tenant.getId(), rel.getTenant().getId());
-        // 关联查询应用
-        assertNotNull(rel.getApplication());
-        assertEquals(application.getId(), rel.getApplication().getId());
-        // 关联查询创建人与修改人
-        assertNotNull(rel.getCreator());
-        assertNotNull(rel.getModifier());
-    }
-
-    /**
-     * @see TenantApplicationProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
-
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
-
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
-
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-
-        // 查询数据
-        var rels = this.provider.findByIds(List.of(entity.getId()), "master");
-        assertNotNull(rels);
-        var rel = Listx.getFirstOrNull(rels);
-        assertNotNull(rel);
-        assertEquals(entity.getId(), rel.getId());
-        // 关联查询
-        assertNotNull(rel.getTenant());
-        assertEquals(tenant.getId(), rel.getTenant().getId());
-        // 关联查询应用
-        assertNotNull(rel.getApplication());
-        assertEquals(application.getId(), rel.getApplication().getId());
-        // 关联查询创建人与修改人
-        assertNotNull(rel.getCreator());
-        assertNotNull(rel.getModifier());
-    }
-
-    /**
-     * @see TenantApplicationProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
-
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
-
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
-
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-
-        // 查询数据
-        var rels = this.provider.findBy(null, null, Conditions.of(TenantApplication.class).eq(TenantApplication::getId, entity.getId()), null, "master");
-        assertNotNull(rels);
-        var rel = Listx.getFirstOrNull(rels);
-        assertNotNull(rel);
-        assertEquals(entity.getId(), rel.getId());
-        // 关联查询
-        assertNotNull(rel.getTenant());
-        assertEquals(tenant.getId(), rel.getTenant().getId());
-        // 关联查询应用
-        assertNotNull(rel.getApplication());
-        assertEquals(application.getId(), rel.getApplication().getId());
-        // 关联查询创建人与修改人
-        assertNotNull(rel.getCreator());
-        assertNotNull(rel.getModifier());
-    }
-
-    /**
-     * @see TenantApplicationProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
-
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
-
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
-
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(TenantApplication.class).eq(TenantApplication::getId, entity.getId()), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertNotNull(page.getData());
-        assertTrue(page.getData().stream().anyMatch(it -> Objects.equals(entity.getId(), it.getId())));
-    }
-
-    /**
-     * @see TenantApplicationProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
-
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
-
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
-
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(TenantApplication.class).eq(TenantApplication::getId, entity.getId()), "master");
-        assertEquals(1L, count);
+        this.applicationPersistence.deleteBy(Conditions.of(ApplicationEntity.class).like(ApplicationEntity::getCode, "test%"));
+        this.tenantPersistence.deleteBy(Conditions.of(TenantEntity.class).like(TenantEntity::getCode, "test%"));
+        this.databasePersistence.deleteBy(Conditions.of(DatabaseEntity.class).like(DatabaseEntity::getCode, "test%"), "master");
     }
 
     /**
      * @see TenantApplicationProvider#insert
+     * @see TenantApplicationProvider#findById
+     * @see TenantApplicationProvider#update
+     * @see TenantApplicationProvider#findByIds
+     * @see TenantApplicationProvider#countBy
+     * @see TenantApplicationProvider#deleteByIds
      */
     @Test
-    public void case6() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
+    public void case1() {
+        var saasApplication = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "central-saas"), null);
+        assertNotNull(saasApplication);
 
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
+        var database = this.databasePersistence.insert(DatabaseInput.builder()
+                .applicationId(saasApplication.getId())
+                .code("test")
+                .name("测试数据库")
+                .type(DatabaseType.H2.getValue())
+                .enabled(Boolean.TRUE)
+                .remark("测试")
+                .master(DatabasePropertiesInput.builder().driver("org.h2.Driver").url("jdbc:h2:mem:central-provider").username("root").password("root").build())
+                .params(Jsonx.Default().serialize(Map.of()))
+                .build(), "syssa", "master");
 
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
+        var tenant = this.tenantPersistence.insert(TenantInput.builder()
+                .code("test")
+                .name("测试租户")
+                .databaseId(database.getId())
+                .enabled(Boolean.TRUE)
+                .remark("测试租户")
+                .build(), "syssa");
 
+        var application = this.applicationPersistence.insert(ApplicationInput.builder()
+                .code("test")
+                .name("测试应用")
+                .logo("1234")
+                .url("http://127.0.0.1:3100")
+                .contextPath("/test")
+                .secret(Guidx.nextID())
+                .enabled(Boolean.TRUE)
+                .remark("测试应用")
+                .routes(List.of(
+                        ApplicationRouteInput.builder().contextPath("/test/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build()
+                ))
+                .build(), "syssa");
 
         var input = TenantApplicationInput.builder()
                 .tenantId(tenant.getId())
@@ -382,33 +141,103 @@ public class TestTenantApplicationProvider extends TestProvider {
                 .primary(Boolean.TRUE)
                 .build();
 
-        var tenantApplication = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
+        // test insert
+        var insert = this.provider.insert(input, "syssa", "master");
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getTenantId(), insert.getTenantId());
+        assertEquals(input.getTenantId(), insert.getTenant().getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getPrimary(), insert.getPrimary());
 
-        assertNotNull(tenantApplication);
+        // test findById
+        var findById = this.provider.findById(insert.getId(), "master");
+        assertNotNull(findById);
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getTenantId(), findById.getTenantId());
+        assertEquals(insert.getTenantId(), findById.getTenant().getId());
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplicationId(), findById.getApplication().getId());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getPrimary(), findById.getPrimary());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getId, tenantApplication.getId())));
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(TenantApplication.class).eq(TenantApplication::getTenantId, tenant.getId()), "master");
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().enabled(Boolean.FALSE).primary(Boolean.FALSE).build(), "syssa", "master");
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), "master");
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getTenantId(), fetched.getTenantId());
+        assertEquals(insert.getTenantId(), fetched.getTenant().getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(Boolean.FALSE, fetched.getPrimary());
+
+        // test deleteById
+        count = this.provider.deleteByIds(List.of(insert.getId()), "master");
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getTenantId, tenant.getId()));
+        assertEquals(0, count);
     }
 
     /**
      * @see TenantApplicationProvider#insertBatch
+     * @see TenantApplicationProvider#findBy
+     * @see TenantApplicationProvider#updateBatch
+     * @see TenantApplicationProvider#pageBy
+     * @see TenantApplicationProvider#deleteBy
      */
     @Test
-    public void case7() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
+    public void case2() {
+        var saasApplication = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "central-saas"), null);
+        assertNotNull(saasApplication);
 
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
+        var database = this.databasePersistence.insert(DatabaseInput.builder()
+                .applicationId(saasApplication.getId())
+                .code("test")
+                .name("测试数据库")
+                .type(DatabaseType.H2.getValue())
+                .enabled(Boolean.TRUE)
+                .remark("测试")
+                .master(DatabasePropertiesInput.builder().driver("org.h2.Driver").url("jdbc:h2:mem:central-provider").username("root").password("root").build())
+                .params(Jsonx.Default().serialize(Map.of()))
+                .build(), "syssa", "master");
 
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
+        var tenant = this.tenantPersistence.insert(TenantInput.builder()
+                .code("test")
+                .name("测试租户")
+                .databaseId(database.getId())
+                .enabled(Boolean.TRUE)
+                .remark("测试租户")
+                .build(), "syssa");
 
+        var application = this.applicationPersistence.insert(ApplicationInput.builder()
+                .code("test")
+                .name("测试应用")
+                .logo("1234")
+                .url("http://127.0.0.1:3100")
+                .contextPath("/test")
+                .secret(Guidx.nextID())
+                .enabled(Boolean.TRUE)
+                .remark("测试应用")
+                .routes(List.of(
+                        ApplicationRouteInput.builder().contextPath("/test/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build()
+                ))
+                .build(), "syssa");
 
         var input = TenantApplicationInput.builder()
                 .tenantId(tenant.getId())
@@ -417,160 +246,64 @@ public class TestTenantApplicationProvider extends TestProvider {
                 .primary(Boolean.TRUE)
                 .build();
 
-        var tenantApplications = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", "master");
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        assertNotNull(tenantApplications);
-        assertEquals(1, tenantApplications.size());
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getTenantId(), insert.getTenantId());
+        assertEquals(input.getTenantId(), insert.getTenant().getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getPrimary(), insert.getPrimary());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getId, tenantApplications.get(0).getId())));
-    }
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(TenantApplication.class).eq(TenantApplication::getTenantId, tenant.getId()), null, "master");
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-    /**
-     * @see TenantApplicationProvider#update
-     */
-    @Test
-    public void case8() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getTenantId(), fetched.getTenantId());
+        assertEquals(insert.getTenantId(), fetched.getTenant().getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getPrimary(), fetched.getPrimary());
 
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
+        // test update
+        this.provider.updateBatch(List.of(insert.toInput().enabled(Boolean.FALSE).primary(Boolean.FALSE).build()), "syssa", "master");
 
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(TenantApplication.class).eq(TenantApplication::getTenantId, tenant.getId()), null, "master");
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getTenantId(), fetched.getTenantId());
+        assertEquals(insert.getTenantId(), fetched.getTenant().getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(Boolean.FALSE, fetched.getPrimary());
 
-        var tenantApplications = this.provider.findById(entity.getId(), "master");
-        assertNotNull(tenantApplications);
+        // test deleteById
+        var count = this.provider.deleteByIds(List.of(insert.getId()), "master");
+        assertEquals(1, count);
 
-        var input = tenantApplications.toInput()
-                .enabled(Boolean.FALSE)
-                .build();
-        tenantApplications = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(tenantApplications);
-
-        assertTrue(this.mapper.existsBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getEnabled, Boolean.FALSE)));
-    }
-
-    /**
-     * @see TenantApplicationProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
-
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
-
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
-
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var tenantApplications = this.provider.findById(entity.getId(), "master");
-        assertNotNull(tenantApplications);
-
-        var input = tenantApplications.toInput()
-                .enabled(Boolean.FALSE)
-                .build();
-        var updated = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(updated);
-        assertEquals(1, updated.size());
-
-        assertTrue(this.mapper.existsBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getEnabled, Boolean.FALSE)));
-    }
-
-    /**
-     * @see TenantApplicationProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
-
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
-
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
-
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var deleted = this.provider.deleteByIds(List.of(entity.getId()), "master");
-        assertEquals(1, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getId, entity.getId())));
-    }
-
-    /**
-     * @see TenantApplicationProvider#deleteBy
-     */
-    @Test
-    public void case11() {
-        var application = this.buildApplication();
-        this.applicationMapper.insert(application);
-
-        var database = this.buildDatabase(application);
-        this.databaseMapper.insert(database);
-
-        var tenant = new TenantEntity();
-        tenant.setCode("test");
-        tenant.setName("测试租户");
-        tenant.setDatabaseId(database.getId());
-        tenant.setEnabled(Boolean.TRUE);
-        tenant.setRemark("用于所有应用的认证处理");
-        tenant.updateCreator(properties.getSupervisor().getUsername());
-        this.tenantMapper.insert(tenant);
-
-        var entity = new TenantApplicationEntity();
-        entity.setTenantId(tenant.getId());
-        entity.setApplicationId(application.getId());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setPrimary(Boolean.TRUE);
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(TenantApplication.class).eq(TenantApplication::getTenantId, tenant.getId()), "master");
-        assertEquals(1, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getId, entity.getId())));
+        count = this.persistence.countBy(Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getTenantId, tenant.getId()));
+        assertEquals(0, count);
     }
 }

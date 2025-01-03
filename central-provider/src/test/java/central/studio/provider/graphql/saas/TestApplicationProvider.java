@@ -30,26 +30,21 @@ import central.data.saas.ApplicationRouteInput;
 import central.provider.graphql.saas.ApplicationProvider;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.TestProvider;
+import central.studio.provider.database.persistence.saas.ApplicationPersistence;
 import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
+import central.studio.provider.graphql.TestProvider;
 import central.util.Guidx;
-import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
-import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Application Provider Test Cases
@@ -65,441 +60,198 @@ public class TestApplicationProvider extends TestProvider {
     private ApplicationProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
+    private ApplicationPersistence persistence;
 
-    @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper mapper;
-
-    @BeforeEach
     @AfterEach
-    public void clear() {
-        // 清空数据
-        mapper.deleteAll();
-    }
-
-    /**
-     * @see ApplicationProvider#findById
-     */
-    @Test
-    public void case1() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
-
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var application = this.provider.findById(entity.getId(), "master");
-        assertNotNull(application);
-        assertEquals(entity.getId(), application.getId());
-        assertEquals(entity.getCode(), application.getCode());
-        assertEquals(Base64.getEncoder().encodeToString(entity.getLogoBytes()), application.getLogo());
-        assertEquals(entity.getUrl(), application.getUrl());
-        assertEquals(entity.getContextPath(), application.getContextPath());
-        assertEquals(entity.getSecret(), application.getSecret());
-        assertEquals(entity.getEnabled(), application.getEnabled());
-        assertEquals(entity.getRemark(), application.getRemark());
-        assertNotNull(application.getRoutes());
-        assertEquals(2, application.getRoutes().size());
-        assertTrue(application.getRoutes().stream().anyMatch(it -> Objects.equals("/identity/test", it.getContextPath())));
-        assertTrue(application.getRoutes().stream().anyMatch(it -> Objects.equals("/identity/example", it.getContextPath())));
-    }
-
-    /**
-     * @see ApplicationProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
-
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var applications = this.provider.findByIds(List.of(entity.getId()), "master");
-        var application = Listx.getFirstOrNull(applications);
-        assertNotNull(application);
-        assertEquals(entity.getId(), application.getId());
-        assertEquals(entity.getCode(), application.getCode());
-        assertEquals(Base64.getEncoder().encodeToString(entity.getLogoBytes()), application.getLogo());
-        assertEquals(entity.getUrl(), application.getUrl());
-        assertEquals(entity.getContextPath(), application.getContextPath());
-        assertEquals(entity.getSecret(), application.getSecret());
-        assertEquals(entity.getEnabled(), application.getEnabled());
-        assertEquals(entity.getRemark(), application.getRemark());
-        assertNotNull(application.getRoutes());
-        assertEquals(2, application.getRoutes().size());
-        assertTrue(application.getRoutes().stream().anyMatch(it -> Objects.equals("/identity/test", it.getContextPath())));
-        assertTrue(application.getRoutes().stream().anyMatch(it -> Objects.equals("/identity/example", it.getContextPath())));
-    }
-
-    /**
-     * @see ApplicationProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
-
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var applications = this.provider.findBy(1L, 0L, Conditions.of(Application.class).eq(Application::getCode, "central-identity"), null, "master");
-        var application = Listx.getFirstOrNull(applications);
-        assertNotNull(application);
-        assertEquals(entity.getId(), application.getId());
-        assertEquals(entity.getCode(), application.getCode());
-        assertEquals(Base64.getEncoder().encodeToString(entity.getLogoBytes()), application.getLogo());
-        assertEquals(entity.getUrl(), application.getUrl());
-        assertEquals(entity.getContextPath(), application.getContextPath());
-        assertEquals(entity.getSecret(), application.getSecret());
-        assertEquals(entity.getEnabled(), application.getEnabled());
-        assertEquals(entity.getRemark(), application.getRemark());
-        assertNotNull(application.getRoutes());
-        assertEquals(2, application.getRoutes().size());
-        assertTrue(application.getRoutes().stream().anyMatch(it -> Objects.equals("/identity/test", it.getContextPath())));
-        assertTrue(application.getRoutes().stream().anyMatch(it -> Objects.equals("/identity/example", it.getContextPath())));
-    }
-
-    /**
-     * @see ApplicationProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
-
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(Application.class).eq(Application::getCode, "central-identity"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1L, page.getPager().getPageIndex());
-        assertEquals(20L, page.getPager().getPageSize());
-        assertEquals(1L, page.getPager().getPageCount());
-        assertEquals(1L, page.getPager().getItemCount());
-        assertNotNull(page.getData());
-        var application = Listx.getFirstOrNull(page.getData());
-        assertNotNull(application);
-        assertEquals(entity.getId(), application.getId());
-        assertEquals(entity.getCode(), application.getCode());
-        assertEquals(Base64.getEncoder().encodeToString(entity.getLogoBytes()), application.getLogo());
-        assertEquals(entity.getUrl(), application.getUrl());
-        assertEquals(entity.getContextPath(), application.getContextPath());
-        assertEquals(entity.getSecret(), application.getSecret());
-        assertEquals(entity.getEnabled(), application.getEnabled());
-        assertEquals(entity.getRemark(), application.getRemark());
-        assertNotNull(application.getRoutes());
-        assertEquals(2, application.getRoutes().size());
-        assertTrue(application.getRoutes().stream().anyMatch(it -> Objects.equals("/identity/test", it.getContextPath())));
-        assertTrue(application.getRoutes().stream().anyMatch(it -> Objects.equals("/identity/example", it.getContextPath())));
-    }
-
-    /**
-     * @see ApplicationProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
-
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(Application.class).eq(Application::getCode, "central-identity"), "master");
-        assertEquals(1L, count);
+    public void clear() throws Exception {
+        // 清空测试数据
+        this.persistence.deleteBy(Conditions.of(ApplicationEntity.class).like(ApplicationEntity::getCode, "test%"));
     }
 
     /**
      * @see ApplicationProvider#insert
+     * @see ApplicationProvider#findById
+     * @see ApplicationProvider#update
+     * @see ApplicationProvider#findByIds
+     * @see ApplicationProvider#countBy
+     * @see ApplicationProvider#deleteByIds
      */
     @Test
-    public void case6() {
+    public void case1() {
         var input = ApplicationInput.builder()
-                .code("central-security")
-                .name("统一认证中心")
-                .logo(Base64.getEncoder().encodeToString("1234".getBytes(StandardCharsets.UTF_8)))
+                .code("test")
+                .name("测试应用")
+                .logo("1234")
                 .url("http://127.0.0.1:3100")
-                .contextPath("/security")
+                .contextPath("/test")
                 .secret(Guidx.nextID())
                 .enabled(Boolean.TRUE)
-                .remark("用于所有应用的认证处理")
+                .remark("测试应用")
                 .routes(List.of(
-                        ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                        ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
+                        ApplicationRouteInput.builder().contextPath("/test/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build()
                 ))
                 .build();
-        var application = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(application);
-        assertNotNull(application.getId());
-        assertEquals(input.getCode(), application.getCode());
-        assertEquals(input.getLogo(), application.getLogo());
-        assertEquals(input.getUrl(), application.getUrl());
-        assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getSecret(), application.getSecret());
-        assertEquals(input.getEnabled(), application.getEnabled());
-        assertEquals(input.getRemark(), application.getRemark());
 
-        application = this.provider.findById(application.getId(), "master");
-        assertNotNull(application);
-        assertNotNull(application.getId());
-        assertEquals(input.getCode(), application.getCode());
-        assertEquals(input.getLogo(), application.getLogo());
-        assertEquals(input.getUrl(), application.getUrl());
-        assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getSecret(), application.getSecret());
-        assertEquals(input.getEnabled(), application.getEnabled());
-        assertEquals(input.getRemark(), application.getRemark());
+        // test insert
+        var insert = this.provider.insert(input, "syssa", "master");
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getLogo(), insert.getLogo());
+        assertEquals(input.getUrl(), insert.getUrl());
+        assertEquals(input.getContextPath(), insert.getContextPath());
+        assertEquals(input.getSecret(),insert.getSecret());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(1, insert.getRoutes().size());
+        assertEquals(input.getRoutes().get(0), insert.getRoutes().get(0).toInput().build());
+
+        // test findById
+        var findById = this.provider.findById(insert.getId(), "master");
+        assertNotNull(findById);
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getLogo(), findById.getLogo());
+        assertEquals(insert.getUrl(), findById.getUrl());
+        assertEquals(insert.getContextPath(), findById.getContextPath());
+        assertEquals(insert.getSecret(),findById.getSecret());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getRemark(), findById.getRemark());
+        assertEquals(1, findById.getRoutes().size());
+        assertEquals(insert.getRoutes().get(0), findById.getRoutes().get(0));
+
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(Application.class).like(Application::getCode, "test%"), "master");
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", "master");
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), "master");
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getLogo(), fetched.getLogo());
+        assertEquals(insert.getUrl(), fetched.getUrl());
+        assertEquals(insert.getContextPath(), fetched.getContextPath());
+        assertEquals(insert.getSecret(),fetched.getSecret());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(1, fetched.getRoutes().size());
+        assertEquals(insert.getRoutes().get(0), fetched.getRoutes().get(0));
+
+        // test deleteById
+        count = this.provider.deleteByIds(List.of(insert.getId()), "master");
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(ApplicationEntity.class).like(ApplicationEntity::getCode, "test%"));
+        assertEquals(0, count);
     }
 
     /**
      * @see ApplicationProvider#insertBatch
-     */
-    @Test
-    public void case7() {
-        var input = ApplicationInput.builder()
-                .code("central-security")
-                .name("统一认证中心")
-                .logo(Base64.getEncoder().encodeToString("1234".getBytes(StandardCharsets.UTF_8)))
-                .url("http://127.0.0.1:3100")
-                .contextPath("/security")
-                .secret(Guidx.nextID())
-                .enabled(Boolean.TRUE)
-                .remark("用于所有应用的认证处理")
-                .routes(List.of(
-                        ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                        ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-                ))
-                .build();
-        var applications = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(applications);
-        assertEquals(1, applications.size());
-
-        var application = Listx.getFirstOrNull(applications);
-
-        assertNotNull(application);
-        assertNotNull(application.getId());
-        assertEquals(input.getCode(), application.getCode());
-        assertEquals(input.getLogo(), application.getLogo());
-        assertEquals(input.getUrl(), application.getUrl());
-        assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getSecret(), application.getSecret());
-        assertEquals(input.getEnabled(), application.getEnabled());
-        assertEquals(input.getRemark(), application.getRemark());
-        assertEquals(2, application.getRoutes().size());
-
-        application = this.provider.findById(application.getId(), "master");
-        assertNotNull(application);
-        assertNotNull(application.getId());
-        assertEquals(input.getCode(), application.getCode());
-        assertEquals(input.getLogo(), application.getLogo());
-        assertEquals(input.getUrl(), application.getUrl());
-        assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getSecret(), application.getSecret());
-        assertEquals(input.getEnabled(), application.getEnabled());
-        assertEquals(input.getRemark(), application.getRemark());
-        assertEquals(2, application.getRoutes().size());
-    }
-
-    /**
-     * @see ApplicationProvider#update
-     */
-    @Test
-    public void case8() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
-
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var application = this.provider.findById(entity.getId(), "master");
-        assertNotNull(application);
-
-        var input = application.toInput()
-                .name("统一认证")
-                .url("http://127.0.0.1:4100")
-                .build();
-
-        application = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertEquals(input.getId(), application.getId());
-        assertEquals(input.getCode(), application.getCode());
-        assertEquals(input.getLogo(), application.getLogo());
-        assertEquals(input.getUrl(), application.getUrl());
-        assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getSecret(), application.getSecret());
-        assertEquals(input.getEnabled(), application.getEnabled());
-        assertEquals(input.getRemark(), application.getRemark());
-    }
-
-    /**
+     * @see ApplicationProvider#findBy
      * @see ApplicationProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
-
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var application = this.provider.findById(entity.getId(), "master");
-        assertNotNull(application);
-
-        var input = application.toInput()
-                .name("统一认证")
-                .url("http://127.0.0.1:4100")
-                .build();
-
-        var updated = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        application = Listx.getFirstOrNull(updated);
-        assertNotNull(application);
-        assertEquals(input.getId(), application.getId());
-        assertEquals(input.getCode(), application.getCode());
-        assertEquals(input.getLogo(), application.getLogo());
-        assertEquals(input.getUrl(), application.getUrl());
-        assertEquals(input.getContextPath(), application.getContextPath());
-        assertEquals(input.getSecret(), application.getSecret());
-        assertEquals(input.getEnabled(), application.getEnabled());
-        assertEquals(input.getRemark(), application.getRemark());
-    }
-
-    /**
-     * @see ApplicationProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
-
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
-
-        var deleted = this.provider.deleteByIds(List.of(entity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getId, entity.getId())));
-    }
-
-    /**
+     * @see ApplicationProvider#pageBy
      * @see ApplicationProvider#deleteBy
      */
     @Test
-    public void case11() {
-        var entity = new ApplicationEntity();
-        entity.setCode("central-identity");
-        entity.setName("统一认证中心");
-        entity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        entity.setUrl("http://127.0.0.1:3100");
-        entity.setContextPath("/identity");
-        entity.setSecret(Guidx.nextID());
-        entity.setEnabled(Boolean.TRUE);
-        entity.setRemark("用于所有应用的认证处理");
-        entity.setRoutesJson(Jsonx.Default().serialize(List.of(
-                ApplicationRouteInput.builder().contextPath("/identity/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build(),
-                ApplicationRouteInput.builder().contextPath("/identity/example").url("http://127.0.0.1:3120").enabled(Boolean.TRUE).remark("测试路由2").build()
-        )));
+    public void case2() {
+        var input = ApplicationInput.builder()
+                .code("test")
+                .name("测试应用")
+                .logo("1234")
+                .url("http://127.0.0.1:3100")
+                .contextPath("/test")
+                .secret(Guidx.nextID())
+                .enabled(Boolean.TRUE)
+                .remark("测试应用")
+                .routes(List.of(
+                        ApplicationRouteInput.builder().contextPath("/test/test").url("http://127.0.0.1:3110").enabled(Boolean.TRUE).remark("测试路由1").build()
+                ))
+                .build();
 
-        entity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(entity);
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", "master");
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        var deleted = this.provider.deleteBy(Conditions.of(Application.class).eq(Application::getCode, "central-identity"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getLogo(), insert.getLogo());
+        assertEquals(input.getUrl(), insert.getUrl());
+        assertEquals(input.getContextPath(), insert.getContextPath());
+        assertEquals(input.getSecret(),insert.getSecret());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(1, insert.getRoutes().size());
+        assertEquals(input.getRoutes().get(0), insert.getRoutes().get(0).toInput().build());
 
-        assertFalse(this.mapper.existsBy(Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getId, entity.getId())));
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(Application.class).like(Application::getCode, "test%"), null, "master");
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
+
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getLogo(), fetched.getLogo());
+        assertEquals(insert.getUrl(), fetched.getUrl());
+        assertEquals(insert.getContextPath(), fetched.getContextPath());
+        assertEquals(insert.getSecret(),fetched.getSecret());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(1, fetched.getRoutes().size());
+        assertEquals(insert.getRoutes().get(0), fetched.getRoutes().get(0));
+
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(Application.class).like(Application::getCode, "test%"), "master");
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", "master");
+
+        // test findByIds
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Application.class).like(Application::getCode, "test%"), null, "master");
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
+
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getLogo(), fetched.getLogo());
+        assertEquals(insert.getUrl(), fetched.getUrl());
+        assertEquals(insert.getContextPath(), fetched.getContextPath());
+        assertEquals(insert.getSecret(),fetched.getSecret());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(1, fetched.getRoutes().size());
+        assertEquals(insert.getRoutes().get(0), fetched.getRoutes().get(0));
+
+        // test deleteBy
+        count = this.provider.deleteBy(Conditions.of(Application.class).like(Application::getCode, "test%"), "master");
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(ApplicationEntity.class).like(ApplicationEntity::getCode, "test%"));
+        assertEquals(0, count);
     }
 }

@@ -240,7 +240,7 @@ public class TestLogFilterProvider {
                 ))
                 .build();
 
-        // test insert
+        // test insertBatch
         var insertBatch = this.provider.insertBatch(List.of(input), "syssa", "master");
         assertNotNull(insertBatch);
         assertEquals(1, insertBatch.size());
