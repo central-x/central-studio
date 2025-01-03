@@ -201,12 +201,13 @@ public class TestIdentityStrategyProvider {
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
-        assertEquals(input.getCode(), fetched.getCode());
-        assertEquals(input.getName(), fetched.getName());
-        assertEquals(input.getType(), fetched.getType());
-        assertEquals(input.getEnabled(), fetched.getEnabled());
-        assertEquals(input.getRemark(), fetched.getRemark());
-        assertEquals(input.getParams(), fetched.getParams());
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getParams(), fetched.getParams());
 
         // test updateBatch
         this.provider.updateBatch(List.of(fetched.toInput().code("captcha2").enabled(Boolean.FALSE).build()), "syssa", tenant.getCode());
@@ -222,12 +223,13 @@ public class TestIdentityStrategyProvider {
 
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals("captcha2", fetched.getCode());
-        assertEquals(input.getName(), fetched.getName());
-        assertEquals(input.getType(), fetched.getType());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getType(), fetched.getType());
         assertEquals(Boolean.FALSE, fetched.getEnabled());
-        assertEquals(input.getRemark(), fetched.getRemark());
-        assertEquals(input.getParams(), fetched.getParams());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getParams(), fetched.getParams());
 
         // test deleteBy
         var count = this.provider.deleteBy(Conditions.of(IdentityStrategy.class), tenant.getCode());

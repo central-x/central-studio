@@ -144,6 +144,7 @@ public class TestPermissionProvider extends TestProvider {
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
         assertEquals(insert.getId(), findById.getId());
         assertEquals(insert.getApplicationId(), findById.getApplicationId());
         assertEquals(insert.getApplication().getId(), findById.getApplication().getId());

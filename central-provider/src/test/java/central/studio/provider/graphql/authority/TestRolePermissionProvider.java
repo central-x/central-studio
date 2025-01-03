@@ -181,12 +181,12 @@ public class TestRolePermissionProvider {
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
         assertNotNull(findById);
-        assertEquals(input.getApplicationId(), findById.getApplicationId());
-        assertEquals(input.getApplicationId(), findById.getApplication().getId());
-        assertEquals(input.getRoleId(), findById.getRoleId());
-        assertEquals(input.getRoleId(), findById.getRole().getId());
-        assertEquals(input.getPermissionId(), findById.getPermissionId());
-        assertEquals(input.getPermissionId(), findById.getPermission().getId());
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplicationId(), findById.getApplication().getId());
+        assertEquals(insert.getRoleId(), findById.getRoleId());
+        assertEquals(insert.getRoleId(), findById.getRole().getId());
+        assertEquals(insert.getPermissionId(), findById.getPermissionId());
+        assertEquals(insert.getPermissionId(), findById.getPermission().getId());
 
         // test countBy
         var count = this.provider.countBy(Conditions.of(RolePermission.class).eq(RolePermission::getRoleId, role.getId()), tenant.getCode());
@@ -241,6 +241,7 @@ public class TestRolePermissionProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getApplicationId(), fetched.getApplicationId());
         assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
         assertEquals(insert.getRoleId(), fetched.getRoleId());
@@ -255,6 +256,7 @@ public class TestRolePermissionProvider {
 
         fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getApplicationId(), fetched.getApplicationId());
         assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
         assertEquals(insert.getRoleId(), fetched.getRoleId());

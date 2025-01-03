@@ -146,6 +146,7 @@ public class TestLogFilterProvider {
         // test findById
         var findById = this.provider.findById(insert.getId(), "master");
         assertNotNull(findById);
+        assertEquals(insert.getId(), findById.getId());
         assertEquals(insert.getCode(), findById.getCode());
         assertEquals(insert.getName(), findById.getName());
         assertEquals(insert.getEnabled(), findById.getEnabled());
@@ -171,6 +172,7 @@ public class TestLogFilterProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals("test2", fetched.getCode());
         assertEquals(insert.getName(), fetched.getName());
         assertEquals(Boolean.FALSE, fetched.getEnabled());
@@ -264,6 +266,7 @@ public class TestLogFilterProvider {
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getCode(), fetched.getCode());
         assertEquals(insert.getName(), fetched.getName());
         assertEquals(insert.getEnabled(), fetched.getEnabled());
@@ -289,6 +292,7 @@ public class TestLogFilterProvider {
 
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals("test2", fetched.getCode());
         assertEquals(insert.getName(), fetched.getName());
         assertEquals(Boolean.FALSE, fetched.getEnabled());

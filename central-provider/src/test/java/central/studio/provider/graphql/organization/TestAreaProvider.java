@@ -197,7 +197,7 @@ public class TestAreaProvider extends TestProvider {
         }
         this.mapper.insertBatch(provinces);
 
-        Page<Area> page = this.provider.pageBy(2L, 4L, Conditions.of(Area.class).like(Area::getParentId, country.getId()), Orders.of(Area.class).asc(Area::getCode), "master");
+        Page<Area> page = this.provider.pageBy(2L, 4L, Conditions.of(Area.class).eq(Area::getParentId, country.getId()), Orders.of(Area.class).asc(Area::getCode), "master");
         assertNotNull(page);
         assertEquals(2, page.getPager().getPageIndex());
         assertEquals(4, page.getPager().getPageSize());
@@ -239,7 +239,7 @@ public class TestAreaProvider extends TestProvider {
         }
         this.mapper.insertBatch(provinces);
 
-        var count = this.provider.countBy(Conditions.of(Area.class).like(Area::getParentId, country.getId()), "master");
+        var count = this.provider.countBy(Conditions.of(Area.class).eq(Area::getParentId, country.getId()), "master");
         assertNotNull(count);
         assertEquals(10L, count);
     }

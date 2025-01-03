@@ -200,6 +200,7 @@ public class TestIdentityPasswordProvider extends TestProvider {
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(input.getAccountId(), fetched.getAccountId());
         assertEquals(input.getAccountId(), fetched.getAccount().getId());
         assertTrue(Passwordx.verify(input.getValue(), fetched.getValue()));
@@ -215,6 +216,7 @@ public class TestIdentityPasswordProvider extends TestProvider {
 
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(input.getAccountId(), fetched.getAccountId());
         assertEquals(input.getAccountId(), fetched.getAccount().getId());
         assertTrue(Passwordx.verify(input.getValue(), insert.getValue()));

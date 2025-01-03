@@ -128,6 +128,7 @@ public class TestGatewayFilterProvider {
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
         assertEquals(insert.getId(), findById.getId());
         assertEquals(insert.getType(), findById.getType());
         assertEquals(insert.getPath(), findById.getPath());

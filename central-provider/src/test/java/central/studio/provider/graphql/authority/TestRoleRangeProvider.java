@@ -200,15 +200,15 @@ public class TestRoleRangeProvider {
         assertEquals(input.getDataId(), insert.getDataId());
 
         // test findById
-        var found = this.provider.findById(insert.getId(), tenant.getCode());
-        assertNotNull(found);
-        assertEquals(input.getApplicationId(), found.getApplicationId());
-        assertEquals(input.getApplicationId(), found.getApplication().getId());
-        assertEquals(input.getRoleId(), found.getRoleId());
-        assertEquals(input.getRoleId(), found.getRole().getId());
-        assertEquals(input.getCategory(), found.getCategory());
-        assertEquals(input.getType(), found.getType());
-        assertEquals(input.getDataId(), found.getDataId());
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplicationId(), findById.getApplication().getId());
+        assertEquals(insert.getRoleId(), findById.getRoleId());
+        assertEquals(insert.getRoleId(), findById.getRole().getId());
+        assertEquals(insert.getCategory(), findById.getCategory());
+        assertEquals(insert.getType(), findById.getType());
+        assertEquals(insert.getDataId(), findById.getDataId());
 
         // test countBy
         var count = this.provider.countBy(Conditions.of(RoleRange.class).eq(RoleRange::getRoleId, role.getId()), tenant.getCode());
@@ -281,6 +281,7 @@ public class TestRoleRangeProvider {
 
         fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getApplicationId(), fetched.getApplicationId());
         assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
         assertEquals(insert.getRoleId(), fetched.getRoleId());
@@ -299,6 +300,7 @@ public class TestRoleRangeProvider {
 
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getApplicationId(), fetched.getApplicationId());
         assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
         assertEquals(insert.getRoleId(), fetched.getRoleId());

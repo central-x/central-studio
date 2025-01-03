@@ -169,14 +169,14 @@ public class TestRoleProvider extends TestProvider {
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
         assertNotNull(findById);
-        assertEquals(input.getApplicationId(), findById.getApplicationId());
-        assertEquals(input.getApplicationId(), findById.getApplication().getId());
-        assertEquals(input.getUnitId(), findById.getUnitId());
-        assertEquals(input.getUnitId(), findById.getUnit().getId());
-        assertEquals(input.getCode(), findById.getCode());
-        assertEquals(input.getName(), findById.getName());
-        assertEquals(input.getEnabled(), findById.getEnabled());
-        assertEquals(input.getRemark(), findById.getRemark());
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplicationId(), findById.getApplication().getId());
+        assertEquals(insert.getUnitId(), findById.getUnitId());
+        assertEquals(insert.getUnitId(), findById.getUnit().getId());
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getRemark(), findById.getRemark());
 
         // test countBy
         var count = this.provider.countBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), tenant.getCode());
@@ -192,14 +192,14 @@ public class TestRoleProvider extends TestProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
-        assertEquals(input.getApplicationId(), fetched.getApplicationId());
-        assertEquals(input.getApplicationId(), fetched.getApplication().getId());
-        assertEquals(input.getUnitId(), fetched.getUnitId());
-        assertEquals(input.getUnitId(), fetched.getUnit().getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getUnitId(), fetched.getUnitId());
+        assertEquals(insert.getUnitId(), fetched.getUnit().getId());
         assertEquals("test2", fetched.getCode());
-        assertEquals(input.getName(), fetched.getName());
+        assertEquals(insert.getName(), fetched.getName());
         assertEquals(Boolean.FALSE, fetched.getEnabled());
-        assertEquals(input.getRemark(), fetched.getRemark());
+        assertEquals(insert.getRemark(), fetched.getRemark());
 
         // test deleteById
         count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
@@ -256,14 +256,15 @@ public class TestRoleProvider extends TestProvider {
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
-        assertEquals(input.getApplicationId(), fetched.getApplicationId());
-        assertEquals(input.getApplicationId(), fetched.getApplication().getId());
-        assertEquals(input.getUnitId(), fetched.getUnitId());
-        assertEquals(input.getUnitId(), fetched.getUnit().getId());
-        assertEquals(input.getCode(), fetched.getCode());
-        assertEquals(input.getName(), fetched.getName());
-        assertEquals(input.getEnabled(), fetched.getEnabled());
-        assertEquals(input.getRemark(), fetched.getRemark());
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getUnitId(), fetched.getUnitId());
+        assertEquals(insert.getUnitId(), fetched.getUnit().getId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
 
         // test updateBatch
         this.provider.updateBatch(List.of(fetched.toInput().code("test2").enabled(Boolean.FALSE).build()), "syssa", tenant.getCode());
@@ -279,14 +280,15 @@ public class TestRoleProvider extends TestProvider {
 
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
-        assertEquals(input.getApplicationId(), fetched.getApplicationId());
-        assertEquals(input.getApplicationId(), fetched.getApplication().getId());
-        assertEquals(input.getUnitId(), fetched.getUnitId());
-        assertEquals(input.getUnitId(), fetched.getUnit().getId());
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getUnitId(), fetched.getUnitId());
+        assertEquals(insert.getUnitId(), fetched.getUnit().getId());
         assertEquals("test2", fetched.getCode());
-        assertEquals(input.getName(), fetched.getName());
+        assertEquals(insert.getName(), fetched.getName());
         assertEquals(Boolean.FALSE, fetched.getEnabled());
-        assertEquals(input.getRemark(), fetched.getRemark());
+        assertEquals(insert.getRemark(), fetched.getRemark());
 
         // test deleteBy
         var count = this.provider.deleteBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), tenant.getCode());

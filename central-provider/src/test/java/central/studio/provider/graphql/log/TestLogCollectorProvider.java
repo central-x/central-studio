@@ -133,7 +133,7 @@ public class TestLogCollectorProvider {
         count = this.provider.deleteByIds(List.of(insert.getId()), "master");
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(LogCollectorEntity.class).eq(LogCollectorEntity::getCode, "test2"));
+        count = this.persistence.countBy(Conditions.of(LogCollectorEntity.class).like(LogCollectorEntity::getCode, "test%"));
         assertEquals(0, count);
     }
 
@@ -171,12 +171,13 @@ public class TestLogCollectorProvider {
         assertEquals(input.getParams(), insert.getParams());
 
         // test findBy
-        var findBy = this.provider.findBy(null, null, Conditions.of(LogCollector.class).eq(LogCollector::getCode, "test"), null, "master");
+        var findBy = this.provider.findBy(null, null, Conditions.of(LogCollector.class).like(LogCollector::getCode, "test%"), null, "master");
         assertNotNull(findBy);
         assertEquals(1, findBy.size());
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getCode(), fetched.getCode());
         assertEquals(insert.getName(), fetched.getName());
         assertEquals(insert.getType(), fetched.getType());
@@ -185,14 +186,14 @@ public class TestLogCollectorProvider {
         assertEquals(insert.getParams(), fetched.getParams());
 
         // test countBy
-        var count = this.provider.countBy(Conditions.of(LogCollector.class).eq(LogCollector::getCode, "test"), "master");
+        var count = this.provider.countBy(Conditions.of(LogCollector.class).like(LogCollector::getCode, "test%"), "master");
         assertEquals(1, count);
 
         // test updateBatch
         this.provider.updateBatch(List.of(insert.toInput().code("test2").enabled(Boolean.FALSE).build()), "syssa", "master");
 
         // test pageBy
-        var pageBy = this.provider.pageBy(1, 10, null, null, "master");
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(LogCollector.class).like(LogCollector::getCode, "test%"), null, "master");
         assertNotNull(pageBy);
         assertEquals(1, pageBy.getPager().getPageIndex());
         assertEquals(10, pageBy.getPager().getPageSize());
@@ -202,6 +203,7 @@ public class TestLogCollectorProvider {
 
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals("test2", fetched.getCode());
         assertEquals(insert.getName(), fetched.getName());
         assertEquals(insert.getType(), fetched.getType());
@@ -213,7 +215,7 @@ public class TestLogCollectorProvider {
         count = this.provider.deleteBy(Conditions.of(LogCollector.class).eq(LogCollector::getCode, "test2"), "master");
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(LogCollectorEntity.class).eq(LogCollectorEntity::getCode, "test2"));
+        count = this.persistence.countBy(Conditions.of(LogCollectorEntity.class).like(LogCollectorEntity::getCode, "test%"));
         assertEquals(0, count);
     }
 }

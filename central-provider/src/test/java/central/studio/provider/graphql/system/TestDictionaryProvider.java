@@ -28,28 +28,27 @@ import central.data.system.Dictionary;
 import central.data.system.DictionaryInput;
 import central.data.system.DictionaryItemInput;
 import central.provider.graphql.system.DictionaryProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.TestProvider;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
+import central.studio.provider.database.persistence.system.DictionaryPersistence;
 import central.studio.provider.database.persistence.system.entity.DictionaryEntity;
-import central.studio.provider.database.persistence.system.mapper.DictionaryMapper;
-import central.util.Guidx;
+import central.studio.provider.graphql.TestContext;
+import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Dictionary Provider Test Cases
@@ -60,340 +59,47 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestDictionaryProvider extends TestProvider {
+
     @Setter(onMethod_ = @Autowired)
     private DictionaryProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
+    private DictionaryPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private DictionaryMapper mapper;
+    private TestContext context;
 
-    @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
+    @BeforeAll
+    public static void setup(@Autowired DataContext context) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
+        }
+    }
 
-    @BeforeEach
     @AfterEach
-    public void clear() {
-        // 清空数据
-        mapper.deleteAll();
-        applicationMapper.deleteAll();
-    }
-
-    /**
-     * @see DictionaryProvider#findById
-     */
-    @Test
-    public void case1() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
-
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
-
-        // 查询数据
-        var dictionary = this.provider.findById(dictionaryEntity.getId(), "master");
-        assertNotNull(dictionary);
-        assertNotNull(dictionary.getId());
-
-        // 关联查询
-        assertNotNull(dictionary.getApplication());
-        assertEquals(applicationEntity.getId(), dictionary.getApplication().getId());
-
-        // 关联查询
-        assertNotNull(dictionary.getItems());
-        assertEquals(2, dictionary.getItems().size());
-        assertTrue(dictionary.getItems().stream().anyMatch(it -> Objects.equals("option1", it.getCode())));
-        assertTrue(dictionary.getItems().stream().anyMatch(it -> Objects.equals("option2", it.getCode())));
-
-        // 关联查询
-        assertNotNull(dictionary.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), dictionary.getCreator().getId());
-        assertNotNull(dictionary.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), dictionary.getModifier().getId());
-    }
-
-    /**
-     * @see DictionaryProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
-
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
-
-        // 查询数据
-        var dictionaries = this.provider.findByIds(List.of(dictionaryEntity.getId()), "master");
-        assertNotNull(dictionaries);
-        assertEquals(1, dictionaries.size());
-
-        var dictionary = Listx.getFirstOrNull(dictionaries);
-
-        assertNotNull(dictionary);
-        assertNotNull(dictionary.getId());
-
-        // 关联查询
-        assertNotNull(dictionary.getApplication());
-        assertEquals(applicationEntity.getId(), dictionary.getApplication().getId());
-
-        // 关联查询
-        assertNotNull(dictionary.getItems());
-        assertEquals(2, dictionary.getItems().size());
-        assertTrue(dictionary.getItems().stream().anyMatch(it -> Objects.equals("option1", it.getCode())));
-        assertTrue(dictionary.getItems().stream().anyMatch(it -> Objects.equals("option2", it.getCode())));
-
-        // 关联查询
-        assertNotNull(dictionary.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), dictionary.getCreator().getId());
-        assertNotNull(dictionary.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), dictionary.getModifier().getId());
-    }
-
-    /**
-     * @see DictionaryProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
-
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
-
-        // 查询数据
-        var dictionaries = this.provider.findBy(null, null, Conditions.of(Dictionary.class).eq(Dictionary::getCode, "test"), null, "master");
-        assertNotNull(dictionaries);
-        assertEquals(1, dictionaries.size());
-
-        var dictionary = Listx.getFirstOrNull(dictionaries);
-
-        assertNotNull(dictionary);
-        assertNotNull(dictionary.getId());
-
-        // 关联查询
-        assertNotNull(dictionary.getApplication());
-        assertEquals(applicationEntity.getId(), dictionary.getApplication().getId());
-
-        // 关联查询
-        assertNotNull(dictionary.getItems());
-        assertEquals(2, dictionary.getItems().size());
-        assertTrue(dictionary.getItems().stream().anyMatch(it -> Objects.equals("option1", it.getCode())));
-        assertTrue(dictionary.getItems().stream().anyMatch(it -> Objects.equals("option2", it.getCode())));
-
-        // 关联查询
-        assertNotNull(dictionary.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), dictionary.getCreator().getId());
-        assertNotNull(dictionary.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), dictionary.getModifier().getId());
-    }
-
-    /**
-     * @see DictionaryProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
-
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(Dictionary.class).eq(Dictionary::getCode, "test"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1L, page.getPager().getPageIndex());
-        assertEquals(20L, page.getPager().getPageSize());
-        assertEquals(1L, page.getPager().getPageCount());
-        assertEquals(1L, page.getPager().getItemCount());
-        assertNotNull(page.getData());
-
-        var dictionary = Listx.getFirstOrNull(page.getData());
-
-        assertNotNull(dictionary);
-        assertNotNull(dictionary.getId());
-
-        // 关联查询
-        assertNotNull(dictionary.getApplication());
-        assertEquals(applicationEntity.getId(), dictionary.getApplication().getId());
-
-        // 关联查询
-        assertNotNull(dictionary.getItems());
-        assertEquals(2, dictionary.getItems().size());
-        assertTrue(dictionary.getItems().stream().anyMatch(it -> Objects.equals("option1", it.getCode())));
-        assertTrue(dictionary.getItems().stream().anyMatch(it -> Objects.equals("option2", it.getCode())));
-
-        // 关联查询
-        assertNotNull(dictionary.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), dictionary.getCreator().getId());
-        assertNotNull(dictionary.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), dictionary.getModifier().getId());
-    }
-
-    /**
-     * @see DictionaryProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
-
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(Dictionary.class).eq(Dictionary::getCode, "test"), "master");
-        assertNotNull(count);
-        assertEquals(1, count);
+    public void clear() throws Exception {
+        var tenant = this.context.getTenant();
+        // 清空测试数据
+        this.persistence.deleteBy(Conditions.of(DictionaryEntity.class).like(DictionaryEntity::getCode, "test%"), tenant.getCode());
     }
 
     /**
      * @see DictionaryProvider#insert
+     * @see DictionaryProvider#findById
+     * @see DictionaryProvider#update
+     * @see DictionaryProvider#findByIds
+     * @see DictionaryProvider#countBy
+     * @see DictionaryProvider#deleteByIds
      */
     @Test
-    public void case6() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+    public void case1() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
 
         var input = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
+                .applicationId(application.getId())
                 .code("test")
                 .name("测试字典")
                 .enabled(Boolean.TRUE)
@@ -404,33 +110,81 @@ public class TestDictionaryProvider extends TestProvider {
                 ))
                 .build();
 
-        var dictionary = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(dictionary);
-        assertNotNull(dictionary.getId());
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(input.getItems().size(), insert.getItems().size());
+        assertEquals(input.getItems().get(0), insert.getItems().get(0).toInput().build());
+        assertEquals(input.getItems().get(1), insert.getItems().get(1).toInput().build());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getId, dictionary.getId())));
+        // test findById
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplicationId(), findById.getApplication().getId());
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getRemark(), findById.getRemark());
+        assertEquals(insert.getItems().size(), findById.getItems().size());
+        assertEquals(insert.getItems().get(0), findById.getItems().get(0));
+        assertEquals(insert.getItems().get(1), findById.getItems().get(1));
+
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(Dictionary.class).like(Dictionary::getCode, "test%"), tenant.getCode());
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getItems().size(), fetched.getItems().size());
+        assertEquals(insert.getItems().get(0), fetched.getItems().get(0));
+        assertEquals(insert.getItems().get(1), fetched.getItems().get(1));
+
+        // test deleteByIds
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(DictionaryEntity.class).like(DictionaryEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
      * @see DictionaryProvider#insertBatch
+     * @see DictionaryProvider#findBy
+     * @see DictionaryProvider#updateBatch
+     * @see DictionaryProvider#pageBy
+     * @see DictionaryProvider#deleteBy
      */
     @Test
-    public void case7() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+    public void case2() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
 
         var input = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
+                .applicationId(application.getId())
                 .code("test")
                 .name("测试字典")
                 .enabled(Boolean.TRUE)
@@ -441,198 +195,77 @@ public class TestDictionaryProvider extends TestProvider {
                 ))
                 .build();
 
-        var dictionaries = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(dictionaries);
-        assertEquals(1, dictionaries.size());
-        assertNotNull(dictionaries.get(0).getId());
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getId, dictionaries.get(0).getId())));
-    }
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(input.getItems().size(), insert.getItems().size());
+        assertEquals(input.getItems().get(0), insert.getItems().get(0).toInput().build());
+        assertEquals(input.getItems().get(1), insert.getItems().get(1).toInput().build());
 
-    /**
-     * @see DictionaryProvider#update
-     */
-    @Test
-    public void case8() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(Dictionary.class).like(Dictionary::getCode, "test%"), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getItems().size(), fetched.getItems().size());
+        assertEquals(insert.getItems().get(0), fetched.getItems().get(0));
+        assertEquals(insert.getItems().get(1), fetched.getItems().get(1));
 
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
+        // test updateBatch
+        this.provider.updateBatch(List.of(insert.toInput().code("test2").enabled(Boolean.FALSE).build()), "syssa", tenant.getCode());
 
-        var dictionary = this.provider.findById(dictionaryEntity.getId(), "master");
-        assertNotNull(dictionary);
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
 
-        var input = dictionary.toInput()
-                .code("example")
-                .build();
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Dictionary.class).like(Dictionary::getCode, "test%"), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        dictionary = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(dictionary);
-        assertNotEquals(dictionary.getCreateDate(), dictionary.getModifyDate());
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getItems().size(), fetched.getItems().size());
+        assertEquals(insert.getItems().get(0), fetched.getItems().get(0));
+        assertEquals(insert.getItems().get(1), fetched.getItems().get(1));
 
-        assertTrue(this.mapper.existsBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getCode, "example")));
-    }
+        // test deleteBy
+        var count = this.provider.deleteBy(Conditions.of(Dictionary.class).like(Dictionary::getCode, "test%"), tenant.getCode());
+        assertEquals(1, count);
 
-    /**
-     * @see DictionaryProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
-
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
-
-        var dictionary = this.provider.findById(dictionaryEntity.getId(), "master");
-        assertNotNull(dictionary);
-
-        var input = dictionary.toInput()
-                .code("example")
-                .build();
-
-        var dictionaries = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(dictionaries);
-        assertEquals(1, dictionaries.size());
-        assertTrue(dictionaries.stream().noneMatch(it -> Objects.equals(it.getCreateDate(), it.getModifyDate())));
-
-        assertTrue(this.mapper.existsBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getCode, "example")));
-    }
-
-    /**
-     * @see DictionaryProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
-
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
-
-        var deleted = this.provider.deleteByIds(List.of(dictionaryEntity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getId, dictionaryEntity.getId())));
-    }
-
-    /**
-     * @see DictionaryProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-        var applicationEntity = new ApplicationEntity();
-        applicationEntity.setCode("central-security");
-        applicationEntity.setName("统一认证");
-        applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-        applicationEntity.setUrl("http://127.0.0.1:3100");
-        applicationEntity.setContextPath("/security");
-        applicationEntity.setSecret(Guidx.nextID());
-        applicationEntity.setEnabled(Boolean.TRUE);
-        applicationEntity.setRemark("统一认证");
-        applicationEntity.setRoutesJson("[]");
-        applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.applicationMapper.insert(applicationEntity);
-
-        var dictionaryInput = DictionaryInput.builder()
-                .applicationId(applicationEntity.getId())
-                .code("test")
-                .name("测试字典")
-                .enabled(Boolean.TRUE)
-                .remark("测试")
-                .items(List.of(
-                        DictionaryItemInput.builder().code("option1").name("测试选项1").primary(Boolean.TRUE).order(0).build(),
-                        DictionaryItemInput.builder().code("option2").name("测试选项2").primary(Boolean.FALSE).order(0).build()
-                ))
-                .build();
-
-        var dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.fromInput(dictionaryInput);
-        dictionaryEntity.setTenantCode("master");
-        dictionaryEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(dictionaryEntity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(Dictionary.class).eq(Dictionary::getCode, "test"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(DictionaryEntity.class).eq(DictionaryEntity::getId, dictionaryEntity.getId())));
+        count = this.persistence.countBy(Conditions.of(DictionaryEntity.class).like(DictionaryEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 }

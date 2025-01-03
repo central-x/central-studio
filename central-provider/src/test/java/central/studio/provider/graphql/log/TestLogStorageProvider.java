@@ -106,6 +106,7 @@ public class TestLogStorageProvider {
         // test findById
         var findById = this.provider.findById(insert.getId(), "master");
         assertNotNull(findById);
+        assertEquals(insert.getId(), findById.getId());
         assertEquals(insert.getCode(), findById.getCode());
         assertEquals(insert.getName(), findById.getName());
         assertEquals(insert.getType(), findById.getType());
@@ -127,6 +128,7 @@ public class TestLogStorageProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals("test2", fetched.getCode());
         assertEquals(insert.getName(), fetched.getName());
         assertEquals(insert.getType(), fetched.getType());
@@ -187,6 +189,7 @@ public class TestLogStorageProvider {
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getCode(), fetched.getCode());
         assertEquals(insert.getName(), fetched.getName());
         assertEquals(insert.getType(), fetched.getType());
@@ -208,6 +211,7 @@ public class TestLogStorageProvider {
 
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals("test2", fetched.getCode());
         assertEquals(insert.getName(), fetched.getName());
         assertEquals(insert.getType(), fetched.getType());

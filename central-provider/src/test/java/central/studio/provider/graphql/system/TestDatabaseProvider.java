@@ -26,7 +26,6 @@ package central.studio.provider.graphql.system;
 
 import central.data.system.Database;
 import central.data.system.DatabaseInput;
-import central.data.system.DatabaseProperties;
 import central.data.system.DatabasePropertiesInput;
 import central.provider.graphql.system.DatabaseProvider;
 import central.provider.scheduled.DataContext;
@@ -34,27 +33,24 @@ import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.TestProvider;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
-import central.studio.provider.database.persistence.saas.mapper.ApplicationMapper;
+import central.studio.provider.database.persistence.system.DatabasePersistence;
 import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
-import central.studio.provider.database.persistence.system.mapper.DatabaseMapper;
-import central.util.Guidx;
+import central.studio.provider.graphql.TestContext;
+import central.studio.provider.graphql.TestProvider;
 import central.util.Jsonx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Database Provider Test Cases
@@ -65,411 +61,56 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestDatabaseProvider extends TestProvider {
+
     @Setter(onMethod_ = @Autowired)
     private DatabaseProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
+    private DatabasePersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private DatabaseMapper mapper;
+    private TestContext context;
 
-    @Setter(onMethod_ = @Autowired)
-    private ApplicationMapper applicationMapper;
-
-    private static ApplicationEntity applicationEntity;
-
-    @Setter(onMethod_ = @Autowired)
-    private DataContext context;
-
-    @BeforeEach
-    @AfterEach
-    public void clear() throws Exception {
-        // 清空数据
-        mapper.deleteAll();
-        if (applicationEntity == null){
-            applicationEntity = new ApplicationEntity();
-            applicationEntity.setCode("central-security");
-            applicationEntity.setName("统一认证");
-            applicationEntity.setLogoBytes("1234".getBytes(StandardCharsets.UTF_8));
-            applicationEntity.setUrl("http://127.0.0.1:3100");
-            applicationEntity.setContextPath("/security");
-            applicationEntity.setSecret(Guidx.nextID());
-            applicationEntity.setEnabled(Boolean.TRUE);
-            applicationEntity.setRemark("统一认证");
-            applicationEntity.setRoutesJson("[]");
-            applicationEntity.updateCreator(properties.getSupervisor().getUsername());
-            this.applicationMapper.insert(applicationEntity);
-
-            SaasContainer container = null;
-            while (container == null || container.getApplications().isEmpty()) {
-                Thread.sleep(100);
-                container = context.getData(DataFetcherType.SAAS);
-            }
+    @BeforeAll
+    public static void setup(@Autowired DataContext context) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
         }
     }
 
-    /**
-     * @see DatabaseProvider#findById
-     */
-    @Test
-    public void case1() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
-
-        // 查询数据
-        var database = this.provider.findById(databaseEntity.getId(), "master");
-        assertNotNull(database);
-        assertNotNull(database.getId());
-        assertNotNull(database.getParams());
-
-        // 关联查询
-        assertNotNull(database.getApplication());
-        assertEquals(applicationEntity.getId(), database.getApplication().getId());
-
-        assertNotNull(database.getMaster());
-        assertEquals("org.h2.Driver", database.getMaster().getDriver());
-        assertEquals("jdbc:h2:mem:central-provider", database.getMaster().getUrl());
-        assertEquals("centralx", database.getMaster().getUsername());
-        assertEquals("central.x", database.getMaster().getPassword());
-
-        assertNotNull(database.getSlaves());
-        assertEquals(2, database.getSlaves().size());
-
-        // 关联查询
-        assertNotNull(database.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), database.getCreator().getId());
-        assertNotNull(database.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), database.getModifier().getId());
-    }
-
-    /**
-     * @see DatabaseProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
-
-        // 查询数据
-        var databases = this.provider.findByIds(List.of(databaseEntity.getId()), "master");
-        assertNotNull(databases);
-        assertEquals(1, databases.size());
-
-        var database = Listx.getFirstOrNull(databases);
-
-        assertNotNull(database);
-        assertNotNull(database.getId());
-        assertNotNull(database.getParams());
-
-        // 关联查询
-        assertNotNull(database.getApplication());
-        assertEquals(applicationEntity.getId(), database.getApplication().getId());
-
-        assertNotNull(database.getMaster());
-        assertEquals("org.h2.Driver", database.getMaster().getDriver());
-        assertEquals("jdbc:h2:mem:central-provider", database.getMaster().getUrl());
-        assertEquals("centralx", database.getMaster().getUsername());
-        assertEquals("central.x", database.getMaster().getPassword());
-
-        assertNotNull(database.getSlaves());
-        assertEquals(2, database.getSlaves().size());
-
-        // 关联查询
-        assertNotNull(database.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), database.getCreator().getId());
-        assertNotNull(database.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), database.getModifier().getId());
-    }
-
-    /**
-     * @see DatabaseProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
-
-        // 查询数据
-        var databases = this.provider.findBy(null, null, Conditions.of(Database.class).eq("application.code", "central-security"), null, "master");
-        assertNotNull(databases);
-        assertEquals(1, databases.size());
-
-        var database = Listx.getFirstOrNull(databases);
-
-        assertNotNull(database);
-        assertNotNull(database.getId());
-        assertNotNull(database.getParams());
-
-        // 关联查询
-        assertNotNull(database.getApplication());
-        assertEquals(applicationEntity.getId(), database.getApplication().getId());
-
-        assertNotNull(database.getMaster());
-        assertEquals("org.h2.Driver", database.getMaster().getDriver());
-        assertEquals("jdbc:h2:mem:central-provider", database.getMaster().getUrl());
-        assertEquals("centralx", database.getMaster().getUsername());
-        assertEquals("central.x", database.getMaster().getPassword());
-
-        assertNotNull(database.getSlaves());
-        assertEquals(2, database.getSlaves().size());
-
-        // 关联查询
-        assertNotNull(database.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), database.getCreator().getId());
-        assertNotNull(database.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), database.getModifier().getId());
-    }
-
-    /**
-     * @see DatabaseProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(Database.class).eq("application.code", "central-security"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1L, page.getPager().getPageIndex());
-        assertEquals(20L, page.getPager().getPageSize());
-        assertEquals(1L, page.getPager().getPageCount());
-        assertEquals(1L, page.getPager().getItemCount());
-        assertNotNull(page.getData());
-
-        var database = Listx.getFirstOrNull(page.getData());
-
-        assertNotNull(database);
-        assertNotNull(database.getId());
-        assertNotNull(database.getParams());
-
-        // 关联查询
-        assertNotNull(database.getApplication());
-        assertEquals(applicationEntity.getId(), database.getApplication().getId());
-
-        assertNotNull(database.getMaster());
-        assertEquals("org.h2.Driver", database.getMaster().getDriver());
-        assertEquals("jdbc:h2:mem:central-provider", database.getMaster().getUrl());
-        assertEquals("centralx", database.getMaster().getUsername());
-        assertEquals("central.x", database.getMaster().getPassword());
-
-        assertNotNull(database.getSlaves());
-        assertEquals(2, database.getSlaves().size());
-
-        // 关联查询
-        assertNotNull(database.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), database.getCreator().getId());
-        assertNotNull(database.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), database.getModifier().getId());
-    }
-
-    /**
-     * @see DatabaseProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(Database.class).eq("application.code", "central-security"), "master");
-        assertNotNull(count);
-        assertEquals(1, count);
+    @AfterEach
+    public void clear() throws Exception {
+        var tenant = this.context.getTenant();
+        // 清空测试数据
+        this.persistence.deleteBy(Conditions.of(DatabaseEntity.class).like(DatabaseEntity::getCode, "test%"), tenant.getCode());
     }
 
     /**
      * @see DatabaseProvider#insert
+     * @see DatabaseProvider#findById
+     * @see DatabaseProvider#update
+     * @see DatabaseProvider#findByIds
+     * @see DatabaseProvider#countBy
+     * @see DatabaseProvider#deleteByIds
      */
     @Test
-    public void case6() {
+    public void case1() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+
         var input = DatabaseInput.builder()
-                .applicationId(applicationEntity.getId())
+                .applicationId(application.getId())
                 .code("test")
                 .name("测试数据库")
                 .type("mysql")
                 .enabled(Boolean.TRUE)
                 .remark("测试")
-                .master(new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x"))
+                .master(DatabasePropertiesInput.builder().driver("org.h2.Driver").url("jdbc:h2:mem:central-provider").username("centralx").password("central.x").build())
                 .slaves(List.of(
-                        new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                        new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+                        DatabasePropertiesInput.builder().driver("org.h2.Driver").url("jdbc:h2:mem:central-provider-slave1").username("centralx").password("central.x").build(),
+                        DatabasePropertiesInput.builder().driver("org.h2.Driver").url("jdbc:h2:mem:central-provider-slave2").username("centralx").password("central.x").build()
                 ))
                 .params(Jsonx.Default().serialize(Map.of(
                         "master", Map.of(
@@ -495,29 +136,96 @@ public class TestDatabaseProvider extends TestProvider {
                 )))
                 .build();
 
-        var database = this.provider.insert(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(database);
-        assertNotNull(database.getId());
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(input.getMaster(), insert.getMaster().toInput().build());
+        assertEquals(input.getSlaves().size(), insert.getSlaves().size());
+        assertEquals(input.getSlaves().get(0), insert.getSlaves().get(0).toInput().build());
+        assertEquals(input.getSlaves().get(1), insert.getSlaves().get(1).toInput().build());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getCode, "test")));
+        // test findById
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getApplicationId(), findById.getApplicationId());
+        assertEquals(insert.getApplicationId(), findById.getApplication().getId());
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getType(), findById.getType());
+        assertEquals(insert.getEnabled(), findById.getEnabled());
+        assertEquals(insert.getRemark(), findById.getRemark());
+        assertEquals(insert.getMaster(), findById.getMaster());
+        assertEquals(insert.getSlaves().size(), findById.getSlaves().size());
+        assertEquals(insert.getSlaves().get(0), findById.getSlaves().get(0));
+        assertEquals(insert.getSlaves().get(1), findById.getSlaves().get(1));
+
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(Database.class).like(Database::getCode, "test%"), tenant.getCode());
+        assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().code("test2").enabled(Boolean.FALSE).build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getMaster(), fetched.getMaster());
+        assertEquals(insert.getSlaves().size(), fetched.getSlaves().size());
+        assertEquals(insert.getSlaves().get(0), fetched.getSlaves().get(0));
+        assertEquals(insert.getSlaves().get(1), fetched.getSlaves().get(1));
+
+        // test deleteByIds
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(DatabaseEntity.class).like(DatabaseEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
      * @see DatabaseProvider#insertBatch
+     * @see DatabaseProvider#findBy
+     * @see DatabaseProvider#updateBatch
+     * @see DatabaseProvider#pageBy
+     * @see DatabaseProvider#deleteBy
      */
     @Test
-    public void case7() {
+    public void case2() {
+        var tenant = this.context.getTenant();
+        var application = this.context.getApplication();
+
         var input = DatabaseInput.builder()
-                .applicationId(applicationEntity.getId())
+                .applicationId(application.getId())
                 .code("test")
                 .name("测试数据库")
                 .type("mysql")
                 .enabled(Boolean.TRUE)
                 .remark("测试")
-                .master(new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x"))
+                .master(DatabasePropertiesInput.builder().driver("org.h2.Driver").url("jdbc:h2:mem:central-provider").username("centralx").password("central.x").build())
                 .slaves(List.of(
-                        new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                        new DatabasePropertiesInput("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
+                        DatabasePropertiesInput.builder().driver("org.h2.Driver").url("jdbc:h2:mem:central-provider-slave1").username("centralx").password("central.x").build(),
+                        DatabasePropertiesInput.builder().driver("org.h2.Driver").url("jdbc:h2:mem:central-provider-slave2").username("centralx").password("central.x").build()
                 ))
                 .params(Jsonx.Default().serialize(Map.of(
                         "master", Map.of(
@@ -543,226 +251,78 @@ public class TestDatabaseProvider extends TestProvider {
                 )))
                 .build();
 
-        var databases = this.provider.insertBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(databases);
-        assertEquals(1, databases.size());
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(1, insertBatch.size());
 
-        var database = Listx.getFirstOrNull(databases);
-        assertNotNull(database);
-        assertNotNull(database.getId());
+        var insert = Listx.getFirstOrNull(insertBatch);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getApplicationId(), insert.getApplicationId());
+        assertEquals(input.getApplicationId(), insert.getApplication().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getType(), insert.getType());
+        assertEquals(input.getEnabled(), insert.getEnabled());
+        assertEquals(input.getRemark(), insert.getRemark());
+        assertEquals(input.getMaster(), insert.getMaster().toInput().build());
+        assertEquals(input.getSlaves().size(), insert.getSlaves().size());
+        assertEquals(input.getSlaves().get(0), insert.getSlaves().get(0).toInput().build());
+        assertEquals(input.getSlaves().get(1), insert.getSlaves().get(1).toInput().build());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getCode, "test")));
-    }
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(Database.class).like(Database::getCode, "test%"), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(1, findBy.size());
 
-    /**
-     * @see DatabaseProvider#update
-     */
-    @Test
-    public void case8() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
+        var fetched = Listx.getFirstOrNull(findBy);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(insert.getEnabled(), fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getMaster(), fetched.getMaster());
+        assertEquals(insert.getSlaves().size(), fetched.getSlaves().size());
+        assertEquals(insert.getSlaves().get(0), fetched.getSlaves().get(0));
+        assertEquals(insert.getSlaves().get(1), fetched.getSlaves().get(1));
 
-        var database = this.provider.findById(databaseEntity.getId(), "master");
-        assertNotNull(database);
+        // test updateBatch
+        this.provider.updateBatch(List.of(insert.toInput().code("test2").enabled(Boolean.FALSE).build()), "syssa", tenant.getCode());
 
-        var input = database.toInput()
-                .code("example")
-                .build();
+        // test pageBy
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Database.class).like(Database::getCode, "test%"), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(1, pageBy.getPager().getItemCount());
+        assertEquals(1, pageBy.getData().size());
 
-        database = this.provider.update(input, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(database);
+        fetched = Listx.getFirstOrNull(pageBy.getData());
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getApplicationId(), fetched.getApplicationId());
+        assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getType(), fetched.getType());
+        assertEquals(Boolean.FALSE, fetched.getEnabled());
+        assertEquals(insert.getRemark(), fetched.getRemark());
+        assertEquals(insert.getMaster(), fetched.getMaster());
+        assertEquals(insert.getSlaves().size(), fetched.getSlaves().size());
+        assertEquals(insert.getSlaves().get(0), fetched.getSlaves().get(0));
+        assertEquals(insert.getSlaves().get(1), fetched.getSlaves().get(1));
 
-        assertTrue(this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getCode, "example")));
-    }
+        // test deleteByIds
+        var count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
 
-    /**
-     * @see DatabaseProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
-
-        var database = this.provider.findById(databaseEntity.getId(), "master");
-        assertNotNull(database);
-
-        var input = database.toInput()
-                .code("example")
-                .build();
-
-        var databases = this.provider.updateBatch(List.of(input), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(databases);
-
-        assertTrue(this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getCode, "example")));
-    }
-
-    /**
-     * @see DatabaseProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
-
-        var deleted = this.provider.deleteByIds(List.of(databaseEntity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getId, databaseEntity.getId())));
-    }
-
-    /**
-     * @see DatabaseProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-        var databaseEntity = new DatabaseEntity();
-        databaseEntity.setApplicationId(applicationEntity.getId());
-        databaseEntity.setCode("test");
-        databaseEntity.setName("测试数据库");
-        databaseEntity.setType("mysql");
-        databaseEntity.setEnabled(Boolean.TRUE);
-        databaseEntity.setRemark("测试");
-        databaseEntity.setMasterJson(Jsonx.Default().serialize(new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider", "centralx", "central.x")));
-        databaseEntity.setSlavesJson(Jsonx.Default().serialize(List.of(
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave1", "centralx", "central.x"),
-                new DatabaseProperties("org.h2.Driver", "jdbc:h2:mem:central-provider-slave2", "centralx", "central.x")
-        )));
-        databaseEntity.setParams(Jsonx.Default().serialize(Map.of(
-                "master", Map.of(
-                        "name", "central-provider",
-                        "memoryMode", "1",
-                        "username", "centralx",
-                        "password", "central.x"
-                ),
-                "slaves", List.of(
-                        Map.of(
-                                "name", "central-provider-slave1",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        ),
-                        Map.of(
-                                "name", "central-provider-slave2",
-                                "memoryMode", "1",
-                                "username", "centralx",
-                                "password", "central.x"
-                        )
-                )
-        )));
-        databaseEntity.setTenantCode("master");
-        databaseEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(databaseEntity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(Database.class).eq(Database::getCode, "test"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getId, databaseEntity.getId())));
+        count = this.persistence.countBy(Conditions.of(DatabaseEntity.class).like(DatabaseEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 }

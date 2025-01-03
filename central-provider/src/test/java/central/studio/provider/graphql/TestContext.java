@@ -79,13 +79,13 @@ public class TestContext implements InitializingBean, DisposableBean {
         // 为 SaaS 应用新增测试数据库
         var database = databasePersistence.insert(DatabaseInput.builder()
                 .applicationId(saas.getId())
-                .code("test")
+                .code("unittest")
                 .name("测试数据源")
                 .type(DatabaseType.H2.getValue())
                 .enabled(Boolean.TRUE)
                 .remark("测试数据源，用后即删")
                 .master(DatabasePropertiesInput.builder()
-                        .driver("")
+                        .driver("org.h2.Driver")
                         .url("jdbc:h2:mem:test")
                         .username("test")
                         .password("test")
@@ -95,7 +95,7 @@ public class TestContext implements InitializingBean, DisposableBean {
                 .build(), "syssa", "master");
 
         var tenant = tenantPersistence.insert(TenantInput.builder()
-                .code("test")
+                .code("unittest")
                 .name("测试租户")
                 .databaseId(database.getId())
                 .enabled(Boolean.TRUE)
@@ -103,7 +103,7 @@ public class TestContext implements InitializingBean, DisposableBean {
                 .build(), "syssa");
 
         var application = applicationPersistence.insert(ApplicationInput.builder()
-                .code("test")
+                .code("unittest")
                 .name("测试应用")
                 .logo("1234")
                 .url("http://127.0.0.1:3100")

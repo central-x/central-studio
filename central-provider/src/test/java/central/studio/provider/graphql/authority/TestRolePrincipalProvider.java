@@ -312,6 +312,7 @@ public class TestRolePrincipalProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getApplicationId(), fetched.getApplicationId());
         assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
         assertEquals(insert.getRoleId(), fetched.getRoleId());
@@ -327,6 +328,7 @@ public class TestRolePrincipalProvider {
 
         fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getApplicationId(), fetched.getApplicationId());
         assertEquals(insert.getApplicationId(), fetched.getApplication().getId());
         assertEquals(insert.getRoleId(), fetched.getRoleId());

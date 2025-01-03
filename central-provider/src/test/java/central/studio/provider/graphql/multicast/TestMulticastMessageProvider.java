@@ -143,8 +143,8 @@ public class TestMulticastMessageProvider {
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
         assertEquals(insert.getId(), findById.getId());
-        assertNotNull(findById.getId());
         assertEquals(insert.getBroadcasterId(), findById.getBroadcasterId());
         assertEquals(insert.getBroadcasterId(), findById.getBroadcaster().getId());
         assertEquals(insert.getBody(), findById.getBody());
@@ -152,7 +152,7 @@ public class TestMulticastMessageProvider {
         assertEquals(insert.getStatus(), findById.getStatus());
 
         // test countBy
-        var count = this.provider.countBy(Conditions.of(MulticastMessage.class).like(MulticastMessage::getBroadcasterId, broadcaster.getId()), tenant.getCode());
+        var count = this.provider.countBy(Conditions.of(MulticastMessage.class).eq(MulticastMessage::getBroadcasterId, broadcaster.getId()), tenant.getCode());
         assertEquals(1, count);
 
         // test update
@@ -176,7 +176,7 @@ public class TestMulticastMessageProvider {
         count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(MulticastMessageEntity.class).like(MulticastMessageEntity::getBroadcasterId, broadcaster.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(MulticastMessageEntity.class).eq(MulticastMessageEntity::getBroadcasterId, broadcaster.getId()), tenant.getCode());
         assertEquals(0, count);
     }
 
@@ -215,7 +215,7 @@ public class TestMulticastMessageProvider {
                 .status(MessageStatus.STAGED.getValue())
                 .build();
 
-        // test insert
+        // test insertBatch
         var insertBatch = this.provider.insertBatch(List.of(input), "syssa", tenant.getCode());
         assertNotNull(insertBatch);
         assertEquals(1, insertBatch.size());
@@ -230,12 +230,13 @@ public class TestMulticastMessageProvider {
         assertEquals(input.getStatus(), insert.getStatus());
 
         // test findBy
-        var findBy = this.provider.findBy(null, null, Conditions.of(MulticastMessage.class).like(MulticastMessage::getBroadcasterId, broadcaster.getId()), null, tenant.getCode());
+        var findBy = this.provider.findBy(null, null, Conditions.of(MulticastMessage.class).eq(MulticastMessage::getBroadcasterId, broadcaster.getId()), null, tenant.getCode());
         assertNotNull(findBy);
         assertEquals(1, findBy.size());
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
         assertEquals(insert.getBroadcasterId(), fetched.getBroadcasterId());
         assertEquals(insert.getBroadcasterId(), fetched.getBroadcaster().getId());
         assertEquals(insert.getBody(), fetched.getBody());
@@ -246,7 +247,7 @@ public class TestMulticastMessageProvider {
         this.provider.updateBatch(List.of(insert.toInput().status(MessageStatus.SUCCEED.getValue()).build()), "syssa", tenant.getCode());
 
         // test pageBy
-        var pageBy = this.provider.pageBy(1, 10, Conditions.of(MulticastMessage.class).like(MulticastMessage::getBroadcasterId, broadcaster.getId()), null, tenant.getCode());
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(MulticastMessage.class).eq(MulticastMessage::getBroadcasterId, broadcaster.getId()), null, tenant.getCode());
         assertNotNull(pageBy);
         assertEquals(1, pageBy.getPager().getPageIndex());
         assertEquals(10, pageBy.getPager().getPageSize());
@@ -267,7 +268,7 @@ public class TestMulticastMessageProvider {
         var count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(MulticastMessageEntity.class).like(MulticastMessageEntity::getBroadcasterId, broadcaster.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(MulticastMessageEntity.class).eq(MulticastMessageEntity::getBroadcasterId, broadcaster.getId()), tenant.getCode());
         assertEquals(0, count);
     }
 }

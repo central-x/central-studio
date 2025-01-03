@@ -140,8 +140,8 @@ public class TestStorageObjectProvider {
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
         assertEquals(insert.getId(), findById.getId());
-        assertNotNull(findById.getId());
         assertEquals(input.getBucketId(), findById.getBucketId());
         assertEquals(input.getBucketId(), findById.getBucket().getId());
         assertEquals(input.getName(), findById.getName());
@@ -151,7 +151,7 @@ public class TestStorageObjectProvider {
         assertEquals(input.getConfirmed(), findById.getConfirmed());
 
         // test countBy
-        var count = this.provider.countBy(Conditions.of(StorageObject.class).like(StorageObject::getBucketId, bucket.getId()), tenant.getCode());
+        var count = this.provider.countBy(Conditions.of(StorageObject.class).eq(StorageObject::getBucketId, bucket.getId()), tenant.getCode());
         assertEquals(1, count);
 
         // test update
@@ -177,7 +177,7 @@ public class TestStorageObjectProvider {
         count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(StorageObjectEntity.class).like(StorageObjectEntity::getBucketId, bucket.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getBucketId, bucket.getId()), tenant.getCode());
         assertEquals(0, count);
     }
 
@@ -228,25 +228,26 @@ public class TestStorageObjectProvider {
         assertEquals(input.getConfirmed(), insert.getConfirmed());
 
         // test findBy
-        var findBy = this.provider.findBy(null, null, Conditions.of(StorageObject.class).like(StorageObject::getBucketId, bucket.getId()), null, tenant.getCode());
+        var findBy = this.provider.findBy(null, null, Conditions.of(StorageObject.class).eq(StorageObject::getBucketId, bucket.getId()), null, tenant.getCode());
         assertNotNull(findBy);
         assertEquals(1, findBy.size());
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
-        assertEquals(input.getBucketId(), fetched.getBucketId());
-        assertEquals(input.getBucketId(), fetched.getBucket().getId());
-        assertEquals(input.getName(), fetched.getName());
-        assertEquals(input.getSize(), fetched.getSize());
-        assertEquals(input.getDigest(), fetched.getDigest());
-        assertEquals(input.getKey(), fetched.getKey());
-        assertEquals(input.getConfirmed(), fetched.getConfirmed());
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getBucketId(), fetched.getBucketId());
+        assertEquals(insert.getBucketId(), fetched.getBucket().getId());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getSize(), fetched.getSize());
+        assertEquals(insert.getDigest(), fetched.getDigest());
+        assertEquals(insert.getKey(), fetched.getKey());
+        assertEquals(insert.getConfirmed(), fetched.getConfirmed());
 
         // test updateBatch
         this.provider.updateBatch(List.of(insert.toInput().confirmed(Boolean.TRUE).build()), "syssa", tenant.getCode());
 
         // test pageBy
-        var pageBy = this.provider.pageBy(1, 10, Conditions.of(StorageObject.class).like(StorageObject::getBucketId, bucket.getId()), null, tenant.getCode());
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(StorageObject.class).eq(StorageObject::getBucketId, bucket.getId()), null, tenant.getCode());
         assertNotNull(pageBy);
         assertEquals(1, pageBy.getPager().getPageIndex());
         assertEquals(10, pageBy.getPager().getPageSize());
@@ -257,19 +258,19 @@ public class TestStorageObjectProvider {
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
         assertEquals(insert.getId(), fetched.getId());
-        assertEquals(input.getBucketId(), fetched.getBucketId());
-        assertEquals(input.getBucketId(), fetched.getBucket().getId());
-        assertEquals(input.getName(), fetched.getName());
-        assertEquals(input.getSize(), fetched.getSize());
-        assertEquals(input.getDigest(), fetched.getDigest());
-        assertEquals(input.getKey(), fetched.getKey());
+        assertEquals(insert.getBucketId(), fetched.getBucketId());
+        assertEquals(insert.getBucketId(), fetched.getBucket().getId());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getSize(), fetched.getSize());
+        assertEquals(insert.getDigest(), fetched.getDigest());
+        assertEquals(insert.getKey(), fetched.getKey());
         assertEquals(Boolean.TRUE, fetched.getConfirmed());
 
         // test deleteBy
-        var count = this.provider.deleteBy(Conditions.of(StorageObject.class).like(StorageObject::getBucketId, bucket.getId()), tenant.getCode());
+        var count = this.provider.deleteBy(Conditions.of(StorageObject.class).eq(StorageObject::getBucketId, bucket.getId()), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(StorageObjectEntity.class).like(StorageObjectEntity::getBucketId, bucket.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(StorageObjectEntity.class).eq(StorageObjectEntity::getBucketId, bucket.getId()), tenant.getCode());
         assertEquals(0, count);
     }
 }
