@@ -47,6 +47,14 @@ public class AreaDTO extends AreaEntity implements DTO {
     private static final long serialVersionUID = -8371269671790663860L;
 
     /**
+     * 父节点信息
+     */
+    @GraphQLGetter
+    public CompletableFuture<AreaDTO> getParent(DataLoader<String, AreaDTO> loader) {
+        return loader.load(this.getParentId());
+    }
+
+    /**
      * 创建人信息
      */
     @GraphQLGetter

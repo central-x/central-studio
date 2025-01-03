@@ -24,733 +24,293 @@
 
 package central.studio.provider.graphql.organization;
 
+import central.data.organization.AreaInput;
+import central.data.organization.DepartmentInput;
 import central.data.organization.Unit;
 import central.data.organization.UnitInput;
 import central.data.organization.option.AreaType;
 import central.provider.graphql.organization.UnitProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
+import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.ProviderProperties;
-import central.studio.provider.graphql.TestProvider;
+import central.studio.provider.database.persistence.organization.AreaPersistence;
+import central.studio.provider.database.persistence.organization.DepartmentPersistence;
+import central.studio.provider.database.persistence.organization.UnitPersistence;
 import central.studio.provider.database.persistence.organization.entity.AreaEntity;
 import central.studio.provider.database.persistence.organization.entity.DepartmentEntity;
 import central.studio.provider.database.persistence.organization.entity.UnitEntity;
-import central.studio.provider.database.persistence.organization.mapper.AreaMapper;
-import central.studio.provider.database.persistence.organization.mapper.DepartmentMapper;
-import central.studio.provider.database.persistence.organization.mapper.UnitMapper;
+import central.studio.provider.graphql.TestContext;
+import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit Provider Test Cases
- * 单位
  *
  * @author Alan Yeh
  * @since 2022/10/06
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestUnitProvider extends TestProvider {
+
     @Setter(onMethod_ = @Autowired)
     private UnitProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private ProviderProperties properties;
+    private UnitPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
-    private UnitMapper mapper;
+    private AreaPersistence areaPersistence;
 
     @Setter(onMethod_ = @Autowired)
-    private AreaMapper areaMapper;
+    private DepartmentPersistence departmentPersistence;
 
     @Setter(onMethod_ = @Autowired)
-    private DepartmentMapper departmentMapper;
+    private TestContext context;
 
+    @BeforeAll
+    public static void setup(@Autowired DataContext context) throws Exception {
+        SaasContainer container = null;
+        while (container == null || container.getApplications().isEmpty()) {
+            Thread.sleep(100);
+            container = context.getData(DataFetcherType.SAAS);
+        }
+    }
 
-    @BeforeEach
     @AfterEach
     public void clear() {
         // 清空数据
-        areaMapper.deleteAll();
-        mapper.deleteAll();
-        departmentMapper.deleteAll();
-    }
-
-    /**
-     * @see UnitProvider#findById
-     */
-    @Test
-    public void case1() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
-
-        var childEntity = new UnitEntity();
-        childEntity.setParentId(unitEntity.getId());
-        childEntity.setAreaId(areaEntity.getId());
-        childEntity.setCode("10002");
-        childEntity.setName("测试子单位");
-        childEntity.setOrder(0);
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        var departmentEntity = new DepartmentEntity();
-        departmentEntity.setUnitId(unitEntity.getId());
-        departmentEntity.setParentId("");
-        departmentEntity.setCode("20000");
-        departmentEntity.setName("测试部门");
-        departmentEntity.setOrder(0);
-        departmentEntity.setTenantCode("master");
-        departmentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.departmentMapper.insert(departmentEntity);
-
-        // 查询数据
-        var unit = this.provider.findById(unitEntity.getId(), "master");
-        assertNotNull(unit);
-        assertEquals(unitEntity.getId(), unit.getId());
-        // 关联查询
-        assertNotNull(unit.getArea());
-        assertEquals(areaEntity.getId(), unit.getArea().getId());
-        // 关联查询
-        assertNotNull(unit.getParent());
-        assertEquals(parentEntity.getId(), unit.getParent().getId());
-        // 关联查询
-        assertNotNull(unit.getChildren());
-        assertEquals(1, unit.getChildren().size());
-        assertTrue(unit.getChildren().stream().anyMatch(it -> Objects.equals(childEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(unit.getDepartments());
-        assertEquals(1, unit.getDepartments().size());
-        assertTrue(unit.getDepartments().stream().anyMatch(it -> Objects.equals(departmentEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(unit.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), unit.getCreator().getId());
-        assertNotNull(unit.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), unit.getModifier().getId());
-    }
-
-    /**
-     * @see UnitProvider#findByIds
-     */
-    @Test
-    public void case2() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
-
-        var childEntity = new UnitEntity();
-        childEntity.setParentId(unitEntity.getId());
-        childEntity.setAreaId(areaEntity.getId());
-        childEntity.setCode("10002");
-        childEntity.setName("测试子单位");
-        childEntity.setOrder(0);
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        var departmentEntity = new DepartmentEntity();
-        departmentEntity.setUnitId(unitEntity.getId());
-        departmentEntity.setParentId("");
-        departmentEntity.setCode("20000");
-        departmentEntity.setName("测试部门");
-        departmentEntity.setOrder(0);
-        departmentEntity.setTenantCode("master");
-        departmentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.departmentMapper.insert(departmentEntity);
-
-        // 查询数据
-        var units = this.provider.findByIds(List.of(unitEntity.getId()), "master");
-        assertNotNull(units);
-        assertEquals(1, units.size());
-
-        var unit = Listx.getFirstOrNull(units);
-        assertNotNull(unit);
-        assertEquals(unitEntity.getId(), unit.getId());
-        // 关联查询
-        assertNotNull(unit.getArea());
-        assertEquals(areaEntity.getId(), unit.getArea().getId());
-        // 关联查询
-        assertNotNull(unit.getParent());
-        assertEquals(parentEntity.getId(), unit.getParent().getId());
-        // 关联查询
-        assertNotNull(unit.getChildren());
-        assertEquals(1, unit.getChildren().size());
-        assertTrue(unit.getChildren().stream().anyMatch(it -> Objects.equals(childEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(unit.getDepartments());
-        assertEquals(1, unit.getDepartments().size());
-        assertTrue(unit.getDepartments().stream().anyMatch(it -> Objects.equals(departmentEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(unit.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), unit.getCreator().getId());
-        assertNotNull(unit.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), unit.getModifier().getId());
-    }
-
-    /**
-     * @see UnitProvider#findBy
-     */
-    @Test
-    public void case3() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
-
-        var childEntity = new UnitEntity();
-        childEntity.setParentId(unitEntity.getId());
-        childEntity.setAreaId(areaEntity.getId());
-        childEntity.setCode("10002");
-        childEntity.setName("测试子单位");
-        childEntity.setOrder(0);
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        var departmentEntity = new DepartmentEntity();
-        departmentEntity.setUnitId(unitEntity.getId());
-        departmentEntity.setParentId("");
-        departmentEntity.setCode("20000");
-        departmentEntity.setName("测试部门");
-        departmentEntity.setOrder(0);
-        departmentEntity.setTenantCode("master");
-        departmentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.departmentMapper.insert(departmentEntity);
-
-        // 查询数据
-        var units = this.provider.findBy(null, null, Conditions.of(Unit.class).eq(Unit::getCode, "10001"), null, "master");
-        assertNotNull(units);
-        assertEquals(1, units.size());
-
-        var unit = Listx.getFirstOrNull(units);
-        assertNotNull(unit);
-        assertEquals(unitEntity.getId(), unit.getId());
-        // 关联查询
-        assertNotNull(unit.getArea());
-        assertEquals(areaEntity.getId(), unit.getArea().getId());
-        // 关联查询
-        assertNotNull(unit.getParent());
-        assertEquals(parentEntity.getId(), unit.getParent().getId());
-        // 关联查询
-        assertNotNull(unit.getChildren());
-        assertEquals(1, unit.getChildren().size());
-        assertTrue(unit.getChildren().stream().anyMatch(it -> Objects.equals(childEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(unit.getDepartments());
-        assertEquals(1, unit.getDepartments().size());
-        assertTrue(unit.getDepartments().stream().anyMatch(it -> Objects.equals(departmentEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(unit.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), unit.getCreator().getId());
-        assertNotNull(unit.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), unit.getModifier().getId());
-    }
-
-    /**
-     * @see UnitProvider#pageBy
-     */
-    @Test
-    public void case4() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
-
-        var childEntity = new UnitEntity();
-        childEntity.setParentId(unitEntity.getId());
-        childEntity.setAreaId(areaEntity.getId());
-        childEntity.setCode("10002");
-        childEntity.setName("测试子单位");
-        childEntity.setOrder(0);
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        var departmentEntity = new DepartmentEntity();
-        departmentEntity.setUnitId(unitEntity.getId());
-        departmentEntity.setParentId("");
-        departmentEntity.setCode("20000");
-        departmentEntity.setName("测试部门");
-        departmentEntity.setOrder(0);
-        departmentEntity.setTenantCode("master");
-        departmentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.departmentMapper.insert(departmentEntity);
-
-        // 查询数据
-        var page = this.provider.pageBy(1L, 20L, Conditions.of(Unit.class).eq(Unit::getCode, "10001"), null, "master");
-        assertNotNull(page);
-        assertNotNull(page.getPager());
-        assertEquals(1L, page.getPager().getPageIndex());
-        assertEquals(20L, page.getPager().getPageSize());
-        assertEquals(1L, page.getPager().getPageCount());
-        assertEquals(1L, page.getPager().getItemCount());
-        assertNotNull(page.getData());
-
-        var unit = Listx.getFirstOrNull(page.getData());
-        assertNotNull(unit);
-        assertEquals(unitEntity.getId(), unit.getId());
-        // 关联查询
-        assertNotNull(unit.getArea());
-        assertEquals(areaEntity.getId(), unit.getArea().getId());
-        // 关联查询
-        assertNotNull(unit.getParent());
-        assertEquals(parentEntity.getId(), unit.getParent().getId());
-        // 关联查询
-        assertNotNull(unit.getChildren());
-        assertEquals(1, unit.getChildren().size());
-        assertTrue(unit.getChildren().stream().anyMatch(it -> Objects.equals(childEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(unit.getDepartments());
-        assertEquals(1, unit.getDepartments().size());
-        assertTrue(unit.getDepartments().stream().anyMatch(it -> Objects.equals(departmentEntity.getId(), it.getId())));
-        // 关联查询
-        assertNotNull(unit.getCreator());
-        assertEquals(properties.getSupervisor().getUsername(), unit.getCreator().getId());
-        assertNotNull(unit.getModifier());
-        assertEquals(properties.getSupervisor().getUsername(), unit.getModifier().getId());
-    }
-
-    /**
-     * @see UnitProvider#countBy
-     */
-    @Test
-    public void case5() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
-
-        var childEntity = new UnitEntity();
-        childEntity.setParentId(unitEntity.getId());
-        childEntity.setAreaId(areaEntity.getId());
-        childEntity.setCode("10002");
-        childEntity.setName("测试子单位");
-        childEntity.setOrder(0);
-        childEntity.setTenantCode("master");
-        childEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(childEntity);
-
-        var departmentEntity = new DepartmentEntity();
-        departmentEntity.setUnitId(unitEntity.getId());
-        departmentEntity.setParentId("");
-        departmentEntity.setCode("20000");
-        departmentEntity.setName("测试部门");
-        departmentEntity.setOrder(0);
-        departmentEntity.setTenantCode("master");
-        departmentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.departmentMapper.insert(departmentEntity);
-
-        // 查询数据
-        var count = this.provider.countBy(Conditions.of(Unit.class).eq(Unit::getCode, "10001"), "master");
-        assertNotNull(count);
-        assertEquals(1, count);
+        var tenant = this.context.getTenant();
+        this.departmentPersistence.deleteBy(Conditions.of(DepartmentEntity.class).like(DepartmentEntity::getCode, "test%"), tenant.getCode());
+        this.persistence.deleteBy(Conditions.of(UnitEntity.class).like(UnitEntity::getCode, "test%"), tenant.getCode());
+        this.areaPersistence.deleteBy(Conditions.of(AreaEntity.class).like(AreaEntity::getCode, "test%"), tenant.getCode());
     }
 
     /**
      * @see UnitProvider#insert
+     * @see UnitProvider#findById
+     * @see UnitProvider#update
+     * @see UnitProvider#findByIds
+     * @see UnitProvider#countBy
+     * @see UnitProvider#deleteByIds
      */
     @Test
-    public void case6() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
+    public void case1() {
+        var tenant = this.context.getTenant();
 
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
+        var area = this.areaPersistence.insert(AreaInput.builder()
+                .parentId("")
+                .code("test")
+                .name("测试")
+                .type(AreaType.COUNTRY.getValue())
+                .order(0)
+                .build(), "syssa", tenant.getCode());
 
-        var unitInput = UnitInput.builder()
-                .parentId(parentEntity.getId())
-                .areaId(areaEntity.getId())
-                .code("10001")
+        var input = UnitInput.builder()
+                .parentId("")
+                .areaId(area.getId())
+                .code("test")
                 .name("测试单位")
                 .order(0)
                 .build();
-        var unit = this.provider.insert(unitInput, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(unit);
-        assertNotNull(unit.getId());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getCode, "10001")));
+        // test insert
+        var insert = this.provider.insert(input, "syssa", tenant.getCode());
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getParentId(), insert.getParentId());
+        assertEquals(input.getAreaId(), insert.getAreaId());
+        assertNotNull(insert.getArea());
+        assertEquals(input.getAreaId(), insert.getArea().getId());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getOrder(), insert.getOrder());
+
+        var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
+        assertNotNull(entity);
+
+        // test findById
+        var findById = this.provider.findById(insert.getId(), tenant.getCode());
+        assertNotNull(findById);
+        assertEquals(insert.getId(), findById.getId());
+        assertEquals(insert.getParentId(), findById.getParentId());
+        assertEquals(insert.getAreaId(), findById.getAreaId());
+        assertNotNull(findById.getArea());
+        assertEquals(insert.getAreaId(), findById.getArea().getId());
+        assertEquals(insert.getCode(), findById.getCode());
+        assertEquals(insert.getName(), findById.getName());
+        assertEquals(insert.getOrder(), findById.getOrder());
+
+        // test countBy
+        var count = this.provider.countBy(Conditions.of(Unit.class).like(Unit::getCode, "test%"), tenant.getCode());
+        assertEquals(1, count);
+
+        // insert department
+        var department = this.departmentPersistence.insert(DepartmentInput.builder()
+                .unitId(insert.getId())
+                .parentId("")
+                .code("test")
+                .name("测试部门")
+                .order(0)
+                .build(), "syssa", tenant.getCode());
+
+        // test update
+        this.provider.update(insert.toInput().code("test2").order(1).build(), "syssa", tenant.getCode());
+
+        // test findByIds
+        var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
+        assertNotNull(findByIds);
+        assertEquals(1, findByIds.size());
+
+        var fetched = Listx.getFirstOrNull(findByIds);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getParentId(), fetched.getParentId());
+        assertEquals(insert.getAreaId(), fetched.getAreaId());
+        assertNotNull(fetched.getArea());
+        assertEquals(insert.getAreaId(), fetched.getArea().getId());
+        assertEquals("test2", fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(1, fetched.getOrder());
+        assertNotEquals(fetched.getCreateDate(), fetched.getModifyDate()); // 修改日期不同
+        assertNotNull(fetched.getDepartments()); // 关联查询子部门
+        assertEquals(1, fetched.getDepartments().size());
+        assertTrue(fetched.getDepartments().stream().anyMatch(it -> department.getId().equals(it.getId())));
+
+        // test deleteByIds
+        count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
+        assertEquals(1, count);
+
+        count = this.persistence.countBy(Conditions.of(UnitEntity.class).like(UnitEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 
     /**
      * @see UnitProvider#insertBatch
+     * @see UnitProvider#findBy
+     * @see UnitProvider#updateBatch
+     * @see UnitProvider#pageBy
+     * @see UnitProvider#deleteBy
      */
     @Test
-    public void case7() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
+    public void case2() {
+        var tenant = this.context.getTenant();
 
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
+        var area = this.areaPersistence.insert(AreaInput.builder()
+                .parentId("")
+                .code("test")
+                .name("测试")
+                .type(AreaType.COUNTRY.getValue())
+                .order(0)
+                .build(), "syssa", tenant.getCode());
 
-        var unitInput = UnitInput.builder()
-                .parentId(parentEntity.getId())
-                .areaId(areaEntity.getId())
-                .code("10001")
+        var input_parent = UnitInput.builder()
+                .parentId("")
+                .areaId(area.getId())
+                .code("test_parent")
+                .name("测试父单位")
+                .order(0)
+                .build();
+
+        var input = UnitInput.builder()
+                .parentId("")
+                .areaId(area.getId())
+                .code("test")
                 .name("测试单位")
                 .order(0)
                 .build();
 
-        var units = this.provider.insertBatch(List.of(unitInput), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(units);
-        assertEquals(1, units.size());
+        // test insertBatch
+        var insertBatch = this.provider.insertBatch(List.of(input_parent, input), "syssa", tenant.getCode());
+        assertNotNull(insertBatch);
+        assertEquals(2, insertBatch.size());
 
-        var unit = Listx.getFirstOrNull(units);
-        assertNotNull(unit);
-        assertNotNull(unit.getId());
+        var insert_parent = insertBatch.stream().filter(it -> "test_parent".equals(it.getCode())).findFirst().orElse(null);
+        assertNotNull(insert_parent);
+        assertNotNull(insert_parent.getId());
+        assertEquals(input_parent.getParentId(), insert_parent.getParentId());
+        assertNull(insert_parent.getParent());
+        assertEquals(input_parent.getCode(), insert_parent.getCode());
+        assertEquals(input_parent.getName(), insert_parent.getName());
+        assertEquals(input_parent.getOrder(), insert_parent.getOrder());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getCode, "10001")));
-    }
+        var insert = insertBatch.stream().filter(it -> "test".equals(it.getCode())).findFirst().orElse(null);
+        assertNotNull(insert);
+        assertNotNull(insert.getId());
+        assertEquals(input.getParentId(), insert.getParentId());
+        assertNull(insert.getParent());
+        assertEquals(input.getCode(), insert.getCode());
+        assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getOrder(), insert.getOrder());
 
-    /**
-     * @see UnitProvider#update
-     */
-    @Test
-    public void case8() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
+        // test findBy
+        var findBy = this.provider.findBy(null, null, Conditions.of(Unit.class).like(Unit::getCode, "test%"), null, tenant.getCode());
+        assertNotNull(findBy);
+        assertEquals(2, findBy.size());
 
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
+        var fetched_parent = findBy.stream().filter(it -> "test_parent".equals(it.getCode())).findFirst().orElse(null);
+        assertNotNull(fetched_parent);
+        assertEquals(insert_parent.getId(), fetched_parent.getId());
+        assertEquals(insert_parent.getParentId(), fetched_parent.getParentId());
+        assertEquals(insert_parent.getCode(), fetched_parent.getCode());
+        assertEquals(insert_parent.getName(), fetched_parent.getName());
+        assertEquals(insert_parent.getOrder(), fetched_parent.getOrder());
 
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
+        var fetched = findBy.stream().filter(it -> "test".equals(it.getCode())).findFirst().orElse(null);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert.getParentId(), fetched.getParentId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(insert.getOrder(), fetched.getOrder());
 
-        var unit = this.provider.findById(unitEntity.getId(), "master");
-        assertNotNull(unit);
-        assertNotNull(unit.getId());
+        // test updateBatch
+        this.provider.updateBatch(List.of(insert.toInput().parentId(insert_parent.getId()).order(1).build()), "syssa", tenant.getCode());
 
-        var unitInput = unit.toInput()
-                .code("10002")
-                .build();
+        // test pageBy
+        var pageBy = this.provider.pageBy(1L, 10L, Conditions.of(Unit.class).like(Unit::getCode, "test%"), null, tenant.getCode());
+        assertNotNull(pageBy);
+        assertEquals(1, pageBy.getPager().getPageIndex());
+        assertEquals(10, pageBy.getPager().getPageSize());
+        assertEquals(1, pageBy.getPager().getPageCount());
+        assertEquals(2, pageBy.getPager().getItemCount());
+        assertEquals(2, pageBy.getData().size());
 
-        unit = this.provider.update(unitInput, properties.getSupervisor().getUsername(), "master");
-        assertNotNull(unit);
-        assertNotEquals(unit.getCreateDate(), unit.getModifyDate());
+        fetched_parent = pageBy.getData().stream().filter(it -> "test_parent".equals(it.getCode())).findFirst().orElse(null);
+        assertNotNull(fetched_parent);
+        assertEquals(insert_parent.getId(), fetched_parent.getId());
+        assertEquals(insert_parent.getParentId(), fetched_parent.getParentId());
+        assertEquals(insert_parent.getCode(), fetched_parent.getCode());
+        assertEquals(insert_parent.getName(), fetched_parent.getName());
+        assertEquals(insert_parent.getOrder(), fetched_parent.getOrder());
 
-        assertTrue(this.mapper.existsBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getCode, "10002")));
-    }
+        fetched = pageBy.getData().stream().filter(it -> "test".equals(it.getCode())).findFirst().orElse(null);
+        assertNotNull(fetched);
+        assertEquals(insert.getId(), fetched.getId());
+        assertEquals(insert_parent.getId(), fetched.getParentId());
+        assertNotNull(fetched.getParent());
+        assertEquals(insert_parent.getId(), fetched.getParent().getId());
+        assertEquals(insert.getCode(), fetched.getCode());
+        assertEquals(insert.getName(), fetched.getName());
+        assertEquals(1, fetched.getOrder());
 
-    /**
-     * @see UnitProvider#updateBatch
-     */
-    @Test
-    public void case9() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
+        // test deleteBy
+        var count = this.provider.deleteBy(Conditions.of(Unit.class).like(Unit::getCode, "test%"), tenant.getCode());
+        assertEquals(2, count);
 
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
-
-        var unit = this.provider.findById(unitEntity.getId(), "master");
-        assertNotNull(unit);
-        assertNotNull(unit.getId());
-
-        var unitInput = unit.toInput()
-                .code("10002")
-                .build();
-
-        var units = this.provider.updateBatch(List.of(unitInput), properties.getSupervisor().getUsername(), "master");
-        assertNotNull(units);
-        assertEquals(1, units.size());
-
-        unit = Listx.getFirstOrNull(units);
-        assertNotNull(unit);
-        assertNotEquals(unit.getCreateDate(), unit.getModifyDate());
-
-        assertTrue(this.mapper.existsBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getCode, "10002")));
-    }
-
-    /**
-     * @see UnitProvider#deleteByIds
-     */
-    @Test
-    public void case10() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
-
-        var deleted = this.provider.deleteByIds(List.of(unitEntity.getId()), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getId, unitEntity.getId())));
-    }
-
-    /**
-     * @see UnitProvider#deleteBy(Conditions)
-     */
-    @Test
-    public void case11() {
-        var areaEntity = new AreaEntity();
-        areaEntity.setParentId("");
-        areaEntity.setCode("86");
-        areaEntity.setName("中国");
-        areaEntity.setType(AreaType.COUNTRY.getValue());
-        areaEntity.setOrder(0);
-        areaEntity.setTenantCode("master");
-        areaEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.areaMapper.insert(areaEntity);
-
-        var parentEntity = new UnitEntity();
-        parentEntity.setParentId("");
-        parentEntity.setAreaId(areaEntity.getId());
-        parentEntity.setCode("10000");
-        parentEntity.setName("测试父单位");
-        parentEntity.setOrder(0);
-        parentEntity.setTenantCode("master");
-        parentEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(parentEntity);
-
-        var unitEntity = new UnitEntity();
-        unitEntity.setParentId(parentEntity.getId());
-        unitEntity.setAreaId(areaEntity.getId());
-        unitEntity.setCode("10001");
-        unitEntity.setName("测试单位");
-        unitEntity.setOrder(0);
-        unitEntity.setTenantCode("master");
-        unitEntity.updateCreator(properties.getSupervisor().getUsername());
-        this.mapper.insert(unitEntity);
-
-        var deleted = this.provider.deleteBy(Conditions.of(Unit.class).eq(Unit::getCode, "10001"), "master");
-        assertNotNull(deleted);
-        assertEquals(1L, deleted);
-
-        assertFalse(this.mapper.existsBy(Conditions.of(UnitEntity.class).eq(UnitEntity::getId, unitEntity.getId())));
+        count = this.persistence.countBy(Conditions.of(UnitEntity.class).like(UnitEntity::getCode, "test%"), tenant.getCode());
+        assertEquals(0, count);
     }
 }
