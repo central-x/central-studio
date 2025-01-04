@@ -181,7 +181,7 @@ public class TestRoleProvider extends TestProvider {
         assertEquals(insert.getRemark(), findById.getRemark());
 
         // test countBy
-        var count = this.provider.countBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), tenant.getCode());
+        var count = this.provider.countBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()).like(Role::getCode, "test%"), tenant.getCode());
         assertEquals(1, count);
 
         // test update
@@ -208,7 +208,7 @@ public class TestRoleProvider extends TestProvider {
         count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()).like(RoleEntity::getCode, "test%"), tenant.getCode());
         assertEquals(0, count);
     }
 
@@ -255,7 +255,7 @@ public class TestRoleProvider extends TestProvider {
         assertNotNull(entity);
 
         // test findBy
-        var findBy = this.provider.findBy(null, null, Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), null, tenant.getCode());
+        var findBy = this.provider.findBy(null, null, Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()).like(Role::getCode, "test%"), null, tenant.getCode());
         assertNotNull(findBy);
         assertEquals(1, findBy.size());
 
@@ -275,7 +275,7 @@ public class TestRoleProvider extends TestProvider {
         this.provider.updateBatch(List.of(fetched.toInput().code("test2").enabled(Boolean.FALSE).build()), "syssa", tenant.getCode());
 
         // test pageBy
-        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), null, tenant.getCode());
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()).like(Role::getCode, "test%"), null, tenant.getCode());
         assertNotNull(pageBy);
         assertEquals(1, pageBy.getPager().getPageIndex());
         assertEquals(10, pageBy.getPager().getPageSize());
@@ -296,10 +296,10 @@ public class TestRoleProvider extends TestProvider {
         assertEquals(insert.getRemark(), fetched.getRemark());
 
         // test deleteBy
-        var count = this.provider.deleteBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()), tenant.getCode());
+        var count = this.provider.deleteBy(Conditions.of(Role.class).eq(Role::getApplicationId, application.getId()).like(Role::getCode, "test%"), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(RoleEntity.class).eq(RoleEntity::getApplicationId, application.getId()).like(RoleEntity::getCode, "test%"), tenant.getCode());
         assertEquals(0, count);
     }
 }

@@ -123,8 +123,8 @@ public class TestPermissionProvider extends TestProvider {
         var input = PermissionInput.builder()
                 .applicationId(application.getId())
                 .menuId(menu.getId())
-                .code("add")
-                .name("添加")
+                .code("test")
+                .name("测试权限")
                 .build();
 
         // test insert
@@ -156,11 +156,11 @@ public class TestPermissionProvider extends TestProvider {
         assertEquals(insert.getModifierId(), findById.getModifierId());
 
         // test countBy
-        var count = this.provider.countBy(Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), tenant.getCode());
+        var count = this.provider.countBy(Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()).like(Permission::getCode, "test%"), tenant.getCode());
         assertEquals(1, count);
 
         // test update
-        this.provider.update(insert.toInput().code("add2").name("添加2").build(), "syssa", tenant.getCode());
+        this.provider.update(insert.toInput().code("test2").name("测试权限2").build(), "syssa", tenant.getCode());
 
         // test findByIds
         var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
@@ -174,8 +174,8 @@ public class TestPermissionProvider extends TestProvider {
         assertEquals(insert.getApplication().getId(), fetched.getApplication().getId());
         assertEquals(insert.getMenuId(), fetched.getMenuId());
         assertEquals(insert.getMenu().getId(), fetched.getMenu().getId());
-        assertEquals("add2", fetched.getCode());
-        assertEquals("添加2", fetched.getName());
+        assertEquals("test2", fetched.getCode());
+        assertEquals("测试权限2", fetched.getName());
         assertEquals(insert.getCreatorId(), fetched.getCreatorId());
         assertEquals(insert.getModifierId(), fetched.getModifierId());
         assertNotEquals(fetched.getCreateDate(), fetched.getModifyDate()); // 修改日期不同
@@ -184,7 +184,7 @@ public class TestPermissionProvider extends TestProvider {
         count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getApplicationId, application.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getApplicationId, application.getId()).like(PermissionEntity::getCode, "test%"), tenant.getCode());
         assertEquals(0, count);
     }
 
@@ -216,8 +216,8 @@ public class TestPermissionProvider extends TestProvider {
         var input = PermissionInput.builder()
                 .applicationId(application.getId())
                 .menuId(menu.getId())
-                .code("add")
-                .name("添加")
+                .code("test")
+                .name("测试权限")
                 .build();
 
         // test insertBatch
@@ -240,7 +240,7 @@ public class TestPermissionProvider extends TestProvider {
         assertNotNull(entity);
 
         // test findBy
-        var findBy = this.provider.findBy(null, null, Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), null, tenant.getCode());
+        var findBy = this.provider.findBy(null, null, Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()).like(Permission::getCode, "test%"), null, tenant.getCode());
         assertNotNull(findBy);
         assertEquals(1, findBy.size());
 
@@ -257,10 +257,10 @@ public class TestPermissionProvider extends TestProvider {
         assertEquals(insert.getModifierId(), fetched.getModifierId());
 
         // test updateBatch
-        this.provider.updateBatch(List.of(insert.toInput().code("add2").name("添加2").build()), "syssa", tenant.getCode());
+        this.provider.updateBatch(List.of(insert.toInput().code("test2").name("测试权限2").build()), "syssa", tenant.getCode());
 
         // test pageBy
-        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), null, tenant.getCode());
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()).like(Permission::getCode, "test%"), null, tenant.getCode());
         assertNotNull(pageBy);
         assertEquals(1, pageBy.getPager().getPageIndex());
         assertEquals(10, pageBy.getPager().getPageSize());
@@ -275,17 +275,17 @@ public class TestPermissionProvider extends TestProvider {
         assertEquals(insert.getApplication().getId(), fetched.getApplication().getId());
         assertEquals(insert.getMenuId(), fetched.getMenuId());
         assertEquals(insert.getMenu().getId(), fetched.getMenu().getId());
-        assertEquals("add2", fetched.getCode());
-        assertEquals("添加2", fetched.getName());
+        assertEquals("test2", fetched.getCode());
+        assertEquals("测试权限2", fetched.getName());
         assertEquals(insert.getCreatorId(), fetched.getCreatorId());
         assertEquals(insert.getModifierId(), fetched.getModifierId());
         assertNotEquals(fetched.getCreateDate(), fetched.getModifyDate());
 
         // test deleteBy
-        var count = this.provider.deleteBy(Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()), tenant.getCode());
+        var count = this.provider.deleteBy(Conditions.of(Permission.class).eq(Permission::getApplicationId, application.getId()).like(Permission::getCode, "test%"), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getApplicationId, application.getId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(PermissionEntity.class).eq(PermissionEntity::getApplicationId, application.getId()).like(PermissionEntity::getCode, "test%"), tenant.getCode());
         assertEquals(0, count);
     }
 }
