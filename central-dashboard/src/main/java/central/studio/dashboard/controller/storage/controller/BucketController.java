@@ -168,9 +168,10 @@ public class BucketController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("文件[id={}]不存在", params.getId()));
         }
 
-        var input = object.toInput();
-        input.setName(params.getName());
-        input.setConfirmed(params.getConfirmed());
+        var input = object.toInput()
+                .name(params.getName())
+                .confirmed(params.getConfirmed())
+                .build();
         return this.logic.updateObject(input, accountId, tenant);
     }
 
