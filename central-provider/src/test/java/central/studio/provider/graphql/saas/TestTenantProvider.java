@@ -127,6 +127,14 @@ public class TestTenantProvider extends TestProvider {
         assertEquals(input.getDatabaseId(), insert.getDatabase().getId());
         assertEquals(input.getEnabled(), insert.getEnabled());
         assertEquals(input.getRemark(), insert.getRemark());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), "master");

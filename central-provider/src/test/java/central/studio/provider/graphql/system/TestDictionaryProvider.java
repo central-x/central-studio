@@ -123,6 +123,14 @@ public class TestDictionaryProvider extends TestProvider {
         assertEquals(input.getItems().size(), insert.getItems().size());
         assertEquals(input.getItems().get(0), insert.getItems().get(0).toInput().build());
         assertEquals(input.getItems().get(1), insert.getItems().get(1).toInput().build());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());

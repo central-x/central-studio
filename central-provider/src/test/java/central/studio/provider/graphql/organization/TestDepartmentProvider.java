@@ -24,7 +24,10 @@
 
 package central.studio.provider.graphql.organization;
 
-import central.data.organization.*;
+import central.data.organization.AreaInput;
+import central.data.organization.Department;
+import central.data.organization.DepartmentInput;
+import central.data.organization.UnitInput;
 import central.data.organization.option.AreaType;
 import central.provider.graphql.organization.DepartmentProvider;
 import central.provider.graphql.organization.UnitProvider;
@@ -143,6 +146,14 @@ public class TestDepartmentProvider extends TestProvider {
         assertEquals(input.getCode(), insert.getCode());
         assertEquals(input.getName(), insert.getName());
         assertEquals(input.getOrder(), insert.getOrder());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNotNull(entity);

@@ -177,6 +177,10 @@ public class TestRolePermissionProvider {
         assertEquals(input.getRoleId(), insert.getRole().getId());
         assertEquals(input.getPermissionId(), insert.getPermissionId());
         assertEquals(input.getPermissionId(), insert.getPermission().getId());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());

@@ -123,6 +123,11 @@ public class TestIdentityPasswordProvider extends TestProvider {
         assertEquals(input.getAccountId(), insert.getAccountId());
         assertEquals(input.getAccountId(), insert.getAccount().getId());
         assertTrue(Passwordx.verify(input.getValue(), insert.getValue()));
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+
         var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNotNull(entity);
 

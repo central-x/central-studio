@@ -191,6 +191,10 @@ public class TestAccountDepartmentProvider extends TestProvider {
         assertNotNull(insert.getPost());
         assertEquals(input.getPostId(), insert.getPost().getId());
         assertEquals(input.getPrimary(), insert.getPrimary());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
 
         var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNotNull(entity);

@@ -198,6 +198,10 @@ public class TestRoleRangeProvider {
         assertEquals(input.getCategory(), insert.getCategory());
         assertEquals(input.getType(), insert.getType());
         assertEquals(input.getDataId(), insert.getDataId());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());

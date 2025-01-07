@@ -142,6 +142,14 @@ public class TestLogFilterProvider {
         assertEquals(2, insert.getPredicates().size());
         assertTrue(insert.getPredicates().stream().anyMatch(it -> Objects.equals("tenant", it.getType())));
         assertTrue(insert.getPredicates().stream().anyMatch(it -> Objects.equals("level", it.getType())));
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), "master");

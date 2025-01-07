@@ -139,6 +139,15 @@ public class TestPermissionProvider extends TestProvider {
         assertEquals(input.getName(), insert.getName());
         assertEquals("syssa", insert.getCreatorId());
         assertEquals("syssa", insert.getModifierId());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
+
         var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNotNull(entity);
 

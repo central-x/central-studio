@@ -121,6 +121,14 @@ public class TestStorageBucketProvider {
         assertEquals(input.getEnabled(), insert.getEnabled());
         assertEquals(input.getRemark(), insert.getRemark());
         assertEquals(input.getParams(), insert.getParams());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());

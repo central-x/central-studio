@@ -106,6 +106,14 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getRemark(), insert.getRemark());
         assertEquals(1, insert.getRoutes().size());
         assertEquals(input.getRoutes().get(0), insert.getRoutes().get(0).toInput().build());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), "master");

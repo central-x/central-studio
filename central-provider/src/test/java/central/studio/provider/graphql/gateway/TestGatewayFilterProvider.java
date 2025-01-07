@@ -125,6 +125,14 @@ public class TestGatewayFilterProvider {
         assertEquals(input.getParams(), insert.getParams());
         assertEquals(1, insert.getPredicates().size());
         assertEquals("host", insert.getPredicates().get(0).getType());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());

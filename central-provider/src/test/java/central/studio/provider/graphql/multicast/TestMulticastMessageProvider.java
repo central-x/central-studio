@@ -140,6 +140,14 @@ public class TestMulticastMessageProvider {
         assertEquals(input.getBody(), insert.getBody());
         assertEquals(input.getMode(), insert.getMode());
         assertEquals(input.getStatus(), insert.getStatus());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());

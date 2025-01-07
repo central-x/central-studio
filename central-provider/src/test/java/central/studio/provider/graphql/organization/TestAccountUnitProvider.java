@@ -172,6 +172,10 @@ public class TestAccountUnitProvider extends TestProvider {
         assertNotNull(insert.getRank());
         assertEquals(input.getRankId(), insert.getRank().getId());
         assertEquals(input.getPrimary(), insert.getPrimary());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
 
         var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNotNull(entity);

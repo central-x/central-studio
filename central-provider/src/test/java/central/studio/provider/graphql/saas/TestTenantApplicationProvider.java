@@ -151,6 +151,14 @@ public class TestTenantApplicationProvider extends TestProvider {
         assertEquals(input.getApplicationId(), insert.getApplication().getId());
         assertEquals(input.getEnabled(), insert.getEnabled());
         assertEquals(input.getPrimary(), insert.getPrimary());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), "master");

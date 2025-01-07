@@ -245,6 +245,10 @@ public class TestRolePrincipalProvider {
         assertEquals(input.getPrincipalId(), insert.getPrincipalId());
         assertNotNull(insert.getAccount());
         assertEquals(input.getPrincipalId(), insert.getAccount().getId());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
 
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());

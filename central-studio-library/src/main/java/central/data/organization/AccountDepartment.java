@@ -113,13 +113,6 @@ public class AccountDepartment extends Entity {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Account modifier;
-
     public AccountDepartmentInput.Builder toInput() {
         return AccountDepartmentInput.builder()
                 .accountId(this.getAccountId())
