@@ -112,7 +112,7 @@ public class TestUnitRoleController extends TestController {
      */
     private Application getApplication() {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
-        return container.getApplicationByCode("central-dashboard");
+        return container.getApplicationByCode("dashboard");
     }
 
     @Setter(onMethod_ = @Autowired)

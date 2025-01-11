@@ -83,6 +83,8 @@ public class GatewayFilter extends ModifiableEntity implements Remarkable, Avail
     /**
      * 断言
      */
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<GatewayPredicate> predicates;
     /**
      * 创建人信息

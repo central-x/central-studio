@@ -22,29 +22,29 @@
  * SOFTWARE.
  */
 
-package central.studio.bootstrap;
+package central.studio.dashboard.controller.index.query;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
+import central.validation.Label;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
- * 应用控制器
+ * Application Query
+ * <p>
+ * 应用查询
  *
  * @author Alan Yeh
- * @since 2024/02/18
+ * @since 2025/01/10
  */
-@Controller
-@RequestMapping
-public class ApplicationController {
+@Data
+public class ApplicationQuery implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1718401252872536159L;
 
-    /**
-     * 应用首页
-     */
-    @GetMapping({"", "/"})
-    public View index() {
-        return new RedirectView("/dashboard/");
-    }
+    @NotBlank
+    @Label("应用主键")
+    private String applicationId;
 }

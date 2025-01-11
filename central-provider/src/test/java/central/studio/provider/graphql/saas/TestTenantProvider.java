@@ -84,7 +84,7 @@ public class TestTenantProvider extends TestProvider {
     }
 
     private ApplicationEntity getApplication() {
-        return applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "central-saas"), null);
+        return applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "saas"), null);
     }
 
     /**

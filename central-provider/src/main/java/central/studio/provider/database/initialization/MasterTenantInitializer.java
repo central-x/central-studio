@@ -74,7 +74,7 @@ public class MasterTenantInitializer {
         // 控制面板
         var dashboardApp = new ApplicationEntity();
         dashboardApp.setId("y9llwWofojZAtx71JP1");
-        dashboardApp.setCode("central-dashboard");
+        dashboardApp.setCode("dashboard");
         dashboardApp.setName("控制中心");
         dashboardApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
         dashboardApp.setUrl("http://central-dashboard");
@@ -88,7 +88,7 @@ public class MasterTenantInitializer {
         // Saas中心
         var saasApp = new ApplicationEntity();
         saasApp.setId("UFQG4uh6DtrT4AgLA4Z");
-        saasApp.setCode("central-saas");
+        saasApp.setCode("saas");
         saasApp.setName("租户中心");
         saasApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-tenant.png")));
         saasApp.setUrl("http://central-saas");
@@ -102,7 +102,7 @@ public class MasterTenantInitializer {
         // 认证中心
         var identityApp = new ApplicationEntity();
         identityApp.setId("v788o67covIaDMn67mN");
-        identityApp.setCode("central-identity");
+        identityApp.setCode("identity");
         identityApp.setName("认证中心");
         identityApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-identity.png")));
         identityApp.setUrl("http://central-identity");
@@ -116,7 +116,7 @@ public class MasterTenantInitializer {
         // 存储中心
         var storageApp = new ApplicationEntity();
         storageApp.setId("hrnxjZFkYK4P34EZBy2");
-        storageApp.setCode("central-storage");
+        storageApp.setCode("storage");
         storageApp.setName("存储中心");
         storageApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
         storageApp.setUrl("http://central-storage");
@@ -130,7 +130,7 @@ public class MasterTenantInitializer {
         // 广播中心
         var multicastApp = new ApplicationEntity();
         multicastApp.setId("5HjlG6lusTufjoRapw");
-        multicastApp.setCode("central-multicast");
+        multicastApp.setCode("multicast");
         multicastApp.setName("广播中心");
         multicastApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
         multicastApp.setUrl("http://central-multicast");
@@ -144,7 +144,7 @@ public class MasterTenantInitializer {
         // 网关中心
         var gatewayApp = new ApplicationEntity();
         gatewayApp.setId("4yus43AGTA7kzyrDbbG");
-        gatewayApp.setCode("central-gateway");
+        gatewayApp.setCode("gateway");
         gatewayApp.setName("网关中心");
         gatewayApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
         gatewayApp.setUrl("http://central-gateway");
@@ -155,7 +155,21 @@ public class MasterTenantInitializer {
         gatewayApp.setRoutesJson("[]");
         gatewayApp.updateCreator("syssa");
 
-        var applications = List.of(dashboardApp, saasApp, identityApp, storageApp, multicastApp, gatewayApp);
+        // 日志中心
+        var loggingApp = new ApplicationEntity();
+        loggingApp.setId("E3ukoTKWy965y453ZI6");
+        loggingApp.setCode("logging");
+        loggingApp.setName("日志中心");
+        loggingApp.setLogoBytes(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("central/logo/central-security.png")));
+        loggingApp.setUrl("http://central-logging");
+        loggingApp.setContextPath("/logging");
+        loggingApp.setSecret("0hBjHFvqmaAkYdKWqCG");
+        loggingApp.setEnabled(Boolean.TRUE);
+        loggingApp.setRemark("用于统一管理日志");
+        loggingApp.setRoutesJson("[]");
+        loggingApp.updateCreator("syssa");
+
+        var applications = List.of(dashboardApp, saasApp, identityApp, storageApp, multicastApp, gatewayApp, loggingApp);
 
         var applicationMapper = this.executor.getMapper(ApplicationMapper.class);
         applicationMapper.insertBatch(applications);
@@ -170,7 +184,7 @@ public class MasterTenantInitializer {
         // 初始化主数据库信息
         var masterDatabase = new DatabaseEntity();
         masterDatabase.setId("OIJN8cob9iZzJ1NigWE");
-        masterDatabase.setApplicationId(applications.get("central-saas").getId());
+        masterDatabase.setApplicationId(applications.get("saas").getId());
         masterDatabase.setCode("master");
         masterDatabase.setName("主数据源");
         masterDatabase.setType(DatabaseType.MYSQL.getValue());
@@ -218,7 +232,7 @@ public class MasterTenantInitializer {
         var dashboardAppRel = new TenantApplicationEntity();
         dashboardAppRel.setId("95AELSyhLQy5kDheAxQ");
         dashboardAppRel.setTenantId(masterTenant.getId());
-        dashboardAppRel.setApplicationId(applications.get("central-dashboard").getId());
+        dashboardAppRel.setApplicationId(applications.get("dashboard").getId());
         dashboardAppRel.setEnabled(Boolean.TRUE);
         dashboardAppRel.setPrimary(Boolean.FALSE);
         dashboardAppRel.updateCreator("syssa");
@@ -226,7 +240,7 @@ public class MasterTenantInitializer {
         var tenantAppRel = new TenantApplicationEntity();
         tenantAppRel.setId("2B4wrNPDL80tfvSE8ve");
         tenantAppRel.setTenantId(masterTenant.getId());
-        tenantAppRel.setApplicationId(applications.get("central-saas").getId());
+        tenantAppRel.setApplicationId(applications.get("saas").getId());
         tenantAppRel.setEnabled(Boolean.TRUE);
         tenantAppRel.setPrimary(Boolean.FALSE);
         tenantAppRel.updateCreator("syssa");
@@ -234,7 +248,7 @@ public class MasterTenantInitializer {
         var identityAppRel = new TenantApplicationEntity();
         identityAppRel.setId("jlUpCMrWWhUNhWHiBh5");
         identityAppRel.setTenantId(masterTenant.getId());
-        identityAppRel.setApplicationId(applications.get("central-identity").getId());
+        identityAppRel.setApplicationId(applications.get("identity").getId());
         identityAppRel.setEnabled(Boolean.TRUE);
         identityAppRel.setPrimary(Boolean.TRUE);
         identityAppRel.updateCreator("syssa");
@@ -242,7 +256,7 @@ public class MasterTenantInitializer {
         var storageAppRel = new TenantApplicationEntity();
         storageAppRel.setId("JUWCjb5i032vOjbDYLs");
         storageAppRel.setTenantId(masterTenant.getId());
-        storageAppRel.setApplicationId(applications.get("central-storage").getId());
+        storageAppRel.setApplicationId(applications.get("storage").getId());
         storageAppRel.setEnabled(Boolean.TRUE);
         storageAppRel.setPrimary(Boolean.FALSE);
         storageAppRel.updateCreator("syssa");
@@ -250,7 +264,7 @@ public class MasterTenantInitializer {
         var multicastAppRel = new TenantApplicationEntity();
         multicastAppRel.setId("pDaMEd4CZPupGLSqvc");
         multicastAppRel.setTenantId(masterTenant.getId());
-        multicastAppRel.setApplicationId(applications.get("central-multicast").getId());
+        multicastAppRel.setApplicationId(applications.get("multicast").getId());
         multicastAppRel.setEnabled(Boolean.TRUE);
         multicastAppRel.setPrimary(Boolean.FALSE);
         multicastAppRel.updateCreator("syssa");
@@ -258,7 +272,7 @@ public class MasterTenantInitializer {
         var gatewayAppRel = new TenantApplicationEntity();
         gatewayAppRel.setId("L1kpkzehI9oofBw2EbO");
         gatewayAppRel.setTenantId(masterTenant.getId());
-        gatewayAppRel.setApplicationId(applications.get("central-gateway").getId());
+        gatewayAppRel.setApplicationId(applications.get("gateway").getId());
         gatewayAppRel.setEnabled(Boolean.TRUE);
         gatewayAppRel.setPrimary(Boolean.FALSE);
         gatewayAppRel.updateCreator("syssa");

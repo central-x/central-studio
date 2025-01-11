@@ -131,7 +131,7 @@ public class TestOAuthController extends TestController {
 
         var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
                 .queryParam("response_type", "code")
-                .queryParam("client_id", "central-identity")
+                .queryParam("client_id", "identity")
                 .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
                 .queryParam("state", UUID.randomUUID().toString())
                 .queryParam("scope", "user:basic")
@@ -184,7 +184,7 @@ public class TestOAuthController extends TestController {
         {
             var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
                     .queryParam("response_type", "code")
-                    .queryParam("client_id", "central-identity")
+                    .queryParam("client_id", "identity")
                     .queryParam("redirect_uri", "https://example.com/identity/sso/oauth2/login-result")
                     .queryParam("state", UUID.randomUUID().toString())
                     .queryParam("scope", "user:basic")
@@ -213,7 +213,7 @@ public class TestOAuthController extends TestController {
         var state = UUID.randomUUID().toString();
         var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
                 .queryParam("response_type", "code")
-                .queryParam("client_id", "central-identity")
+                .queryParam("client_id", "identity")
                 .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
                 .queryParam("state", state)
                 .header(XForwardedHeaders.TENANT, "master")
@@ -233,7 +233,7 @@ public class TestOAuthController extends TestController {
                                 .queryParam("redirect_uri",
                                         Stringx.encodeUrl(UriComponentsBuilder.fromUriString("https://identity.central-x.com/identity/sso/oauth2/authorize")
                                                 .queryParam("response_type", "code")
-                                                .queryParam("client_id", "central-identity")
+                                                .queryParam("client_id", "identity")
                                                 .queryParam("redirect_uri", Stringx.encodeUrl("http://central-identity/identity/sso/oauth2/login-result"))
                                                 .queryParam("state", state)
                                                 .build().toString())
@@ -254,7 +254,7 @@ public class TestOAuthController extends TestController {
         var state = UUID.randomUUID().toString();
         var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
                 .queryParam("response_type", "code")
-                .queryParam("client_id", "central-identity")
+                .queryParam("client_id", "identity")
                 .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
                 .queryParam("state", state)
                 .cookie(new Cookie("Authentication", "invalid"))
@@ -275,7 +275,7 @@ public class TestOAuthController extends TestController {
                                         .queryParam("redirect_uri",
                                                 Stringx.encodeUrl(UriComponentsBuilder.fromUriString("https://identity.central-x.com/identity/sso/oauth2/authorize")
                                                         .queryParam("response_type", "code")
-                                                        .queryParam("client_id", "central-identity")
+                                                        .queryParam("client_id", "identity")
                                                         .queryParam("redirect_uri", Stringx.encodeUrl("http://central-identity/identity/sso/oauth2/login-result"))
                                                         .queryParam("state", state)
                                                         .build().toString())
@@ -306,7 +306,7 @@ public class TestOAuthController extends TestController {
         var state = UUID.randomUUID().toString();
         var request = MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
                 .queryParam("response_type", "code")
-                .queryParam("client_id", "central-identity")
+                .queryParam("client_id", "identity")
                 .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
                 .queryParam("state", state)
                 .cookie(this.getSessionCookie("/identity/sso/oauth2/authorize", mvc, cookieStore))
@@ -336,7 +336,7 @@ public class TestOAuthController extends TestController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Jsonx.Default().serialize(Mapx.of(
                         Mapx.entry("grantType", "authorization_code"),
-                        Mapx.entry("clientId", "central-identity"),
+                        Mapx.entry("clientId", "identity"),
                         Mapx.entry("clientSecret", "AkJSi2kmH7vSO5lJcvY"),
                         Mapx.entry("code", code),
                         Mapx.entry("redirectUri", "http://central-identity/identity/sso/oauth2/login-result")
@@ -405,7 +405,7 @@ public class TestOAuthController extends TestController {
         var state = UUID.randomUUID().toString();
         ThrowableSupplier<MockHttpServletRequestBuilder, Exception> request = () -> MockMvcRequestBuilders.get("/identity/sso/oauth2/authorize")
                 .queryParam("response_type", "code")
-                .queryParam("client_id", "central-identity")
+                .queryParam("client_id", "identity")
                 .queryParam("redirect_uri", "http://central-identity/identity/sso/oauth2/login-result")
                 .queryParam("state", state)
                 .cookie(this.getSessionCookie("/identity/sso/oauth2/authorize", mvc, cookieStore))
@@ -486,7 +486,7 @@ public class TestOAuthController extends TestController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Jsonx.Default().serialize(Mapx.of(
                         Mapx.entry("grantType", "authorization_code"),
-                        Mapx.entry("clientId", "central-identity"),
+                        Mapx.entry("clientId", "identity"),
                         Mapx.entry("clientSecret", "AkJSi2kmH7vSO5lJcvY"),
                         Mapx.entry("code", code),
                         Mapx.entry("redirectUri", "http://central-identity/identity/sso/oauth2/login-result")

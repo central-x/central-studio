@@ -58,12 +58,12 @@ public class DatabaseController {
      * 权限
      */
     public interface Permissions {
-        String VIEW = "${application}:system:database:view";
-        String ADD = "${application}:system:database:add";
-        String EDIT = "${application}:system:database:edit";
-        String REMOVE = "${application}:system:database:remove";
-        String ENABLE = "${application}:system:database:enable";
-        String DISABLE = "${application}:system:database:disable";
+        String VIEW = "*:system:database:view";
+        String ADD = "*:system:database:add";
+        String EDIT = "*:system:database:edit";
+        String REMOVE = "*:system:database:remove";
+        String ENABLE = "*:system:database:enable";
+        String DISABLE = "*:system:database:disable";
     }
 
     @Setter(onMethod_ = @Autowired)

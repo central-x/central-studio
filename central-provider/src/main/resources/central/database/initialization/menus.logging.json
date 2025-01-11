@@ -1,0 +1,66 @@
+[
+  {
+    "code": "",
+    "code": "",
+    "name": "日志管理",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 0,
+    "permissions": {},
+    "children": [
+      {
+        "code": "collector",
+        "name": "采集器管理",
+        "icon": "",
+        "url": "@/logging/collector",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "collector:view": "查看",
+          "collector:add": "新增",
+          "collector:delete": "删除",
+          "collector:edit": "编辑",
+          "collector:disable": "禁用",
+          "collector:enable": "启用"
+        }
+      },
+      {
+        "code": "storage",
+        "name": "存储器管理",
+        "icon": "",
+        "url": "@/logging/storage",
+        "type": "admin",
+        "enabled": true,
+        "order": 1,
+        "permissions": {
+          "storage:view": "查看",
+          "storage:add": "新增",
+          "storage:delete": "删除",
+          "storage:edit": "编辑",
+          "storage:disable": "禁用",
+          "storage:enable": "启用"
+        }
+      },
+      {
+        "code": "filter",
+        "name": "过滤器管理",
+        "icon": "",
+        "url": "@/logging/filter",
+        "type": "admin",
+        "enabled": true,
+        "order": 2,
+        "permissions": {
+          "filter:view": "查看",
+          "filter:add": "新增",
+          "filter:delete": "删除",
+          "filter:edit": "编辑",
+          "filter:disable": "禁用",
+          "filter:enable": "启用"
+        }
+      }
+    ]
+  }
+]

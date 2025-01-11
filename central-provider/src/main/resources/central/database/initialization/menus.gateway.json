@@ -1,0 +1,76 @@
+[
+  {
+    "code": "",
+    "name": "网关管理",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 0,
+    "permissions": {},
+    "children": [
+      {
+        "code": "filter",
+        "name": "过滤器管理",
+        "icon": "",
+        "url": "@/gateway/filter",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "filter:view": "查看",
+          "filter:add": "新增",
+          "filter:delete": "删除",
+          "filter:edit": "编辑",
+          "filter:disable": "禁用",
+          "filter:enable": "启用"
+        }
+      },
+      {
+        "code": "open",
+        "name": "开放平台管理",
+        "icon": "",
+        "url": "",
+        "type": "admin",
+        "enabled": true,
+        "order": 1,
+        "permissions": {},
+        "children": [
+          {
+            "code": "open:api",
+            "name": "接口管理",
+            "icon": "",
+            "url": "@/gateway/open/api",
+            "type": "admin",
+            "enabled": true,
+            "order": 0,
+            "permissions": {
+              "open:api:view": "查看",
+              "open:api:add": "新增",
+              "open:api:delete": "删除",
+              "open:api:edit": "编辑",
+              "open:api:disable": "禁用",
+              "open:api:enable": "启用"
+            }
+          },{
+            "code": "open:subscriber",
+            "name": "订阅管理",
+            "icon": "",
+            "url": "@/gateway/open/subscriber",
+            "type": "admin",
+            "enabled": true,
+            "order": 1,
+            "permissions": {
+              "open:subscriber:view": "查看",
+              "open:subscriber:add": "新增",
+              "open:subscriber:delete": "删除",
+              "open:subscriber:edit": "编辑",
+              "open:subscriber:disable": "禁用",
+              "open:subscriber:enable": "启用"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

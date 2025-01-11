@@ -64,6 +64,7 @@ public class RoleRange extends Entity {
      * 应用
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
     /**
@@ -76,6 +77,7 @@ public class RoleRange extends Entity {
      * 角色
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Role role;
 
     /**

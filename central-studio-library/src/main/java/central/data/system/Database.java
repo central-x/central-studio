@@ -63,6 +63,7 @@ public class Database extends ModifiableEntity implements Codeable, Available, R
      * 应用信息
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
     /**
@@ -101,11 +102,13 @@ public class Database extends ModifiableEntity implements Codeable, Available, R
      * 主数据库属性
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private DatabaseProperties master;
 
     /**
      * 从数据库属性
      */
+    @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<DatabaseProperties> slaves;
 

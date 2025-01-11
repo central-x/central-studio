@@ -55,12 +55,12 @@ import org.springframework.web.bind.annotation.*;
 public class FilterController {
 
     public interface Permissions {
-        String VIEW = "identity:strategy:view";
-        String ADD = "identity:strategy:add";
-        String EDIT = "identity:strategy:edit";
-        String DELETE = "identity:strategy:delete";
-        String ENABLE = "identity:strategy:enable";
-        String DISABLE = "identity:strategy:disable";
+        String VIEW = "gateway:filter:view";
+        String ADD = "gateway:filter:add";
+        String EDIT = "gateway:filter:edit";
+        String DELETE = "gateway:filter:delete";
+        String ENABLE = "gateway:filter:enable";
+        String DISABLE = "gateway:filter:disable";
     }
 
     @Setter(onMethod_ = @Autowired)

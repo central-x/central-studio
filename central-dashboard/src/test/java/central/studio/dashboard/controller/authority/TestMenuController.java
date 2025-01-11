@@ -84,7 +84,7 @@ public class TestMenuController extends TestController {
      */
     private Application getApplication() {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
-        return container.getApplicationByCode("central-dashboard");
+        return container.getApplicationByCode("dashboard");
     }
 
     /**

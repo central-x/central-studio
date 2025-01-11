@@ -47,6 +47,7 @@ import org.slf4j.helpers.MessageFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -80,6 +81,8 @@ public class AuthorizationPersistence {
 
     @Setter(onMethod_ = @Autowired)
     private MenuPersistence menuPersistence;
+
+    private final AntPathMatcher matcher = new AntPathMatcher();
 
     private SaasContainer getContainer() {
         return context.getData(DataFetcherType.SAAS);
@@ -252,7 +255,7 @@ public class AuthorizationPersistence {
                 return Collections.emptyList();
             }
             if (account.getAdmin()) {
-                var permissions = permissionPersistence.findBy(null, null, Columns.all(), null, null, tenant);
+                var permissions = permissionPersistence.findBy(null, null, Columns.all(), conditions, null, tenant);
                 // 超级管理员有所有权限
                 if (accountPersistence.isSupervisor(account.getId())) {
                     return permissions;
@@ -267,11 +270,11 @@ public class AuthorizationPersistence {
                 }
 
                 var range = adminProperties.get().getPermissions();
-                // TODO 不是使用 contains 判断，应该使用匹配算法
+
                 if (Listx.isNotEmpty(range.getIncludes())) {
-                    return permissions.stream().filter(it -> range.getIncludes().contains(it.getCode())).toList();
+                    return permissions.stream().filter(it -> range.getIncludes().stream().anyMatch(include -> matcher.match(include, it.getCode()))).toList();
                 } else {
-                    return permissions.stream().filter(it -> !range.getExcludes().contains(it.getCode())).toList();
+                    return permissions.stream().filter(it -> range.getExcludes().stream().noneMatch(exclude -> matcher.match(exclude, it.getCode()))).toList();
                 }
             }
         }

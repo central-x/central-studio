@@ -62,6 +62,7 @@ public class MulticastMessage extends ModifiableEntity {
      * 广播器
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private MulticastBroadcaster broadcaster;
     /**
      * 消息体

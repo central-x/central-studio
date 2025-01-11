@@ -79,7 +79,7 @@ public class TestBucketController extends TestController {
      */
     private Application getApplication(DataContext context) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
-        return container.getApplicationByCode("central-dashboard");
+        return container.getApplicationByCode("dashboard");
     }
 
     /**

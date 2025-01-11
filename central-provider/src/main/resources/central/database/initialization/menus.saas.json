@@ -1,0 +1,48 @@
+[
+  {
+    "code": "",
+    "name": "租户管理",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 0,
+    "permissions": {},
+    "children": [
+      {
+        "code": "tenant",
+        "name": "租户管理",
+        "icon": "",
+        "url": "@/saas/tenant",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "tenant:view": "查看",
+          "tenant:add": "新增",
+          "tenant:delete": "删除",
+          "tenant:edit": "编辑",
+          "tenant:disable": "禁用",
+          "tenant:enable": "启用"
+        }
+      },
+      {
+        "code": "application",
+        "name": "应用管理",
+        "icon": "",
+        "url": "@/saas/application",
+        "type": "admin",
+        "enabled": true,
+        "order": 1,
+        "permissions": {
+          "application:view": "查看",
+          "application:add": "新增",
+          "application:delete": "删除",
+          "application:edit": "编辑",
+          "application:disable": "禁用",
+          "application:enable": "启用"
+        }
+      }
+    ]
+  }
+]

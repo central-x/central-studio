@@ -40,7 +40,7 @@ public class DashboardProperties {
     /**
      * 应用标识
      */
-    private String code = "central-dashboard";
+    private String code = "dashboard";
 
     /**
      * 应用密钥

@@ -6,7 +6,7 @@
     "url": "",
     "type": "admin",
     "enabled": true,
-    "order": 3,
+    "order": 200,
     "permissions": {},
     "children": [
       {
@@ -33,7 +33,7 @@
         "url": "@/system/database",
         "type": "admin",
         "enabled": true,
-        "order": 0,
+        "order": 1,
         "permissions": {
           "system:database:view": "查看",
           "system:database:add": "新增",

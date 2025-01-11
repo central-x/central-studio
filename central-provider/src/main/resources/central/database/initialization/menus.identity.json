@@ -1,0 +1,31 @@
+[
+  {
+    "code": "",
+    "name": "认证管理",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 0,
+    "permissions": {},
+    "children": [
+      {
+        "code": "strategy",
+        "name": "策略管理",
+        "icon": "",
+        "url": "@/identity/strategy",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "strategy:view": "查看",
+          "strategy:add": "新增",
+          "strategy:delete": "删除",
+          "strategy:edit": "编辑",
+          "strategy:disable": "禁用",
+          "strategy:enable": "启用"
+        }
+      }
+    ]
+  }
+]

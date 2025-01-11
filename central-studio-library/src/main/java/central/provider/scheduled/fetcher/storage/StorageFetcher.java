@@ -66,7 +66,7 @@ public class StorageFetcher implements DataFetcher<StorageContainer> {
         var buckets = new HashMap<String, List<StorageBucket>>();
 
         for (var tenant : tenants) {
-            if (tenant.getApplications().stream().noneMatch(it -> Objects.equals("central-storage", it.getApplication().getCode()))) {
+            if (tenant.getApplications().stream().noneMatch(it -> Objects.equals("storage", it.getApplication().getCode()))) {
                 // 该租户没有分配存储中心
                 continue;
             }

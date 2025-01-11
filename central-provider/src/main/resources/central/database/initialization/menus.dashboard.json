@@ -1,0 +1,61 @@
+[
+  {
+    "code": "",
+    "name": "用户中心",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 0,
+    "permissions": {},
+    "children": [
+      {
+        "code": "area",
+        "name": "行政区划管理",
+        "icon": "",
+        "url": "@/dashboard/area",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "area:view": "查看",
+          "area:add": "新增",
+          "area:delete": "删除",
+          "area:edit": "编辑"
+        }
+      },
+      {
+        "code": "unit",
+        "name": "组织架构管理",
+        "icon": "",
+        "url": "@/dashboard/unit",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "unit:view": "查看",
+          "unit:add": "新增",
+          "unit:delete": "删除",
+          "unit:edit": "编辑"
+        }
+      },
+      {
+        "code": "account",
+        "name": "帐户管理",
+        "icon": "",
+        "url": "@/dashboard/account",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "account:view": "查看",
+          "account:add": "新增",
+          "account:delete": "删除",
+          "account:edit": "编辑",
+          "account:disable": "禁用",
+          "account:enable": "启用"
+        }
+      }
+    ]
+  }
+]

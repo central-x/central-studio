@@ -58,17 +58,16 @@ public class DictionaryController {
      * 权限
      */
     public interface Permissions {
-        String VIEW = "${application}:system:dictionary:view";
-        String ADD = "${application}:system:dictionary:add";
-        String EDIT = "${application}:system:dictionary:edit";
-        String REMOVE = "${application}:system:dictionary:remove";
-        String ENABLE = "${application}:system:dictionary:enable";
-        String DISABLE = "${application}:system:dictionary:disable";
+        String VIEW = "*:system:dictionary:view";
+        String ADD = "*:system:dictionary:add";
+        String EDIT = "*:system:dictionary:edit";
+        String REMOVE = "*:system:dictionary:remove";
+        String ENABLE = "*:system:dictionary:enable";
+        String DISABLE = "*:system:dictionary:disable";
     }
 
     @Setter(onMethod_ = @Autowired)
     private DictionaryLogic logic;
-
 
     /**
      * 按条件分页查询字典列表

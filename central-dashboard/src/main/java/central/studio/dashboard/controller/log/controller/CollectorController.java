@@ -54,6 +54,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dashboard/api/log/collectors")
 public class CollectorController {
 
+    public interface Permissions {
+        String VIEW = "logging:collector:view";
+        String ADD = "logging:collector:add";
+        String EDIT = "logging:collector:edit";
+        String DELETE = "logging:collector:delete";
+        String ENABLE = "logging:collector:enable";
+        String DISABLE = "logging:collector:disable";
+    }
+
     @Setter(onMethod_ = @Autowired)
     private LogLogic logic;
 

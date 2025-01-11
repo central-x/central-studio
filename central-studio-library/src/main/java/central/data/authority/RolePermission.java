@@ -62,6 +62,7 @@ public class RolePermission extends Entity {
      * 应用
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
     /**
@@ -74,6 +75,7 @@ public class RolePermission extends Entity {
      * 角色
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Role role;
 
     /**
@@ -86,6 +88,7 @@ public class RolePermission extends Entity {
      * 权限
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Permission permission;
 
     /**

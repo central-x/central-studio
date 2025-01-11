@@ -74,15 +74,19 @@ public class LogFilter extends ModifiableEntity implements Codeable, Available, 
      * 采集器
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<LogCollector> collectors;
     /**
      * 存储器
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<LogStorage> storages;
     /**
      * 断言
      */
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<LogPredicate> predicates;
     /**
      * 创建人信息

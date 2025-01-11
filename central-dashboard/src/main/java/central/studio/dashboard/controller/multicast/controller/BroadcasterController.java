@@ -56,9 +56,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dashboard/api/multicast/broadcasters")
 public class BroadcasterController {
 
+    public interface Permissions {
+        String VIEW = "multicast:broadcaster:view";
+        String ADD = "multicast:broadcaster:add";
+        String EDIT = "multicast:broadcaster:edit";
+        String DELETE = "multicast:broadcaster:delete";
+        String ENABLE = "multicast:broadcaster:enable";
+        String DISABLE = "multicast:broadcaster:disable";
+    }
+
     @Setter(onMethod_ = @Autowired)
     private MulticastLogic logic;
-
 
     /**
      * 按条件分页查询列表

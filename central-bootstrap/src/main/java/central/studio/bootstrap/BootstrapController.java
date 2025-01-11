@@ -22,58 +22,29 @@
  * SOFTWARE.
  */
 
-package central.data.identity;
+package central.studio.bootstrap;
 
-import central.bean.*;
-import central.data.organization.Account;
-import central.sql.data.Entity;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import java.io.Serial;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
- * Identity Password
- * <p>
- * 密码
+ * 应用控制器
  *
  * @author Alan Yeh
- * @since 2022/10/07
+ * @since 2024/02/18
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class IdentityPassword extends Entity {
-    @Serial
-    private static final long serialVersionUID = -5570891457253320202L;
+@Controller
+@RequestMapping
+public class BootstrapController {
 
     /**
-     * 帐户主键
+     * 应用首页
      */
-    @Nonnull
-    private String accountId;
-
-    /**
-     * 帐户
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Account account;
-
-    /**
-     * 密码值
-     */
-    @Nonnull
-    private String value;
-
-    /**
-     * 创建人信息
-     */
-    @Nonnull
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Account creator;
+    @GetMapping({"", "/"})
+    public View index() {
+        return new RedirectView("/dashboard/");
+    }
 }

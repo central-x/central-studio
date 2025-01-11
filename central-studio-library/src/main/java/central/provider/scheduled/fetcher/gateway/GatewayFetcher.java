@@ -65,7 +65,7 @@ public class GatewayFetcher implements DataFetcher<GatewayContainer> {
         var filters = new HashMap<String, List<GatewayFilter>>();
 
         for (var tenant : tenants) {
-            if (tenant.getApplications().stream().noneMatch(it -> Objects.equals("central-gateway", it.getApplication().getCode()))) {
+            if (tenant.getApplications().stream().noneMatch(it -> Objects.equals("gateway", it.getApplication().getCode()))) {
                 // 该租户没有分配网关中心
                 continue;
             }

@@ -6,7 +6,7 @@
     "url": "",
     "type": "admin",
     "enabled": true,
-    "order": 3,
+    "order": 100,
     "permissions": {},
     "children": [
       {
@@ -33,7 +33,7 @@
         "url": "@/authority/role-system",
         "type": "admin",
         "enabled": true,
-        "order": 0,
+        "order": 1,
         "permissions": {
           "authority:system:role:view": "查看",
           "authority:system:role:add": "新增",
@@ -50,7 +50,7 @@
         "url": "@/authority/role",
         "type": "admin",
         "enabled": true,
-        "order": 0,
+        "order": 2,
         "permissions": {
           "authority:unit:role:view": "查看",
           "authority:unit:role:add": "新增",

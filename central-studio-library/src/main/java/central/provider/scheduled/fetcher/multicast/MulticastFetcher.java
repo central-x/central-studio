@@ -66,8 +66,8 @@ public class MulticastFetcher implements DataFetcher<MulticastContainer> {
         var broadcasters = new HashMap<String, List<MulticastBroadcaster>>();
 
         for (var tenant : tenants) {
-            if (tenant.getApplications().stream().noneMatch(it -> Objects.equals("central-storage", it.getApplication().getCode()))) {
-                // 该租户没有分配存储中心
+            if (tenant.getApplications().stream().noneMatch(it -> Objects.equals("multicast", it.getApplication().getCode()))) {
+                // 该租户没有分配广播中心
                 continue;
             }
             var data = multicastProvider.findBy(null, null, null, null, tenant.getCode());

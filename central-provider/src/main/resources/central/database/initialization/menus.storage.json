@@ -1,0 +1,31 @@
+[
+  {
+    "code": "",
+    "name": "存储管理",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 0,
+    "permissions": {},
+    "children": [
+      {
+        "code": "bucket",
+        "name": "存储桶管理",
+        "icon": "",
+        "url": "@/storage/bucket",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "bucket:view": "查看",
+          "bucket:add": "新增",
+          "bucket:delete": "删除",
+          "bucket:edit": "编辑",
+          "bucket:disable": "禁用",
+          "bucket:enable": "启用"
+        }
+      }
+    ]
+  }
+]

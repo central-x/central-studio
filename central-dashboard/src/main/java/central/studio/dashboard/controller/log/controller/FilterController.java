@@ -54,6 +54,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dashboard/api/log/filters")
 public class FilterController {
 
+    public interface Permissions {
+        String VIEW = "logging:filter:view";
+        String ADD = "logging:filter:add";
+        String EDIT = "logging:filter:edit";
+        String DELETE = "logging:filter:delete";
+        String ENABLE = "logging:filter:enable";
+        String DISABLE = "logging:filter:disable";
+    }
+
     @Setter(onMethod_ = @Autowired)
     private LogLogic logic;
 

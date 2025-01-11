@@ -91,7 +91,7 @@ public class TestRoleController extends TestController {
             container = context.getData(DataFetcherType.SAAS);
         }
 
-        var application = container.getApplicationByCode("central-dashboard");
+        var application = container.getApplicationByCode("dashboard");
 
         var menuInput = MenuInput.builder()
                 .applicationId(application.getId())
@@ -147,7 +147,7 @@ public class TestRoleController extends TestController {
      */
     private Application getApplication() {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
-        return container.getApplicationByCode("central-dashboard");
+        return container.getApplicationByCode("dashboard");
     }
 
     @Setter(onMethod_ = @Autowired)

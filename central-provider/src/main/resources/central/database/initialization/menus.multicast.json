@@ -1,0 +1,31 @@
+[
+  {
+    "code": "",
+    "name": "广播管理",
+    "icon": "",
+    "url": "",
+    "type": "admin",
+    "enabled": true,
+    "order": 0,
+    "permissions": {},
+    "children": [
+      {
+        "code": "broadcaster",
+        "name": "广播器管理",
+        "icon": "",
+        "url": "@/multicast/broadcaster",
+        "type": "admin",
+        "enabled": true,
+        "order": 0,
+        "permissions": {
+          "broadcaster:view": "查看",
+          "broadcaster:add": "新增",
+          "broadcaster:delete": "删除",
+          "broadcaster:edit": "编辑",
+          "broadcaster:disable": "禁用",
+          "broadcaster:enable": "启用"
+        }
+      }
+    ]
+  }
+]

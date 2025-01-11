@@ -28,6 +28,7 @@ import central.bean.InitializeException;
 import central.data.authority.MenuInput;
 import central.data.authority.PermissionInput;
 import central.io.IOStreamx;
+import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
 import central.sql.SqlExecutor;
 import central.studio.provider.database.persistence.authority.entity.MenuEntity;
@@ -85,6 +86,7 @@ public class ApplicationInitializer {
 
         // 使用 JSON 来初始化通用菜单
         var resources = List.of(
+                new ClassPathResource(Stringx.format("/central/database/initialization/menus.{}.json", application.getCode())),
                 new ClassPathResource("/central/database/initialization/menus.authority.json"),
                 new ClassPathResource("/central/database/initialization/menus.system.json")
         );
@@ -144,7 +146,7 @@ public class ApplicationInitializer {
                     .applicationId(application.getId())
                     .parentId(parentId)
                     // 菜单标识加上应用标识前缀
-                    .code(application.getCode() + ":" + config.getCode())
+                    .code(Stringx.removeSuffix(application.getCode() + ":" + config.getCode(), ":"))
                     .name(config.getName())
                     .icon(config.getIcon())
                     .url(config.getUrl())

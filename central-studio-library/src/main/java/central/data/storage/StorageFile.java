@@ -61,6 +61,7 @@ public class StorageFile extends ModifiableEntity implements Codeable, Treeable<
      * 存储桶
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private StorageBucket bucket;
     /**
      * 父文件夹主键

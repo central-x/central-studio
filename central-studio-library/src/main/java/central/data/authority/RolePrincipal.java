@@ -66,6 +66,7 @@ public class RolePrincipal extends Entity {
      * 应用
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
     /**
@@ -78,6 +79,7 @@ public class RolePrincipal extends Entity {
      * 角色
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Role role;
 
     /**
@@ -97,18 +99,21 @@ public class RolePrincipal extends Entity {
      * 帐号信息（当 type 为 account 时）
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account account;
 
     /**
      * 单位信息（当 type 为 unit 时）
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Unit unit;
 
     /**
      * 部门信息（当 type 为 department 时）
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Department department;
 
     /**

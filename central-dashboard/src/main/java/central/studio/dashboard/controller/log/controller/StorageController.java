@@ -55,6 +55,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dashboard/api/log/storages")
 public class StorageController {
 
+    public interface Permissions {
+        String VIEW = "logging:storage:view";
+        String ADD = "logging:storage:add";
+        String EDIT = "logging:storage:edit";
+        String DELETE = "logging:storage:delete";
+        String ENABLE = "logging:storage:enable";
+        String DISABLE = "logging:storage:disable";
+    }
+
     @Setter(onMethod_ = @Autowired)
     private LogLogic logic;
 

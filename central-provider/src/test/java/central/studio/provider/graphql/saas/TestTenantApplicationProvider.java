@@ -98,7 +98,7 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case1() {
-        var saasApplication = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "central-saas"), null);
+        var saasApplication = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "saas"), null);
         assertNotNull(saasApplication);
 
         var database = this.databasePersistence.insert(DatabaseInput.builder()
@@ -211,7 +211,7 @@ public class TestTenantApplicationProvider extends TestProvider {
      */
     @Test
     public void case2() {
-        var saasApplication = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "central-saas"), null);
+        var saasApplication = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "saas"), null);
         assertNotNull(saasApplication);
 
         var database = this.databasePersistence.insert(DatabaseInput.builder()

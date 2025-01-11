@@ -63,6 +63,7 @@ public class Menu extends ModifiableEntity implements Codeable, Available, Remar
      * 应用
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
     /**

@@ -74,7 +74,7 @@ public class TestContext implements InitializingBean, DisposableBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         // SaaS 应用
-        var saas = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "central-saas"), null);
+        var saas = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "saas"), null);
 
         // 为 SaaS 应用新增测试数据库
         var database = databasePersistence.insert(DatabaseInput.builder()
@@ -140,6 +140,6 @@ public class TestContext implements InitializingBean, DisposableBean {
      * 测试应用
      */
     public ApplicationEntity getApplication() {
-        return this.applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "central-identity"), null);
+        return this.applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "identity"), null);
     }
 }

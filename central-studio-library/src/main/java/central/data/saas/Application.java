@@ -73,18 +73,21 @@ public class Application extends ModifiableEntity implements Codeable, Available
      * 服务地址
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String url;
 
     /**
      * 上下文路径
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String contextPath;
 
     /**
      * 密钥
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String secret;
 
     /**
@@ -103,6 +106,7 @@ public class Application extends ModifiableEntity implements Codeable, Available
      * 路由
      */
     @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ApplicationRoute> routes;
 
     /**
