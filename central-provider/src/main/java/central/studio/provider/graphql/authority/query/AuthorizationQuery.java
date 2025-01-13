@@ -78,7 +78,7 @@ public class AuthorizationQuery {
      * @return 应用列表
      */
     @GraphQLFetcher
-    public List<ApplicationDTO> findApplications(@RequestParam String accountId, @RequestParam String type,
+    public List<ApplicationDTO> findApplications(@RequestParam String accountId, @RequestParam(required = false) String type,
                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.findApplications(accountId, type, tenant);
         return DTO.wrap(data, ApplicationDTO.class);
@@ -88,12 +88,12 @@ public class AuthorizationQuery {
      * 获取指定帐户在指定应用下被授权的角色清单
      *
      * @param accountId     帐户主键
-     * @param applicationId 应用主键
+     * @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有角色
      * @param tenant        租户标识
      * @return 角色清单
      */
     @GraphQLFetcher
-    public List<RoleDTO> findRoles(@RequestParam String accountId, @RequestParam String applicationId,
+    public List<RoleDTO> findRoles(@RequestParam String accountId, @RequestParam(required = false) String applicationId,
                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.findRoles(accountId, applicationId, tenant);
         return DTO.wrap(data, RoleDTO.class);
@@ -103,13 +103,15 @@ public class AuthorizationQuery {
      * 获取指定帐户在指定应用下被授权的菜单清单
      *
      * @param accountId     帐户主键
-     * @param type          应用菜单类型
-     * @param applicationId 应用主键
+     * @param type          应用菜单类型。如果为空时，则返回所有菜单类型
+     * @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有菜单
      * @param tenant        租户标识
      * @return 菜单清单
      */
     @GraphQLFetcher
-    public List<MenuDTO> findMenus(@RequestParam String accountId, @RequestParam String type, @RequestParam String applicationId,
+    public List<MenuDTO> findMenus(@RequestParam String accountId,
+                                   @RequestParam(required = false) String type,
+                                   @RequestParam(required = false) String applicationId,
                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.findMenus(accountId, type, applicationId, tenant);
         return DTO.wrap(data, MenuDTO.class);
@@ -119,12 +121,12 @@ public class AuthorizationQuery {
      * 获取指定帐户在指定应用下被授权的权限列表
      *
      * @param accountId     帐户主键
-     * @param applicationId 应用主键
+     * @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有权限
      * @param tenant        租户标识
      * @return 权限清单
      */
     @GraphQLFetcher
-    public List<PermissionDTO> findPermissions(@RequestParam String accountId, @RequestParam String applicationId,
+    public List<PermissionDTO> findPermissions(@RequestParam String accountId, @RequestParam(required = false) String applicationId,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.findPermissions(accountId, applicationId, tenant);
         return DTO.wrap(data, PermissionDTO.class);

@@ -70,9 +70,9 @@ public interface AuthorizationProvider extends Provider<Menu, MenuInput> {
      * @param tenant    租户标识
      * @return 应用列表
      */
-    List<Application> findApplications(@RequestParam String accountId, @RequestParam String type, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    List<Application> findApplications(@RequestParam String accountId, @RequestParam(required = false)  String type, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Application> findApplications(@RequestParam String accountId, @RequestParam String type);
+    List<Application> findApplications(@RequestParam String accountId, @RequestParam(required = false)  String type);
 
     /**
      * 获取指定帐户在指定应用下被授权的角色清单
@@ -82,9 +82,9 @@ public interface AuthorizationProvider extends Provider<Menu, MenuInput> {
      * @param tenant        租户标识
      * @return 角色清单
      */
-    List<Role> findRoles(@RequestParam String accountId, @RequestParam String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    List<Role> findRoles(@RequestParam String accountId, @RequestParam(required = false)  String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Role> findRoles(@RequestParam String accountId, @RequestParam String applicationId);
+    List<Role> findRoles(@RequestParam String accountId, @RequestParam(required = false)  String applicationId);
 
     /**
      * 获取指定帐户在指定应用下被授权的菜单清单
@@ -95,9 +95,9 @@ public interface AuthorizationProvider extends Provider<Menu, MenuInput> {
      * @param tenant        租户标识
      * @return 菜单清单
      */
-    List<Menu> findMenus(@RequestParam String accountId, @RequestParam String type, @RequestParam String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    List<Menu> findMenus(@RequestParam String accountId, @RequestParam(required = false) String type, @RequestParam(required = false)  String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Menu> findMenus(@RequestParam String accountId, @RequestParam String type, @RequestParam String applicationId);
+    List<Menu> findMenus(@RequestParam String accountId, @RequestParam(required = false)  String type, @RequestParam(required = false)  String applicationId);
 
     /**
      * 获取指定帐户在指定应用下被授权的权限列表
@@ -107,7 +107,7 @@ public interface AuthorizationProvider extends Provider<Menu, MenuInput> {
      * @param tenant        租户标识
      * @return 权限清单
      */
-    List<Permission> findPermissions(@RequestParam String accountId, @RequestParam String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    List<Permission> findPermissions(@RequestParam String accountId, @RequestParam(required = false)  String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Permission> findPermissions(@RequestParam String accountId, @RequestParam String applicationId);
+    List<Permission> findPermissions(@RequestParam String accountId, @RequestParam(required = false)  String applicationId);
 }

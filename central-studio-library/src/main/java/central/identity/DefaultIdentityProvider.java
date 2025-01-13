@@ -140,7 +140,7 @@ public class DefaultIdentityProvider implements IdentityProvider {
         }
     }
 
-    @Setter
+    @Setter(onMethod_ = @Autowired)
     private AuthorizationProvider provider;
 
     /**

@@ -168,12 +168,12 @@ public class AuthorizationPersistence {
      * 获取指定用户允许访问的菜单列表
      *
      * @param accountId     帐户主键
-     * @param type          菜单类型
-     * @param applicationId 应用主键
+     * @param type          菜单类型。如果为空时，则返回所有菜单类型
+     * @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有菜单
      * @param tenant        租户标识
      * @return 菜单列表
      */
-    public @Nonnull List<MenuEntity> findMenus(String accountId, String type, String applicationId, String tenant) {
+    public @Nonnull List<MenuEntity> findMenus(@Nonnull String accountId, @Nullable String type, @Nullable String applicationId, @Nonnull String tenant) {
         // 先查询用户被授权了哪些权限，再根据权限反推菜单
         var permissions = this.findPermissions(accountId, applicationId, tenant);
 

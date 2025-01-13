@@ -27,6 +27,7 @@ package central.studio.dashboard.logic.gateway;
 import central.bean.Page;
 import central.data.gateway.GatewayFilter;
 import central.data.gateway.GatewayFilterInput;
+import central.lang.Stringx;
 import central.provider.graphql.gateway.GatewayFilterProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -38,8 +39,10 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -79,7 +82,7 @@ public class GatewayLogic {
      * @param tenant     租户标识
      * @return 分页数据
      */
-    public Page<GatewayFilter> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<GatewayFilter> conditions, @Nullable Orders<GatewayFilter> orders, @Nonnull String tenant) {
+    public @Nonnull Page<GatewayFilter> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<GatewayFilter> conditions, @Nullable Orders<GatewayFilter> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
@@ -91,8 +94,19 @@ public class GatewayLogic {
      * @param tenant 租户标识
      * @return 详情
      */
-    public GatewayFilter findById(@Nonnull String id, @Nonnull String tenant) {
+    public @Nullable GatewayFilter findById(@Nonnull String id, @Nonnull String tenant) {
         return this.provider.findById(id, tenant);
+    }
+
+    /**
+     * 主键查询
+     *
+     * @param ids    主键集合
+     * @param tenant 租户标识
+     * @return 详情
+     */
+    public @Nonnull List<GatewayFilter> findByIds(@Nullable List<String> ids, @Nonnull String tenant) {
+        return this.provider.findByIds(ids, tenant);
     }
 
     /**
@@ -103,7 +117,7 @@ public class GatewayLogic {
      * @param tenant    租户标识
      * @return 插入后的数据
      */
-    public GatewayFilter insert(@Nonnull @Validated({Insert.class, Default.class}) GatewayFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
+    public @Nonnull GatewayFilter insert(@Nonnull @Validated({Insert.class, Default.class}) GatewayFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.insert(input, accountId, tenant);
     }
 
@@ -115,8 +129,40 @@ public class GatewayLogic {
      * @param tenant    租户标识
      * @return 更新后的数据
      */
-    public GatewayFilter update(@Nonnull @Validated({Update.class, Default.class}) GatewayFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
+    public @Nonnull GatewayFilter update(@Nonnull @Validated({Update.class, Default.class}) GatewayFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.update(input, accountId, tenant);
+    }
+
+    /**
+     * 启用数据
+     *
+     * @param id        待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    public @Nonnull GatewayFilter enable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var filter = this.provider.findById(id, tenant);
+        if (filter == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.provider.update(filter.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param id        待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    public @Nonnull GatewayFilter disable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var filter = this.provider.findById(id, tenant);
+        if (filter == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.provider.update(filter.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
     /**
