@@ -39,6 +39,7 @@ import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -58,14 +59,15 @@ import java.util.List;
 @RequestMapping("/dashboard/api/organization/units")
 public class UnitController {
 
+    /**
+     * 权限
+     */
     public interface Permissions {
         String VIEW = "organization:unit:view";
         String ADD = "organization:unit:add";
         String EDIT = "organization:unit:edit";
         String DELETE = "organization:unit:delete";
 
-
-        String DEPARTMENT_VIEW = "organization:unit:department:view";
         String DEPARTMENT_ADD = "organization:unit:department:add";
         String DEPARTMENT_EDIT = "organization:unit:department:edit";
         String DEPARTMENT_DELETE = "organization:unit:department:delete";
@@ -82,6 +84,7 @@ public class UnitController {
      * @return 分页结果
      */
     @GetMapping
+    @RequiresPermissions(Permissions.VIEW)
     public List<Unit> list(@Validated UnitListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.listBy(query.build(), null, tenant);
     }
@@ -94,6 +97,7 @@ public class UnitController {
      * @return 详情
      */
     @GetMapping("/details")
+    @RequiresPermissions(Permissions.VIEW)
     public Unit details(@Validated IdQuery<Unit> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
@@ -107,6 +111,7 @@ public class UnitController {
      * @return 新增后组织机构数据
      */
     @PostMapping
+    @RequiresPermissions(Permissions.ADD)
     public Unit add(@RequestBody @Validated({Insert.class, Default.class}) UnitParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
@@ -120,6 +125,7 @@ public class UnitController {
      * @return 更新后组织机构数据
      */
     @PutMapping
+    @RequiresPermissions(Permissions.EDIT)
     public Unit update(@RequestBody @Validated({Update.class, Default.class}) UnitParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
     }
@@ -133,6 +139,7 @@ public class UnitController {
      * @return 受影响数据行数
      */
     @DeleteMapping
+    @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
@@ -145,6 +152,7 @@ public class UnitController {
      * @return 分页结果
      */
     @GetMapping("/departments")
+    @RequiresPermissions(Permissions.VIEW)
     public List<Department> listDepartments(@Validated DepartmentListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.listDepartmentBy(query.build(), null, tenant);
     }
@@ -157,6 +165,7 @@ public class UnitController {
      * @return 详情
      */
     @GetMapping("/departments/details")
+    @RequiresPermissions(Permissions.VIEW)
     public Department detailsDepartment(@Validated IdQuery<Department> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findDepartmentById(query.getId(), tenant);
     }
@@ -170,6 +179,7 @@ public class UnitController {
      * @return 新增后组织机构数据
      */
     @PostMapping("/departments")
+    @RequiresPermissions(Permissions.DEPARTMENT_ADD)
     public Department addDepartment(@RequestBody @Validated({Insert.class, Default.class}) DepartmentParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertDepartment(params.toInput(), accountId, tenant);
     }
@@ -183,6 +193,7 @@ public class UnitController {
      * @return 更新后组织机构数据
      */
     @PutMapping("/departments")
+    @RequiresPermissions(Permissions.DEPARTMENT_EDIT)
     public Department updateDepartment(@RequestBody @Validated({Update.class, Default.class}) DepartmentParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.updateDepartment(params.toInput(), accountId, tenant);
     }
@@ -196,6 +207,7 @@ public class UnitController {
      * @return 受影响数据行数
      */
     @DeleteMapping("/departments")
+    @RequiresPermissions(Permissions.DEPARTMENT_DELETE)
     public long deleteDepartment(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteDepartmentByIds(params.getIds(), accountId, tenant);
     }

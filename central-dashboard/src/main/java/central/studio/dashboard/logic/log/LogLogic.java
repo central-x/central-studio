@@ -26,6 +26,7 @@ package central.studio.dashboard.logic.log;
 
 import central.bean.Page;
 import central.data.log.*;
+import central.lang.Stringx;
 import central.provider.graphql.log.LogCollectorProvider;
 import central.provider.graphql.log.LogFilterProvider;
 import central.provider.graphql.log.LogStorageProvider;
@@ -39,8 +40,10 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -151,6 +154,38 @@ public class LogLogic {
     }
 
     /**
+     * 启用数据
+     *
+     * @param id        待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    public @Nonnull LogCollector enableCollector(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var data = this.collectorProvider.findById(id, tenant);
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.collectorProvider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param id        待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    public @Nonnull LogCollector disableCollector(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var data = this.collectorProvider.findById(id, tenant);
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.collectorProvider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
+    }
+
+    /**
      * 根据主键删除数据
      *
      * @param ids       主键
@@ -214,6 +249,38 @@ public class LogLogic {
     }
 
     /**
+     * 启用数据
+     *
+     * @param id        待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    public @Nonnull LogStorage enableStorage(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var data = this.storageProvider.findById(id, tenant);
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.storageProvider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param id        待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    public @Nonnull LogStorage disableStorage(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var data = this.storageProvider.findById(id, tenant);
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.storageProvider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
+    }
+
+    /**
      * 根据主键删除数据
      *
      * @param ids       主键
@@ -273,6 +340,38 @@ public class LogLogic {
      */
     public LogFilter updateFilter(@Nonnull @Validated({Update.class, Default.class}) LogFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.filterProvider.update(input, accountId, tenant);
+    }
+
+    /**
+     * 启用数据
+     *
+     * @param id        待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    public @Nonnull LogFilter enableFilter(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var data = this.filterProvider.findById(id, tenant);
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.filterProvider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param id        待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    public @Nonnull LogFilter disableFilter(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var data = this.filterProvider.findById(id, tenant);
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.filterProvider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
     /**

@@ -23,7 +23,9 @@
           "broadcaster:delete": "删除",
           "broadcaster:edit": "编辑",
           "broadcaster:disable": "禁用",
-          "broadcaster:enable": "启用"
+          "broadcaster:enable": "启用",
+          "broadcaster:message:view": "查看消息",
+          "broadcaster:message:delete": "删除消息"
         }
       }
     ]

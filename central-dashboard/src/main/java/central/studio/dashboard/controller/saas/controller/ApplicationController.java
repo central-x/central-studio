@@ -26,6 +26,7 @@ package central.studio.dashboard.controller.saas.controller;
 
 import central.bean.Page;
 import central.data.saas.Application;
+import central.starter.web.param.IdParams;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.saas.param.ApplicationParams;
@@ -33,9 +34,11 @@ import central.studio.dashboard.controller.saas.query.ApplicationPageQuery;
 import central.studio.dashboard.logic.saas.ApplicationLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +56,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dashboard/api/saas/applications")
 public class ApplicationController {
 
+    /**
+     * 权限
+     */
     public interface Permissions {
         String VIEW = "saas:application:view";
         String ADD = "saas:application:add";
@@ -72,6 +78,7 @@ public class ApplicationController {
      * @return 分页结果
      */
     @GetMapping("/page")
+    @RequiresPermissions(Permissions.VIEW)
     public Page<Application> page(@Validated ApplicationPageQuery query) {
         return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null);
     }
@@ -83,6 +90,7 @@ public class ApplicationController {
      * @return 详情
      */
     @GetMapping("/details")
+    @RequiresPermissions(Permissions.VIEW)
     public Application details(@Validated IdQuery<Application> query) {
         return this.logic.findById(query.getId());
     }
@@ -95,6 +103,7 @@ public class ApplicationController {
      * @return 新增后的数据
      */
     @PostMapping
+    @RequiresPermissions(Permissions.ADD)
     public Application add(@RequestBody @Validated({Insert.class, Default.class}) ApplicationParams params, @RequestAttribute String accountId) {
         return this.logic.insert(params.toInput(), accountId);
     }
@@ -107,8 +116,37 @@ public class ApplicationController {
      * @return 更新后的数据
      */
     @PutMapping
+    @RequiresPermissions(Permissions.EDIT)
     public Application update(@RequestBody @Validated({Update.class, Default.class}) ApplicationParams params, @RequestAttribute String accountId) {
         return this.logic.update(params.toInput(), accountId);
+    }
+
+    /**
+     * 启用数据
+     *
+     * @param params    待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    @PutMapping("/enable")
+    @RequiresPermissions(Permissions.ENABLE)
+    public Application enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.enable(params.getId(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param params    待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    @PutMapping("/disable")
+    @RequiresPermissions(Permissions.DISABLE)
+    public Application disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.disable(params.getId(), accountId, tenant);
     }
 
     /**
@@ -119,6 +157,7 @@ public class ApplicationController {
      * @return 受影响数据行数
      */
     @DeleteMapping
+    @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId) {
         return this.logic.deleteByIds(params.getIds(), accountId);
     }

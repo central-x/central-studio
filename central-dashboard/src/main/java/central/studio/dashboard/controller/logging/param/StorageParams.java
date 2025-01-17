@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.log.param;
+package central.studio.dashboard.controller.logging.param;
 
-import central.data.log.LogCollectorInput;
+import central.data.log.LogStorageInput;
 import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -35,18 +35,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Log Collector Params
+ * Log Storage Params
  * <p>
- * 日志采集器入参
+ * 日志存储器入参
  *
  * @author Alan Yeh
- * @since 2024/11/24
+ * @since 2024/11/28
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CollectorParams {
+public class StorageParams {
 
     @Label("主键")
     @Null(groups = Insert.class)
@@ -88,8 +88,8 @@ public class CollectorParams {
     @Size(min = 1, max = 5 * 1024 * 1024)
     private String params;
 
-    public LogCollectorInput toInput() {
-        return LogCollectorInput.builder()
+    public LogStorageInput toInput() {
+        return LogStorageInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
                 .name(this.getName())

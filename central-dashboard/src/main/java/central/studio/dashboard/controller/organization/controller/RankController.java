@@ -36,6 +36,7 @@ import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,10 @@ import java.util.List;
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/organization/ranks")
 public class RankController {
-    
+
+    /**
+     * 权限
+     */
     public interface Permissions {
         String VIEW = "organization:rank:view";
         String ADD = "organization:rank:add";
@@ -73,6 +77,7 @@ public class RankController {
      * @return 分页结果
      */
     @GetMapping
+    @RequiresPermissions(Permissions.VIEW)
     public List<Rank> list(@Validated RankListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.listBy(query.build(), null, tenant);
     }
@@ -85,6 +90,7 @@ public class RankController {
      * @return 详情
      */
     @GetMapping("/details")
+    @RequiresPermissions(Permissions.VIEW)
     public Rank details(@Validated IdQuery<Rank> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
@@ -98,6 +104,7 @@ public class RankController {
      * @return 新增后数据
      */
     @PostMapping
+    @RequiresPermissions(Permissions.ADD)
     public Rank add(@RequestBody @Validated({Insert.class, Default.class}) RankParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
@@ -111,6 +118,7 @@ public class RankController {
      * @return 更新后数据
      */
     @PutMapping
+    @RequiresPermissions(Permissions.EDIT)
     public Rank update(@RequestBody @Validated({Update.class, Default.class}) RankParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
     }
@@ -124,6 +132,7 @@ public class RankController {
      * @return 受影响数据行数
      */
     @DeleteMapping
+    @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }

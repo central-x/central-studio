@@ -22,16 +22,16 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.identity.controller;
+package central.studio.dashboard.controller.logging.controller;
 
 import central.bean.Page;
-import central.data.identity.IdentityStrategy;
+import central.data.log.LogFilter;
 import central.starter.web.param.IdParams;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
-import central.studio.dashboard.controller.identity.param.StrategyParams;
-import central.studio.dashboard.controller.identity.query.StrategyPageQuery;
-import central.studio.dashboard.logic.identity.IdentityStrategyLogic;
+import central.studio.dashboard.controller.logging.param.FilterParams;
+import central.studio.dashboard.controller.logging.query.FilterPageQuery;
+import central.studio.dashboard.logic.log.LogLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -44,32 +44,32 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Identity Strategy Controller
+ * Log Filter Controller
  * <p>
- * 认证策略管理
+ * 日志过滤器管理
  *
  * @author Alan Yeh
- * @since 2024/11/11
+ * @since 2024/11/30
  */
-@RestController
+@RestController("logFilterController")
 @RequiresAuthentication
-@RequestMapping("/dashboard/api/identity/strategies")
-public class StrategyController {
+@RequestMapping("/dashboard/api/logging/filters")
+public class FilterController {
 
     /**
      * 权限
      */
     public interface Permissions {
-        String VIEW = "identity:strategy:view";
-        String ADD = "identity:strategy:add";
-        String EDIT = "identity:strategy:edit";
-        String DELETE = "identity:strategy:delete";
-        String ENABLE = "identity:strategy:enable";
-        String DISABLE = "identity:strategy:disable";
+        String VIEW = "logging:filter:view";
+        String ADD = "logging:filter:add";
+        String EDIT = "logging:filter:edit";
+        String DELETE = "logging:filter:delete";
+        String ENABLE = "logging:filter:enable";
+        String DISABLE = "logging:filter:disable";
     }
 
     @Setter(onMethod_ = @Autowired)
-    private IdentityStrategyLogic logic;
+    private LogLogic logic;
 
     /**
      * 按条件分页查询列表
@@ -80,8 +80,8 @@ public class StrategyController {
      */
     @GetMapping("/page")
     @RequiresPermissions(Permissions.VIEW)
-    public Page<IdentityStrategy> page(@Validated StrategyPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
+    public Page<LogFilter> page(@Validated FilterPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.pageFilterBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
     /**
@@ -93,8 +93,8 @@ public class StrategyController {
      */
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
-    public IdentityStrategy details(@Validated IdQuery<IdentityStrategy> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.findById(query.getId(), tenant);
+    public LogFilter details(@Validated IdQuery<LogFilter> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.findFilterById(query.getId(), tenant);
     }
 
     /**
@@ -107,8 +107,8 @@ public class StrategyController {
      */
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
-    public IdentityStrategy add(@RequestBody @Validated({Insert.class, Default.class}) StrategyParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.insert(params.toInput(), accountId, tenant);
+    public LogFilter add(@RequestBody @Validated({Insert.class, Default.class}) FilterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.insertFilter(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -121,8 +121,8 @@ public class StrategyController {
      */
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
-    public IdentityStrategy update(@RequestBody @Validated({Update.class, Default.class}) StrategyParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.update(params.toInput(), accountId, tenant);
+    public LogFilter update(@RequestBody @Validated({Update.class, Default.class}) FilterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.updateFilter(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -135,8 +135,8 @@ public class StrategyController {
      */
     @PutMapping("/enable")
     @RequiresPermissions(Permissions.ENABLE)
-    public IdentityStrategy enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.enable(params.getId(), accountId, tenant);
+    public LogFilter enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.enableFilter(params.getId(), accountId, tenant);
     }
 
     /**
@@ -149,8 +149,8 @@ public class StrategyController {
      */
     @PutMapping("/disable")
     @RequiresPermissions(Permissions.DISABLE)
-    public IdentityStrategy disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.disable(params.getId(), accountId, tenant);
+    public LogFilter disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.disableFilter(params.getId(), accountId, tenant);
     }
 
     /**
@@ -164,6 +164,6 @@ public class StrategyController {
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.deleteByIds(params.getIds(), accountId, tenant);
+        return this.logic.deleteFilterByIds(params.getIds(), accountId, tenant);
     }
 }

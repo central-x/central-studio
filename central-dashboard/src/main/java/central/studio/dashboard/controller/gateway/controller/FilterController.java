@@ -56,6 +56,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dashboard/api/gateway/filters")
 public class FilterController {
 
+    /**
+     * 权限
+     */
     public interface Permissions {
         String VIEW = "gateway:filter:view";
         String ADD = "gateway:filter:add";

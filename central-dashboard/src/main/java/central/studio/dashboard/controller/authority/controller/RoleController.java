@@ -26,6 +26,7 @@ package central.studio.dashboard.controller.authority.controller;
 
 import central.bean.Page;
 import central.data.authority.*;
+import central.starter.web.param.IdParams;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.authority.param.RoleParams;
@@ -41,6 +42,7 @@ import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -63,12 +65,14 @@ public class RoleController {
      * 权限
      */
     public interface Permissions {
-        String VIEW = "${application}:authority:system:role:view";
-        String ADD = "${application}:authority:system:role:add";
-        String EDIT = "${application}:authority:system:role:edit";
-        String REMOVE = "${application}:authority:system:role:remove";
-        String ENABLE = "${application}:authority:system:role:enable";
-        String DISABLE = "${application}:authority:system:role:disable";
+        String VIEW = "*:authority:system:role:view";
+        String ADD = "*:authority:system:role:add";
+        String EDIT = "*:authority:system:role:edit";
+        String DELETE = "*:authority:system:role:delete";
+        String ENABLE = "*:authority:system:role:enable";
+        String DISABLE = "*:authority:system:role:disable";
+
+        String GRANT = "*:authority:system:role:grant";
     }
 
     @Setter(onMethod_ = @Autowired)
@@ -82,6 +86,7 @@ public class RoleController {
      * @return 分页结果
      */
     @GetMapping("/page")
+    @RequiresPermissions(Permissions.VIEW)
     public Page<Role> page(@Validated RolePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
@@ -94,6 +99,7 @@ public class RoleController {
      * @return 详情
      */
     @GetMapping("/details")
+    @RequiresPermissions(Permissions.VIEW)
     public Role details(@Validated IdQuery<Role> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
@@ -107,6 +113,7 @@ public class RoleController {
      * @return 新增后数据
      */
     @PostMapping
+    @RequiresPermissions(Permissions.ADD)
     public Role add(@RequestBody @Validated({Insert.class, Default.class}) RoleParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
@@ -120,8 +127,37 @@ public class RoleController {
      * @return 更新后数据
      */
     @PutMapping
+    @RequiresPermissions(Permissions.EDIT)
     public Role update(@RequestBody @Validated({Update.class, Default.class}) RoleParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 启用数据
+     *
+     * @param params    待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    @PutMapping("/enable")
+    @RequiresPermissions(Permissions.ENABLE)
+    public Role enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.enable(params.getId(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param params    待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    @PutMapping("/disable")
+    @RequiresPermissions(Permissions.DISABLE)
+    public Role disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.disable(params.getId(), accountId, tenant);
     }
 
     /**
@@ -133,12 +169,14 @@ public class RoleController {
      * @return 受影响数据行数
      */
     @DeleteMapping
+    @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
 
     @Setter(onMethod_ = @Autowired)
     private MenuLogic menuLogic;
+
     /**
      * 获取已授权的权限
      * <p>
@@ -149,6 +187,7 @@ public class RoleController {
      * @return 授权菜单树
      */
     @GetMapping("/permissions")
+    @RequiresPermissions(Permissions.GRANT)
     public List<Menu> getPermissions(@Validated IdQuery<Role> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var relations = this.logic.findPermissions(query.getId(), tenant);
         return this.menuLogic.getMenuTreeByPermissionIds(relations.stream().map(RolePermission::getPermissionId).toList(), tenant);
@@ -162,6 +201,7 @@ public class RoleController {
      * @return 已添加的授权
      */
     @PostMapping("/permissions")
+    @RequiresPermissions(Permissions.GRANT)
     public List<RolePermission> addPermissions(@Validated @RequestBody RolePermissionParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertPermissions(params.toInputs(), accountId, tenant);
     }
@@ -175,6 +215,7 @@ public class RoleController {
      * @return 受影响数据行数
      */
     @DeleteMapping("/permissions")
+    @RequiresPermissions(Permissions.GRANT)
     public long deletePermissions(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deletePermissions(params.getIds(), accountId, tenant);
     }
@@ -187,6 +228,7 @@ public class RoleController {
      * @return 授权主体列表
      */
     @GetMapping("/principals")
+    @RequiresPermissions(Permissions.GRANT)
     public List<RolePrincipal> getPrincipals(@Validated IdQuery<Role> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findPrincipals(query.getId(), tenant);
     }
@@ -200,6 +242,7 @@ public class RoleController {
      * @return 已添加的授权主体
      */
     @PostMapping("/principals")
+    @RequiresPermissions(Permissions.GRANT)
     public List<RolePrincipal> addPrincipals(@Validated @RequestBody RolePrincipalParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertPrincipals(params.toInputs(), accountId, tenant);
     }
@@ -213,6 +256,7 @@ public class RoleController {
      * @return 受影响数据行数
      */
     @DeleteMapping("/principals")
+    @RequiresPermissions(Permissions.GRANT)
     public long deletePrincipals(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deletePrincipals(params.getIds(), accountId, tenant);
     }
@@ -225,6 +269,7 @@ public class RoleController {
      * @return 授权范围列表
      */
     @GetMapping("/ranges")
+    @RequiresPermissions(Permissions.GRANT)
     public List<RoleRange> getRanges(@Validated IdQuery<Role> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findRanges(query.getId(), tenant);
     }
@@ -238,6 +283,7 @@ public class RoleController {
      * @return 已添加的授权范围
      */
     @PostMapping("/ranges")
+    @RequiresPermissions(Permissions.GRANT)
     public List<RoleRange> addRanges(@Validated @RequestBody RoleRangeParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertRanges(params.toInputs(), accountId, tenant);
     }
@@ -251,6 +297,7 @@ public class RoleController {
      * @return 受影响数据行数
      */
     @DeleteMapping("/ranges")
+    @RequiresPermissions(Permissions.GRANT)
     public long deleteRanges(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteRanges(params.getIds(), accountId, tenant);
     }

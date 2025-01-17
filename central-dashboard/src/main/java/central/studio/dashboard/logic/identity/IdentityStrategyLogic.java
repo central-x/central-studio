@@ -27,6 +27,7 @@ package central.studio.dashboard.logic.identity;
 import central.bean.Page;
 import central.data.identity.IdentityStrategy;
 import central.data.identity.IdentityStrategyInput;
+import central.lang.Stringx;
 import central.provider.graphql.identity.IdentityStrategyProvider;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -38,8 +39,10 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -117,6 +120,39 @@ public class IdentityStrategyLogic {
      */
     public IdentityStrategy update(@Nonnull @Validated({Update.class, Default.class}) IdentityStrategyInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.update(input, accountId, tenant);
+    }
+
+
+    /**
+     * 启用数据
+     *
+     * @param id        待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    public @Nonnull IdentityStrategy enable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var data = this.provider.findById(id, tenant);
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.provider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param id        待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    public @Nonnull IdentityStrategy disable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
+        var data = this.provider.findById(id, tenant);
+        if (data == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
+        }
+        return this.provider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
     /**

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.log.query;
+package central.studio.dashboard.controller.logging.query;
 
 import central.data.log.LogCollector;
 import central.data.organization.option.AreaType;

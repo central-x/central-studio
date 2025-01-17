@@ -22,14 +22,15 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.log.controller;
+package central.studio.dashboard.controller.logging.controller;
 
 import central.bean.Page;
-import central.data.log.LogFilter;
+import central.data.log.LogCollector;
+import central.starter.web.param.IdParams;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
-import central.studio.dashboard.controller.log.param.FilterParams;
-import central.studio.dashboard.controller.log.query.FilterPageQuery;
+import central.studio.dashboard.controller.logging.param.CollectorParams;
+import central.studio.dashboard.controller.logging.query.CollectorPageQuery;
 import central.studio.dashboard.logic.log.LogLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -37,30 +38,34 @@ import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Log Filter Controller
+ * Log Collector Controller
  * <p>
- * 日志过滤器管理
+ * 日志采集器管理
  *
  * @author Alan Yeh
- * @since 2024/11/30
+ * @since 2024/11/24
  */
-@RestController("logFilterController")
+@RestController("logCollectorController")
 @RequiresAuthentication
-@RequestMapping("/dashboard/api/log/filters")
-public class FilterController {
+@RequestMapping("/dashboard/api/logging/collectors")
+public class CollectorController {
 
+    /**
+     * 权限
+     */
     public interface Permissions {
-        String VIEW = "logging:filter:view";
-        String ADD = "logging:filter:add";
-        String EDIT = "logging:filter:edit";
-        String DELETE = "logging:filter:delete";
-        String ENABLE = "logging:filter:enable";
-        String DISABLE = "logging:filter:disable";
+        String VIEW = "logging:collector:view";
+        String ADD = "logging:collector:add";
+        String EDIT = "logging:collector:edit";
+        String DELETE = "logging:collector:delete";
+        String ENABLE = "logging:collector:enable";
+        String DISABLE = "logging:collector:disable";
     }
 
     @Setter(onMethod_ = @Autowired)
@@ -74,8 +79,8 @@ public class FilterController {
      * @return 分页结果
      */
     @GetMapping("/page")
-    public Page<LogFilter> page(@Validated FilterPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.pageFilterBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
+    public Page<LogCollector> page(@Validated CollectorPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.pageCollectorBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
     /**
@@ -86,8 +91,8 @@ public class FilterController {
      * @return 详情
      */
     @GetMapping("/details")
-    public LogFilter details(@Validated IdQuery<LogFilter> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.findFilterById(query.getId(), tenant);
+    public LogCollector details(@Validated IdQuery<LogCollector> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.findCollectorById(query.getId(), tenant);
     }
 
     /**
@@ -99,8 +104,8 @@ public class FilterController {
      * @return 新增后的数据
      */
     @PostMapping
-    public LogFilter add(@RequestBody @Validated({Insert.class, Default.class}) FilterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.insertFilter(params.toInput(), accountId, tenant);
+    public LogCollector add(@RequestBody @Validated({Insert.class, Default.class}) CollectorParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.insertCollector(params.toInput(), accountId, tenant);
     }
 
     /**
@@ -112,8 +117,36 @@ public class FilterController {
      * @return 更新后的数据
      */
     @PutMapping
-    public LogFilter update(@RequestBody @Validated({Update.class, Default.class}) FilterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.updateFilter(params.toInput(), accountId, tenant);
+    public LogCollector update(@RequestBody @Validated({Update.class, Default.class}) CollectorParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.updateCollector(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 启用数据
+     *
+     * @param params    待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    @PutMapping("/enable")
+    @RequiresPermissions(Permissions.ENABLE)
+    public LogCollector enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.enableCollector(params.getId(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param params    待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    @PutMapping("/disable")
+    @RequiresPermissions(Permissions.DISABLE)
+    public LogCollector disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.disableCollector(params.getId(), accountId, tenant);
     }
 
     /**
@@ -126,6 +159,6 @@ public class FilterController {
      */
     @DeleteMapping
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.logic.deleteFilterByIds(params.getIds(), accountId, tenant);
+        return this.logic.deleteCollectorByIds(params.getIds(), accountId, tenant);
     }
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.log;
+package central.studio.dashboard.controller.logging;
 
 import central.data.log.LogFilter;
 import central.lang.reflect.TypeRef;
@@ -31,9 +31,9 @@ import central.sql.query.Conditions;
 import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
-import central.studio.dashboard.controller.log.controller.FilterController;
-import central.studio.dashboard.controller.log.param.FilterParams;
-import central.studio.dashboard.controller.log.param.PredicateParams;
+import central.studio.dashboard.controller.logging.controller.FilterController;
+import central.studio.dashboard.controller.logging.param.FilterParams;
+import central.studio.dashboard.controller.logging.param.PredicateParams;
 import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
 import central.studio.provider.database.persistence.log.entity.LogStorageEntity;
 import central.studio.provider.database.persistence.log.mapper.LogCollectorMapper;
@@ -65,7 +65,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestFilterController extends TestController {
-    private static final String PATH = "/dashboard/api/log/filters";
+    private static final String PATH = "/dashboard/api/logging/filters";
 
     @Setter(onMethod_ = @Autowired)
     private LogCollectorMapper collectorMapper;

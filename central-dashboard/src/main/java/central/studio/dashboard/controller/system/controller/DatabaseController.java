@@ -26,6 +26,7 @@ package central.studio.dashboard.controller.system.controller;
 
 import central.bean.Page;
 import central.data.system.Database;
+import central.starter.web.param.IdParams;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.system.param.DatabaseParams;
@@ -37,6 +38,7 @@ import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +63,7 @@ public class DatabaseController {
         String VIEW = "*:system:database:view";
         String ADD = "*:system:database:add";
         String EDIT = "*:system:database:edit";
-        String REMOVE = "*:system:database:remove";
+        String DELETE = "*:system:database:delete";
         String ENABLE = "*:system:database:enable";
         String DISABLE = "*:system:database:disable";
     }
@@ -77,6 +79,7 @@ public class DatabaseController {
      * @return 分页结果
      */
     @GetMapping("/page")
+    @RequiresPermissions(Permissions.VIEW)
     public Page<Database> page(@Validated DatabasePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
@@ -89,6 +92,7 @@ public class DatabaseController {
      * @return 详情
      */
     @GetMapping("/details")
+    @RequiresPermissions(Permissions.VIEW)
     public Database details(@Validated IdQuery<Database> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
@@ -101,6 +105,7 @@ public class DatabaseController {
      * @return 新增后的字典
      */
     @PostMapping
+    @RequiresPermissions(Permissions.ADD)
     public Database add(@RequestBody @Validated({Insert.class, Default.class}) DatabaseParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
@@ -114,8 +119,37 @@ public class DatabaseController {
      * @return 更新后字典数据
      */
     @PutMapping
+    @RequiresPermissions(Permissions.EDIT)
     public Database update(@RequestBody @Validated({Update.class, Default.class}) DatabaseParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 启用数据
+     *
+     * @param params    待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    @PutMapping("/enable")
+    @RequiresPermissions(Permissions.ENABLE)
+    public Database enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.enable(params.getId(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param params    待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    @PutMapping("/disable")
+    @RequiresPermissions(Permissions.DISABLE)
+    public Database disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.disable(params.getId(), accountId, tenant);
     }
 
     /**
@@ -127,6 +161,7 @@ public class DatabaseController {
      * @return 受影响数据行数
      */
     @DeleteMapping
+    @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }

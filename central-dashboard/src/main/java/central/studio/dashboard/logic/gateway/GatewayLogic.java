@@ -142,11 +142,11 @@ public class GatewayLogic {
      * @return 启用后的数据
      */
     public @Nonnull GatewayFilter enable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
-        var filter = this.provider.findById(id, tenant);
-        if (filter == null) {
+        var data = this.provider.findById(id, tenant);
+        if (data == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
         }
-        return this.provider.update(filter.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
+        return this.provider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
     }
 
     /**
@@ -158,11 +158,11 @@ public class GatewayLogic {
      * @return 禁用后的数据
      */
     public @Nonnull GatewayFilter disable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
-        var filter = this.provider.findById(id, tenant);
-        if (filter == null) {
+        var data = this.provider.findById(id, tenant);
+        if (data == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Stringx.format("找不到网关数据[id={}]", id));
         }
-        return this.provider.update(filter.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
+        return this.provider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
     /**

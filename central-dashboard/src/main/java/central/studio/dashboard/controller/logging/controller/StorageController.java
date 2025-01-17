@@ -22,14 +22,15 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.log.controller;
+package central.studio.dashboard.controller.logging.controller;
 
 import central.bean.Page;
 import central.data.log.LogStorage;
+import central.starter.web.param.IdParams;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
-import central.studio.dashboard.controller.log.param.StorageParams;
-import central.studio.dashboard.controller.log.query.StoragePageQuery;
+import central.studio.dashboard.controller.logging.param.StorageParams;
+import central.studio.dashboard.controller.logging.query.StoragePageQuery;
 import central.studio.dashboard.logic.log.LogLogic;
 import central.validation.group.Insert;
 import central.validation.group.Update;
@@ -37,6 +38,7 @@ import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -52,9 +54,12 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController("logStorageController")
 @RequiresAuthentication
-@RequestMapping("/dashboard/api/log/storages")
+@RequestMapping("/dashboard/api/logging/storages")
 public class StorageController {
 
+    /**
+     * 权限
+     */
     public interface Permissions {
         String VIEW = "logging:storage:view";
         String ADD = "logging:storage:add";
@@ -75,6 +80,7 @@ public class StorageController {
      * @return 分页结果
      */
     @GetMapping("/page")
+    @RequiresPermissions(Permissions.VIEW)
     public Page<LogStorage> page(@Validated StoragePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageStorageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
@@ -87,6 +93,7 @@ public class StorageController {
      * @return 详情
      */
     @GetMapping("/details")
+    @RequiresPermissions(Permissions.VIEW)
     public LogStorage details(@Validated IdQuery<LogStorage> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findStorageById(query.getId(), tenant);
     }
@@ -100,6 +107,7 @@ public class StorageController {
      * @return 新增后的数据
      */
     @PostMapping
+    @RequiresPermissions(Permissions.ADD)
     public LogStorage add(@RequestBody @Validated({Insert.class, Default.class}) StorageParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertStorage(params.toInput(), accountId, tenant);
     }
@@ -113,8 +121,37 @@ public class StorageController {
      * @return 更新后的数据
      */
     @PutMapping
+    @RequiresPermissions(Permissions.EDIT)
     public LogStorage update(@RequestBody @Validated({Update.class, Default.class}) StorageParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.updateStorage(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 启用数据
+     *
+     * @param params    待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    @PutMapping("/enable")
+    @RequiresPermissions(Permissions.ENABLE)
+    public LogStorage enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.enableStorage(params.getId(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param params    待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    @PutMapping("/disable")
+    @RequiresPermissions(Permissions.DISABLE)
+    public LogStorage disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.disableStorage(params.getId(), accountId, tenant);
     }
 
     /**
@@ -126,6 +163,7 @@ public class StorageController {
      * @return 受影响数据行数
      */
     @DeleteMapping
+    @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteStorageByIds(params.getIds(), accountId, tenant);
     }

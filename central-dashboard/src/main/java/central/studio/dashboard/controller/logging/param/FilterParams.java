@@ -22,31 +22,35 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.log.param;
+package central.studio.dashboard.controller.logging.param;
 
-import central.data.log.LogStorageInput;
+import central.data.log.LogFilterInput;
+import central.util.Listx;
 import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
- * Log Storage Params
+ * Log Filter Params
  * <p>
- * 日志存储器入参
+ * 日志过滤器入参
  *
  * @author Alan Yeh
- * @since 2024/11/28
+ * @since 2024/11/30
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StorageParams {
+public class FilterParams {
 
     @Label("主键")
     @Null(groups = Insert.class)
@@ -70,11 +74,6 @@ public class StorageParams {
     @Size(min = 1, max = 50)
     private String name;
 
-    @Label("类型")
-    @NotBlank
-    @Size(min = 1, max = 32)
-    private String type;
-
     @Label("是否启用")
     @NotNull
     private Boolean enabled;
@@ -83,20 +82,28 @@ public class StorageParams {
     @Size(max = 1024)
     private String remark;
 
-    @Label("初始化参数")
-    @NotNull
-    @Size(min = 1, max = 5 * 1024 * 1024)
-    private String params;
+    @Label("采集器主键")
+    @NotEmpty
+    private List<String> collectorIds;
 
-    public LogStorageInput toInput() {
-        return LogStorageInput.builder()
+    @Label("存储器主键")
+    @NotEmpty
+    private List<String> storageIds;
+
+    @Label("断言")
+    @Valid
+    private List<PredicateParams> predicates;
+
+    public LogFilterInput toInput() {
+        return LogFilterInput.builder()
                 .id(this.getId())
                 .code(this.getCode())
                 .name(this.getName())
-                .type(this.getType())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())
-                .params(this.getParams())
+                .collectorIds(this.getCollectorIds())
+                .storageIds(this.getStorageIds())
+                .predicates(Listx.asStream(this.getPredicates()).map(PredicateParams::toInput).toList())
                 .build();
     }
 }

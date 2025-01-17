@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.log.param;
+package central.studio.dashboard.controller.logging.param;
 
 import central.data.log.LogPredicateInput;
 import central.validation.Label;

@@ -27,6 +27,7 @@ package central.studio.dashboard.controller.multicast.controller;
 import central.bean.Page;
 import central.data.multicast.MulticastBroadcaster;
 import central.data.multicast.MulticastMessage;
+import central.starter.web.param.IdParams;
 import central.starter.web.param.IdsParams;
 import central.starter.web.query.IdQuery;
 import central.studio.dashboard.controller.multicast.param.BroadcasterParams;
@@ -39,6 +40,7 @@ import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +58,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dashboard/api/multicast/broadcasters")
 public class BroadcasterController {
 
+    /**
+     * 权限
+     */
     public interface Permissions {
         String VIEW = "multicast:broadcaster:view";
         String ADD = "multicast:broadcaster:add";
@@ -63,6 +68,9 @@ public class BroadcasterController {
         String DELETE = "multicast:broadcaster:delete";
         String ENABLE = "multicast:broadcaster:enable";
         String DISABLE = "multicast:broadcaster:disable";
+
+        String MESSAGE_VIEW = "multicast:broadcaster:message:view";
+        String MESSAGE_DELETE = "multicast:broadcaster:message:delete";
     }
 
     @Setter(onMethod_ = @Autowired)
@@ -76,6 +84,7 @@ public class BroadcasterController {
      * @return 分页结果
      */
     @GetMapping("/page")
+    @RequiresPermissions(Permissions.VIEW)
     public Page<MulticastBroadcaster> page(@Validated BroadcasterPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
@@ -88,6 +97,7 @@ public class BroadcasterController {
      * @return 详情
      */
     @GetMapping("/details")
+    @RequiresPermissions(Permissions.VIEW)
     public MulticastBroadcaster details(@Validated IdQuery<MulticastBroadcaster> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
@@ -101,6 +111,7 @@ public class BroadcasterController {
      * @return 新增后的数据
      */
     @PostMapping
+    @RequiresPermissions(Permissions.ADD)
     public MulticastBroadcaster add(@RequestBody @Validated({Insert.class, Default.class}) BroadcasterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
@@ -114,8 +125,37 @@ public class BroadcasterController {
      * @return 更新后的数据
      */
     @PutMapping
+    @RequiresPermissions(Permissions.EDIT)
     public MulticastBroadcaster update(@RequestBody @Validated({Update.class, Default.class}) BroadcasterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
+    }
+
+    /**
+     * 启用数据
+     *
+     * @param params    待启用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 启用后的数据
+     */
+    @PutMapping("/enable")
+    @RequiresPermissions(Permissions.ENABLE)
+    public MulticastBroadcaster enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.enable(params.getId(), accountId, tenant);
+    }
+
+    /**
+     * 禁用数据
+     *
+     * @param params    待禁用主键
+     * @param accountId 当前登录帐号
+     * @param tenant    租户标识
+     * @return 禁用后的数据
+     */
+    @PutMapping("/disable")
+    @RequiresPermissions(Permissions.DISABLE)
+    public MulticastBroadcaster disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+        return this.logic.disable(params.getId(), accountId, tenant);
     }
 
     /**
@@ -127,6 +167,7 @@ public class BroadcasterController {
      * @return 受影响数据行数
      */
     @DeleteMapping
+    @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
@@ -139,6 +180,7 @@ public class BroadcasterController {
      * @return 列表结果
      */
     @GetMapping("/messages/page")
+    @RequiresPermissions(Permissions.MESSAGE_VIEW)
     public Page<MulticastMessage> pageMessages(@Validated MessagePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageMessages(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
@@ -152,6 +194,7 @@ public class BroadcasterController {
      * @return 受影响数据行数
      */
     @DeleteMapping("/messages")
+    @RequiresPermissions(Permissions.MESSAGE_DELETE)
     public long deleteMessages(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteMessagesByIds(params.getIds(), accountId, tenant);
     }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.studio.dashboard.controller.log;
+package central.studio.dashboard.controller.logging;
 
 import central.data.log.LogCollector;
 import central.lang.reflect.TypeRef;
@@ -30,8 +30,8 @@ import central.provider.scheduled.DataContext;
 import central.starter.test.cookie.CookieStore;
 import central.studio.dashboard.DashboardApplication;
 import central.studio.dashboard.controller.TestController;
-import central.studio.dashboard.controller.log.controller.CollectorController;
-import central.studio.dashboard.controller.log.param.CollectorParams;
+import central.studio.dashboard.controller.logging.controller.CollectorController;
+import central.studio.dashboard.controller.logging.param.CollectorParams;
 import central.studio.dashboard.controller.storage.param.BucketParams;
 import central.util.Jsonx;
 import central.util.Mapx;
@@ -58,7 +58,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestCollectorController extends TestController {
 
-    private static final String PATH = "/dashboard/api/log/collectors";
+    private static final String PATH = "/dashboard/api/logging/collectors";
 
     /**
      * @see CollectorController#add

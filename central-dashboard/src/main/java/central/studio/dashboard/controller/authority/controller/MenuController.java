@@ -39,6 +39,7 @@ import central.web.XForwardedHeaders;
 import jakarta.validation.groups.Default;
 import lombok.Setter;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -57,20 +58,20 @@ import java.util.List;
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/authority/menus")
 public class MenuController {
+    
     /**
      * 权限
      */
     public interface Permissions {
-        String VIEW = "${application}:authority:menu:view";
-        String ADD = "${application}:authority:menu:add";
-        String EDIT = "${application}:authority:menu:edit";
-        String REMOVE = "${application}:authority:menu:remove";
-        String ENABLE = "${application}:authority:menu:enable";
-        String DISABLE = "${application}:authority:menu:disable";
+        String VIEW = "*:authority:menu:view";
+        String ADD = "*:authority:menu:add";
+        String EDIT = "*:authority:menu:edit";
+        String DELETE = "*:authority:menu:delete";
+        String ENABLE = "*:authority:menu:enable";
+        String DISABLE = "*:authority:menu:disable";
 
-        String PERMISSION = "${application}:authority:menu:permission";
+        String PERMISSION = "*:authority:menu:permission";
     }
-
 
     @Setter(onMethod_ = @Autowired)
     private MenuLogic logic;
@@ -83,6 +84,7 @@ public class MenuController {
      * @return 分页结果
      */
     @GetMapping
+    @RequiresPermissions(Permissions.VIEW)
     public List<Menu> list(@Validated MenuListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findBy(query.getLimit(), query.getOffset(), query.build(), null, tenant);
     }
@@ -95,6 +97,7 @@ public class MenuController {
      * @return 详情
      */
     @GetMapping("/details")
+    @RequiresPermissions(Permissions.VIEW)
     public Menu details(@Validated IdQuery<Menu> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
@@ -108,6 +111,7 @@ public class MenuController {
      * @return 新增后数据
      */
     @PostMapping
+    @RequiresPermissions(Permissions.ADD)
     public Menu add(@RequestBody @Validated({Insert.class, Default.class}) MenuParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
@@ -121,6 +125,7 @@ public class MenuController {
      * @return 更新后数据
      */
     @PutMapping
+    @RequiresPermissions(Permissions.EDIT)
     public Menu update(@RequestBody @Validated({Update.class, Default.class}) MenuParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
     }
@@ -134,6 +139,7 @@ public class MenuController {
      * @return 受影响数据行数
      */
     @DeleteMapping
+    @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
@@ -146,6 +152,7 @@ public class MenuController {
      * @return 列表结果
      */
     @GetMapping("/permissions")
+    @RequiresPermissions(Permissions.PERMISSION)
     public List<Permission> listPermissions(@Validated PermissionListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findPermissionsBy(query.getLimit(), query.getOffset(), query.build(), null, tenant);
     }
@@ -159,6 +166,7 @@ public class MenuController {
      * @return 新增后数据
      */
     @PostMapping("/permissions")
+    @RequiresPermissions(Permissions.PERMISSION)
     public Permission addPermission(@RequestBody @Validated({Insert.class, Default.class}) PermissionParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertPermission(params.toInput(), accountId, tenant);
     }
@@ -173,6 +181,7 @@ public class MenuController {
      * @return 更新后数据
      */
     @PutMapping("/permissions")
+    @RequiresPermissions(Permissions.PERMISSION)
     public Permission updatePermission(@RequestBody @Validated({Update.class, Default.class}) PermissionParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.updatePermission(params.toInput(), accountId, tenant);
     }
@@ -186,6 +195,7 @@ public class MenuController {
      * @return 受影响数据行数
      */
     @DeleteMapping("/permissions")
+    @RequiresPermissions(Permissions.PERMISSION)
     public long deletePermissions(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deletePermissionsByIds(params.getIds(), accountId, tenant);
     }
