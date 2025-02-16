@@ -47,7 +47,7 @@ import java.io.Serial;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class IdentityPassword extends Entity {
+public class IdentityPassword extends Entity implements Available {
     @Serial
     private static final long serialVersionUID = -5570891457253320202L;
 
@@ -69,6 +69,12 @@ public class IdentityPassword extends Entity {
      */
     @Nonnull
     private String value;
+
+    /**
+     * 是否启用
+     */
+    @Nonnull
+    private Boolean enabled;
 
     /**
      * 创建人信息

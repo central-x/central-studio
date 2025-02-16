@@ -16,6 +16,7 @@ query PasswordProvider($id: String) {
                     name
                 }
                 value
+                enabled
 
                 creatorId
                 createDate
@@ -48,6 +49,7 @@ query PasswordProvider($ids: [String]) {
                     name
                 }
                 value
+                enabled
 
                 creatorId
                 createDate
@@ -80,6 +82,7 @@ query PasswordProvider($limit: Long, $offset: Long, $conditions: [ConditionInput
                     name
                 }
                 value
+                enabled
 
                 creatorId
                 createDate
@@ -120,6 +123,7 @@ query PasswordProvider($pageIndex: Long, $pageSize: Long, $conditions: [Conditio
                             name
                         }
                         value
+                        enabled
 
                         creatorId
                         createDate
@@ -169,6 +173,7 @@ mutation PasswordProvider($input: IdentityPasswordInput, $operator: String) {
                     name
                 }
                 value
+                enabled
 
                 creatorId
                 createDate
@@ -201,6 +206,7 @@ mutation PasswordProvider($inputs: [IdentityPasswordInput], $operator: String) {
                     name
                 }
                 value
+                enabled
 
                 creatorId
                 createDate

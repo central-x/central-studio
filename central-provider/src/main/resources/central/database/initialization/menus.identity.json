@@ -4,7 +4,7 @@
     "name": "认证管理",
     "icon": "",
     "url": "",
-    "type": "admin",
+    "type": "console",
     "enabled": true,
     "order": 0,
     "permissions": {},
@@ -14,7 +14,7 @@
         "name": "策略管理",
         "icon": "",
         "url": "@/identity/strategy",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 0,
         "permissions": {

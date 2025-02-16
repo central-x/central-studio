@@ -84,6 +84,16 @@ public class ApplicationParams {
     @Size(min = 1, max = 64)
     private String contextPath;
 
+    @Label("业务视图首页")
+    @NotBlank
+    @Size(min = 1, max = 4096)
+    private String businessView;
+
+    @Label("管理视图首页")
+    @NotBlank
+    @Size(min = 1, max = 4096)
+    private String consoleView;
+
     @Label("服务地址")
     @NotBlank
     @Size(min = 1, max = 1024)
@@ -114,6 +124,8 @@ public class ApplicationParams {
                 .logo(this.getLogo())
                 .url(this.getUrl())
                 .contextPath(this.getContextPath())
+                .businessView(this.getBusinessView())
+                .consoleView(this.getConsoleView())
                 .secret(this.getSecret())
                 .enabled(this.getEnabled())
                 .remark(this.getRemark())

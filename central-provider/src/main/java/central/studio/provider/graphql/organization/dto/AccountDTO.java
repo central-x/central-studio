@@ -24,18 +24,21 @@
 
 package central.studio.provider.graphql.organization.dto;
 
+import central.data.organization.AccountProfile;
+import central.lang.Stringx;
 import central.provider.graphql.DTO;
-import central.studio.provider.database.persistence.organization.AccountPersistence;
-import central.studio.provider.graphql.authority.dto.RoleDTO;
-import central.studio.provider.database.persistence.authority.RolePersistence;
-import central.studio.provider.database.persistence.organization.entity.AccountEntity;
-import central.studio.provider.database.persistence.organization.entity.AccountUnitEntity;
-import central.studio.provider.graphql.organization.query.AccountUnitQuery;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.authority.RolePersistence;
+import central.studio.provider.database.persistence.organization.AccountPersistence;
+import central.studio.provider.database.persistence.organization.entity.AccountEntity;
+import central.studio.provider.database.persistence.organization.entity.AccountUnitEntity;
+import central.studio.provider.graphql.authority.dto.RoleDTO;
+import central.studio.provider.graphql.organization.query.AccountUnitQuery;
+import central.util.Jsonx;
 import central.web.XForwardedHeaders;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
@@ -67,6 +70,18 @@ public class AccountDTO extends AccountEntity implements DTO {
     @GraphQLGetter
     public Boolean getSupervisor(@Autowired AccountPersistence persistence) {
         return persistence.isSupervisor(this.getId());
+    }
+
+    /**
+     * 配置信息
+     */
+    @GraphQLGetter
+    public AccountProfile getProfile() {
+        if (Stringx.isNullOrBlank(this.getProfileJson())) {
+            return new AccountProfile();
+        } else {
+            return Jsonx.Default().deserialize(this.getProfileJson(), AccountProfile.class);
+        }
     }
 
     /**

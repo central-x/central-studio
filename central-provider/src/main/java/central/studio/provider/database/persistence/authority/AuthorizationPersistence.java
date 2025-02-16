@@ -122,13 +122,13 @@ public class AuthorizationPersistence {
                                                        @Nonnull String tenant) {
         var menus = this.findMenus(accountId, type, null, tenant);
 
-        var applicationIds = Listx.asStream(menus).map(MenuEntity::getApplicationId).collect(Collectors.toSet());
+        var applicationIds = Listx.asStream(menus).map(MenuEntity::getApplicationId).distinct().collect(Collectors.toList());
         if (applicationIds.isEmpty()) {
             return List.of();
         }
 
         var container = this.getContainer();
-        return applicationIds.stream().map(container::getApplicationById).toList();
+        return container.getApplicationsByIds(applicationIds);
     }
 
     /**

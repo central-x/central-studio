@@ -84,6 +84,18 @@ public class Application extends ModifiableEntity implements Codeable, Available
     private String contextPath;
 
     /**
+     * 业务视图首页
+     */
+    @Nonnull
+    private String businessView;
+
+    /**
+     * 管理视图首页
+     */
+    @Nonnull
+    private String consoleView;
+
+    /**
      * 密钥
      */
     @Nonnull

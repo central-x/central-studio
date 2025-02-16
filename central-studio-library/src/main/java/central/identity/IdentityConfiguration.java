@@ -26,6 +26,8 @@ package central.identity;
 
 import central.identity.client.SessionClient;
 import central.net.http.executor.apache.ApacheHttpClientExecutor;
+import central.net.http.processor.impl.SetHeaderProcessor;
+import central.net.http.processor.impl.TextResponseProcessor;
 import central.net.http.processor.impl.TransmitForwardedProcessor;
 import central.net.http.proxy.HttpProxyFactory;
 import central.net.http.proxy.contract.spring.SpringContract;
@@ -34,6 +36,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 /**
  * Identity Configuration
@@ -55,6 +59,8 @@ public class IdentityConfiguration {
         return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
                 .contact(new SpringContract())
                 .processor(new TransmitForwardedProcessor())
+                .processor(new SetHeaderProcessor(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE))
+                .processor(new TextResponseProcessor())
                 .baseUrl(properties.getUrl())
                 .target(SessionClient.class);
     }

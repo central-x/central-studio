@@ -177,7 +177,7 @@ public class TestAuthorizationProvider {
         var application = this.context.getApplication();
 
         // syssa 有所有权限
-        var applications = provider.findApplications("syssa", MenuType.BACKEND.getValue(), tenant.getCode());
+        var applications = provider.findApplications("syssa", MenuType.CONSOLE.getValue(), tenant.getCode());
 
         assertNotNull(applications);
         assertFalse(applications.isEmpty());
@@ -238,7 +238,7 @@ public class TestAuthorizationProvider {
             assertEquals(role.getCode(), roles.get(0).getCode());
 
             // test findMenus
-            var menus = provider.findMenus(account.getId(), MenuType.BACKEND.getValue(), application.getId(), tenant.getCode());
+            var menus = provider.findMenus(account.getId(), MenuType.CONSOLE.getValue(), application.getId(), tenant.getCode());
             assertNotNull(menus);
             assertEquals(2, menus.size());
             assertTrue(menus.stream().anyMatch(it -> Objects.equals(permission.getMenuId(), it.getId())));

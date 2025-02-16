@@ -89,6 +89,7 @@ public class IdentityPasswordPersistence {
         password.setId(properties.getSupervisor().getUsername());
         password.setAccountId(properties.getSupervisor().getUsername());
         password.setValue(Passwordx.encrypt(Passwordx.digest(properties.getSupervisor().getPassword())));
+        password.setEnabled(Boolean.TRUE);
         password.setTenantCode(tenant);
         password.updateCreator(properties.getSupervisor().getUsername());
         return password;
@@ -178,6 +179,10 @@ public class IdentityPasswordPersistence {
     public IdentityPasswordEntity insert(@Nonnull @Validated({Insert.class, Default.class}) IdentityPasswordInput input,
                                          @Nonnull String operator,
                                          @Nonnull String tenant) {
+        // 之前的密码全部置为无效
+        this.mapper.updateBy(IdentityPasswordEntity.builder().enabled(Boolean.FALSE).build(), Conditions.of(IdentityPasswordEntity.class).eq(IdentityPasswordEntity::getAccountId, input.getAccountId()));
+
+        // 插入新密码
         var entity = new IdentityPasswordEntity();
         entity.fromInput(input);
         entity.setTenantCode(tenant);

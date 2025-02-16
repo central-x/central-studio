@@ -18,6 +18,9 @@ query AccountProvider($id: String) {
                 supervisor
                 enabled
                 deleted
+                profile {
+                    wallpaper
+                }
 
                 creatorId
                 createDate

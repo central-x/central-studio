@@ -62,6 +62,7 @@ import java.util.Objects;
 @Component
 @GraphQLSchema(path = "identity/mutation", types = IdentityStrategyDTO.class)
 public class IdentityStrategyMutation {
+
     @Setter(onMethod_ = @Autowired)
     private IdentityStrategyMapper mapper;
 

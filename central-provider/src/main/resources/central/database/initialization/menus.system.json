@@ -4,7 +4,7 @@
     "name": "系统管理",
     "icon": "",
     "url": "",
-    "type": "admin",
+    "type": "console",
     "enabled": true,
     "order": 200,
     "permissions": {},
@@ -14,7 +14,7 @@
         "name": "字典管理",
         "icon": "",
         "url": "@/system/dictionary",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 0,
         "permissions": {
@@ -31,7 +31,7 @@
         "name": "系统角色管理",
         "icon": "",
         "url": "@/system/database",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 1,
         "permissions": {

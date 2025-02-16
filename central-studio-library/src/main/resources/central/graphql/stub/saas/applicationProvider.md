@@ -14,6 +14,8 @@ query ApplicationProvider($id: String) {
                 logo
                 url
                 contextPath
+                businessView
+                consoleView
                 secret
                 enabled
                 remark
@@ -61,6 +63,8 @@ query ApplicationProvider($ids: [String]) {
                 logo
                 url
                 contextPath
+                businessView
+                consoleView
                 secret
                 enabled
                 remark
@@ -108,6 +112,8 @@ query ApplicationProvider($limit: Long, $offset: Long, $conditions: [ConditionIn
                 logo
                 url
                 contextPath
+                businessView
+                consoleView
                 secret
                 enabled
                 remark
@@ -163,6 +169,8 @@ query ApplicationProvider($pageIndex: Long, $pageSize: Long, $conditions: [Condi
                         logo
                         url
                         contextPath
+                        businessView
+                        consoleView
                         secret
                         enabled
                         remark
@@ -227,6 +235,8 @@ mutation ApplicationProvider($input: ApplicationInput, $operator: String) {
                 logo
                 url
                 contextPath
+                businessView
+                consoleView
                 secret
                 enabled
                 remark
@@ -274,6 +284,8 @@ mutation ApplicationProvider($inputs: [ApplicationInput], $operator: String) {
                 logo
                 url
                 contextPath
+                businessView
+                consoleView
                 secret
                 enabled
                 remark
@@ -321,6 +333,8 @@ mutation ApplicationProvider($input: ApplicationInput, $operator: String) {
                 logo
                 url
                 contextPath
+                businessView
+                consoleView
                 secret
                 enabled
                 remark
@@ -368,6 +382,8 @@ mutation ApplicationProvider($inputs: [ApplicationInput], $operator: String) {
                 logo
                 url
                 contextPath
+                businessView
+                consoleView
                 secret
                 enabled
                 remark

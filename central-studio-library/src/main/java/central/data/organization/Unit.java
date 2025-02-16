@@ -123,10 +123,6 @@ public class Unit extends ModifiableEntity implements Codeable, Orderable<Unit>,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public static class Tree {
-
-    }
-
     public UnitInput.Builder toInput() {
         return UnitInput.builder()
                 .id(this.getId())

@@ -137,7 +137,7 @@ public class SessionController {
             // 超级管理员
             password = this.passwordProvider.findById(account.getId());
         } else {
-            var passwords = this.passwordProvider.findBy(null, null, Conditions.of(IdentityPassword.class).eq(IdentityPassword::getAccountId, account.getId()), null);
+            var passwords = this.passwordProvider.findBy(null, null, Conditions.of(IdentityPassword.class).eq(IdentityPassword::getAccountId, account.getId()).eq(IdentityPassword::getEnabled, Boolean.TRUE), null);
             password = Listx.getFirstOrNull(passwords);
         }
 

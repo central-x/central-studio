@@ -93,6 +93,11 @@ public class AccountInput implements Serializable {
     @NotNull
     private Boolean deleted;
 
+    @Label("用户配置")
+    @Valid
+    @NotNull
+    private AccountProfileInput profile;
+
     @Valid
     @Label("单位")
     private List<AccountUnitInput> units;

@@ -90,7 +90,7 @@ public class TestRolePermissionProvider {
                 .name("测试菜单")
                 .icon("icon")
                 .url("@/test")
-                .type(MenuType.BACKEND.getValue())
+                .type(MenuType.CONSOLE.getValue())
                 .enabled(Boolean.TRUE)
                 .order(0)
                 .remark("测试菜单")

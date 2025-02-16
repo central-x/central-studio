@@ -30,6 +30,7 @@ import central.bean.Tenantable;
 import central.data.organization.AccountInput;
 import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.TableRelation;
+import central.util.Jsonx;
 import central.util.Objectx;
 import central.validation.Label;
 import jakarta.annotation.Nonnull;
@@ -99,19 +100,21 @@ public class AccountEntity extends ModifiableEntity implements Available, Deleta
     /**
      * 管理员是指三员（系统管理员，安全管理员、安全保密员）
      */
-    @Label("是否管理员")
     @NotNull
+    @Label("是否管理员")
     private Boolean admin;
 
     @NotNull
     @Label("是否启用")
-    @NotNull
     private Boolean enabled;
 
     @NotNull
     @Label("是否已删除")
-    @NotNull
     private Boolean deleted;
+
+    @NotNull
+    @Label("配置信息")
+    private String profileJson;
 
     @Label("租户标识")
     @NotBlank
@@ -127,5 +130,10 @@ public class AccountEntity extends ModifiableEntity implements Available, Deleta
         this.setAvatar(Objectx.getOrDefault(input.getAvatar(), ""));
         this.setEnabled(input.getEnabled());
         this.setDeleted(input.getDeleted());
+        if (input.getProfile() == null) {
+            this.setProfileJson("{}");
+        } else {
+            this.setProfileJson(Jsonx.Default().serialize(input.getProfile()));
+        }
     }
 }

@@ -4,7 +4,7 @@
     "name": "权限管理",
     "icon": "",
     "url": "",
-    "type": "admin",
+    "type": "console",
     "enabled": true,
     "order": 100,
     "permissions": {},
@@ -14,7 +14,7 @@
         "name": "菜单管理",
         "icon": "",
         "url": "@/authority/menu",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 0,
         "permissions": {
@@ -31,7 +31,7 @@
         "name": "系统角色管理",
         "icon": "",
         "url": "@/authority/role-system",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 1,
         "permissions": {
@@ -48,7 +48,7 @@
         "name": "单位角色管理",
         "icon": "",
         "url": "@/authority/role",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 2,
         "permissions": {

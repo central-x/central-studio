@@ -24,14 +24,17 @@
 
 package central.provider.scheduled.fetcher.saas;
 
-import central.provider.scheduled.DataContainer;
 import central.data.saas.Application;
 import central.data.saas.Tenant;
+import central.lang.reflect.TypeRef;
+import central.provider.scheduled.DataContainer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.Serial;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 租户中心数据容器
@@ -62,7 +65,8 @@ public class SaasContainer extends DataContainer {
      * @return 租户数据
      */
     public Tenant getTenantByCode(String code) {
-        return this.tenants.stream().filter(it -> Objects.equals(code, it.getCode())).findFirst().orElse(null);
+        var data = this.tenants.stream().filter(it -> Objects.equals(code, it.getCode())).findFirst().orElse(null);
+        return this.clone(data, TypeRef.of(Tenant.class));
     }
 
     /**
@@ -72,7 +76,8 @@ public class SaasContainer extends DataContainer {
      * @return 应用数据
      */
     public Application getApplicationByCode(String code) {
-        return this.applications.stream().filter(it -> Objects.equals(code, it.getCode())).findFirst().orElse(null);
+        var data = this.applications.stream().filter(it -> Objects.equals(code, it.getCode())).findFirst().orElse(null);
+        return this.clone(data, TypeRef.of(Application.class));
     }
 
     /**
@@ -82,6 +87,18 @@ public class SaasContainer extends DataContainer {
      * @return 应用
      */
     public Application getApplicationById(String id) {
-        return this.applications.stream().filter(it -> Objects.equals(id, it.getId())).findFirst().orElse(null);
+        var data = this.applications.stream().filter(it -> Objects.equals(id, it.getId())).findFirst().orElse(null);
+        return this.clone(data, TypeRef.of(Application.class));
+    }
+
+    /**
+     * 根据主键查询应用系统
+     *
+     * @param ids 主键集合
+     * @return 应用
+     */
+    public List<Application> getApplicationsByIds(List<String> ids) {
+        var data = this.applications.stream().filter(it -> ids.contains(it.getId())).toList();
+        return this.clone(data, TypeRef.ofList(Application.class));
     }
 }

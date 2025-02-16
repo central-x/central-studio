@@ -95,6 +95,16 @@ public class ApplicationEntity extends ModifiableEntity {
     @Size(min = 1, max = 64)
     private String contextPath;
 
+    @Label("业务视图首页")
+    @NotBlank
+    @Size(min = 1, max = 4096)
+    private String businessView;
+
+    @Label("管理视图首页")
+    @NotBlank
+    @Size(min = 1, max = 4096)
+    private String consoleView;
+
     @Label("密钥")
     @NotBlank
     @Size(min = 1, max = 32)
@@ -126,6 +136,8 @@ public class ApplicationEntity extends ModifiableEntity {
         }
         this.setUrl(input.getUrl());
         this.setContextPath(input.getContextPath());
+        this.setBusinessView(input.getBusinessView());
+        this.setConsoleView(input.getConsoleView());
         this.setSecret(input.getSecret());
         this.setEnabled(input.getEnabled());
         this.setRemark(input.getRemark());

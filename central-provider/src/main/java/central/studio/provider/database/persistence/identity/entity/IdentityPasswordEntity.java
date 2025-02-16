@@ -24,6 +24,7 @@
 
 package central.studio.provider.database.persistence.identity.entity;
 
+import central.bean.Available;
 import central.bean.Tenantable;
 import central.data.identity.IdentityPasswordInput;
 import central.studio.provider.database.persistence.organization.entity.AccountEntity;
@@ -34,11 +35,9 @@ import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serial;
 
@@ -55,8 +54,9 @@ import java.io.Serial;
 @AllArgsConstructor
 @Table(name = "X_ID_PASSWORD")
 @EqualsAndHashCode(callSuper = true)
+@Builder(toBuilder = true, builderClassName = "Builder")
 @Relation(alias = "account", target = AccountEntity.class, property = "accountId")
-public class IdentityPasswordEntity extends Entity implements Tenantable {
+public class IdentityPasswordEntity extends Entity implements Available, Tenantable {
 
     @Serial
     private static final long serialVersionUID = -6297265992467556542L;
@@ -75,6 +75,10 @@ public class IdentityPasswordEntity extends Entity implements Tenantable {
     @NotBlank
     @Size(min = 1, max = 256)
     private String value;
+
+    @Label("是否有效")
+    @NotNull
+    private Boolean enabled;
 
     @Label("租户标识")
     @NotBlank

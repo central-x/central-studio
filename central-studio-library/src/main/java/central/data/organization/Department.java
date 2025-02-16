@@ -113,10 +113,6 @@ public class Department extends ModifiableEntity implements Codeable, Orderable<
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    public static class Tree {
-
-    }
-
     public DepartmentInput.Builder toInput() {
         return DepartmentInput.builder()
                 .id(this.getId())

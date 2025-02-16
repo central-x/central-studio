@@ -100,7 +100,7 @@ public class TestRoleController extends TestController {
                 .name("测试菜单")
                 .icon("")
                 .url("@/test/index")
-                .type(MenuType.BACKEND.getValue())
+                .type(MenuType.CONSOLE.getValue())
                 .enabled(Boolean.TRUE)
                 .order(0)
                 .remark("测试时使用的菜单")

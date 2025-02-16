@@ -42,7 +42,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public enum MenuType implements OptionalEnum<String> {
     BUSINESS("业务菜单", "business"),
-    BACKEND("管理菜单", "admin");
+    CONSOLE("管理菜单", "console");
 
     private final String name;
     private final String value;

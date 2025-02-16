@@ -31,6 +31,11 @@ import central.data.authority.option.MenuType;
 import central.data.organization.Account;
 import central.data.saas.Application;
 import central.provider.graphql.authority.AuthorizationProvider;
+import central.provider.scheduled.DataContext;
+import central.provider.scheduled.fetcher.DataFetcherType;
+import central.provider.scheduled.fetcher.saas.SaasContainer;
+import central.sql.data.Entity;
+import central.studio.dashboard.controller.index.param.UpdatePasswordParams;
 import central.studio.dashboard.controller.index.query.ApplicationQuery;
 import central.studio.dashboard.logic.organization.AccountLogic;
 import central.web.XForwardedHeaders;
@@ -64,6 +69,10 @@ public class SessionController {
     @Setter(onMethod_ = @Autowired)
     private AuthorizationProvider provider;
 
+    @Setter(onMethod_ = @Autowired)
+    private DataContext context;
+
+
     /**
      * 获取当前用户信息
      */
@@ -80,12 +89,16 @@ public class SessionController {
      */
     @GetMapping("/applications")
     public @Nonnull List<Application> getApplications(@RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return provider.findApplications(accountId, MenuType.BACKEND.getValue(), tenant).stream()
+        SaasContainer container = context.getData(DataFetcherType.SAAS);
+
+        var applicationIds = provider.findApplications(accountId, MenuType.CONSOLE.getValue(), tenant).stream()
+                .map(Entity::getId).toList();
+
+        return container.getApplicationsByIds(applicationIds).stream()
                 .peek(application -> {
                     application.setCreator(null);
                     application.setModifier(null);
                     application.setSecret(null);
-                    application.setUrl(null);
                     application.setRoutes(null);
                 }).toList();
     }
@@ -95,7 +108,7 @@ public class SessionController {
      */
     @GetMapping("/applications/menus")
     public @Nonnull List<Menu> getMenus(@Validated ApplicationQuery query, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        var menus = provider.findMenus(accountId, MenuType.BACKEND.getValue(), query.getApplicationId(), tenant).stream()
+        var menus = provider.findMenus(accountId, MenuType.CONSOLE.getValue(), query.getApplicationId(), tenant).stream()
                 .peek(menu -> {
                     menu.setParent(null);
                     menu.setApplication(null);
@@ -113,5 +126,11 @@ public class SessionController {
     public @Nonnull List<String> getPermissions(@Validated ApplicationQuery query, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return provider.findPermissions(accountId, query.getApplicationId(), tenant).stream()
                 .map(Permission::getCode).toList();
+    }
+
+    @PostMapping("/password")
+    public @Nonnull Boolean updatePassword(@RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant, @RequestBody @Validated UpdatePasswordParams passwordParams) {
+        var account = accountLogic.findById(accountId, tenant);
+        return true;
     }
 }

@@ -105,13 +105,20 @@ public class Account extends ModifiableEntity implements Available, Deletable {
     private Boolean deleted;
 
     /**
+     * 配置信息
+     */
+    @Nonnull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private AccountProfile profile;
+
+    /**
      * 单列列表
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<AccountUnit> units;
 
     /**
-     * 角色表表
+     * 角色表
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Role> roles;
@@ -140,6 +147,7 @@ public class Account extends ModifiableEntity implements Available, Deletable {
                 .avatar(this.getAvatar())
                 .enabled(this.getEnabled())
                 .deleted(this.getDeleted())
+                .profile(this.getProfile().toInput())
                 .units(Listx.asStream(this.getUnits()).map(AccountUnit::toInput).map(AccountUnitInput.Builder::build).toList());
     }
 }

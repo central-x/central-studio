@@ -18,8 +18,18 @@ input AccountInput {
     enabled:                Boolean
     "是否已删除"
     deleted:                Boolean
+    "用户配置"
+    profile:                AccountProfileInput
     "单位输入"
     units:                 [AccountUnitInput]
+}
+
+"""
+用户配置
+"""
+input AccountProfileInput {
+    "姓名"
+    wallpaper:              String
 }
 
 """

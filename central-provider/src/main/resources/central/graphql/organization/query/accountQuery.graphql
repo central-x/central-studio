@@ -22,6 +22,8 @@ type Account implements Entity & Modifiable & Available & Deletable {
     enabled:                Boolean!
     "是否已删除"
     deleted:                Boolean!
+    "用户配置"
+    profile:                AccountProfile!
 
     "创建帐户信息"
     creator:                Account!
@@ -47,6 +49,14 @@ type Account implements Entity & Modifiable & Available & Deletable {
         "数据列表"
         orders: [OrderInput] = []
     ): [AccountUnit]
+}
+
+"""
+用户配置
+"""
+type AccountProfile {
+    "壁纸设置"
+    wallpaper:              String
 }
 
 """

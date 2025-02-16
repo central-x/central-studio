@@ -24,6 +24,8 @@
 
 package central.provider.scheduled;
 
+import central.lang.reflect.TypeRef;
+import central.util.Jsonx;
 import lombok.Getter;
 
 import java.io.Serial;
@@ -44,4 +46,9 @@ public abstract class DataContainer implements Serializable {
      */
     @Getter
     private final long timestamp = System.currentTimeMillis();
+
+    public <T> T clone(T source, TypeRef<T> type) {
+        var json = Jsonx.Default().serialize(source);
+        return Jsonx.Default().deserialize(json, type);
+    }
 }

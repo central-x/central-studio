@@ -4,7 +4,7 @@
     "name": "用户中心",
     "icon": "",
     "url": "",
-    "type": "admin",
+    "type": "console",
     "enabled": true,
     "order": 0,
     "permissions": {},
@@ -14,7 +14,7 @@
         "name": "行政区划管理",
         "icon": "",
         "url": "@/dashboard/area",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 0,
         "permissions": {
@@ -29,7 +29,7 @@
         "name": "组织架构管理",
         "icon": "",
         "url": "@/dashboard/unit",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 0,
         "permissions": {
@@ -44,7 +44,7 @@
         "name": "帐户管理",
         "icon": "",
         "url": "@/dashboard/account",
-        "type": "admin",
+        "type": "console",
         "enabled": true,
         "order": 0,
         "permissions": {

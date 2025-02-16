@@ -12,6 +12,10 @@ type Application implements Entity & Modifiable & Codeable & Available {
     logo:                   String
     "上下文路径"
     contextPath:            String!
+    "业务视图首页"
+    businessView:           String!
+    "管理视图首页"
+    consoleView:            String!
     "服务地址"
     url:                    String
     "密钥"
