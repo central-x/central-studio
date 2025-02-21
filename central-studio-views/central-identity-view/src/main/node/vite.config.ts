@@ -3,54 +3,33 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import tailwindcss from '@tailwindcss/vite'
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: "./",
   server: {
     proxy: {
-      '/identity/api': {
-        target: 'http://localhost:8080',
+      "/identity/api": {
+        target: "http://localhost:8080",
         configure: (proxy, options) => {
           options.headers = { 'X-Forwarded-Tenant': 'master' }
-        }
-      },
-      '/dashboard': {
-        target: 'http://localhost:8080',
-        configure: (proxy, options) => {
-          options.headers = { 'X-Forwarded-Tenant': 'master' }
-        }
-      },
-      '/storage/api': {
-        target: 'http://localhost:8080',
-        configure: (proxy, options) => {
-          options.headers = { 'X-Forwarded-Tenant': 'master' }
-        }
-      },
-      '/multicast/api': {
-        target: 'http://localhost:8080',
-        configure: (proxy, options) => {
-          options.headers = { 'X-Forwarded-Tenant': 'master' }
-        }
-      },
-      '/logging/api': {
-        target: 'http://localhost:8080',
-        configure: (proxy, options) => {
-          options.headers = { 'X-Forwarded-Tenant': 'master' }
-        }
+        },
       }
-    }
+    },
   },
   plugins: [
     vue(),
-    vueDevTools()
+    vueDevTools(),
+    tailwindcss()
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+    },
   },
   build: {
-    outDir: '../resources/identity'
+    outDir: '../resources/identity',
+    emptyOutDir: true
   }
 })
