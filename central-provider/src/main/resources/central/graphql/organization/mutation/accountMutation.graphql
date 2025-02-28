@@ -12,6 +12,10 @@ input AccountInput {
     mobile:                 String
     "姓名"
     name:                   String
+    "位置"
+    location:               String
+    "个人网站"
+    website:                String
     "头像"
     avatar:                 String
     "是否启用"

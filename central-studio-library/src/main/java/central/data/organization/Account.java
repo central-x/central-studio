@@ -73,6 +73,18 @@ public class Account extends ModifiableEntity implements Available, Deletable {
     private String name;
 
     /**
+     * 位置
+     */
+    @Nullable
+    private String location;
+
+    /**
+     * 个人网站
+     */
+    @Nullable
+    private String website;
+
+    /**
      * 头像
      */
     @Nullable
@@ -144,6 +156,8 @@ public class Account extends ModifiableEntity implements Available, Deletable {
                 .email(this.getEmail())
                 .mobile(this.getMobile())
                 .name(this.getName())
+                .location(this.getLocation())
+                .website(this.getWebsite())
                 .avatar(this.getAvatar())
                 .enabled(this.getEnabled())
                 .deleted(this.getDeleted())

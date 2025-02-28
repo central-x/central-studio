@@ -108,6 +108,8 @@ public class TestContext implements InitializingBean, DisposableBean {
                 .logo("1234")
                 .url("http://127.0.0.1:3100")
                 .contextPath("/test")
+                .businessView("/test/business")
+                .consoleView("/test/console")
                 .secret(Guidx.nextID())
                 .enabled(Boolean.TRUE)
                 .remark("测试应用")

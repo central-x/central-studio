@@ -16,52 +16,58 @@
     </div>
 
     <!-- 登录表单卡片 -->
-    <div class="relative w-[475px] h-[420px] bg-white border border-[#F2F2F2] rounded-lg shadow-[0_0_3px_rgba(170,170,170,0.3)] p-8">
+    <div class="relative w-[475px] bg-white border border-[#D2D2D2] rounded-sm p-8">
       <h1 class="text-2xl font-bold mb-6">登录</h1>
       
-      <div class="flex flex-col justify-center h-[calc(100%-4rem)]">
-        <form @submit.prevent="handleLogin" class="w-full space-y-6">
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">用户名</label>
-            <input
-              type="text"
-              v-model="form.account"
-              class="w-full px-3 py-2 border border-gray-300 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+      <form @submit.prevent="handleLogin" class="w-full space-y-6">
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">用户名</label>
+          <input
+            type="text"
+            v-model="form.account"
+            class="w-full px-3 py-2 border border-gray-300 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">密码</label>
-            <input
-              type="password"
-              v-model="form.password"
-              class="w-full px-3 py-2 border border-gray-300 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">密码</label>
+          <input
+            type="password"
+            v-model="form.password"
+            class="w-full px-3 py-2 border border-gray-300 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
 
-          <div class="flex items-center justify-between">
-            <label class="flex items-center">
-              <input type="checkbox" v-model="form.keepSignedIn" class="rounded-[3px] border-gray-300 text-blue-600" />
-              <span class="ml-2 text-sm text-gray-600">保持登录</span>
-            </label>
-            <a href="#" class="text-sm text-blue-600 hover:text-blue-800">忘记密码？</a>
-          </div>
+        <div class="flex items-center justify-between">
+          <label class="flex items-center">
+            <input type="checkbox" v-model="form.keepSignedIn" class="rounded-[3px] border-gray-300 text-blue-600" />
+            <span class="ml-2 text-sm text-gray-600">保持登录</span>
+          </label>
+          <a href="#" class="text-sm text-blue-600 hover:text-blue-800">忘记密码？</a>
+        </div>
 
-          <button
-            type="submit"
-            class="w-full bg-[#2C5BEE] text-white py-2 px-4 rounded-[3px] hover:bg-[#2C5BEE]/90 focus:outline-none focus:ring-2 focus:ring-[#2C5BEE] focus:ring-offset-2"
-          >
-            登录
-          </button>
-        </form>
-      </div>
+        <button
+          type="submit"
+          class="w-full bg-[#2C5BEE] text-white py-2 px-4 rounded-[3px] hover:bg-[#2C5BEE]/90 focus:outline-none focus:ring-2 focus:ring-[#2C5BEE] focus:ring-offset-2 mb-0"
+        >
+          登录
+        </button>
+      </form>
     </div>
 
-    <!-- 版本信息 -->
-    <div class="absolute bottom-5 left-[50px] text-[12px] text-[#7F7F7F]">
-      Copyright © 2022-present Alan Yeh
+    <!-- 底部信息栏 -->
+    <div class="absolute bottom-5 left-[50px] right-[50px] flex justify-between items-center text-[12px] text-[#7F7F7F]">
+      <!-- 版权信息 -->
+      <div>
+        Copyright © 2022-present Alan Yeh
+      </div>
+      <!-- 链接 -->
+      <div class="flex items-center space-x-4">
+        <a href="https://central-x.com" target="_blank" class="hover:text-[#2C5BEE]">文档</a>
+        <a href="https://github.com/central-x/central-studio" target="_blank" class="hover:text-[#2C5BEE]">GitHub</a>
+      </div>
     </div>
   </div>
 </template>
@@ -88,9 +94,8 @@ const handleLogin = async () => {
     // 登录
     await sessionStore.login(form.account, form.password);
 
-    // 登录成功后，刷新页面
-    // 后台接口在接收到请求后，会根据是否存在 redirect_uri 参数自动判断重定向到指定的地址
-    window.location.reload();
+    // 登录成功后跳转到个人资料页
+    router.push('/profile');
 
   } catch (error: any) {
     alert(error.message);

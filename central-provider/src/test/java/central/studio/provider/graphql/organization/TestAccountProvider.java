@@ -26,6 +26,7 @@ package central.studio.provider.graphql.organization;
 
 import central.data.organization.Account;
 import central.data.organization.AccountInput;
+import central.data.organization.AccountProfileInput;
 import central.provider.graphql.organization.AccountProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
@@ -100,6 +101,8 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(this.properties.getSupervisor().getUsername(), supervisor.getUsername());
         assertEquals(this.properties.getSupervisor().getEmail(), supervisor.getEmail());
         assertEquals(this.properties.getSupervisor().getName(), supervisor.getName());
+        assertEquals(this.properties.getSupervisor().getLocation(), supervisor.getLocation());
+        assertEquals(this.properties.getSupervisor().getWebsite(), supervisor.getWebsite());
         assertEquals(this.properties.getSupervisor().getAvatar(), supervisor.getAvatar());
         assertEquals(this.properties.getSupervisor().getEnabled(), supervisor.getEnabled());
         assertFalse(supervisor.getDeleted());
@@ -130,6 +133,8 @@ public class TestAccountProvider extends TestProvider {
                 .email("test@central-x.com")
                 .mobile("18888888888")
                 .name("测试帐号")
+                .location("China")
+                .website("https://central-x.com")
                 .avatar("1234")
                 .enabled(Boolean.TRUE)
                 .deleted(Boolean.FALSE)
@@ -143,6 +148,8 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(input.getEmail(), insert.getEmail());
         assertEquals(input.getMobile(), insert.getMobile());
         assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getLocation(), insert.getLocation());
+        assertEquals(insert.getWebsite(), insert.getWebsite());
         assertEquals(input.getAvatar(), insert.getAvatar());
         assertEquals(input.getEnabled(), insert.getEnabled());
         assertEquals(input.getDeleted(), insert.getDeleted());
@@ -168,6 +175,8 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(insert.getEmail(), findById.getEmail());
         assertEquals(insert.getMobile(), findById.getMobile());
         assertEquals(insert.getName(), findById.getName());
+        assertEquals(input.getLocation(), findById.getLocation());
+        assertEquals(insert.getWebsite(), findById.getWebsite());
         assertEquals(insert.getAvatar(), findById.getAvatar());
         assertEquals(insert.getEnabled(), findById.getEnabled());
         assertEquals(insert.getDeleted(), findById.getDeleted());
@@ -193,6 +202,8 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(insert.getEmail(), fetched.getEmail());
         assertEquals(insert.getMobile(), fetched.getMobile());
         assertEquals(insert.getName(), fetched.getName());
+        assertEquals(input.getLocation(), fetched.getLocation());
+        assertEquals(insert.getWebsite(), fetched.getWebsite());
         assertEquals(insert.getAvatar(), fetched.getAvatar());
         assertEquals(insert.getEnabled(), fetched.getEnabled());
         assertEquals(insert.getDeleted(), fetched.getDeleted());
@@ -223,9 +234,12 @@ public class TestAccountProvider extends TestProvider {
                 .email("test@central-x.com")
                 .mobile("18888888888")
                 .name("测试帐号")
+                .location("China")
+                .website("https://central-x.com")
                 .avatar("1234")
                 .enabled(Boolean.TRUE)
                 .deleted(Boolean.FALSE)
+                .profile(AccountProfileInput.builder().build())
                 .build();
 
         // test insertBatch
@@ -240,6 +254,8 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(input.getEmail(), insert.getEmail());
         assertEquals(input.getMobile(), insert.getMobile());
         assertEquals(input.getName(), insert.getName());
+        assertEquals(input.getLocation(), insert.getLocation());
+        assertEquals(insert.getWebsite(), insert.getWebsite());
         assertEquals(input.getAvatar(), insert.getAvatar());
         assertEquals(input.getEnabled(), insert.getEnabled());
         assertEquals(input.getDeleted(), insert.getDeleted());
@@ -261,6 +277,8 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(insert.getEmail(), fetched.getEmail());
         assertEquals(insert.getMobile(), fetched.getMobile());
         assertEquals(insert.getName(), fetched.getName());
+        assertEquals(input.getLocation(), fetched.getLocation());
+        assertEquals(insert.getWebsite(), fetched.getWebsite());
         assertEquals(insert.getAvatar(), fetched.getAvatar());
         assertEquals(insert.getEnabled(), fetched.getEnabled());
         assertEquals(insert.getDeleted(), fetched.getDeleted());
@@ -286,6 +304,8 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(insert.getEmail(), fetched.getEmail());
         assertEquals(insert.getMobile(), fetched.getMobile());
         assertEquals(insert.getName(), fetched.getName());
+        assertEquals(input.getLocation(), fetched.getLocation());
+        assertEquals(insert.getWebsite(), fetched.getWebsite());
         assertEquals(insert.getAvatar(), fetched.getAvatar());
         assertEquals(insert.getEnabled(), fetched.getEnabled());
         assertEquals(insert.getDeleted(), fetched.getDeleted());

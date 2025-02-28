@@ -339,6 +339,8 @@ public class v0_0_1_initial extends Migration {
                     Column.of("EMAIL", SqlType.STRING, 50, "邮箱"),
                     Column.of("MOBILE", SqlType.STRING, 16, "手机号"),
                     Column.of("NAME", SqlType.STRING, 50, "姓名"),
+                    Column.of("LOCATION", SqlType.STRING, 50, "位置"),
+                    Column.of("WEBSITE", SqlType.STRING, 512, "个人网站"),
                     Column.of("AVATAR", SqlType.STRING, "头像"),
                     Column.of("ADMIN", SqlType.BOOLEAN, "是否管理员"),
                     Column.of("ENABLED", SqlType.BOOLEAN, "是否启用"),

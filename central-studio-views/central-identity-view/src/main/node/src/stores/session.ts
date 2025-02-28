@@ -1,10 +1,12 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import type { Account } from '@/api/data/organization/Organization';
+import type { Session } from '@/api/data/identity/Session';
 import { identity } from '@/api/IdentityService';
 
 export const useSessionStore = defineStore('session', () => {
   const account = ref<Account | null>(null);
+  const sessions = ref<Session[]>([]);
 
   /**
    * 获取当前已登录的用户信息
@@ -33,5 +35,31 @@ export const useSessionStore = defineStore('session', () => {
     return identity.logout();
   }
 
-  return { getAccount, login, logout };
+  /**
+   * 获取会话列表
+   */
+  async function getSessions(): Promise<Session[]> {
+    sessions.value = await identity.getSessions();
+    return sessions.value;
+  }
+
+  /**
+   * 撤销会话
+   * @param sessionId 会话ID
+   */
+  async function revokeSession(sessionId: string): Promise<void> {
+    await identity.revokeSession(sessionId);
+    // 撤销后重新获取会话列表
+    await getSessions();
+  }
+
+  return { 
+    account,
+    sessions,
+    getAccount, 
+    login, 
+    logout,
+    getSessions,
+    revokeSession
+  };
 });

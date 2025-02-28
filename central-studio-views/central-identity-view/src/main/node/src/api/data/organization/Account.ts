@@ -4,6 +4,8 @@ export interface Account {
   email?: string;
   mobile?: string;
   name?: string;
+  location?: string;
+  website?: string;
   avatar?: string;
   admin?: boolean;
   supervisor?: boolean;

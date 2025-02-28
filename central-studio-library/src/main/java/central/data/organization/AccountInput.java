@@ -81,6 +81,14 @@ public class AccountInput implements Serializable {
     @Size(min = 1, max = 50)
     private String name;
 
+    @Label("位置")
+    @Size(max = 50)
+    private String location;
+
+    @Label("个人网站")
+    @Size(max = 512)
+    private String website;
+
     @Label("头像")
     @Size(max = 2 * 1024 * 1024)
     private String avatar;

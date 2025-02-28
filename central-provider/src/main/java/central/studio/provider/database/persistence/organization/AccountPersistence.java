@@ -82,20 +82,22 @@ public class AccountPersistence {
      * @param tenant 租户标识
      */
     public @Nonnull AccountEntity getSupervisor(@Nonnull String tenant) {
-        var sa = properties.getSupervisor();
+        var props = this.properties.getSupervisor();
 
         var supervisor = new AccountEntity();
-        supervisor.setId(sa.getUsername());
-        supervisor.setUsername(sa.getUsername());
-        supervisor.setEmail(sa.getEmail());
+        supervisor.setId(props.getUsername());
+        supervisor.setUsername(props.getUsername());
+        supervisor.setEmail(props.getEmail());
         supervisor.setMobile(null);
-        supervisor.setName(sa.getName());
-        supervisor.setAvatar(sa.getAvatar());
+        supervisor.setName(props.getName());
+        supervisor.setLocation(props.getLocation());
+        supervisor.setWebsite(props.getWebsite());
+        supervisor.setAvatar(props.getAvatar());
         supervisor.setAdmin(Boolean.TRUE);
-        supervisor.setEnabled(sa.getEnabled());
+        supervisor.setEnabled(props.getEnabled());
         supervisor.setDeleted(Boolean.FALSE);
         supervisor.setTenantCode(tenant);
-        supervisor.updateCreator(sa.getUsername());
+        supervisor.updateCreator(props.getUsername());
         return supervisor;
     }
 

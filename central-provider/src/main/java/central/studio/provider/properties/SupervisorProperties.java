@@ -58,6 +58,16 @@ public class SupervisorProperties {
     @Size(min = 1, max = 128)
     private String password = "x.123456";
 
+    @Label("位置")
+    @NotBlank
+    @Size(min = 1, max = 50)
+    private String location = "Guangzhou, China";
+
+    @Label("个人网站")
+    @NotBlank
+    @Size(min = 1, max = 512)
+    private String website = "https://central-x.com";
+
     @Label("头像")
     private String avatar = "";
 

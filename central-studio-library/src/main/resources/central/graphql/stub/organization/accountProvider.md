@@ -13,11 +13,14 @@ query AccountProvider($id: String) {
                 email
                 mobile
                 name
+                location
+                website
                 avatar
                 admin
                 supervisor
                 enabled
                 deleted
+                
                 profile {
                     wallpaper
                 }
@@ -58,11 +61,17 @@ query AccountProvider($ids: [String]) {
                 email
                 mobile
                 name
+                location
+                website
                 avatar
                 admin
                 supervisor
                 enabled
                 deleted
+
+                profile {
+                    wallpaper
+                }
 
                 creatorId
                 createDate
@@ -100,11 +109,17 @@ query AccountProvider($limit: Long, $offset: Long, $conditions: [ConditionInput]
                 email
                 mobile
                 name
+                location
+                website
                 avatar
                 admin
                 supervisor
                 enabled
                 deleted
+
+                profile {
+                    wallpaper
+                }
 
                 creatorId
                 createDate
@@ -150,11 +165,17 @@ query AccountProvider($pageIndex: Long, $pageSize: Long, $conditions: [Condition
                         email
                         mobile
                         name
+                        location
+                        website
                         avatar
                         admin
                         supervisor
                         enabled
                         deleted
+
+                        profile {
+                            wallpaper
+                        }
 
                         creatorId
                         createDate
@@ -209,11 +230,17 @@ mutation AccountProvider($input: AccountInput, $operator: String) {
                 email
                 mobile
                 name
+                location
+                website
                 avatar
                 admin
                 supervisor
                 enabled
                 deleted
+
+                profile {
+                    wallpaper
+                }
 
                 creatorId
                 createDate
@@ -251,11 +278,17 @@ mutation AccountProvider($inputs: [AccountInput], $operator: String) {
                 email
                 mobile
                 name
+                location
+                website
                 avatar
                 admin
                 supervisor
                 enabled
                 deleted
+
+                profile {
+                    wallpaper
+                }
 
                 creatorId
                 createDate
@@ -293,11 +326,17 @@ mutation AccountProvider($input: AccountInput, $operator: String) {
                 email
                 mobile
                 name
+                location
+                website
                 avatar
                 admin
                 supervisor
                 enabled
                 deleted
+
+                profile {
+                    wallpaper
+                }
 
                 creatorId
                 createDate
@@ -335,11 +374,17 @@ mutation AccountProvider($inputs: [AccountInput], $operator: String) {
                 email
                 mobile
                 name
+                location
+                website
                 avatar
                 admin
                 supervisor
                 enabled
                 deleted
+
+                profile {
+                    wallpaper
+                }
 
                 creatorId
                 createDate

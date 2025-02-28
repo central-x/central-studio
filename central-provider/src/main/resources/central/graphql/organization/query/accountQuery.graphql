@@ -12,6 +12,10 @@ type Account implements Entity & Modifiable & Available & Deletable {
     mobile:                 String
     "姓名"
     name:                   String!
+    "位置"
+    location:               String
+    "个人网站"
+    website:                String
     "头像(Basic64)"
     avatar:                 String
     "是否管理员（系统管理员，安全管理员、安全保密员）"

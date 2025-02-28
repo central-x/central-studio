@@ -93,6 +93,14 @@ public class AccountEntity extends ModifiableEntity implements Available, Deleta
     @Size(min = 1, max = 50)
     private String name;
 
+    @Label("位置")
+    @Size(max = 50)
+    private String location;
+
+    @Label("个人网站")
+    @Size(max = 512)
+    private String website;
+
     @Label("头像")
     @Size(max = 2 * 1024 * 1024)
     private String avatar;
@@ -127,6 +135,8 @@ public class AccountEntity extends ModifiableEntity implements Available, Deleta
         this.setEmail(Objectx.getOrDefault(input.getEmail(), ""));
         this.setMobile(Objectx.getOrDefault(input.getMobile(), ""));
         this.setName(input.getName());
+        this.setLocation(Objectx.getOrDefault(input.getLocation(), ""));
+        this.setWebsite(Objectx.getOrDefault(input.getWebsite(), ""));
         this.setAvatar(Objectx.getOrDefault(input.getAvatar(), ""));
         this.setEnabled(input.getEnabled());
         this.setDeleted(input.getDeleted());

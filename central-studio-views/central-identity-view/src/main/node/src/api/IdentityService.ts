@@ -1,4 +1,5 @@
 import type { Account } from '@/api/data/organization/Account';
+import type { Session } from '@/api/data/identity/Session';
 import axios from 'axios';
 import { sha256 } from 'js-sha256';
 
@@ -54,6 +55,33 @@ class IdentityService {
       return response.data;
     } catch (error) {
       return null;
+    }
+  }
+
+  /**
+   * 获取会话列表
+   * @returns 会话列表
+   */
+  public async getSessions(): Promise<Session[]> {
+    try {
+      const response = await client.get('/identity/api/sessions');
+      if (response.status !== 200) {
+        return [];
+      }
+      return response.data;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  /**
+   * 撤销会话
+   * @param sessionId 会话ID
+   */
+  public async revokeSession(sessionId: string): Promise<void> {
+    const response = await client.delete(`/identity/api/sessions/${sessionId}`);
+    if (response.status !== 200) {
+      throw new Error(response.data.message);
     }
   }
 }
