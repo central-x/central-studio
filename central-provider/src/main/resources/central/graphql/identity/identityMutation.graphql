@@ -8,4 +8,7 @@ type IdentityMutation {
 
     "安全策略修改"
     strategies: IdentityStrategyMutation!
+
+    "认证记录修改"
+    records: IdentityRecordMutation!
 }

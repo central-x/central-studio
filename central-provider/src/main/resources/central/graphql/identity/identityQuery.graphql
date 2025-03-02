@@ -8,4 +8,7 @@ type IdentityQuery {
 
     "安全策略查询"
     strategies: IdentityStrategyQuery!
+
+    "认证记录查询"
+    records: IdentityRecordQuery!
 }

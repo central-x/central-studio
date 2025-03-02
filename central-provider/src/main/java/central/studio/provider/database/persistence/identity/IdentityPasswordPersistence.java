@@ -77,7 +77,7 @@ public class IdentityPasswordPersistence {
         if (Objects.equals(properties.getSupervisor().getUsername(), id)) {
             return getSupervisorPassword(tenant);
         } else {
-            return this.mapper.findFirstBy(Conditions.of(IdentityPasswordEntity.class).eq(IdentityPasswordEntity::getId, id).eq(IdentityPasswordEntity::getTenantCode, tenant));
+            return this.mapper.findFirstBy(columns, Conditions.of(IdentityPasswordEntity.class).eq(IdentityPasswordEntity::getId, id).eq(IdentityPasswordEntity::getTenantCode, tenant));
         }
     }
 

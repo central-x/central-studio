@@ -1,0 +1,75 @@
+"""
+认证记录输入
+"""
+input IdentityRecordInput {
+    "主键"
+    id:                     ID
+    "主机归属地"
+    address:                String
+    "主机地址"
+    host:                   String
+    "设备"
+    device:                 String
+}
+
+"""
+认证记录修改
+"""
+type IdentityRecordMutation {
+
+    """
+    保存数据
+    """
+    insert(
+        "数据输入"
+        input: IdentityRecordInput,
+        "操作人"
+        operator: String
+    ): IdentityRecord
+
+    """
+    批量保存数据
+    """
+    insertBatch(
+        "数据输入"
+        inputs: [IdentityRecordInput],
+        "操作人"
+        operator: String
+    ): [IdentityRecord]
+
+    """
+    更新数据
+    """
+    update(
+        "数据输入"
+        input: IdentityRecordInput,
+        "操作人"
+        operator: String
+    ): IdentityRecord
+
+    """
+    批量更新数据
+    """
+    updateBatch(
+        "数据输入"
+        inputs: [IdentityRecordInput],
+        "操作人"
+        operator: String
+    ): [IdentityRecord]
+
+    """
+    删除数据
+    """
+    deleteByIds(
+        "主键"
+        ids: [String]
+    ): Long
+
+    """
+    删除数据
+    """
+    deleteBy(
+        "筛选条件"
+        conditions: [ConditionInput] = []
+    ): Long
+}

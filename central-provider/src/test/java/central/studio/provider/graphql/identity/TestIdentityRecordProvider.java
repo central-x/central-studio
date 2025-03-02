@@ -24,23 +24,18 @@
 
 package central.studio.provider.graphql.identity;
 
-import central.data.identity.IdentityPassword;
-import central.data.identity.IdentityPasswordInput;
-import central.data.organization.AccountInput;
-import central.provider.graphql.identity.IdentityPasswordProvider;
+import central.data.identity.IdentityRecord;
+import central.data.identity.IdentityRecordInput;
+import central.provider.graphql.identity.IdentityRecordProvider;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
-import central.security.Passwordx;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.studio.provider.ProviderApplication;
-import central.studio.provider.database.persistence.identity.IdentityPasswordPersistence;
-import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
-import central.studio.provider.database.persistence.organization.AccountPersistence;
-import central.studio.provider.database.persistence.organization.entity.AccountEntity;
+import central.studio.provider.database.persistence.identity.IdentityRecordPersistence;
+import central.studio.provider.database.persistence.identity.entity.IdentityRecordEntity;
 import central.studio.provider.graphql.TestContext;
-import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
@@ -51,25 +46,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Password Provider Test Cases
+ * Identity Record Test Cases
  *
  * @author Alan Yeh
- * @since 2022/10/07
+ * @since 2025/03/02
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
-public class TestIdentityPasswordProvider extends TestProvider {
+public class TestIdentityRecordProvider {
 
     @Setter(onMethod_ = @Autowired)
-    private IdentityPasswordProvider provider;
+    private IdentityRecordProvider provider;
 
     @Setter(onMethod_ = @Autowired)
-    private IdentityPasswordPersistence persistence;
-
-    @Setter(onMethod_ = @Autowired)
-    private AccountPersistence accountPersistence;
+    private IdentityRecordPersistence persistence;
 
     @Setter(onMethod_ = @Autowired)
     private TestContext context;
@@ -87,45 +80,41 @@ public class TestIdentityPasswordProvider extends TestProvider {
     public void clear() throws Exception {
         var tenant = this.context.getTenant();
         // 清空测试数据
-        this.persistence.deleteBy(Conditions.of(IdentityPasswordEntity.class), tenant.getCode());
-        this.accountPersistence.deleteBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, "test"), tenant.getCode());
+        this.persistence.deleteBy(Conditions.of(IdentityRecordEntity.class), tenant.getCode());
     }
 
     /**
-     * @see IdentityPasswordProvider#insert
-     * @see IdentityPasswordProvider#findById
-     * @see IdentityPasswordProvider#findByIds
-     * @see IdentityPasswordProvider#countBy
-     * @see IdentityPasswordProvider#deleteByIds
+     * @see IdentityRecordProvider#insert
+     * @see IdentityRecordProvider#findById
+     * @see IdentityRecordProvider#update
+     * @see IdentityRecordProvider#findByIds
+     * @see IdentityRecordProvider#countBy
+     * @see IdentityRecordProvider#deleteByIds
      */
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
-        var account = this.accountPersistence.insert(AccountInput.builder()
-                .username("test")
-                .email("test@central-x.com")
-                .mobile("18888888888")
-                .name("测试帐号")
-                .avatar("1234")
-                .enabled(Boolean.TRUE)
-                .deleted(Boolean.FALSE)
-                .build(), "syssa", tenant.getCode());
 
-        var input = IdentityPasswordInput.builder()
-                .accountId(account.getId())
-                .value("x.123456")
+        var input = IdentityRecordInput.builder()
+                .address("Unknow")
+                .host("127.0.0.1")
+                .device("Safari on macOS")
                 .build();
 
         // test insert
         var insert = this.provider.insert(input, "syssa", tenant.getCode());
         assertNotNull(insert);
-        assertEquals(input.getAccountId(), insert.getAccountId());
-        assertEquals(input.getAccountId(), insert.getAccount().getId());
-        assertTrue(Passwordx.verify(input.getValue(), insert.getValue()));
+        assertEquals(input.getAddress(), insert.getAddress());
+        assertEquals(input.getHost(), insert.getHost());
+        assertEquals(input.getDevice(), insert.getDevice());
         assertNotNull(insert.getCreateDate());
         assertNotNull(insert.getCreatorId());
         assertNotNull(insert.getCreator());
         assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
+        assertEquals("syssa", insert.getModifier().getId());
 
         var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNotNull(entity);
@@ -133,13 +122,16 @@ public class TestIdentityPasswordProvider extends TestProvider {
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
         assertNotNull(findById);
-        assertEquals(input.getAccountId(), findById.getAccountId());
-        assertEquals(input.getAccountId(), findById.getAccount().getId());
-        assertTrue(Passwordx.verify(input.getValue(), findById.getValue()));
+        assertEquals(input.getAddress(), findById.getAddress());
+        assertEquals(input.getHost(), findById.getHost());
+        assertEquals(input.getDevice(), findById.getDevice());
 
         // test countBy
-        var count = this.provider.countBy(Conditions.of(IdentityPassword.class).eq(IdentityPassword::getAccountId, input.getAccountId()), tenant.getCode());
+        var count = this.provider.countBy(Conditions.of(IdentityRecord.class), tenant.getCode());
         assertEquals(1, count);
+
+        // test update
+        this.provider.update(insert.toInput().address("localhost").build(), "syssa", tenant.getCode());
 
         // test findByIds
         var findByIds = this.provider.findByIds(List.of(insert.getId()), tenant.getCode());
@@ -148,40 +140,33 @@ public class TestIdentityPasswordProvider extends TestProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
-        assertEquals(input.getAccountId(), fetched.getAccountId());
-        assertEquals(input.getAccountId(), fetched.getAccount().getId());
-        assertTrue(Passwordx.verify(input.getValue(), insert.getValue()));
+        assertEquals("localhost", fetched.getAddress());
+        assertEquals(input.getHost(), fetched.getHost());
+        assertEquals(input.getDevice(), fetched.getDevice());
 
         // test deleteById
         count = this.provider.deleteByIds(List.of(insert.getId()), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(IdentityPasswordEntity.class).eq(IdentityPasswordEntity::getAccountId, input.getAccountId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(IdentityRecordEntity.class), tenant.getCode());
         assertEquals(0, count);
     }
 
     /**
-     * @see IdentityPasswordProvider#insertBatch
-     * @see IdentityPasswordProvider#findBy
-     * @see IdentityPasswordProvider#pageBy
-     * @see IdentityPasswordProvider#deleteBy
+     * @see IdentityRecordProvider#insertBatch
+     * @see IdentityRecordProvider#findBy
+     * @see IdentityRecordProvider#updateBatch
+     * @see IdentityRecordProvider#pageBy
+     * @see IdentityRecordProvider#deleteBy
      */
     @Test
     public void case2() {
         var tenant = this.context.getTenant();
-        var account = this.accountPersistence.insert(AccountInput.builder()
-                .username("test")
-                .email("test@central-x.com")
-                .mobile("18888888888")
-                .name("测试帐号")
-                .avatar("1234")
-                .enabled(Boolean.TRUE)
-                .deleted(Boolean.FALSE)
-                .build(), "syssa", tenant.getCode());
 
-        var input = IdentityPasswordInput.builder()
-                .accountId(account.getId())
-                .value("x.123456")
+        var input = IdentityRecordInput.builder()
+                .address("Unknow")
+                .host("127.0.0.1")
+                .device("Safari on macOS")
                 .build();
 
         // test insertBatch
@@ -191,26 +176,36 @@ public class TestIdentityPasswordProvider extends TestProvider {
 
         var insert = Listx.getFirstOrNull(insertBatch);
         assertNotNull(insert);
-        assertEquals(input.getAccountId(), insert.getAccountId());
-        assertEquals(input.getAccountId(), insert.getAccount().getId());
-        assertTrue(Passwordx.verify(input.getValue(), insert.getValue()));
+        assertEquals(input.getAddress(), insert.getAddress());
+        assertEquals(input.getHost(), insert.getHost());
+        assertEquals(input.getDevice(), insert.getDevice());
+        assertNotNull(insert.getCreateDate());
+        assertNotNull(insert.getCreatorId());
+        assertNotNull(insert.getCreator());
+        assertEquals("syssa", insert.getCreator().getId());
+        assertNotNull(insert.getModifyDate());
+        assertNotNull(insert.getModifierId());
+        assertNotNull(insert.getModifier());
         var entity = this.persistence.findById(insert.getId(), Columns.all(), tenant.getCode());
         assertNotNull(entity);
 
         // test findBy
-        var findBy = this.provider.findBy(null, null, Conditions.of(IdentityPassword.class).eq(IdentityPassword::getAccountId, insert.getAccountId()), null, tenant.getCode());
+        var findBy = this.provider.findBy(null, null, Conditions.of(IdentityRecord.class), null, tenant.getCode());
         assertNotNull(findBy);
         assertEquals(1, findBy.size());
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
         assertEquals(insert.getId(), fetched.getId());
-        assertEquals(input.getAccountId(), fetched.getAccountId());
-        assertEquals(input.getAccountId(), fetched.getAccount().getId());
-        assertTrue(Passwordx.verify(input.getValue(), fetched.getValue()));
+        assertEquals(input.getAddress(), fetched.getAddress());
+        assertEquals(input.getHost(), fetched.getHost());
+        assertEquals(input.getDevice(), fetched.getDevice());
+
+        // test updateBatch
+        this.provider.updateBatch(List.of(fetched.toInput().address("localhost").build()), "syssa", tenant.getCode());
 
         // test pageBy
-        var pageBy = this.provider.pageBy(1, 10, Conditions.of(IdentityPassword.class).eq(IdentityPassword::getAccountId, insert.getAccountId()), null, tenant.getCode());
+        var pageBy = this.provider.pageBy(1, 10, Conditions.of(IdentityRecord.class), null, tenant.getCode());
         assertNotNull(pageBy);
         assertEquals(1, pageBy.getPager().getPageIndex());
         assertEquals(10, pageBy.getPager().getPageSize());
@@ -221,15 +216,15 @@ public class TestIdentityPasswordProvider extends TestProvider {
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
         assertEquals(insert.getId(), fetched.getId());
-        assertEquals(input.getAccountId(), fetched.getAccountId());
-        assertEquals(input.getAccountId(), fetched.getAccount().getId());
-        assertTrue(Passwordx.verify(input.getValue(), insert.getValue()));
+        assertEquals("localhost", fetched.getAddress());
+        assertEquals(insert.getHost(), fetched.getHost());
+        assertEquals(insert.getDevice(), fetched.getDevice());
 
         // test deleteBy
-        var count = this.provider.deleteBy(Conditions.of(IdentityPassword.class).eq(IdentityPassword::getAccountId, insert.getAccountId()), tenant.getCode());
+        var count = this.provider.deleteBy(Conditions.of(IdentityRecord.class), tenant.getCode());
         assertEquals(1, count);
 
-        count = this.persistence.countBy(Conditions.of(IdentityPasswordEntity.class).eq(IdentityPasswordEntity::getAccountId, input.getAccountId()), tenant.getCode());
+        count = this.persistence.countBy(Conditions.of(IdentityRecordEntity.class), tenant.getCode());
         assertEquals(0, count);
     }
 }

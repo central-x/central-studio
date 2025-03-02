@@ -24,14 +24,14 @@
 
 package central.studio.provider.graphql.identity.mutation;
 
-import central.data.identity.IdentityStrategyInput;
+import central.data.identity.IdentityRecordInput;
 import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.studio.provider.database.persistence.identity.IdentityStrategyPersistence;
-import central.studio.provider.database.persistence.identity.entity.IdentityStrategyEntity;
-import central.studio.provider.graphql.identity.dto.IdentityStrategyDTO;
+import central.studio.provider.database.persistence.identity.IdentityRecordPersistence;
+import central.studio.provider.database.persistence.identity.entity.IdentityRecordEntity;
+import central.studio.provider.graphql.identity.dto.IdentityRecordDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -47,19 +47,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /**
- * Identity Strategy
+ * Identity Record
  * <p>
- * 安全策略
+ * 登录记录修改
  *
  * @author Alan Yeh
- * @since 2022/11/05
+ * @since 2025/03/02
  */
 @Component
-@GraphQLSchema(path = "identity/mutation", types = IdentityStrategyDTO.class)
-public class IdentityStrategyMutation {
+@GraphQLSchema(path = "identity/mutation", types = IdentityRecordDTO.class)
+public class IdentityRecordMutation {
 
     @Setter(onMethod_ = @Autowired)
-    private IdentityStrategyPersistence persistence;
+    private IdentityRecordPersistence persistence;
 
     /**
      * 保存数据
@@ -69,11 +69,11 @@ public class IdentityStrategyMutation {
      * @param tenant   租户标识
      */
     @GraphQLFetcher
-    public @Nonnull IdentityStrategyDTO insert(@RequestParam @Validated({Insert.class, Default.class}) IdentityStrategyInput input,
-                                               @RequestParam String operator,
-                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+    public @Nonnull IdentityRecordDTO insert(@RequestParam @Validated({Insert.class, Default.class}) IdentityRecordInput input,
+                                             @RequestParam String operator,
+                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.insert(input, operator, tenant);
-        return DTO.wrap(data, IdentityStrategyDTO.class);
+        return DTO.wrap(data, IdentityRecordDTO.class);
     }
 
     /**
@@ -84,11 +84,11 @@ public class IdentityStrategyMutation {
      * @param tenant   租户标识
      */
     @GraphQLFetcher
-    public @Nonnull List<IdentityStrategyDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<IdentityStrategyInput> inputs,
-                                                          @RequestParam String operator,
-                                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+    public @Nonnull List<IdentityRecordDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<IdentityRecordInput> inputs,
+                                                        @RequestParam String operator,
+                                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.insertBatch(inputs, operator, tenant);
-        return DTO.wrap(data, IdentityStrategyDTO.class);
+        return DTO.wrap(data, IdentityRecordDTO.class);
     }
 
     /**
@@ -99,11 +99,11 @@ public class IdentityStrategyMutation {
      * @param tenant   租户标识
      */
     @GraphQLFetcher
-    public @Nonnull IdentityStrategyDTO update(@RequestParam @Validated({Update.class, Default.class}) IdentityStrategyInput input,
-                                               @RequestParam String operator,
-                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+    public @Nonnull IdentityRecordDTO update(@RequestParam @Validated({Update.class, Default.class}) IdentityRecordInput input,
+                                             @RequestParam String operator,
+                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.update(input, operator, tenant);
-        return DTO.wrap(data, IdentityStrategyDTO.class);
+        return DTO.wrap(data, IdentityRecordDTO.class);
     }
 
     /**
@@ -114,11 +114,11 @@ public class IdentityStrategyMutation {
      * @param tenant   租户标识
      */
     @GraphQLFetcher
-    public @Nonnull List<IdentityStrategyDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<IdentityStrategyInput> inputs,
-                                                          @RequestParam String operator,
-                                                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
+    public @Nonnull List<IdentityRecordDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<IdentityRecordInput> inputs,
+                                                        @RequestParam String operator,
+                                                        @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var data = this.persistence.updateBatch(inputs, operator, tenant);
-        return DTO.wrap(data, IdentityStrategyDTO.class);
+        return DTO.wrap(data, IdentityRecordDTO.class);
     }
 
     /**
@@ -140,8 +140,8 @@ public class IdentityStrategyMutation {
      * @param tenant     租户标识
      */
     @GraphQLFetcher
-    public long deleteBy(@RequestParam Conditions<IdentityStrategyEntity> conditions,
+    public long deleteBy(@RequestParam Conditions<IdentityRecordEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
-        return this.deleteBy(conditions, tenant);
+        return this.persistence.deleteBy(conditions, tenant);
     }
 }

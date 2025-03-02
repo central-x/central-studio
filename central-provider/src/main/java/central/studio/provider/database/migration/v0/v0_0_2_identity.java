@@ -86,6 +86,23 @@ public class v0_0_2_identity extends Migration {
             var table = Table.of("X_ID_STRATEGY", "安全策略", columns, indies);
             database.addTable(table);
         }
+        {
+            // 认证记录
+            var columns = List.of(
+                    Column.of("ID", true, SqlType.STRING, 32, "主键"),
+                    Column.of("ADDRESS", SqlType.STRING, 32, "主机归属地"),
+                    Column.of("HOST", SqlType.STRING, 64, "主机地址"),
+                    Column.of("DEVICE", SqlType.STRING, 128, "登录设备"),
+                    Column.of("CREATOR_ID", SqlType.STRING, 36, "创建人主键"),
+                    Column.of("CREATE_DATE", SqlType.DATETIME, "创建时间"),
+                    Column.of("MODIFIER_ID", SqlType.STRING, 36, "更新人主键"),
+                    Column.of("MODIFY_DATE", SqlType.DATETIME, "更新时间"),
+                    Column.of("TENANT_CODE", SqlType.STRING, 32, "租户编码")
+            );
+
+            var table = Table.of("X_ID_RECORD", "认证记录", columns, List.of());
+            database.addTable(table);
+        }
     }
 
     @Override

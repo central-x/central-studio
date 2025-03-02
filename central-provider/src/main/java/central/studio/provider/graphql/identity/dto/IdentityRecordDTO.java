@@ -22,55 +22,42 @@
  * SOFTWARE.
  */
 
-package central.studio.provider.graphql.identity;
+package central.studio.provider.graphql.identity.dto;
 
-import central.studio.provider.graphql.identity.mutation.IdentityPasswordMutation;
-import central.studio.provider.graphql.identity.mutation.IdentityRecordMutation;
-import central.studio.provider.graphql.identity.mutation.IdentityStrategyMutation;
+import central.provider.graphql.DTO;
 import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.identity.entity.IdentityRecordEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
+import lombok.EqualsAndHashCode;
+import org.dataloader.DataLoader;
+
+import java.io.Serial;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * Identity Mutation
- * <p>
- * 认证中心修改
- *
  * @author Alan Yeh
- * @since 2022/10/02
+ * @since 2025/03/02
  */
-@Component
-@GraphQLSchema(path = "identity", types = {IdentityPasswordMutation.class, IdentityStrategyMutation.class, IdentityRecordMutation.class})
-public class IdentityMutation {
+@GraphQLType("IdentityRecord")
+@EqualsAndHashCode(callSuper = true)
+public class IdentityRecordDTO extends IdentityRecordEntity implements DTO {
+    @Serial
+    private static final long serialVersionUID = -2173675791703622968L;
 
     /**
-     * Password Mutation
-     * <p>
-     * 密码修改
+     * 创建人信息
      */
     @GraphQLGetter
-    public IdentityPasswordMutation getPasswords(@Autowired IdentityPasswordMutation mutation) {
-        return mutation;
+    public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
+        return loader.load(this.getCreatorId());
     }
 
     /**
-     * Strategy Mutation
-     * <p>
-     * 安全策略修改
+     * 修改人信息
      */
     @GraphQLGetter
-    public IdentityStrategyMutation getStrategies(@Autowired IdentityStrategyMutation mutation) {
-        return mutation;
-    }
-
-    /**
-     * Record Mutation
-     * <p>
-     * 认证记录修改
-     */
-    @GraphQLGetter
-    public IdentityRecordMutation getRecords(@Autowired IdentityRecordMutation mutation) {
-        return mutation;
+    public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
+        return loader.load(this.getModifierId());
     }
 }

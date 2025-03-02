@@ -25,6 +25,7 @@
 package central.studio.provider.graphql.identity;
 
 import central.studio.provider.graphql.identity.query.IdentityPasswordQuery;
+import central.studio.provider.graphql.identity.query.IdentityRecordQuery;
 import central.studio.provider.graphql.identity.query.IdentityStrategyQuery;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
@@ -40,7 +41,7 @@ import org.springframework.stereotype.Component;
  * @since 2022/10/02
  */
 @Component
-@GraphQLSchema(path = "identity", types = {IdentityPasswordQuery.class, IdentityStrategyQuery.class})
+@GraphQLSchema(path = "identity", types = {IdentityPasswordQuery.class, IdentityStrategyQuery.class, IdentityRecordQuery.class})
 public class IdentityQuery {
 
     /**
@@ -60,6 +61,16 @@ public class IdentityQuery {
      */
     @GraphQLGetter
     public IdentityStrategyQuery getStrategies(@Autowired IdentityStrategyQuery query) {
+        return query;
+    }
+
+    /**
+     * Record Query
+     * <p>
+     * 认证记录查询
+     */
+    @GraphQLGetter
+    public IdentityRecordQuery getRecords(@Autowired IdentityRecordQuery query) {
         return query;
     }
 }

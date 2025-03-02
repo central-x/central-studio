@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Security Strategy Test Cases
+ * Identity Strategy Test Cases
  *
  * @author Alan Yeh
  * @since 2022/11/05
