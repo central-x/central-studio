@@ -90,6 +90,8 @@ public class v0_0_2_identity extends Migration {
             // 认证记录
             var columns = List.of(
                     Column.of("ID", true, SqlType.STRING, 32, "主键"),
+                    Column.of("SESSION_ID", SqlType.STRING, 32, "会话主键"),
+                    Column.of("ENDPOINT", SqlType.STRING, 32, "终端类型"),
                     Column.of("ADDRESS", SqlType.STRING, 32, "主机归属地"),
                     Column.of("HOST", SqlType.STRING, 64, "主机地址"),
                     Column.of("DEVICE", SqlType.STRING, 128, "登录设备"),

@@ -4,6 +4,10 @@
 type IdentityRecord implements Entity & Modifiable {
     "主键"
     id:                     ID!
+    "会话主键"
+    sessionId:              String
+    "终端类型"
+    endpoint:               String
     "主机归属地"
     address:                String
     "主机地址"

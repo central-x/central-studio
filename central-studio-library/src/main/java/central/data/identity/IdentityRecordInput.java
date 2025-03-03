@@ -58,6 +58,16 @@ public class IdentityRecordInput implements Serializable {
     @Size(min = 1, max = 32, groups = Insert.class)
     private String id;
 
+    @Label("会话主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String sessionId;
+
+    @Label("终端类型")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String endpoint;
+
     @Label("主机归属地")
     @NotBlank
     @Size(min = 1, max = 32)

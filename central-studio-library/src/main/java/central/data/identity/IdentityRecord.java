@@ -58,6 +58,18 @@ public class IdentityRecord extends ModifiableEntity {
     private String id;
 
     /**
+     * 会话主键
+     */
+    @Nonnull
+    private String sessionId;
+
+    /**
+     * 终端类型
+     */
+    @Nonnull
+    private String endpoint;
+
+    /**
      * 主机归属地
      */
     @Nonnull
@@ -91,6 +103,8 @@ public class IdentityRecord extends ModifiableEntity {
     public IdentityRecordInput.Builder toInput() {
         return IdentityRecordInput.builder()
                 .id(this.getId())
+                .sessionId(this.getSessionId())
+                .endpoint(this.getEndpoint())
                 .address(this.getAddress())
                 .host(this.getHost())
                 .device(this.getDevice());

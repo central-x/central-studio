@@ -9,6 +9,8 @@ query IdentityRecordProvider($id: String) {
         records {
             findById(id: $id) {
                 id
+                sessionId
+                endpoint
                 address
                 host
                 device
@@ -45,6 +47,8 @@ query IdentityRecordProvider($ids: [String]) {
         records {
             findByIds(ids: $ids){
                 id
+                sessionId
+                endpoint
                 address
                 host
                 device
@@ -81,6 +85,8 @@ query IdentityRecordProvider($limit: Long, $offset: Long, $conditions: [Conditio
         records {
             findBy(limit: $limit, offset: $offset, conditions: $conditions, orders: $orders) {
                 id
+                sessionId
+                endpoint
                 address
                 host
                 device
@@ -125,6 +131,8 @@ query IdentityRecordProvider($pageIndex: Long, $pageSize: Long, $conditions: [Co
                 data {
                     ... on IdentityRecord {
                         id
+                        sessionId
+                        endpoint
                         address
                         host
                         device
@@ -178,6 +186,8 @@ mutation IdentityRecordProvider($input: IdentityRecordInput, $operator: String) 
         records {
             insert(input: $input, operator: $operator) {
                 id
+                sessionId
+                endpoint
                 address
                 host
                 device
@@ -214,6 +224,8 @@ mutation IdentityRecordProvider($inputs: [IdentityRecordInput], $operator: Strin
         records {
             insertBatch(inputs: $inputs, operator: $operator) {
                 id
+                sessionId
+                endpoint
                 address
                 host
                 device
@@ -250,6 +262,8 @@ mutation IdentityRecordProvider($input: IdentityRecordInput, $operator: String) 
         records {
             update(input: $input, operator: $operator) {
                 id
+                sessionId
+                endpoint
                 address
                 host
                 device
@@ -286,6 +300,8 @@ mutation IdentityRecordProvider($inputs: [IdentityRecordInput], $operator: Strin
         records {
             updateBatch(inputs: $inputs, operator: $operator) {
                 id
+                sessionId
+                endpoint
                 address
                 host
                 device

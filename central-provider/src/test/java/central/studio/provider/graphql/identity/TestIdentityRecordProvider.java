@@ -36,6 +36,7 @@ import central.studio.provider.ProviderApplication;
 import central.studio.provider.database.persistence.identity.IdentityRecordPersistence;
 import central.studio.provider.database.persistence.identity.entity.IdentityRecordEntity;
 import central.studio.provider.graphql.TestContext;
+import central.util.Guidx;
 import central.util.Listx;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
@@ -96,6 +97,8 @@ public class TestIdentityRecordProvider {
         var tenant = this.context.getTenant();
 
         var input = IdentityRecordInput.builder()
+                .sessionId(Guidx.nextID())
+                .endpoint("mobile")
                 .address("Unknow")
                 .host("127.0.0.1")
                 .device("Safari on macOS")
@@ -104,6 +107,8 @@ public class TestIdentityRecordProvider {
         // test insert
         var insert = this.provider.insert(input, "syssa", tenant.getCode());
         assertNotNull(insert);
+        assertEquals(input.getSessionId(), insert.getSessionId());
+        assertEquals(input.getEndpoint(), insert.getEndpoint());
         assertEquals(input.getAddress(), insert.getAddress());
         assertEquals(input.getHost(), insert.getHost());
         assertEquals(input.getDevice(), insert.getDevice());
@@ -122,6 +127,8 @@ public class TestIdentityRecordProvider {
         // test findById
         var findById = this.provider.findById(insert.getId(), tenant.getCode());
         assertNotNull(findById);
+        assertEquals(input.getSessionId(), findById.getSessionId());
+        assertEquals(input.getEndpoint(), findById.getEndpoint());
         assertEquals(input.getAddress(), findById.getAddress());
         assertEquals(input.getHost(), findById.getHost());
         assertEquals(input.getDevice(), findById.getDevice());
@@ -140,6 +147,8 @@ public class TestIdentityRecordProvider {
 
         var fetched = Listx.getFirstOrNull(findByIds);
         assertNotNull(fetched);
+        assertEquals(input.getSessionId(), fetched.getSessionId());
+        assertEquals(input.getEndpoint(), fetched.getEndpoint());
         assertEquals("localhost", fetched.getAddress());
         assertEquals(input.getHost(), fetched.getHost());
         assertEquals(input.getDevice(), fetched.getDevice());
@@ -164,6 +173,8 @@ public class TestIdentityRecordProvider {
         var tenant = this.context.getTenant();
 
         var input = IdentityRecordInput.builder()
+                .sessionId(Guidx.nextID())
+                .endpoint("mobile")
                 .address("Unknow")
                 .host("127.0.0.1")
                 .device("Safari on macOS")
@@ -176,6 +187,8 @@ public class TestIdentityRecordProvider {
 
         var insert = Listx.getFirstOrNull(insertBatch);
         assertNotNull(insert);
+        assertEquals(input.getSessionId(), insert.getSessionId());
+        assertEquals(input.getEndpoint(), insert.getEndpoint());
         assertEquals(input.getAddress(), insert.getAddress());
         assertEquals(input.getHost(), insert.getHost());
         assertEquals(input.getDevice(), insert.getDevice());
@@ -196,6 +209,8 @@ public class TestIdentityRecordProvider {
 
         var fetched = Listx.getFirstOrNull(findBy);
         assertNotNull(fetched);
+        assertEquals(input.getSessionId(), fetched.getSessionId());
+        assertEquals(input.getEndpoint(), fetched.getEndpoint());
         assertEquals(insert.getId(), fetched.getId());
         assertEquals(input.getAddress(), fetched.getAddress());
         assertEquals(input.getHost(), fetched.getHost());
@@ -215,6 +230,8 @@ public class TestIdentityRecordProvider {
 
         fetched = Listx.getFirstOrNull(pageBy.getData());
         assertNotNull(fetched);
+        assertEquals(input.getSessionId(), fetched.getSessionId());
+        assertEquals(input.getEndpoint(), fetched.getEndpoint());
         assertEquals(insert.getId(), fetched.getId());
         assertEquals("localhost", fetched.getAddress());
         assertEquals(insert.getHost(), fetched.getHost());

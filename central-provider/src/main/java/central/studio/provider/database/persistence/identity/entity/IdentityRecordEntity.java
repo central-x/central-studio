@@ -60,6 +60,16 @@ public class IdentityRecordEntity extends ModifiableEntity implements Tenantable
     @Size(max = 32)
     private String id;
 
+    @Label("会话主键")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String sessionId;
+
+    @Label("终端类型")
+    @NotBlank
+    @Size(min = 1, max = 32)
+    private String endpoint;
+
     @Label("主机归属地")
     @NotBlank
     @Size(min = 1, max = 32)
@@ -82,6 +92,8 @@ public class IdentityRecordEntity extends ModifiableEntity implements Tenantable
 
     public void fromInput(@Nonnull IdentityRecordInput input) {
         this.setId(input.getId());
+        this.setSessionId(input.getSessionId());
+        this.setEndpoint(input.getEndpoint());
         this.setAddress(input.getAddress());
         this.setHost(input.getHost());
         this.setDevice(input.getDevice());
