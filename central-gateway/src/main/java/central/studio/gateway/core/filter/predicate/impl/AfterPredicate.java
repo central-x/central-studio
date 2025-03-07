@@ -24,9 +24,9 @@
 
 package central.studio.gateway.core.filter.predicate.impl;
 
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.validation.Label;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
@@ -35,14 +35,11 @@ import org.springframework.web.server.ServerWebExchange;
 import java.sql.Timestamp;
 
 
-/**
- * After 断言
- * <p>
- * 判断请求进来的时间是否在指定时间之后
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// After 断言
+///
+/// 判断请求进来的时间是否在指定时间之后
+///
+/// @author Alan Yeh
 public class AfterPredicate implements Predicate {
 
     @Setter

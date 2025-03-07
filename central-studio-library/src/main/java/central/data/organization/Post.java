@@ -24,7 +24,9 @@
 
 package central.data.organization;
 
-import central.bean.*;
+import central.bean.Codeable;
+import central.bean.Nonnull;
+import central.bean.Orderable;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -34,12 +36,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 职务
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 职务
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,47 +47,33 @@ public class Post extends ModifiableEntity implements Codeable, Orderable<Post> 
     @Serial
     private static final long serialVersionUID = 6976317782994707578L;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 所属单位主键
-     */
+    /// 所属单位主键
     @Nonnull
     private String unitId;
 
-    /**
-     * 所属单位信息
-     */
+    /// 所属单位信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Unit unit;
 
-    /**
-     * 排序号
-     */
+    /// 排序号
     @Nonnull
     private Integer order;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

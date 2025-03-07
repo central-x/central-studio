@@ -44,32 +44,25 @@ import java.util.Objects;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Controller 测试基类
- *
- * @author Alan Yeh
- * @since 2024/06/29
- */
+/// Controller 测试基类
+///
+/// @author Alan Yeh
 public class TestController {
 
-    /**
-     * 获取会话 Cookie
-     *
-     * @param targetUriString 目标地址。由于 Cookie 与访问地址相关，因此需要提供目标地址
-     * @param mvc             MockMvc
-     * @param cookieStore     CookieStore
-     */
+    /// 获取会话 Cookie
+    ///
+    /// @param targetUriString 目标地址。由于 Cookie 与访问地址相关，因此需要提供目标地址
+    /// @param mvc             MockMvc
+    /// @param cookieStore     CookieStore
     public Cookie[] getSessionCookie(String targetUriString, MockMvc mvc, final CookieStore cookieStore) throws Exception {
         return this.getSessionCookie(URI.create(targetUriString), mvc, cookieStore);
     }
 
-    /**
-     * 获取会话 Cookie
-     *
-     * @param targetUri   目标地址。由于 Cookie 与访问地址相关，因此需要提供目标地址
-     * @param mvc         MockMvc
-     * @param cookieStore CookieStore
-     */
+    /// 获取会话 Cookie
+    ///
+    /// @param targetUri   目标地址。由于 Cookie 与访问地址相关，因此需要提供目标地址
+    /// @param mvc         MockMvc
+    /// @param cookieStore CookieStore
     public Cookie[] getSessionCookie(URI targetUri, MockMvc mvc, final CookieStore cookieStore) throws Exception {
         // 尝试从 CookieStore 获取
         var cookies = cookieStore.getCookies(targetUri);

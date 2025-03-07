@@ -29,12 +29,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.View;
 
-/**
- * 随机验证码
- *
- * @author Alan Yeh
- * @since 2023/11/17
- */
+/// 随机验证码
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public class RandomCaptcha implements Captcha {

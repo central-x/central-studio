@@ -40,12 +40,9 @@ import java.io.BufferedOutputStream;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * 随机验证码
- *
- * @author Alan Yeh
- * @since 2023/05/29
- */
+/// 随机验证码
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class RandomCaptchaView implements CaptchaView {
 
@@ -81,17 +78,17 @@ public class RandomCaptchaView implements CaptchaView {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // 渲染验证码图片逻辑
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*******************************************************************************************************************
+     * 渲染验证码图片逻辑
+     ******************************************************************************************************************/
 
     protected static final Random RANDOM = new Random(System.nanoTime());
 
-    // 默认的验证码大小
+    /// 默认的验证码大小
     protected static final int WIDTH = 108, HEIGHT = 40;
-    // 验证码随机字符数组
+    /// 验证码随机字符数组
     protected static final char[] CHAR_RANGE = "3456789ABCDEFGHJKMNPQRSTUVWXYabcdefghjkmnpqrstuvwxy".toCharArray();
-    // 验证码字体
+    /// 验证码字体
     protected static final Font[] RANDOM_FONT = new Font[]{
             new Font(Font.DIALOG, Font.BOLD, 33),
             new Font(Font.DIALOG_INPUT, Font.BOLD, 34),
@@ -157,9 +154,7 @@ public class RandomCaptchaView implements CaptchaView {
         g.dispose();
     }
 
-    /*
-     * 给定范围获得随机颜色
-     */
+    /// 给定范围获得随机颜色
     protected Color getRandColor(int fc, int bc) {
         Random random = new Random();
         if (fc > 255) {

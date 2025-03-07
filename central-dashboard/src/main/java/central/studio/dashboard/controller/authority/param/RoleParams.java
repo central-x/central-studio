@@ -34,14 +34,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * System Role Params
- * <p>
- * 系统角色入参
- *
- * @author Alan Yeh
- * @since 2024/12/13
- */
+/// System Role Params
+///
+/// 系统角色入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

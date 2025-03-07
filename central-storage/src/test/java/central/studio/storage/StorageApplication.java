@@ -27,12 +27,9 @@ package central.studio.storage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Storage Application
- *
- * @author Alan Yeh
- * @since 2024/02/24
- */
+/// Storage Application
+///
+/// @author Alan Yeh
 @SpringBootApplication
 public class StorageApplication {
     public static void main(String[] args) {

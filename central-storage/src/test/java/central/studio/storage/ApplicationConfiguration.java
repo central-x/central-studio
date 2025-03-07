@@ -34,12 +34,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 测试配置
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 测试配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableCentralStudioStorage
 @EnableCentralStudioProvider

@@ -50,14 +50,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
-/**
- * Log Filter Persistence
- * <p>
- * 日志过滤器持久化
- *
- * @author Alan Yeh
- * @since 2024/12/26
- */
+/// Log Filter Persistence
+///
+/// 日志过滤器持久化
+///
+/// @author Alan Yeh
 @Component
 public class LogFilterPersistence {
 
@@ -76,12 +73,10 @@ public class LogFilterPersistence {
     @Setter(onMethod_ = @Autowired)
     private LogStoragePersistence storagePersistence;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
     public @Nullable LogFilterEntity findById(@Nullable String id,
                                               @Nullable Columns<? extends LogFilterEntity> columns) {
         if (Stringx.isNullOrBlank(id)) {
@@ -91,12 +86,10 @@ public class LogFilterPersistence {
         return this.mapper.findById(id, columns);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
     public @Nonnull List<LogFilterEntity> findByIds(@Nullable List<String> ids,
                                                     @Nullable Columns<? extends LogFilterEntity> columns) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -106,15 +99,13 @@ public class LogFilterPersistence {
         return this.mapper.findByIds(ids, columns);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nonnull List<LogFilterEntity> findBy(@Nullable Long limit,
                                                  @Nullable Long offset,
                                                  @Nullable Columns<? extends LogFilterEntity> columns,
@@ -123,15 +114,13 @@ public class LogFilterPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nonnull Page<LogFilterEntity> pageBy(@Nonnull Long pageIndex,
                                                  @Nonnull Long pageSize,
                                                  @Nullable Columns<? extends LogFilterEntity> columns,
@@ -140,22 +129,18 @@ public class LogFilterPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
     public Long countBy(@Nullable Conditions<? extends LogFilterEntity> conditions) {
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作帐号
-     * @return 保存后的数据
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作帐号
+    /// @return 保存后的数据
     public LogFilterEntity insert(@Nonnull @Validated({Insert.class, Default.class}) LogFilterInput input,
                                   @Nonnull String operator) {
         // 标识唯一性校验
@@ -173,23 +158,19 @@ public class LogFilterPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
     public List<LogFilterEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<LogFilterInput> inputs,
                                              @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
     public LogFilterEntity update(@Nonnull @Validated({Update.class, Default.class}) LogFilterInput input,
                                   @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(LogFilterEntity.class).eq(LogFilterEntity::getId, input.getId()));
@@ -213,22 +194,18 @@ public class LogFilterPersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
     public List<LogFilterEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<LogFilterInput> inputs,
                                              @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids 主键
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids 主键
     public long deleteByIds(@Nullable List<String> ids) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
@@ -243,11 +220,9 @@ public class LogFilterPersistence {
         return effected;
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
     public long deleteBy(@Nullable Conditions<? extends LogFilterEntity> conditions) {
         var ids = this.mapper.findBy(Columns.of(Entity::getId), conditions).stream()
                 .map(Entity::getId).toList();

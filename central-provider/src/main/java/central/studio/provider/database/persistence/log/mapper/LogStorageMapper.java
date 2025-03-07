@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.log.mapper;
 
-import central.studio.provider.database.persistence.log.entity.LogStorageEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.log.entity.LogStorageEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Log Storage
- * <p>
- * 日志存储器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Log Storage
+///
+/// 日志存储器
+///
+/// @author Alan Yeh
 @Repository
 public interface LogStorageMapper extends Mapper<LogStorageEntity> {
 }

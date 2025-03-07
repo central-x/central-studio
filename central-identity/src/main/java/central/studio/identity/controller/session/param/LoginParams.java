@@ -32,12 +32,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
-/**
- * 登录参数
- *
- * @author Alan Yeh
- * @since 2023/03/31
- */
+/// 登录参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

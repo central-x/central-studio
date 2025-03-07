@@ -37,12 +37,9 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 授权码
- *
- * @author Alan Yeh
- * @since 2022/11/07
- */
+/// 授权码
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor
@@ -52,9 +49,7 @@ public class AuthorizationCode implements Expired, Serializable {
     private static final long serialVersionUID = -4562275982598329690L;
     private final long timestamp = System.currentTimeMillis();
 
-    /**
-     * 过期时间
-     */
+    /// 过期时间
     private Duration expires;
 
     @Override
@@ -62,25 +57,15 @@ public class AuthorizationCode implements Expired, Serializable {
         return unit.convert((this.timestamp + this.expires.toMillis()) - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 
-    /**
-     * 授权码
-     */
+    /// 授权码
     private String code;
-    /**
-     * 应用标识
-     */
+    /// 应用标识
     private String clientId;
-    /**
-     * 重定向地址
-     */
+    /// 重定向地址
     private String redirectUri;
-    /**
-     * 会话凭证
-     */
+    /// 会话凭证
     private String token;
-    /**
-     * 授权范围
-     */
+    /// 授权范围
     private Set<GrantScope> scope;
 
     private transient Session session;

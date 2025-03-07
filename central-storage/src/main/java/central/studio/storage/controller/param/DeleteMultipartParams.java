@@ -26,12 +26,9 @@ package central.studio.storage.controller.param;
 
 import lombok.Data;
 
-/**
- * 删除分片上传
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 删除分片上传
+///
+/// @author Alan Yeh
 @Data
 public class DeleteMultipartParams {
 

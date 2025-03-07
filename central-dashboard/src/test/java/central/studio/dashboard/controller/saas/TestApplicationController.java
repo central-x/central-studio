@@ -52,24 +52,19 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Application Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Application Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestApplicationController extends TestController {
 
     private static final String PATH = "/dashboard/api/saas/applications";
 
-    /**
-     * @see ApplicationController#add
-     * @see ApplicationController#details
-     * @see ApplicationController#page
-     * @see ApplicationController#delete
-     */
+    /// @see ApplicationController#add
+    /// @see ApplicationController#details
+    /// @see ApplicationController#page
+    /// @see ApplicationController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DatabaseLogic databaseLogic) throws Exception {
         // 新增
@@ -181,12 +176,10 @@ public class TestApplicationController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see ApplicationController#add
-     * @see ApplicationController#update
-     * @see ApplicationController#details
-     * @see ApplicationController#delete
-     */
+    /// @see ApplicationController#add
+    /// @see ApplicationController#update
+    /// @see ApplicationController#details
+    /// @see ApplicationController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         // 新增
@@ -196,7 +189,7 @@ public class TestApplicationController extends TestController {
                 .content(Jsonx.Default().serialize(ApplicationParams.builder()
                         .code("test")
                         .name("测试应用")
-                                .logo(Base64.getEncoder().encodeToString(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("images/logo-80x80.png"))))
+                        .logo(Base64.getEncoder().encodeToString(IOStreamx.readBytes(Thread.currentThread().getContextClassLoader().getResourceAsStream("images/logo-80x80.png"))))
                         .url("http://localhost:8080")
                         .contextPath("/test/")
                         .businessView("/")

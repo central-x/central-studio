@@ -24,115 +24,94 @@
 
 package central.studio.provider.graphql;
 
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.authority.AuthorityMutation;
 import central.studio.provider.graphql.gateway.GatewayMutation;
 import central.studio.provider.graphql.identity.IdentityMutation;
 import central.studio.provider.graphql.log.LogMutation;
 import central.studio.provider.graphql.multicast.MulticastMutation;
 import central.studio.provider.graphql.organization.OrganizationMutation;
+import central.studio.provider.graphql.saas.SaasMutation;
 import central.studio.provider.graphql.storage.StorageMutation;
 import central.studio.provider.graphql.system.SystemMutation;
-import central.studio.provider.graphql.saas.SaasMutation;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * GraphQL Mutation
- *
- * @author Alan Yeh
- * @since 2022/10/02
- */
+/// GraphQL Mutation
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(types = {AuthorityMutation.class, IdentityMutation.class, OrganizationMutation.class, SystemMutation.class, SaasMutation.class, LogMutation.class, StorageMutation.class, MulticastMutation.class, GatewayMutation.class})
 public class Mutation {
 
-    /**
-     * Authority Mutation
-     * <p>
-     * 权限相关修改
-     */
+    /// Authority Mutation
+    ///
+    /// 权限相关修改
     @GraphQLGetter
     public AuthorityMutation getAuthority(@Autowired AuthorityMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Organization Mutation
-     * <p>
-     * 组织架构相关修改
-     */
+    /// Organization Mutation
+    ///
+    /// 组织架构相关修改
     @GraphQLGetter
     public OrganizationMutation getOrganization(@Autowired OrganizationMutation mutation) {
         return mutation;
     }
 
-    /**
-     * System Mutation
-     * <p>
-     * 系统配置相关修改
-     */
+    /// System Mutation
+    ///
+    /// 系统配置相关修改
     @GraphQLGetter
     public SystemMutation getSystem(@Autowired SystemMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Tenant Mutation
-     * <p>
-     * 租户相关修改
-     */
+    /// Tenant Mutation
+    ///
+    /// 租户相关修改
     @GraphQLGetter
     public SaasMutation getSaas(@Autowired SaasMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Identity Mutation
-     * <p>
-     * 认证相关修改
-     */
+    /// Identity Mutation
+    ///
+    /// 认证相关修改
     @GraphQLGetter
     public IdentityMutation getIdentity(@Autowired IdentityMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Log Mutation
-     * <p>
-     * 日志中心查询
-     */
+    /// Log Mutation
+    ///
+    /// 日志中心查询
     @GraphQLGetter
     public LogMutation getLog(@Autowired LogMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Storage Mutation
-     * <p>
-     * 存储中心修改
-     */
+    /// Storage Mutation
+    ///
+    /// 存储中心修改
     @GraphQLGetter
     public StorageMutation getStorage(@Autowired StorageMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Multicast Mutation
-     * <p>
-     * 广播中心修改
-     */
+    /// Multicast Mutation
+    ///
+    /// 广播中心修改
     @GraphQLGetter
     public MulticastMutation getMulticast(@Autowired MulticastMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Gateway Mutation
-     * <p>
-     * 网关中心修改
-     */
+    /// Gateway Mutation
+    ///
+    /// 网关中心修改
     @GraphQLGetter
     public GatewayMutation getGateway(@Autowired GatewayMutation mutation) {
         return mutation;

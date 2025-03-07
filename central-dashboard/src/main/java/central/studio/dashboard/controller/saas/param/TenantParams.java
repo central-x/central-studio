@@ -34,14 +34,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Tenant Params
- * <p>
- * 租户参数
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Tenant Params
+///
+/// 租户参数
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

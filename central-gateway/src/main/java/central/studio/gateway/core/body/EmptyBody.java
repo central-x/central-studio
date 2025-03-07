@@ -31,12 +31,9 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Flux;
 
-/**
- * Empty Body
- *
- * @author Alan Yeh
- * @since 2022/10/18
- */
+/// Empty Body
+///
+/// @author Alan Yeh
 public class EmptyBody implements HttpResponseBody {
     @Getter
     private final HttpHeaders headers = new HttpHeaders();

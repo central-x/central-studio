@@ -27,12 +27,9 @@ package central.studio.logging;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * 日志中心配置
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志中心配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties("studio.logging")
 public class LoggingProperties {

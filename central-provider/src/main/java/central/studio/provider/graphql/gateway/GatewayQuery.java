@@ -24,29 +24,24 @@
 
 package central.studio.provider.graphql.gateway;
 
-import central.studio.provider.graphql.gateway.query.GatewayFilterQuery;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.gateway.query.GatewayFilterQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Central Gateway Query
- * <p>
- * 网关中心查询
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Central Gateway Query
+///
+/// 网关中心查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "gateway", types = GatewayFilterQuery.class)
 public class GatewayQuery {
 
-    /**
-     * Gateway Filter
-     * <p>
-     * 过滤器
-     */
+    /// Gateway Filter
+    ///
+    /// 过滤器
     @GraphQLGetter
     public GatewayFilterQuery getFilters(@Autowired GatewayFilterQuery query) {
         return query;

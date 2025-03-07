@@ -29,12 +29,9 @@ import central.studio.storage.core.impl.local.LocalBucket;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 桶类型
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 桶类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum BucketType implements OptionalEnum<String> {

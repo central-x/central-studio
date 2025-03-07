@@ -38,39 +38,30 @@ import org.dataloader.DataLoader;
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Role Principal Relation
- * <p>
- * 角色与主体关联关系
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Principal Relation
+///
+/// 角色与主体关联关系
+///
+/// @author Alan Yeh
 @GraphQLType("RolePrincipal")
 @EqualsAndHashCode(callSuper = true)
 public class RolePrincipalDTO extends RolePrincipalEntity {
     @Serial
     private static final long serialVersionUID = 1176408641686043776L;
 
-    /**
-     * 应用信息
-     */
+    /// 应用信息
     @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
     }
 
-    /**
-     * 角色信息
-     */
+    /// 角色信息
     @GraphQLGetter
     public CompletableFuture<RoleDTO> getRole(DataLoader<String, RoleDTO> loader) {
         return loader.load(this.getRoleId());
     }
 
-    /**
-     * 帐号信息（当 type 为 account 时）
-     */
+    /// 帐号信息（当 type 为 account 时）
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getAccount(DataLoader<String, AccountDTO> loader) {
         if (PrincipalType.resolve(this.getType()) == PrincipalType.ACCOUNT) {
@@ -80,9 +71,7 @@ public class RolePrincipalDTO extends RolePrincipalEntity {
         }
     }
 
-    /**
-     * 单位信息（当 type 为 unit 时）
-     */
+    /// 单位信息（当 type 为 unit 时）
     @GraphQLGetter
     public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
         if (PrincipalType.resolve(this.getType()) == PrincipalType.UNIT) {
@@ -92,9 +81,7 @@ public class RolePrincipalDTO extends RolePrincipalEntity {
         }
     }
 
-    /**
-     * 部门信息（当 type 为 department 时）
-     */
+    /// 部门信息（当 type 为 department 时）
     @GraphQLGetter
     public CompletableFuture<DepartmentDTO> getDepartment(DataLoader<String, DepartmentDTO> loader) {
         if (PrincipalType.resolve(this.getType()) == PrincipalType.DEPARTMENT) {
@@ -104,9 +91,7 @@ public class RolePrincipalDTO extends RolePrincipalEntity {
         }
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());

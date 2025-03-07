@@ -28,14 +28,11 @@ import central.sql.proxy.Mapper;
 import central.studio.provider.database.persistence.authority.entity.RolePrincipalEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Role Principal Relation
- * <p>
- * 角色与主体关联关系
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Principal Relation
+///
+/// 角色与主体关联关系
+///
+/// @author Alan Yeh
 @Repository
 public interface RolePrincipalMapper extends Mapper<RolePrincipalEntity> {
 }

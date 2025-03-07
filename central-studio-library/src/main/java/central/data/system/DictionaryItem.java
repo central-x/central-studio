@@ -36,12 +36,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 字典项
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 字典项
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,33 +46,23 @@ public class DictionaryItem implements Serializable, Codeable, Orderable<Diction
     @Serial
     private static final long serialVersionUID = -819169978008402813L;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 是否主选项
-     */
+    /// 是否主选项
     @Nonnull
     private Boolean primary;
 
-    /**
-     * 排序号
-     */
+    /// 排序号
     @Nonnull
     private Integer order;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

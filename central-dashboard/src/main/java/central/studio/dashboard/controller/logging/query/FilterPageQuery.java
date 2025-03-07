@@ -34,14 +34,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Log Filter Page Query
- * <p>
- * 日志过滤器分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/30
- */
+/// Log Filter Page Query
+///
+/// 日志过滤器分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FilterPageQuery extends PageQuery<LogFilter> {

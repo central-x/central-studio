@@ -61,14 +61,11 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * AuthorizationProvider Test Cases
- * <p>
- * 授权
- *
- * @author Alan Yeh
- * @since 2024/05/27
- */
+/// AuthorizationProvider Test Cases
+///
+/// 授权
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestAuthorizationProvider {
 
@@ -127,9 +124,7 @@ public class TestAuthorizationProvider {
         accountPersistence.deleteBy(Conditions.of(AccountEntity.class).like(AccountEntity::getUsername, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see AuthorizationProvider#findApplication
-     */
+    /// @see AuthorizationProvider#findApplication
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -168,9 +163,7 @@ public class TestAuthorizationProvider {
         }
     }
 
-    /**
-     * @see AuthorizationProvider#findApplications
-     */
+    /// @see AuthorizationProvider#findApplications
     @Test
     public void case2() {
         var tenant = this.context.getTenant();
@@ -183,11 +176,9 @@ public class TestAuthorizationProvider {
         assertFalse(applications.isEmpty());
     }
 
-    /**
-     * @see AuthorizationProvider#findRoles
-     * @see AuthorizationProvider#findMenus
-     * @see AuthorizationProvider#findPermissions
-     */
+    /// @see AuthorizationProvider#findRoles
+    /// @see AuthorizationProvider#findMenus
+    /// @see AuthorizationProvider#findPermissions
     @Test
     public void case3() {
         var tenant = this.context.getTenant();

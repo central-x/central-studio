@@ -24,16 +24,16 @@
 
 package central.studio.provider.database;
 
-import central.studio.provider.database.migration.v0.v0;
-import central.studio.provider.database.migration.v1.v1;
 import central.sql.SqlDialect;
 import central.sql.SqlSource;
 import central.sql.datasource.dynamic.DynamicSqlSource;
 import central.sql.datasource.dynamic.lookup.LookupKeyHolder;
 import central.sql.impl.standard.StandardDataSourceMigrator;
 import central.sql.impl.standard.StandardSource;
-import central.web.XForwardedHeaders;
+import central.studio.provider.database.migration.v0.v0;
+import central.studio.provider.database.migration.v1.v1;
 import central.util.Version;
+import central.web.XForwardedHeaders;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,12 +46,9 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-/**
- * 动态数据源
- *
- * @author Alan Yeh
- * @since 2022/09/26
- */
+/// 动态数据源
+///
+/// @author Alan Yeh
 @Component
 public class ApplicationSource extends DynamicSqlSource implements InitializingBean, EnvironmentAware {
 

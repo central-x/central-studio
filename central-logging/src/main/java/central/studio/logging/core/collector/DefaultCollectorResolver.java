@@ -31,14 +31,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-/**
- * Default Collector Resolver
- * <p>
- * 默认采集器类型解析器
- *
- * @author Alan Yeh
- * @since 2024/04/19
- */
+/// Default Collector Resolver
+///
+/// 默认采集器类型解析器
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class DefaultCollectorResolver implements CollectorResolver {
 

@@ -25,9 +25,9 @@
 package central.studio.gateway.core.filter.predicate.impl;
 
 import central.bean.OptionalEnum;
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.validation.Label;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -38,12 +38,9 @@ import org.springframework.web.server.ServerWebExchange;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-/**
- * 每周固定日期
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 每周固定日期
+///
+/// @author Alan Yeh
 public class WeeklyPredicate implements Predicate {
 
     @Setter

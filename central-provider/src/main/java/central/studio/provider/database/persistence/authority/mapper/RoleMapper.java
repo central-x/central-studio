@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.authority.mapper;
 
-import central.studio.provider.database.persistence.authority.entity.RoleEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.authority.entity.RoleEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 角色信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 角色信息
+///
+/// @author Alan Yeh
 @Repository
 public interface RoleMapper extends Mapper<RoleEntity> {
 }

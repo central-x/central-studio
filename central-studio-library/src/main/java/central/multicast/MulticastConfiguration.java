@@ -37,21 +37,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-/**
- * Multicast Configuration
- * <p>
- * 广播中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/21
- */
+/// Multicast Configuration
+///
+/// 广播中心配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableConfigurationProperties(MulticastProperties.class)
 public class MulticastConfiguration {
 
-    /**
-     * 广播客户端
-     */
+    /// 广播客户端
     @Bean
     public MessageClient messageClient(MulticastProperties properties) {
         return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())

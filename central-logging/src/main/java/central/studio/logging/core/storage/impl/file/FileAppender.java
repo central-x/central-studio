@@ -43,12 +43,9 @@ import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-/**
- * 日志文件写入
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志文件写入
+///
+/// @author Alan Yeh
 @Slf4j
 @RequiredArgsConstructor
 public class FileAppender implements InitializingBean, DisposableBean {

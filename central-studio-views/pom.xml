@@ -9,6 +9,7 @@
 
     <modules>
         <module>central-dashboard-view</module>
+        <module>central-document-view</module>
         <module>central-identity-view</module>
     </modules>
 

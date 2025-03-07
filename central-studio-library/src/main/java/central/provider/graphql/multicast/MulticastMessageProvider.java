@@ -31,14 +31,11 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * Multicast Message
- * <p>
- * 广播消息
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// Multicast Message
+///
+/// 广播消息
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("multicast.messages")
 @GraphQLStub(path = "multicast", client = "providerClient")

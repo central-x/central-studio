@@ -24,37 +24,30 @@
 
 package central.studio.provider.graphql.authority;
 
-import central.studio.provider.graphql.authority.mutation.MenuMutation;
-import central.studio.provider.graphql.authority.mutation.RoleMutation;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.authority.mutation.MenuMutation;
+import central.studio.provider.graphql.authority.mutation.RoleMutation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Authority Mutation
- * <p>
- * 权限类数据修改
- *
- * @author Alan Yeh
- * @since 2022/10/26
- */
+/// Authority Mutation
+///
+/// 权限类数据修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "authority", types = {MenuMutation.class, RoleMutation.class})
 public class AuthorityMutation {
-    /**
-     * Menu Mutation
-     * 菜单修改
-     */
+    /// Menu Mutation
+    /// 菜单修改
     @GraphQLGetter
     public MenuMutation getMenus(@Autowired MenuMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Role Mutation
-     * 角色修改
-     */
+    /// Role Mutation
+    /// 角色修改
     @GraphQLGetter
     public RoleMutation getRoles(@Autowired RoleMutation mutation) {
         return mutation;

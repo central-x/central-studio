@@ -43,22 +43,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Log Collector Controller
- * <p>
- * 日志采集器管理
- *
- * @author Alan Yeh
- * @since 2024/11/24
- */
+/// Log Collector Controller
+///
+/// 日志采集器管理
+///
+/// @author Alan Yeh
 @RestController("logCollectorController")
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/logging/collectors")
 public class CollectorController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "logging:collector:view";
         String ADD = "logging:collector:add";
@@ -71,92 +66,78 @@ public class CollectorController {
     @Setter(onMethod_ = @Autowired)
     private LogLogic logic;
 
-    /**
-     * 按条件分页查询列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 分页结果
-     */
+    /// 按条件分页查询列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 分页结果
     @GetMapping("/page")
     public Page<LogCollector> page(@Validated CollectorPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageCollectorBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/details")
     public LogCollector details(@Validated IdQuery<LogCollector> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findCollectorById(query.getId(), tenant);
     }
 
-    /**
-     * 更新行政数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 新增后的数据
-     */
+    /// 更新行政数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 新增后的数据
     @PostMapping
     public LogCollector add(@RequestBody @Validated({Insert.class, Default.class}) CollectorParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertCollector(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     @PutMapping
     public LogCollector update(@RequestBody @Validated({Update.class, Default.class}) CollectorParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.updateCollector(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param params    待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param params    待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     @PutMapping("/enable")
     @RequiresPermissions(Permissions.ENABLE)
     public LogCollector enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.enableCollector(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param params    待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param params    待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     @PutMapping("/disable")
     @RequiresPermissions(Permissions.DISABLE)
     public LogCollector disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.disableCollector(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param params    待删除主键列表
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param params    待删除主键列表
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteCollectorByIds(params.getIds(), accountId, tenant);

@@ -36,12 +36,9 @@ import lombok.Getter;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-/**
- * 登录字段
- *
- * @author Alan Yeh
- * @since 2023/11/20
- */
+/// 登录字段
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum LoginField implements OptionalEnum<String> {

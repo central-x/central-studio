@@ -24,11 +24,11 @@
 
 package central.provider.scheduled.fetcher.gateway;
 
+import central.data.gateway.GatewayFilter;
 import central.provider.graphql.gateway.GatewayFilterProvider;
 import central.provider.graphql.saas.TenantProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
-import central.data.gateway.GatewayFilter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,12 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * 网关中心数据获取
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 网关中心数据获取
+///
+/// @author Alan Yeh
 public class GatewayFetcher implements DataFetcher<GatewayContainer> {
     @Setter
     private BeanSupplier supplier;

@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Log Collector Page Query
- * <p>
- * 日志采集器分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/24
- */
+/// Log Collector Page Query
+///
+/// 日志采集器分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CollectorPageQuery extends PageQuery<LogCollector> {

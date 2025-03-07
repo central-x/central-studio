@@ -31,36 +31,25 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 数据库属性
- *
- * @author Alan Yeh
- * @since 2022/11/13
- */
+/// 数据库属性
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class DatabaseProperties implements Serializable {
     @Serial
     private static final long serialVersionUID = -9119090138392047125L;
-    /**
-     * 驱动
-     */
+    /// 驱动
     private String driver;
 
-    /**
-     * 连接字符串
-     */
+    /// 连接字符串
     private String url;
 
-    /**
-     * 用户名
-     */
+    /// 用户名
     private String username;
 
-    /**
-     * 密码
-     */
+    /// 密码
     private String password;
 
     public DatabasePropertiesInput.Builder toInput() {

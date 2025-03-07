@@ -27,9 +27,9 @@ package central.studio.provider.database.persistence.authority.entity;
 import central.bean.Tenantable;
 import central.data.authority.MenuInput;
 import central.data.authority.option.MenuType;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.Relation;
+import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import central.validation.Enums;
 import central.validation.Label;
 import jakarta.persistence.Id;
@@ -45,12 +45,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 菜单
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 菜单
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -123,7 +120,7 @@ public class MenuEntity extends ModifiableEntity implements Tenantable {
     @Size(min = 1, max = 32)
     private String tenantCode;
 
-    public void fromInput(MenuInput input){
+    public void fromInput(MenuInput input) {
         this.setId(input.getId());
         this.setApplicationId(input.getApplicationId());
         this.setParentId(input.getParentId());

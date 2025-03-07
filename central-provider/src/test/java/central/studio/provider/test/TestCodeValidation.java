@@ -31,12 +31,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * Code Validation Test Cases
- *
- * @author Alan Yeh
- * @since 2022/09/26
- */
+/// Code Validation Test Cases
+///
+/// @author Alan Yeh
 public class TestCodeValidation {
     @Test
     public void case1() {

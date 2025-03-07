@@ -33,12 +33,9 @@ import java.nio.charset.Charset;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-/**
- * GZip 压缩
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// GZip 压缩
+///
+/// @author Alan Yeh
 public class GZipSerializer implements BodySerializer {
     @Override
     public String read(InputStream body, Charset charset) throws IOException {

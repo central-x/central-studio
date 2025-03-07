@@ -24,12 +24,10 @@
 
 package central.studio.identity.core.strategy;
 
-/**
- * Global Security Strategy
- * 全局安全策略
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// Global Security Strategy
+///
+/// 全局安全策略
+///
+/// @author Alan Yeh
 public interface GlobalStrategyFilter extends StrategyFilter {
 }

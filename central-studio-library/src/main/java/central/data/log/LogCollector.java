@@ -35,12 +35,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 日志采集器
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志采集器
+///
+/// @author Alan Yeh
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,45 +45,29 @@ import java.io.Serial;
 public class LogCollector extends ModifiableEntity implements Codeable, Available, Remarkable {
     @Serial
     private static final long serialVersionUID = 948144289918023162L;
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
-    /**
-     * 类型
-     */
+    /// 类型
     @Nonnull
     private String type;
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
-    /**
-     * 备注
-     */
+    /// 备注
     @Nullable
     private String remark;
-    /**
-     * 初始化参数
-     */
+    /// 初始化参数
     @Nonnull
     private String params;
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

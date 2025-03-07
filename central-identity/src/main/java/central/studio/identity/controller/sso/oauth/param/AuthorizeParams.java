@@ -38,12 +38,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
-/**
- * 认证入口参数
- *
- * @author Alan Yeh
- * @since 2023/04/14
- */
+/// 认证入口参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,50 +48,40 @@ public class AuthorizeParams implements Serializable {
     @Serial
     private static final long serialVersionUID = -8503703869897835051L;
 
-    /**
-     * 授权类型
-     * <p>
-     * 此字段因定要求为 code
-     */
+    /// 授权类型
+    ///
+    /// 此字段因定要求为 code
     @Label("授权类型")
     @Fix("code")
     private String responseType;
 
-    /**
-     * 应用标识
-     * <p>
-     * 此值使用应用的标识[code]字段
-     */
+    /// 应用标识
+    ///
+    /// 此值使用应用的标识[code]字段
     @Label("应用标识")
     @NotBlank
     @Size(min = 1, max = 36)
     private String clientId;
 
-    /**
-     * 成功授权后的回调地址，必须是创建应用时的服务地址域名和端口下的地址。
-     * <p>
-     * 注意前端传递这个参数的时候，需要将 url 进行 URLEncode
-     */
+    /// 成功授权后的回调地址，必须是创建应用时的服务地址域名和端口下的地址。
+    ///
+    /// 注意前端传递这个参数的时候，需要将 url 进行 URLEncode
     @Label("回调地址")
     @NotBlank
     @Size(min = 1, max = 4096)
     private String redirectUri;
 
-    /**
-     * client 的状态值。用于第三方应用防止 CSRF 攻击，成功授权后回调时会原样带回
-     * <p>
-     * client 端需要检查用户与 state 参数状态的绑定
-     */
+    /// client 的状态值。用于第三方应用防止 CSRF 攻击，成功授权后回调时会原样带回
+    ///
+    /// client 端需要检查用户与 state 参数状态的绑定
     @Label("状态值")
     @NotBlank
     @Size(min = 1, max = 128)
     private String state;
 
-    /**
-     * 请求用户授权时，向用户显示的可进行授权的列表
-     * <p>
-     * 不传则默认只能获取用户主键信息
-     */
+    /// 请求用户授权时，向用户显示的可进行授权的列表
+    ///
+    /// 不传则默认只能获取用户主键信息
     @Label("授权范围")
     @Enums(GrantScope.class)
     private Set<String> scope;

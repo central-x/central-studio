@@ -26,12 +26,9 @@ package central.studio.provider.configuration;
 
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 客户端配置
- *
- * @author Alan Yeh
- * @since 2022/09/26
- */
+/// 客户端配置
+///
+/// @author Alan Yeh
 @Configuration
 public class ClientConfiguration {
 }

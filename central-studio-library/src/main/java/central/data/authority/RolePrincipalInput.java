@@ -34,14 +34,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Role Principal Relation
- * <p>
- * 角色与主体关联关系修改
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Principal Relation
+///
+/// 角色与主体关联关系修改
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

@@ -52,14 +52,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Log Collector Persistence
- * <p>
- * 日志采集器持久化
- *
- * @author Alan Yeh
- * @since 2024/12/26
- */
+/// Log Collector Persistence
+///
+/// 日志采集器持久化
+///
+/// @author Alan Yeh
 @Component
 public class LogCollectorPersistence {
 
@@ -69,12 +66,10 @@ public class LogCollectorPersistence {
     @Setter(onMethod_ = @Autowired)
     private LogCollectorFilterMapper relMapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
     public @Nullable LogCollectorEntity findById(@Nullable String id,
                                                  @Nullable Columns<? extends LogCollectorEntity> columns) {
         if (Stringx.isNullOrBlank(id)) {
@@ -84,12 +79,10 @@ public class LogCollectorPersistence {
         return this.mapper.findById(id, columns);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
     public @Nonnull List<LogCollectorEntity> findByIds(@Nullable List<String> ids,
                                                        @Nullable Columns<? extends LogCollectorEntity> columns) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -99,15 +92,13 @@ public class LogCollectorPersistence {
         return this.mapper.findByIds(ids, columns);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nonnull List<LogCollectorEntity> findBy(@Nullable Long limit,
                                                     @Nullable Long offset,
                                                     @Nullable Columns<? extends LogCollectorEntity> columns,
@@ -116,15 +107,13 @@ public class LogCollectorPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nonnull Page<LogCollectorEntity> pageBy(@Nonnull Long pageIndex,
                                                     @Nonnull Long pageSize,
                                                     @Nullable Columns<? extends LogCollectorEntity> columns,
@@ -133,22 +122,18 @@ public class LogCollectorPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
     public Long countBy(@Nullable Conditions<? extends LogCollectorEntity> conditions) {
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作帐号
-     * @return 保存后的数据
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作帐号
+    /// @return 保存后的数据
     public LogCollectorEntity insert(@Nonnull @Validated({Insert.class, Default.class}) LogCollectorInput input,
                                      @Nonnull String operator) {
         // 标识唯一性校验
@@ -164,23 +149,19 @@ public class LogCollectorPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
     public List<LogCollectorEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<LogCollectorInput> inputs,
                                                 @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
     public LogCollectorEntity update(@Nonnull @Validated({Update.class, Default.class}) LogCollectorInput input,
                                      @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(LogCollectorEntity.class).eq(LogCollectorEntity::getId, input.getId()));
@@ -202,22 +183,18 @@ public class LogCollectorPersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
     public List<LogCollectorEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<LogCollectorInput> inputs,
                                                 @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids 主键
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids 主键
     public long deleteByIds(@Nullable List<String> ids) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
@@ -231,11 +208,9 @@ public class LogCollectorPersistence {
         return effected;
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
     public long deleteBy(@Nullable Conditions<? extends LogCollectorEntity> conditions) {
         var ids = this.mapper.findBy(Columns.of(Entity::getId), conditions).stream()
                 .map(Entity::getId).toList();

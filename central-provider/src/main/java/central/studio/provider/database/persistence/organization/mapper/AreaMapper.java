@@ -28,12 +28,8 @@ import central.studio.provider.database.persistence.organization.entity.AreaEnti
 import central.sql.proxy.Mapper;
 import org.springframework.stereotype.Repository;
 
-/**
- * 行政区划信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 行政区划信息
+/// @author Alan Yeh
 @Repository
 public interface AreaMapper extends Mapper<AreaEntity> {
 }

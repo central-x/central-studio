@@ -32,12 +32,9 @@ import lombok.Getter;
 
 import java.util.Objects;
 
-/**
- * 授权主体类型
- *
- * @author Alan Yeh
- * @since 2022/09/28
- */
+/// 授权主体类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum PrincipalType implements OptionalEnum<String> {
@@ -54,7 +51,8 @@ public enum PrincipalType implements OptionalEnum<String> {
         return this.value;
     }
 
-    public @Nullable static PrincipalType resolve(String value) {
+    public @Nullable
+    static PrincipalType resolve(String value) {
         return Arrayx.asStream(PrincipalType.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
     }
 }

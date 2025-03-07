@@ -31,14 +31,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-/**
- * Default Storage Resolver
- * <p>
- * 默认存储解析器
- *
- * @author Alan Yeh
- * @since 2024/04/19
- */
+/// Default Storage Resolver
+///
+/// 默认存储解析器
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class DefaultStorageResolver implements StorageResolver {
 

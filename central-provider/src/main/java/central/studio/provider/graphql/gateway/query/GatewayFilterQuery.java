@@ -50,14 +50,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Gateway Filter
- * <p>
- * 网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Filter
+///
+/// 网关过滤器
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "gateway/query", types = GatewayFilterDTO.class)
 public class GatewayFilterQuery {
@@ -65,12 +62,10 @@ public class GatewayFilterQuery {
     @Setter(onMethod_ = @Autowired)
     private GatewayFilterPersistence persistence;
 
-    /**
-     * 批量数据加载器
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 批量数据加载器
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLBatchLoader
     public @Nonnull Map<String, GatewayFilterDTO> batchLoader(@RequestParam List<String> ids,
                                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -79,12 +74,10 @@ public class GatewayFilterQuery {
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nullable GatewayFilterDTO findById(@RequestParam String id,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -93,12 +86,10 @@ public class GatewayFilterQuery {
     }
 
 
-    /**
-     * 查询数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nonnull List<GatewayFilterDTO> findByIds(@RequestParam List<String> ids,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -106,15 +97,13 @@ public class GatewayFilterQuery {
         return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull List<GatewayFilterDTO> findBy(@RequestParam(required = false) Long limit,
                                                   @RequestParam(required = false) Long offset,
@@ -125,15 +114,13 @@ public class GatewayFilterQuery {
         return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull Page<GatewayFilterDTO> pageBy(@RequestParam long pageIndex,
                                                   @RequestParam long pageSize,
@@ -144,12 +131,10 @@ public class GatewayFilterQuery {
         return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<GatewayFilterEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

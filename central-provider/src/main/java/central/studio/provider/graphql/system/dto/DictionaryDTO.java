@@ -29,9 +29,9 @@ import central.lang.reflect.TypeRef;
 import central.provider.graphql.DTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.system.entity.DictionaryEntity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
-import central.studio.provider.database.persistence.system.entity.DictionaryEntity;
 import central.util.Jsonx;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
@@ -40,45 +40,34 @@ import java.io.Serial;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 字典信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 字典信息
+///
+/// @author Alan Yeh
 @GraphQLType("Dictionary")
 @EqualsAndHashCode(callSuper = true)
 public class DictionaryDTO extends DictionaryEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 7042129479380372585L;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
     }
 
-    /**
-     * 字典项
-     */
+    /// 字典项
     @GraphQLGetter
     public List<DictionaryItem> getItems() {
         return Jsonx.Default().deserialize(this.getItemsJson(), TypeRef.ofList(DictionaryItem.class));
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.central-x.studio</groupId>
+        <artifactId>central-studio-parent</artifactId>
+        <version>1.0.x-SNAPSHOT</version>
+        <relativePath>../central-studio-parent</relativePath>
+    </parent>
+
+    <artifactId>central-document</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.x-SNAPSHOT</version>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.central-x.studio</groupId>
+            <artifactId>central-studio-library</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x.framework</groupId>
+            <artifactId>central-starter-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x.framework</groupId>
+            <artifactId>central-starter-logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.central-x.framework</groupId>
+            <artifactId>central-starter-probe</artifactId>
+        </dependency>
+
+        <!-- 测试依赖 -->
+        <dependency>
+            <groupId>com.central-x.framework</groupId>
+            <artifactId>central-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!-- 替换 bootstrap.yml 里面的版本号 -->
+        <resources>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.yml</exclude>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- 处理占位符 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>@{ * }@</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

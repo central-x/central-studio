@@ -47,14 +47,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * TenantApplication Mutation
- * <p>
- * 租户与应用关联关系修改
- *
- * @author Alan Yeh
- * @since 2022/10/04
- */
+/// TenantApplication Mutation
+///
+/// 租户与应用关联关系修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "saas/mutation", types = TenantApplicationDTO.class)
 public class TenantApplicationMutation {
@@ -62,13 +59,11 @@ public class TenantApplicationMutation {
     @Setter(onMethod_ = @Autowired)
     private TenantApplicationPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull TenantApplicationDTO insert(@RequestParam @Validated({Insert.class, Default.class}) TenantApplicationInput input,
                                                 @RequestParam String operator,
@@ -79,13 +74,11 @@ public class TenantApplicationMutation {
         return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<TenantApplicationDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<TenantApplicationInput> inputs,
                                                            @RequestParam String operator,
@@ -96,13 +89,11 @@ public class TenantApplicationMutation {
         return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull TenantApplicationDTO update(@RequestParam @Validated({Update.class, Default.class}) TenantApplicationInput input,
                                                 @RequestParam String operator,
@@ -113,13 +104,11 @@ public class TenantApplicationMutation {
         return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<TenantApplicationDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<TenantApplicationInput> inputs,
                                                            @RequestParam String operator,
@@ -130,12 +119,10 @@ public class TenantApplicationMutation {
         return DTO.wrap(data, TenantApplicationDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -144,12 +131,10 @@ public class TenantApplicationMutation {
         return this.persistence.deleteByIds(ids);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<TenantApplicationEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

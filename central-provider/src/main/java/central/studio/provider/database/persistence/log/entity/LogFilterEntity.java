@@ -34,7 +34,10 @@ import central.util.Listx;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,12 +45,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 日志过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志过滤器
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

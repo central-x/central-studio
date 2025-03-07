@@ -50,14 +50,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Password Query
- * <p>
- * 密码查询
- *
- * @author Alan Yeh
- * @since 2022/10/07
- */
+/// Password Query
+///
+/// 密码查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "identity/query", types = IdentityPasswordDTO.class)
 public class IdentityPasswordQuery {
@@ -65,12 +62,10 @@ public class IdentityPasswordQuery {
     @Setter(onMethod_ = @Autowired)
     private IdentityPasswordPersistence persistence;
 
-    /**
-     * 批量数据加载器
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 批量数据加载器
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLBatchLoader
     public @Nonnull Map<String, IdentityPasswordDTO> batchLoader(@RequestParam List<String> ids,
                                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -79,12 +74,10 @@ public class IdentityPasswordQuery {
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nullable IdentityPasswordDTO findById(@RequestParam String id,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -93,12 +86,10 @@ public class IdentityPasswordQuery {
     }
 
 
-    /**
-     * 查询数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nonnull List<IdentityPasswordDTO> findByIds(@RequestParam List<String> ids,
                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -106,15 +97,13 @@ public class IdentityPasswordQuery {
         return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull List<IdentityPasswordDTO> findBy(@RequestParam(required = false) Long limit,
                                                      @RequestParam(required = false) Long offset,
@@ -125,15 +114,13 @@ public class IdentityPasswordQuery {
         return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull Page<IdentityPasswordDTO> pageBy(@RequestParam long pageIndex,
                                                      @RequestParam long pageSize,
@@ -144,12 +131,10 @@ public class IdentityPasswordQuery {
         return DTO.wrap(data, IdentityPasswordDTO.class);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<IdentityPasswordEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

@@ -32,12 +32,9 @@ import lombok.*;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 部门信息
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 部门信息
+///
+/// @author Alan Yeh
 @Data
 @ToString
 @NoArgsConstructor
@@ -47,68 +44,48 @@ public class Department extends ModifiableEntity implements Codeable, Orderable<
     @Serial
     private static final long serialVersionUID = 3624723639865181188L;
 
-    /**
-     * 所属单位主键
-     */
+    /// 所属单位主键
     @Nonnull
     private String unitId;
 
-    /**
-     * 所属单位信息
-     */
+    /// 所属单位信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Unit unit;
 
-    /**
-     * 上级部门主键
-     * 如果为空，则表示该部门是根部门
-     */
+    /// 上级部门主键
+    /// 如果为空，则表示该部门是根部门
     @Nullable
     private String parentId;
 
-    /**
-     * 上级部门信息
-     */
+    /// 上级部门信息
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Department parent;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 排序号
-     */
+    /// 排序号
     @Nonnull
     private Integer order;
 
-    /**
-     * 子部门
-     */
+    /// 子部门
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Department> children;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

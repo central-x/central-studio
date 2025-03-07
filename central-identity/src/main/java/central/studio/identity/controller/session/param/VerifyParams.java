@@ -34,12 +34,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 验证会话参数
- *
- * @author Alan Yeh
- * @since 2023/04/02
- */
+/// 验证会话参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

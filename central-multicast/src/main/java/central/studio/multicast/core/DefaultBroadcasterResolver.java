@@ -31,14 +31,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-/**
- * Default Broadcaster Resolver
- * <p>
- * 默认广播器解析
- *
- * @author Alan Yeh
- * @since 2024/04/16
- */
+/// Default Broadcaster Resolver
+///
+/// 默认广播器解析
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class DefaultBroadcasterResolver implements BroadcasterResolver {
 

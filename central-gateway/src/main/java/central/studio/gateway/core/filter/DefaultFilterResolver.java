@@ -32,14 +32,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-/**
- * Default Filter Resolver
- * <p>
- * 默认过滤器类型解析器
- *
- * @author Alan Yeh
- * @since 2024/04/24
- */
+/// Default Filter Resolver
+///
+/// 默认过滤器类型解析器
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class DefaultFilterResolver implements FilterResolver {
 

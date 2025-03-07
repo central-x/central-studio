@@ -27,12 +27,9 @@ package central.studio.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Gateway Application
- *
- * @author Alan Yeh
- * @since 2022/10/09
- */
+/// Gateway Application
+///
+/// @author Alan Yeh
 @SpringBootApplication
 public class GatewayApplication {
     public static void main(String[] args) {

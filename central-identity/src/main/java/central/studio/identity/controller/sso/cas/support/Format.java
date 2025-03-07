@@ -28,12 +28,9 @@ import central.bean.OptionalEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 响应格式
- *
- * @author Alan Yeh
- * @since 2022/11/07
- */
+/// 响应格式
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum Format implements OptionalEnum<String> {

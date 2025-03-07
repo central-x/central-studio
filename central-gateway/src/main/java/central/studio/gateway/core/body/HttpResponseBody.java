@@ -30,28 +30,19 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Flux;
 
-/**
- * 响应体
- *
- * @author Alan Yeh
- * @since 2022/10/18
- */
+/// 响应体
+///
+/// @author Alan Yeh
 public interface HttpResponseBody {
-    /**
-     * Body Headers
-     */
+    /// Body Headers
     @Nonnull
     HttpHeaders getHeaders();
 
-    /**
-     * 获取数据
-     */
+    /// 获取数据
     @Nonnull
     Flux<DataBuffer> get(DataBufferFactory bufferFactory);
 
-    /**
-     * 释放资源
-     */
+    /// 释放资源
     default void dispose() {
 
     }

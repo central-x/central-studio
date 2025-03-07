@@ -28,14 +28,11 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
-/**
- * Enable Storage
- * <p>
- * 启用存储中心对接
- *
- * @author Alan Yeh
- * @since 2023/09/23
- */
+/// Enable Storage
+///
+/// 启用存储中心对接
+///
+/// @author Alan Yeh
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

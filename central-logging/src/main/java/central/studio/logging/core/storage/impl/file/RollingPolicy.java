@@ -27,20 +27,13 @@ package central.studio.logging.core.storage.impl.file;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * 日志滚动策略
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志滚动策略
+///
+/// @author Alan Yeh
 public interface RollingPolicy {
-    /**
-     * 获取待写入的文件
-     */
+    /// 获取待写入的文件
     File getFile() throws IOException;
 
-    /**
-     * 滚动日志
-     */
+    /// 滚动日志
     void roll() throws IOException;
 }

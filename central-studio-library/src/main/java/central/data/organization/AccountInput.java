@@ -35,12 +35,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 帐户输入
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 帐户输入
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

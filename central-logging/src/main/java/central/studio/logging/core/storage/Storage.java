@@ -28,17 +28,12 @@ import central.data.log.Log;
 
 import java.util.List;
 
-/**
- * 日志存储器
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志存储器
+///
+/// @author Alan Yeh
 public interface Storage {
-    /**
-     * 存储日志
-     *
-     * @param logs 日志
-     */
+    /// 存储日志
+    ///
+    /// @param logs 日志
     void store(List<Log> logs);
 }

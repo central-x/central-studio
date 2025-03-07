@@ -25,55 +25,44 @@
 package central.studio.provider.graphql.saas.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 租约信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 租约信息
+///
+/// @author Alan Yeh
 @GraphQLType("TenantApplication")
 @EqualsAndHashCode(callSuper = true)
 public class TenantApplicationDTO extends TenantApplicationEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -2683864669147904140L;
 
-    /**
-     * 租户
-     */
+    /// 租户
     @GraphQLGetter
     public CompletableFuture<TenantDTO> getTenant(DataLoader<String, TenantDTO> loader) {
         return loader.load(this.getTenantId());
     }
 
-    /**
-     * 应用
-     */
+    /// 应用
     @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

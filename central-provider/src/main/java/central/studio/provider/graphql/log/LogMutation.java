@@ -24,51 +24,42 @@
 
 package central.studio.provider.graphql.log;
 
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.log.mutation.LogCollectorMutation;
 import central.studio.provider.graphql.log.mutation.LogFilterMutation;
 import central.studio.provider.graphql.log.mutation.LogStorageMutation;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Log Mutation
- * <p>
- * 日志中心修改
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Log Mutation
+///
+/// 日志中心修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "log", types = {LogCollectorMutation.class, LogFilterMutation.class, LogStorageMutation.class})
 public class LogMutation {
 
-    /**
-     * Collector Mutation
-     * <p>
-     * 采集器修改
-     */
+    /// Collector Mutation
+    ///
+    /// 采集器修改
     @GraphQLGetter
     public LogCollectorMutation getCollectors(@Autowired LogCollectorMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Filter Mutation
-     * <p>
-     * 过滤器修改
-     */
+    /// Filter Mutation
+    ///
+    /// 过滤器修改
     @GraphQLGetter
     public LogFilterMutation getFilters(@Autowired LogFilterMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Storage Mutation
-     * <p>
-     * 存储器修改
-     */
+    /// Storage Mutation
+    ///
+    /// 存储器修改
     @GraphQLGetter
     public LogStorageMutation getStorages(@Autowired LogStorageMutation mutation) {
         return mutation;

@@ -50,12 +50,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * MenuProvider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/09/27
- */
+/// MenuProvider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestMenuProvider extends TestProvider {
 
@@ -84,14 +81,12 @@ public class TestMenuProvider extends TestProvider {
         this.persistence.deleteBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
     }
 
-    /**
-     * @see MenuProvider#insert
-     * @see MenuProvider#findById
-     * @see MenuProvider#update
-     * @see MenuProvider#findByIds
-     * @see MenuProvider#countBy
-     * @see MenuProvider#deleteByIds
-     */
+    /// @see MenuProvider#insert
+    /// @see MenuProvider#findById
+    /// @see MenuProvider#update
+    /// @see MenuProvider#findByIds
+    /// @see MenuProvider#countBy
+    /// @see MenuProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -192,13 +187,11 @@ public class TestMenuProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see MenuProvider#insertBatch
-     * @see MenuProvider#findBy
-     * @see MenuProvider#updateBatch
-     * @see MenuProvider#pageBy
-     * @see MenuProvider#deleteBy
-     */
+    /// @see MenuProvider#insertBatch
+    /// @see MenuProvider#findBy
+    /// @see MenuProvider#updateBatch
+    /// @see MenuProvider#pageBy
+    /// @see MenuProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

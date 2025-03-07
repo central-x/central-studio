@@ -28,12 +28,9 @@ import central.bean.OptionalEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 消息状态
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 消息状态
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum MessageStatus implements OptionalEnum<String> {

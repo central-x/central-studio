@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.storage.mapper;
 
-import central.studio.provider.database.persistence.storage.entity.StorageObjectEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.storage.entity.StorageObjectEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Storage Object
- * <p>
- * 存储对象
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage Object
+///
+/// 存储对象
+///
+/// @author Alan Yeh
 @Repository
 public interface StorageObjectMapper extends Mapper<StorageObjectEntity> {
 }

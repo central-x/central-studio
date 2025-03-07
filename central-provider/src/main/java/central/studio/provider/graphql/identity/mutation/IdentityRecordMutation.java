@@ -46,14 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Identity Record
- * <p>
- * 登录记录修改
- *
- * @author Alan Yeh
- * @since 2025/03/02
- */
+/// Identity Record
+///
+/// 登录记录修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "identity/mutation", types = IdentityRecordDTO.class)
 public class IdentityRecordMutation {
@@ -61,13 +58,11 @@ public class IdentityRecordMutation {
     @Setter(onMethod_ = @Autowired)
     private IdentityRecordPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull IdentityRecordDTO insert(@RequestParam @Validated({Insert.class, Default.class}) IdentityRecordInput input,
                                              @RequestParam String operator,
@@ -76,13 +71,11 @@ public class IdentityRecordMutation {
         return DTO.wrap(data, IdentityRecordDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<IdentityRecordDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<IdentityRecordInput> inputs,
                                                         @RequestParam String operator,
@@ -91,13 +84,11 @@ public class IdentityRecordMutation {
         return DTO.wrap(data, IdentityRecordDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull IdentityRecordDTO update(@RequestParam @Validated({Update.class, Default.class}) IdentityRecordInput input,
                                              @RequestParam String operator,
@@ -106,13 +97,11 @@ public class IdentityRecordMutation {
         return DTO.wrap(data, IdentityRecordDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<IdentityRecordDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<IdentityRecordInput> inputs,
                                                         @RequestParam String operator,
@@ -121,24 +110,20 @@ public class IdentityRecordMutation {
         return DTO.wrap(data, IdentityRecordDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<IdentityRecordEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

@@ -28,8 +28,8 @@ import central.io.Filex;
 import central.lang.Stringx;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
-import central.studio.storage.core.ObjectStream;
 import central.studio.storage.core.Bucket;
+import central.studio.storage.core.ObjectStream;
 import central.studio.storage.core.stream.FileObjectStream;
 import central.util.Guidx;
 import org.springframework.beans.factory.InitializingBean;
@@ -38,12 +38,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/**
- * 本地磁盘存储
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 本地磁盘存储
+///
+/// @author Alan Yeh
 public class LocalBucket implements Bucket, InitializingBean {
 
     @Control(label = "说明", type = ControlType.LABEL, required = false, defaultValue = "将对象保存到本地磁盘中。")

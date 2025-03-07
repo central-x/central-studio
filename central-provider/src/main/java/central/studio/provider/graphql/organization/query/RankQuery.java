@@ -50,14 +50,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Rank Query
- * <p>
- * 职级查询
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Rank Query
+///
+/// 职级查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization/query", types = RankDTO.class)
 public class RankQuery {
@@ -65,12 +62,10 @@ public class RankQuery {
     @Setter(onMethod_ = @Autowired)
     private RankPersistence persistence;
 
-    /**
-     * 批量数据加载器
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 批量数据加载器
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     @GraphQLBatchLoader
     public @Nonnull Map<String, RankDTO> batchLoader(@RequestParam List<String> ids,
@@ -80,12 +75,10 @@ public class RankQuery {
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nullable RankDTO findById(@RequestParam String id,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -94,12 +87,10 @@ public class RankQuery {
     }
 
 
-    /**
-     * 查询数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nonnull List<RankDTO> findByIds(@RequestParam List<String> ids,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -107,15 +98,13 @@ public class RankQuery {
         return DTO.wrap(data, RankDTO.class);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull List<RankDTO> findBy(@RequestParam(required = false) Long limit,
                                          @RequestParam(required = false) Long offset,
@@ -126,15 +115,13 @@ public class RankQuery {
         return DTO.wrap(data, RankDTO.class);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull Page<RankDTO> pageBy(@RequestParam long pageIndex,
                                          @RequestParam long pageSize,
@@ -145,12 +132,10 @@ public class RankQuery {
         return DTO.wrap(data, RankDTO.class);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<RankEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

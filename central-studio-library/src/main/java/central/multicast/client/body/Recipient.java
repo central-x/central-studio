@@ -31,24 +31,17 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 接收人信息
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 接收人信息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Recipient implements Serializable {
     @Serial
     private static final long serialVersionUID = -5796156905280559038L;
-    /**
-     * 接收人姓名
-     */
+    /// 接收人姓名
     private String name;
-    /**
-     * 接收地址
-     */
+    /// 接收地址
     private String address;
 }

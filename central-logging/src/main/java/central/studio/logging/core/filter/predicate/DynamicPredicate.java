@@ -33,12 +33,9 @@ import central.util.Jsonx;
 import lombok.Getter;
 import org.springframework.beans.factory.DisposableBean;
 
-/**
- * 动态断言
- *
- * @author Alan Yeh
- * @since 2022/10/28
- */
+/// 动态断言
+///
+/// @author Alan Yeh
 public class DynamicPredicate implements Predicate, DisposableBean {
     @Getter
     private final LogPredicate data;

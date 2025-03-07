@@ -51,14 +51,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Log Storage Persistence
- * <p>
- * 日志存储器持久化
- *
- * @author Alan Yeh
- * @since 2024/12/26
- */
+/// Log Storage Persistence
+///
+/// 日志存储器持久化
+///
+/// @author Alan Yeh
 @Component
 public class LogStoragePersistence {
 
@@ -68,12 +65,10 @@ public class LogStoragePersistence {
     @Setter(onMethod_ = @Autowired)
     private LogStorageFilterMapper relMapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
     public @Nullable LogStorageEntity findById(@Nullable String id,
                                                @Nullable Columns<? extends LogStorageEntity> columns) {
         if (Stringx.isNullOrBlank(id)) {
@@ -83,26 +78,22 @@ public class LogStoragePersistence {
         return this.mapper.findById(id, columns);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
     public @Nonnull List<LogStorageEntity> findByIds(@Nullable List<String> ids,
                                                      @Nullable Columns<? extends LogStorageEntity> columns) {
         return this.mapper.findByIds(ids, columns);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nonnull List<LogStorageEntity> findBy(@Nullable Long limit,
                                                   @Nullable Long offset,
                                                   @Nullable Columns<? extends LogStorageEntity> columns,
@@ -111,15 +102,13 @@ public class LogStoragePersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nonnull Page<LogStorageEntity> pageBy(@Nonnull Long pageIndex,
                                                   @Nonnull Long pageSize,
                                                   @Nullable Columns<? extends LogStorageEntity> columns,
@@ -129,22 +118,18 @@ public class LogStoragePersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
     public Long countBy(@Nullable Conditions<? extends LogStorageEntity> conditions) {
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作帐号
-     * @return 保存后的数据
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作帐号
+    /// @return 保存后的数据
     public LogStorageEntity insert(@Nonnull @Validated({Insert.class, Default.class}) LogStorageInput input,
                                    @Nonnull String operator) {
         // 标识唯一性校验
@@ -160,23 +145,19 @@ public class LogStoragePersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
     public List<LogStorageEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<LogStorageInput> inputs,
                                               @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
     public LogStorageEntity update(@Nonnull @Validated({Update.class, Default.class}) LogStorageInput input,
                                    @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(LogStorageEntity.class).eq(LogStorageEntity::getId, input.getId()));
@@ -198,22 +179,18 @@ public class LogStoragePersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
     public List<LogStorageEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<LogStorageInput> inputs,
                                               @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids 主键
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids 主键
     public long deleteByIds(@Nullable List<String> ids) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
@@ -229,11 +206,9 @@ public class LogStoragePersistence {
         return effected;
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
     public long deleteBy(@Nullable Conditions<? extends LogStorageEntity> conditions) {
         var ids = this.mapper.findBy(Columns.of(LogStorageEntity::getId), conditions).stream()
                 .map(Entity::getId).toList();

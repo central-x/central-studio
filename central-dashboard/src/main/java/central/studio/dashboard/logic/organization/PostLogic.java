@@ -43,25 +43,20 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-/**
- * Post Logic
- * <p>
- * 职务业务逻辑
- *
- * @author Alan Yeh
- * @since 2024/12/04
- */
+/// Post Logic
+///
+/// 职务业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class PostLogic {
 
     @Setter(onMethod_ = @Autowired)
     private PostProvider provider;
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<Post> getDefaultOrders(Orders<Post> orders) {
         if (Collectionx.isNotEmpty(orders)) {
             return orders;
@@ -69,77 +64,65 @@ public class PostLogic {
         return Orders.of(Post.class).desc(Post::getOrder).asc(Post::getName);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<Post> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Post> conditions, @Nullable Orders<Post> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 列表查询
-     *
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 列表数据
-     */
+    /// 列表查询
+    ///
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 列表数据
     public List<Post> listBy(@Nullable Conditions<Post> conditions, @Nullable Orders<Post> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.findBy(null, null, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public Post findById(@Nonnull String id, @Nonnull String tenant) {
         return this.provider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public Post insert(@Nonnull @Validated({Insert.class, Default.class}) PostInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public Post update(@Nonnull @Validated({Update.class, Default.class}) PostInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.update(input, accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
     }

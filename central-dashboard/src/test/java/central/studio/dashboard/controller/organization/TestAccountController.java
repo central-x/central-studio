@@ -53,13 +53,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Account Controller Test Cases
- *
- * @author Alan Yeh
- * @see AccountController
- * @since 2024/12/08
- */
+/// Account Controller Test Cases
+///
+/// @author Alan Yeh
+/// @see AccountController
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestAccountController extends TestController {
@@ -107,12 +104,10 @@ public class TestAccountController extends TestController {
         return this.unitLogic.findDepartmentByCode("main", "master");
     }
 
-    /**
-     * @see AccountController#add
-     * @see AccountController#details
-     * @see AccountController#page
-     * @see AccountController#delete
-     */
+    /// @see AccountController#add
+    /// @see AccountController#details
+    /// @see AccountController#page
+    /// @see AccountController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var department = this.getDepartment();
@@ -205,12 +200,10 @@ public class TestAccountController extends TestController {
 
     }
 
-    /**
-     * @see AccountController#add
-     * @see AccountController#update
-     * @see AccountController#details
-     * @see AccountController#delete
-     */
+    /// @see AccountController#add
+    /// @see AccountController#update
+    /// @see AccountController#details
+    /// @see AccountController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var department = this.getDepartment();

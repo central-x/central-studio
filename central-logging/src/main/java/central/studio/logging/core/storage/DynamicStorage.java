@@ -35,12 +35,9 @@ import org.springframework.beans.factory.DisposableBean;
 
 import java.util.List;
 
-/**
- * 动态存储器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 动态存储器
+///
+/// @author Alan Yeh
 public class DynamicStorage implements Storage, DisposableBean {
 
     @Getter

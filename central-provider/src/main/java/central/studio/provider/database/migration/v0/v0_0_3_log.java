@@ -37,12 +37,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 初始化日志中心
- *
- * @author Alan Yeh
- * @since 2022/10/26
- */
+/// 初始化日志中心
+///
+/// @author Alan Yeh
 public class v0_0_3_log extends Migration {
 
     public v0_0_3_log() {

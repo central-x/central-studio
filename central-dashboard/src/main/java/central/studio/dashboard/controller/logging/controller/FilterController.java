@@ -43,22 +43,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Log Filter Controller
- * <p>
- * 日志过滤器管理
- *
- * @author Alan Yeh
- * @since 2024/11/30
- */
+/// Log Filter Controller
+///
+/// 日志过滤器管理
+///
+/// @author Alan Yeh
 @RestController("logFilterController")
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/logging/filters")
 public class FilterController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "logging:filter:view";
         String ADD = "logging:filter:add";
@@ -71,96 +66,82 @@ public class FilterController {
     @Setter(onMethod_ = @Autowired)
     private LogLogic logic;
 
-    /**
-     * 按条件分页查询列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 分页结果
-     */
+    /// 按条件分页查询列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 分页结果
     @GetMapping("/page")
     @RequiresPermissions(Permissions.VIEW)
     public Page<LogFilter> page(@Validated FilterPageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageFilterBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
     public LogFilter details(@Validated IdQuery<LogFilter> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findFilterById(query.getId(), tenant);
     }
 
-    /**
-     * 更新行政数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 新增后的数据
-     */
+    /// 更新行政数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 新增后的数据
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
     public LogFilter add(@RequestBody @Validated({Insert.class, Default.class}) FilterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertFilter(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
     public LogFilter update(@RequestBody @Validated({Update.class, Default.class}) FilterParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.updateFilter(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param params    待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param params    待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     @PutMapping("/enable")
     @RequiresPermissions(Permissions.ENABLE)
     public LogFilter enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.enableFilter(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param params    待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param params    待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     @PutMapping("/disable")
     @RequiresPermissions(Permissions.DISABLE)
     public LogFilter disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.disableFilter(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param params    待删除主键列表
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param params    待删除主键列表
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

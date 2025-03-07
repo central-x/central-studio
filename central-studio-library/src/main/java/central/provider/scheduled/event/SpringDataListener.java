@@ -29,12 +29,9 @@ import central.provider.scheduled.DataListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 
-/**
- * Spring 数据监听
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Spring 数据监听
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class SpringDataListener<T extends DataContainer> implements DataListener<T> {
 

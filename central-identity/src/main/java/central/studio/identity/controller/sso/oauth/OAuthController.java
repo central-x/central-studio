@@ -81,17 +81,15 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-/**
- * OAuth2.0
- * <p>
- * 不支持 refresh_token，因为这个认证接口不是一直调用的，认证一次之后，应用系统与认证中心就基本没什么关系了，所以 refresh_token 没什么必要。
- *
- * @author Alan Yeh
- * @see <a href="https://oauth.net/2/">OAuth 2.0</a>
- * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749">RFC6749</a>
- * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1">Authorization Code Grant</a>
- * @since 2022/10/19
- */
+/// OAuth2.0
+///
+/// 不支持 refresh_token，因为这个认证接口不是一直调用的，认证一次之后，应用系统与认证中心就基本没什么关系了，所以 refresh_token 没什么必要。
+///
+/// - [OAuth 2.0](https://oauth.net/2/)
+/// - [RFC6749](https://datatracker.ietf.org/doc/html/rfc6749)
+/// - [Authorization Code Grant](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1")
+///
+/// @author Alan Yeh
 @Controller
 @RequestMapping("/identity/sso/oauth2")
 public class OAuthController {
@@ -123,18 +121,17 @@ public class OAuthController {
         });
     }
 
-    /**
-     * OAuth 2.0 认证
-     * <p>
-     * 获取授权码（Authorization Code）
-     * <p>
-     * 完成认证之后，本接口会添加 code 参数和 state 参数重定向到 redirect_uri。
-     * 业务系统在接收到这个 code 之后，需要在后台访问开放平台 /api/sso/oauth/token 获取会话凭证，通过会话凭证获取用户信息
-     *
-     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-10.5">Authorization Codes</a>
-     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.1">Authorization Request</a>
-     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2">Authorization Response</a>
-     */
+    /// OAuth 2.0 认证
+    ///
+    /// 获取授权码（Authorization Code）
+    ///
+    /// 完成认证之后，本接口会添加 code 参数和 state 参数重定向到 redirect_uri。
+    ///
+    /// 业务系统在接收到这个 code 之后，需要在后台访问开放平台 /api/sso/oauth/token 获取会话凭证，通过会话凭证获取用户信息
+    ///
+    /// - [Authorization Codes](https://datatracker.ietf.org/doc/html/rfc6749#section-10.5)
+    /// - [Authorization Request](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.1)
+    /// - [Authorization Response](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2)
     @GetMapping("/authorize")
     public View authorize(@Validated AuthorizeParams params,
                           WebMvcRequest request, WebMvcResponse response) throws IOException {
@@ -170,9 +167,7 @@ public class OAuthController {
     }
 
 
-    /**
-     * 如果发现当前用户已登录，则直接重定向到业务系统，不需要用户手动确认
-     */
+    /// 如果发现当前用户已登录，则直接重定向到业务系统，不需要用户手动确认
     private View autoGranting(AuthorizeParams params, WebMvcRequest request, WebMvcResponse response) {
         // 获取会话信息
         var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
@@ -211,10 +206,9 @@ public class OAuthController {
         }
     }
 
-    /**
-     * 用户手动授权
-     * 无论用户是否已经登录了，都需要跳转到登录界面上，引导用户完成授权
-     */
+    /// 用户手动授权
+    ///
+    /// 无论用户是否已经登录了，都需要跳转到登录界面上，引导用户完成授权
     private View granting(AuthorizeParams params, WebMvcRequest request, WebMvcResponse response) {
         var transCookie = request.getRequiredAttribute(OAuthAttributes.GRANTING_TRANS_COOKIE);
         var transId = transCookie.get(request, response);
@@ -297,9 +291,7 @@ public class OAuthController {
         private List<Scope> scope = new ArrayList<>();
     }
 
-    /**
-     * 待授权项
-     */
+    /// 待授权项
     @Data
     @Builder
     @NoArgsConstructor
@@ -308,27 +300,17 @@ public class OAuthController {
         @Serial
         private static final long serialVersionUID = -2194870315185874029L;
 
-        /**
-         * 名称
-         */
+        /// 名称
         private String name;
-        /**
-         * 值
-         */
+        /// 值
         private String value;
-        /**
-         * 是否默认选中
-         */
+        /// 是否默认选中
         private boolean checked;
-        /**
-         * 是否必要授权（必要授权不可取消）
-         */
+        /// 是否必要授权（必要授权不可取消）
         private boolean required;
     }
 
-    /**
-     * 获取待授权范围列表
-     */
+    /// 获取待授权范围列表
     @GetMapping("/scopes")
     @ResponseBody
     public GetScopeVO getScopes(WebMvcRequest request, WebMvcResponse response) {
@@ -379,9 +361,7 @@ public class OAuthController {
         return vo;
     }
 
-    /**
-     * 授权
-     */
+    /// 授权
     @PostMapping("/scopes")
     @ResponseBody
     public Map<String, String> grant(@RequestBody @Validated GrantParams params,
@@ -429,13 +409,11 @@ public class OAuthController {
         );
     }
 
-    /**
-     * 获取访问凭证（Access Token）
-     *
-     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-10.3">Access Tokens</a>
-     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3">Access Token Request</a>
-     * @see <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.4">Access Token Response</a>
-     */
+    /// 获取访问凭证（Access Token）
+    ///
+    /// - [Access Tokens](https://datatracker.ietf.org/doc/html/rfc6749#section-10.3)
+    /// - [Access Token Request](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3)
+    /// - [Access Token Response](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.4)
     @PostMapping("/access_token")
     public ModelAndView getAccessToken(@RequestBody @Validated AccessTokenParams params, WebMvcRequest request) throws IOException {
         if (!request.getRequiredAttribute(OAuthAttributes.ENABLED)) {
@@ -518,9 +496,7 @@ public class OAuthController {
         return mv;
     }
 
-    /**
-     * 获取当前用户信息
-     */
+    /// 获取当前用户信息
     @GetMapping("/user")
     @ResponseBody
     public Map<String, Object> getUser(WebMvcRequest request) {

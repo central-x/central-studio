@@ -45,12 +45,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.OffsetDateTime;
 
-/**
- * CAS 异常补捕
- *
- * @author Alan Yeh
- * @since 2024/08/02
- */
+/// CAS 异常补捕
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)

@@ -45,14 +45,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Multicast Broadcaster
- * <p>
- * 广播器
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// Multicast Broadcaster
+///
+/// 广播器
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

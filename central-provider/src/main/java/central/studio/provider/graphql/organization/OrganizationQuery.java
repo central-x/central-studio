@@ -30,79 +30,64 @@ import central.studio.provider.graphql.organization.query.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Organization Query
- * <p>
- * 组织架构中心查询
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Organization Query
+///
+/// 组织架构中心查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization", types = {AreaQuery.class, UnitQuery.class, DepartmentQuery.class, RankQuery.class, PostQuery.class, AccountQuery.class})
 public class OrganizationQuery {
 
-    /**
-     * Area Query
-     * <p>
-     * 行政区划查询
-     */
+    /// Area Query
+    ///
+    /// 行政区划查询
     @GraphQLGetter
     public AreaQuery getAreas(@Autowired AreaQuery query) {
         return query;
     }
 
-    /**
-     * Unit Query
-     * <p>
-     * 单位查询
-     */
+    /// Unit Query
+    ///
+    /// 单位查询
     @GraphQLGetter
     public UnitQuery getUnits(@Autowired UnitQuery query) {
         return query;
     }
 
-    /**
-     * Department Query
-     * <p>
-     * 部门查询
-     * <p>
-     * TODO 这个是不是应该放到 UnitQuery 下
-     */
+    /// Department Query
+    ///
+    /// 部门查询
+    ///
+    /// TODO 这个是不是应该放到 UnitQuery 下
     @GraphQLGetter
     public DepartmentQuery getDepartments(@Autowired DepartmentQuery query) {
         return query;
     }
 
-    /**
-     * Rank Query
-     * <p>
-     * 职级查询
-     * <p>
-     * TODO 这个是不是应该放到 UnitQuery 下
-     */
+    /// Rank Query
+    ///
+    /// 职级查询
+    ///
+    /// TODO 这个是不是应该放到 UnitQuery 下
     @GraphQLGetter
     public RankQuery getRanks(@Autowired RankQuery query) {
         return query;
     }
 
-    /**
-     * Post Query
-     * <p>
-     * 职务查询
-     * <p>
-     * TODO 这个是不是应该放到 UnitQuery 下
-     */
+    /// Post Query
+    ///
+    /// 职务查询
+    ///
+    /// TODO 这个是不是应该放到 UnitQuery 下
     @GraphQLGetter
     public PostQuery getPosts(@Autowired PostQuery query) {
         return query;
     }
 
-    /**
-     * Account Query
-     * <p>
-     * 帐户查询
-     */
+    /// Account Query
+    ///
+    /// 帐户查询
     @GraphQLGetter
     public AccountQuery getAccounts(@Autowired AccountQuery query) {
         return query;

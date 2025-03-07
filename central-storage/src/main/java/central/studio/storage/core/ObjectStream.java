@@ -36,43 +36,30 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
-/**
- * 对象流
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 对象流
+///
+/// @author Alan Yeh
 public abstract class ObjectStream {
 
-    /**
-     * 文件名
-     */
+    /// 文件名
     public abstract @Nonnull String getFilename();
 
-    /**
-     * 扩展名
-     */
+    /// 扩展名
     public @Nonnull String getExtension() {
         return this.getFilename().substring(this.getFilename().lastIndexOf(".") + 1);
     }
 
-    /**
-     * 对象大小
-     */
+    /// 对象大小
     public abstract long getSize();
 
-    /**
-     * 是否可以重用
-     */
+    /// 是否可以重用
     public boolean isResumable() {
         return false;
     }
 
     protected volatile String digest;
 
-    /**
-     * 文件摘要(sha256)
-     */
+    /// 文件摘要(sha256)
     public String getDigest() throws IOException {
         if (Stringx.isNotBlank(digest)) {
             return this.digest;
@@ -81,35 +68,27 @@ public abstract class ObjectStream {
         return digest;
     }
 
-    /**
-     * 获取流
-     * 每次获取 InputStream 时，都是重新创建的
-     */
+    /// 获取流
+    /// 每次获取 InputStream 时，都是重新创建的
     public abstract @Nonnull InputStream getInputStream() throws IOException;
 
-    /**
-     * 获取字节码
-     */
+    /// 获取字节码
     public byte[] getBytes() throws IOException {
         return IOStreamx.readBytes(this.getInputStream());
     }
 
-    /**
-     * 将对象数据写入指定的输出流（写完后没有关闭输出流）
-     *
-     * @param output 输出流
-     */
+    /// 将对象数据写入指定的输出流（写完后没有关闭输出流）
+    ///
+    /// @param output 输出流
     public void transferTo(OutputStream output) throws IOException {
         try (var input = this.getInputStream()) {
             IOStreamx.transfer(input, output);
         }
     }
 
-    /**
-     * 将对象数据写入到指定的文修护
-     *
-     * @param file 指定文件
-     */
+    /// 将对象数据写入到指定的文修护
+    ///
+    /// @param file 指定文件
     public void transferTo(File file) throws IOException {
         if (!file.getParentFile().exists()) {
             if (!file.getParentFile().mkdirs()) {

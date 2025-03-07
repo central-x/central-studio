@@ -35,39 +35,30 @@ import org.dataloader.DataLoader;
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Role Range Relation
- * <p>
- * 角色与范围关联关系
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Range Relation
+///
+/// 角色与范围关联关系
+///
+/// @author Alan Yeh
 @GraphQLType("RoleRange")
 @EqualsAndHashCode(callSuper = true)
 public class RoleRangeDTO extends RoleRangeEntity {
     @Serial
     private static final long serialVersionUID = 2070715289181004365L;
 
-    /**
-     * 应用信息
-     */
+    /// 应用信息
     @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
     }
 
-    /**
-     * 角色信息
-     */
+    /// 角色信息
     @GraphQLGetter
     public CompletableFuture<RoleDTO> getRole(DataLoader<String, RoleDTO> loader) {
         return loader.load(this.getRoleId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());

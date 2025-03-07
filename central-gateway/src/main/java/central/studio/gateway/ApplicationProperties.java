@@ -30,18 +30,13 @@ import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
-/**
- * 应用属性
- *
- * @author Alan Yeh
- * @since 2022/10/09
- */
+/// 应用属性
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties(prefix = "studio.gateway")
 public class ApplicationProperties {
 
-    /**
-     * 当前网关支持的方法
-     */
+    /// 当前网关支持的方法
     private List<HttpMethod> supportedMethods = List.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.PATCH, HttpMethod.HEAD);
 }

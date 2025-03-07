@@ -50,27 +50,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Index Controller Test Cases
- * <p>
- * 首页测试
- *
- * @author Alan Yeh
- * @see IdentityIndexController
- * @since 2022/10/23
- */
+/// Index Controller Test Cases
+///
+/// 首页测试
+///
+/// @author Alan Yeh
+/// @see IdentityIndexController
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = IdentityApplication.class)
 public class TestIndexController extends TestController {
 
-    /**
-     * 测试不允许跨域验证
-     *
-     * @see IdentityIndexController#index
-     */
+    /// 测试不允许跨域验证
+    ///
+    /// @see IdentityIndexController#index
     @Test
     public void case1(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/")
@@ -91,11 +86,9 @@ public class TestIndexController extends TestController {
     }
 
 
-    /**
-     * 测试已登录的话，直接重定向到指定页面
-     *
-     * @see IdentityIndexController
-     */
+    /// 测试已登录的话，直接重定向到指定页面
+    ///
+    /// @see IdentityIndexController
     @Test
     public void case2(@Autowired MockMvc mvc, @Autowired final CookieStore cookieStore) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/")
@@ -115,11 +108,9 @@ public class TestIndexController extends TestController {
                 .andExpect(header().string(HttpHeaders.LOCATION, "https://identity.central-x.com/dashboard/"));
     }
 
-    /**
-     * 测试是否所有的登录选项都在
-     *
-     * @see IdentityIndexController#getOptions
-     */
+    /// 测试是否所有的登录选项都在
+    ///
+    /// @see IdentityIndexController#getOptions
     @Test
     public void case3(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/api/options")
@@ -149,11 +140,9 @@ public class TestIndexController extends TestController {
         }
     }
 
-    /**
-     * 测试获取验证码
-     *
-     * @see IdentityIndexController#getCaptcha
-     */
+    /// 测试获取验证码
+    ///
+    /// @see IdentityIndexController#getCaptcha
     @Test
     public void case4(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/api/captcha")
@@ -165,13 +154,11 @@ public class TestIndexController extends TestController {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG));
     }
 
-    /**
-     * 测试登录
-     *
-     * @see IdentityIndexController#login
-     * @see IdentityIndexController#getAccount
-     * @see IdentityIndexController#logout
-     */
+    /// 测试登录
+    ///
+    /// @see IdentityIndexController#login
+    /// @see IdentityIndexController#getAccount
+    /// @see IdentityIndexController#logout
     @Test
     public void case5(@Autowired MockMvc mvc) throws Exception {
         var cookieStore = new CookieStore();

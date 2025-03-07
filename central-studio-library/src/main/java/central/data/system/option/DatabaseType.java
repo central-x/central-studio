@@ -32,12 +32,9 @@ import lombok.Getter;
 
 import java.util.Objects;
 
-/**
- * 数据库类型
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 数据库类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum DatabaseType implements OptionalEnum<String> {

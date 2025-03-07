@@ -37,12 +37,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import reactor.core.publisher.Flux;
 
-/**
- * Resource Body
- *
- * @author Alan Yeh
- * @since 2022/10/18
- */
+/// Resource Body
+///
+/// @author Alan Yeh
 public class ResourceBody implements HttpResponseBody {
     @Getter
     private final HttpHeaders headers = new HttpHeaders();

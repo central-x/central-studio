@@ -27,39 +27,28 @@ package central.studio.storage.core;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/**
- * 存储桶（文件存储容器）
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 存储桶（文件存储容器）
+///
+/// @author Alan Yeh
 public interface Bucket {
-    /**
-     * 保存对象
-     *
-     * @param stream 对象流
-     * @return 存储键
-     */
+    /// 保存对象
+    ///
+    /// @param stream 对象流
+    /// @return 存储键
     String store(ObjectStream stream) throws IOException;
 
-    /**
-     * 判断指定键的对象是否存在
-     *
-     * @param key 存储键
-     */
+    /// 判断指定键的对象是否存在
+    ///
+    /// @param key 存储键
     boolean exists(String key);
 
-    /**
-     * 删除指定键的对象
-     *
-     * @param key 存储键
-     */
+    /// 删除指定键的对象
+    ///
+    /// @param key 存储键
     void delete(String key) throws IOException;
 
-    /**
-     * 获取对象流
-     *
-     * @param key 存储键
-     */
+    /// 获取对象流
+    ///
+    /// @param key 存储键
     ObjectStream get(String key) throws FileNotFoundException, IOException;
 }

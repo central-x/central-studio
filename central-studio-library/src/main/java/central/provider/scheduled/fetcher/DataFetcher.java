@@ -29,22 +29,15 @@ import central.provider.scheduled.BeanSupplier;
 import java.time.Duration;
 import java.util.function.Supplier;
 
-/**
- * 数据获取器
- *
- * @author Alan Yeh
- * @since 2022/10/14
- */
+/// 数据获取器
+///
+/// @author Alan Yeh
 public interface DataFetcher<T> extends Supplier<T> {
 
-    /**
-     * 设置 Provider Supplier
-     * 在设置了 supplier 之后，才可以正常获取数据
-     */
+    /// 设置 Provider Supplier
+    /// 在设置了 supplier 之后，才可以正常获取数据
     void setSupplier(BeanSupplier supplier);
 
-    /**
-     * 获取数据超时时间
-     */
+    /// 获取数据超时时间
     Duration getTimeout();
 }

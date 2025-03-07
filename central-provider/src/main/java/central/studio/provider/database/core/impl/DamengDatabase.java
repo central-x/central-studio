@@ -33,12 +33,9 @@ import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.Setter;
 
-/**
- * 达梦数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 达梦数据库
+///
+/// @author Alan Yeh
 public class DamengDatabase extends Database {
 
     @Setter

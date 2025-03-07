@@ -52,12 +52,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * 本地日志采集器
- *
- * @author Alan Yeh
- * @since 2024/01/21
- */
+/// 本地日志采集器
+///
+/// @author Alan Yeh
 public class LocalCollector extends Collector implements InitializingBean, DisposableBean, Runnable {
 
     @Setter

@@ -65,21 +65,16 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * OAuth Controller Test Cases
- * <p>
- * OAuth 协议测试
- *
- * @author Alan Yeh
- * @since 2024/08/06
- */
+/// OAuth Controller Test Cases
+///
+/// OAuth 协议测试
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = IdentityApplication.class)
 public class TestOAuthController extends TestController {
 
-    /**
-     * 设置 OAuth 2.0 策略
-     */
+    /// 设置 OAuth 2.0 策略
     @BeforeAll
     public static void setup(@Autowired StrategyContainer container, @Autowired StrategyResolver resolver, @Autowired DataContext context) throws Exception {
         {
@@ -108,9 +103,7 @@ public class TestOAuthController extends TestController {
         container.putStrategy("master", new DynamicStrategyFilter(strategy, resolver));
     }
 
-    /**
-     * 获取 OAuth 策略
-     */
+    /// 获取 OAuth 策略
     private OAuthStrategyFilter getStrategyFilter(StrategyContainer container) {
         var dynamic = container.getStrategy("master", "oauth");
         assertNotNull(dynamic);
@@ -119,9 +112,7 @@ public class TestOAuthController extends TestController {
         return (OAuthStrategyFilter) dynamic.getDelegate();
     }
 
-    /**
-     * 测试禁用 OAuth 协议
-     */
+    /// 测试禁用 OAuth 协议
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired StrategyContainer container) throws Exception {
         var strategy = this.getStrategyFilter(container);
@@ -152,11 +143,9 @@ public class TestOAuthController extends TestController {
         strategy.setEnabled(BooleanEnum.TRUE);
     }
 
-    /**
-     * 未登记的应用不允许接入 OAuth 功能
-     *
-     * @see OAuthController#authorize
-     */
+    /// 未登记的应用不允许接入 OAuth 功能
+    ///
+    /// @see OAuthController#authorize
     @Test
     public void case1(@Autowired MockMvc mvc) throws Exception {
         // client_id 错误的情况
@@ -202,12 +191,10 @@ public class TestOAuthController extends TestController {
         }
     }
 
-    /**
-     * 未登录时，重定向到 /identity/ 进行认证
-     *
-     * @see OAuthController#authorize
-     * @see IdentityIndexController#login
-     */
+    /// 未登录时，重定向到 /identity/ 进行认证
+    ///
+    /// @see OAuthController#authorize
+    /// @see IdentityIndexController#login
     @Test
     public void case2(@Autowired MockMvc mvc) throws Exception {
         var state = UUID.randomUUID().toString();
@@ -243,12 +230,10 @@ public class TestOAuthController extends TestController {
                 );
     }
 
-    /**
-     * 无效 Cookie 时，重定向到 /identity/ 进行认证
-     *
-     * @see OAuthController#authorize
-     * @see IdentityIndexController#login
-     */
+    /// 无效 Cookie 时，重定向到 /identity/ 进行认证
+    ///
+    /// @see OAuthController#authorize
+    /// @see IdentityIndexController#login
     @Test
     public void case3(@Autowired MockMvc mvc) throws Exception {
         var state = UUID.randomUUID().toString();
@@ -285,17 +270,15 @@ public class TestOAuthController extends TestController {
                 );
     }
 
-    /**
-     * 已登录时，如果策略是自动授权，则自动协带 code 返回用户指定的地址
-     * <p>
-     * 开发者可以通过该 code 兑换 access_token
-     * <p>
-     * 通过 access_token 可以获取到对应的用户信息
-     *
-     * @see OAuthController#authorize
-     * @see OAuthController#getAccessToken
-     * @see OAuthController#getUser
-     */
+    /// 已登录时，如果策略是自动授权，则自动协带 code 返回用户指定的地址
+    ///
+    /// 开发者可以通过该 code 兑换 access_token
+    ///
+    /// 通过 access_token 可以获取到对应的用户信息
+    ///
+    /// @see OAuthController#authorize
+    /// @see OAuthController#getAccessToken
+    /// @see OAuthController#getUser
     @Test
     public void case4(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired StrategyContainer container) throws Exception {
         var strategy = this.getStrategyFilter(container);
@@ -381,18 +364,16 @@ public class TestOAuthController extends TestController {
                 .andExpect(jsonPath("$.name").value("超级管理员"));
     }
 
-    /**
-     * 已登录时，如果策略是手动授权，则需要跳转到授权界面进行授权
-     * <p>
-     * 用户需要手动选择对应的授权范围，并同意授权后，才会回调给开发者
-     * <p>
-     * 开发者可以通过该 code 兑换 access_token
-     *
-     * @see OAuthController#authorize
-     * @see OAuthController#getScopes
-     * @see OAuthController#grant
-     * @see OAuthController#getAccessToken
-     */
+    /// 已登录时，如果策略是手动授权，则需要跳转到授权界面进行授权
+    ///
+    /// 用户需要手动选择对应的授权范围，并同意授权后，才会回调给开发者
+    ///
+    /// 开发者可以通过该 code 兑换 access_token
+    ///
+    /// @see OAuthController#authorize
+    /// @see OAuthController#getScopes
+    /// @see OAuthController#grant
+    /// @see OAuthController#getAccessToken
     @Test
     public void case5(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired StrategyContainer container) throws Exception {
         var strategy = this.getStrategyFilter(container);
@@ -531,11 +512,9 @@ public class TestOAuthController extends TestController {
                 .andExpect(jsonPath("$.name").value("超级管理员"));
     }
 
-    /**
-     * 测试未申请授权时，直接获取待授权范围
-     *
-     * @see OAuthController#getScopes
-     */
+    /// 测试未申请授权时，直接获取待授权范围
+    ///
+    /// @see OAuthController#getScopes
     @Test
     public void case6(@Autowired MockMvc mvc, @Autowired StrategyContainer container) throws Exception {
         var strategy = this.getStrategyFilter(container);

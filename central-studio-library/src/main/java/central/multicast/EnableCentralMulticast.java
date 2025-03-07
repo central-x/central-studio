@@ -28,14 +28,11 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
-/**
- * Enable Multicast
- * <p>
- * 启用推送中心对接
- *
- * @author Alan Yeh
- * @since 2023/09/21
- */
+/// Enable Multicast
+///
+/// 启用推送中心对接
+///
+/// @author Alan Yeh
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

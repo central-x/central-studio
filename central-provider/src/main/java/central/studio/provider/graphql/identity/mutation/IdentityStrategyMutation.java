@@ -46,14 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Identity Strategy
- * <p>
- * 安全策略
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// Identity Strategy
+///
+/// 安全策略
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "identity/mutation", types = IdentityStrategyDTO.class)
 public class IdentityStrategyMutation {
@@ -61,13 +58,11 @@ public class IdentityStrategyMutation {
     @Setter(onMethod_ = @Autowired)
     private IdentityStrategyPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull IdentityStrategyDTO insert(@RequestParam @Validated({Insert.class, Default.class}) IdentityStrategyInput input,
                                                @RequestParam String operator,
@@ -76,13 +71,11 @@ public class IdentityStrategyMutation {
         return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<IdentityStrategyDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<IdentityStrategyInput> inputs,
                                                           @RequestParam String operator,
@@ -91,13 +84,11 @@ public class IdentityStrategyMutation {
         return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull IdentityStrategyDTO update(@RequestParam @Validated({Update.class, Default.class}) IdentityStrategyInput input,
                                                @RequestParam String operator,
@@ -106,13 +97,11 @@ public class IdentityStrategyMutation {
         return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<IdentityStrategyDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<IdentityStrategyInput> inputs,
                                                           @RequestParam String operator,
@@ -121,24 +110,20 @@ public class IdentityStrategyMutation {
         return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<IdentityStrategyEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

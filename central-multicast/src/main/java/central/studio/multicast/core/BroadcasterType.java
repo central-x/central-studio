@@ -31,12 +31,9 @@ import central.studio.multicast.core.impl.email.SmtpBroadcaster;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 广播类型
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 广播类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum BroadcasterType implements OptionalEnum<String> {

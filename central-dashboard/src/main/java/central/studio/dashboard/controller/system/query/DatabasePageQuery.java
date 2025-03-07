@@ -35,14 +35,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Database Page Query
- * <p>
- * 数据库分页查询
- *
- * @author Alan Yeh
- * @since 2024/10/20
- */
+/// Database Page Query
+///
+/// 数据库分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DatabasePageQuery extends PageQuery<Database> {

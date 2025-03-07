@@ -48,27 +48,22 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Storage Object Persistence
- * <p>
- * 存储对象持久化
- *
- * @author Alan Yeh
- * @since 2024/12/27
- */
+/// Storage Object Persistence
+///
+/// 存储对象持久化
+///
+/// @author Alan Yeh
 @Component
 public class StorageObjectPersistence {
 
     @Setter(onMethod_ = @Autowired)
     private StorageObjectMapper mapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nullable StorageObjectEntity findById(@Nullable String id,
                                                   @Nullable Columns<? extends StorageObjectEntity> columns,
                                                   @Nonnull String tenant) {
@@ -81,13 +76,11 @@ public class StorageObjectPersistence {
         return this.mapper.findFirstBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nonnull List<StorageObjectEntity> findByIds(@Nullable List<String> ids,
                                                         @Nullable Columns<? extends StorageObjectEntity> columns,
                                                         @Nonnull String tenant) {
@@ -99,16 +92,14 @@ public class StorageObjectPersistence {
         return this.mapper.findBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<StorageObjectEntity> findBy(@Nullable Long limit,
                                                      @Nullable Long offset,
                                                      @Nullable Columns<? extends StorageObjectEntity> columns,
@@ -119,16 +110,14 @@ public class StorageObjectPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<StorageObjectEntity> pageBy(@Nonnull Long pageIndex,
                                                      @Nonnull Long pageSize,
                                                      @Nullable Columns<? extends StorageObjectEntity> columns,
@@ -139,26 +128,22 @@ public class StorageObjectPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends StorageObjectEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(StorageObjectEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作帐号
-     * @param tenant   租户标识
-     * @return 保存后的数据
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作帐号
+    /// @param tenant   租户标识
+    /// @return 保存后的数据
     public StorageObjectEntity insert(@Nonnull @Validated({Insert.class, Default.class}) StorageObjectInput input,
                                       @Nonnull String operator,
                                       @Nonnull String tenant) {
@@ -171,26 +156,22 @@ public class StorageObjectPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public List<StorageObjectEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<StorageObjectInput> inputs,
                                                  @Nonnull String operator,
                                                  @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public StorageObjectEntity update(@Nonnull @Validated({Update.class, Default.class}) StorageObjectInput input,
                                       @Nonnull String operator,
                                       @Nonnull String tenant) {
@@ -206,25 +187,21 @@ public class StorageObjectPersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public List<StorageObjectEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<StorageObjectInput> inputs,
                                                  @Nonnull String operator,
                                                  @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -234,12 +211,10 @@ public class StorageObjectPersistence {
         return this.mapper.deleteBy(Conditions.of(StorageObjectEntity.class).in(StorageObjectEntity::getId, ids).eq(StorageObjectEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends StorageObjectEntity> conditions,
                          @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(StorageObjectEntity::getTenantCode, tenant);

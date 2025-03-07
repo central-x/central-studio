@@ -28,14 +28,11 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
-/**
- * Enable Provider
- * <p>
- * 启用数据服务中心对接
- *
- * @author Alan Yeh
- * @since 2023/09/10
- */
+/// Enable Provider
+///
+/// 启用数据服务中心对接
+///
+/// @author Alan Yeh
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

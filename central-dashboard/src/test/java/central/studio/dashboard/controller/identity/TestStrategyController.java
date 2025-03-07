@@ -51,24 +51,19 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Identity Strategy Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/11/11
- */
+/// Identity Strategy Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestStrategyController extends TestController {
 
     private static final String PATH = "/dashboard/api/identity/strategies";
 
-    /**
-     * @see StrategyController#add
-     * @see StrategyController#details
-     * @see StrategyController#page
-     * @see StrategyController#delete
-     */
+    /// @see StrategyController#add
+    /// @see StrategyController#details
+    /// @see StrategyController#page
+    /// @see StrategyController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增
@@ -163,12 +158,10 @@ public class TestStrategyController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see StrategyController#add
-     * @see StrategyController#update
-     * @see StrategyController#details
-     * @see StrategyController#delete
-     */
+    /// @see StrategyController#add
+    /// @see StrategyController#update
+    /// @see StrategyController#details
+    /// @see StrategyController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         // 新增

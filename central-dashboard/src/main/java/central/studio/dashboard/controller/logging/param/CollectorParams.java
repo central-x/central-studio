@@ -34,14 +34,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Log Collector Params
- * <p>
- * 日志采集器入参
- *
- * @author Alan Yeh
- * @since 2024/11/24
- */
+/// Log Collector Params
+///
+/// 日志采集器入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

@@ -25,11 +25,11 @@
 package central.studio.logging.core.storage.impl.file;
 
 import central.data.log.Log;
+import central.pluglet.annotation.Control;
+import central.pluglet.control.ControlType;
 import central.studio.logging.core.storage.Storage;
 import central.studio.logging.core.storage.impl.file.polocy.SizeRollingPolicy;
 import central.studio.logging.core.storage.impl.file.polocy.TimeRollingPolicy;
-import central.pluglet.annotation.Control;
-import central.pluglet.control.ControlType;
 import central.validation.Label;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -40,12 +40,9 @@ import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
 
-/**
- * 文件存储
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 文件存储
+///
+/// @author Alan Yeh
 public class FileStorage implements Storage, InitializingBean, DisposableBean {
 
     @Control(label = "说明", type = ControlType.LABEL, defaultValue = """

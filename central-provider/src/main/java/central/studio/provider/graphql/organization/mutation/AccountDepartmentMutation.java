@@ -29,8 +29,8 @@ import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.studio.provider.graphql.organization.dto.AccountDepartmentDTO;
 import central.studio.provider.database.persistence.organization.AccountDepartmentPersistence;
+import central.studio.provider.graphql.organization.dto.AccountDepartmentDTO;
 import central.validation.group.Insert;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
@@ -44,14 +44,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * AccountDepartment Mutation
- * <p>
- * 帐户部门关联关系修改
- *
- * @author Alan Yeh
- * @since 2022/10/04
- */
+/// AccountDepartment Mutation
+///
+/// 帐户部门关联关系修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization/mutation", types = AccountDepartmentDTO.class)
 public class AccountDepartmentMutation {
@@ -59,13 +56,11 @@ public class AccountDepartmentMutation {
     @Setter(onMethod_ = @Autowired)
     private AccountDepartmentPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull AccountDepartmentDTO insert(@RequestParam @Validated({Insert.class, Default.class}) AccountDepartmentInput input,
                                                 @RequestParam String operator,
@@ -74,13 +69,11 @@ public class AccountDepartmentMutation {
         return DTO.wrap(entity, AccountDepartmentDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<AccountDepartmentDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<AccountDepartmentInput> inputs,
                                                            @RequestParam String operator,
@@ -89,24 +82,20 @@ public class AccountDepartmentMutation {
         return DTO.wrap(entities, AccountDepartmentDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<AccountDepartmentDTO> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

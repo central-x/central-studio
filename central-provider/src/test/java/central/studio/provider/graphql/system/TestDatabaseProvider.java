@@ -52,13 +52,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Database Provider Test Cases
- * 数据库
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Database Provider Test Cases
+///
+/// 数据库
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestDatabaseProvider extends TestProvider {
 
@@ -87,14 +85,12 @@ public class TestDatabaseProvider extends TestProvider {
         this.persistence.deleteBy(Conditions.of(DatabaseEntity.class).like(DatabaseEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see DatabaseProvider#insert
-     * @see DatabaseProvider#findById
-     * @see DatabaseProvider#update
-     * @see DatabaseProvider#findByIds
-     * @see DatabaseProvider#countBy
-     * @see DatabaseProvider#deleteByIds
-     */
+    /// @see DatabaseProvider#insert
+    /// @see DatabaseProvider#findById
+    /// @see DatabaseProvider#update
+    /// @see DatabaseProvider#findByIds
+    /// @see DatabaseProvider#countBy
+    /// @see DatabaseProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -211,13 +207,11 @@ public class TestDatabaseProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see DatabaseProvider#insertBatch
-     * @see DatabaseProvider#findBy
-     * @see DatabaseProvider#updateBatch
-     * @see DatabaseProvider#pageBy
-     * @see DatabaseProvider#deleteBy
-     */
+    /// @see DatabaseProvider#insertBatch
+    /// @see DatabaseProvider#findBy
+    /// @see DatabaseProvider#updateBatch
+    /// @see DatabaseProvider#pageBy
+    /// @see DatabaseProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

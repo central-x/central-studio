@@ -42,12 +42,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 部门信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 部门信息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

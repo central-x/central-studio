@@ -27,19 +27,14 @@ package central.storage;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Storage Properties
- * <p>
- * 存储中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/23
- */
+/// Storage Properties
+///
+/// 存储中心配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties(prefix = "studio.storage")
 public class StorageProperties {
-    /**
-     * 访问地址
-     */
+    /// 访问地址
     private String url = "http://central-storage";
 }

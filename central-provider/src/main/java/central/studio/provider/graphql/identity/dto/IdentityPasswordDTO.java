@@ -25,41 +25,34 @@
 package central.studio.provider.graphql.identity.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Identity Password
- * <p>
- * 密码
- *
- * @author Alan Yeh
- * @since 2022/10/07
- */
+/// Identity Password
+///
+/// 密码
+///
+/// @author Alan Yeh
 @GraphQLType("IdentityPassword")
 @EqualsAndHashCode(callSuper = true)
 public class IdentityPasswordDTO extends IdentityPasswordEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -1742123355949152024L;
 
-    /**
-     * 帐户
-     */
+    /// 帐户
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getAccount(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getAccountId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());

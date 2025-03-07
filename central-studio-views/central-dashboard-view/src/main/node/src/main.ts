@@ -1,17 +1,9 @@
-import './assets/styles/main.css';
-import 'element-plus/dist/index.css';
+import { createApp } from 'vue'
+import ArcoVue from '@arco-design/web-vue'
+import '@arco-design/web-vue/dist/arco.css'
+import './style.css'
+import App from './App.vue'
 
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import ElementPlus from 'element-plus';
-
-import App from './App.vue';
-import router from './routers';
-
-const app = createApp(App);
-
-app.use(createPinia());
-app.use(router);
-app.use(ElementPlus);
-
-app.mount('#app');
+const app = createApp(App)
+app.use(ArcoVue)
+app.mount('#app')

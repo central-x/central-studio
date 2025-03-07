@@ -35,12 +35,9 @@ import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Flux;
 import reactor.netty.Connection;
 
-/**
- * Connection Body
- *
- * @author Alan Yeh
- * @since 2022/10/18
- */
+/// Connection Body
+///
+/// @author Alan Yeh
 public class ConnectionBody implements HttpResponseBody {
     @Getter
     private final HttpHeaders headers = new HttpHeaders();

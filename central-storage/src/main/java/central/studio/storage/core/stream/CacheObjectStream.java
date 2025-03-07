@@ -34,12 +34,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-/**
- * 缓存对象流
- *
- * @author Alan Yeh
- * @since 2022/11/02
- */
+/// 缓存对象流
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class CacheObjectStream extends ObjectStream {
 

@@ -34,14 +34,11 @@ import central.validation.Label;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * Identity Strategy Page Query
- * <p>
- * 认证策略分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/11
- */
+/// Identity Strategy Page Query
+///
+/// 认证策略分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class StrategyPageQuery extends PageQuery<IdentityStrategy> {

@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Bucket Page Query
- * <p>
- * 存储桶分页查询
- *
- * @author Alan Yeh
- * @since 2024/10/29
- */
+/// Bucket Page Query
+///
+/// 存储桶分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class BucketPageQuery extends PageQuery<StorageBucket> {

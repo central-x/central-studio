@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Broadcaster Page Query
- * <p>
- * 广播器分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/07
- */
+/// Broadcaster Page Query
+///
+/// 广播器分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class BroadcasterPageQuery extends PageQuery<MulticastBroadcaster> {

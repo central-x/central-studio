@@ -43,22 +43,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Area Controller
- * <p>
- * 行政区划管理
- *
- * @author Alan Yeh
- * @since 2024/09/14
- */
+/// Area Controller
+///
+/// 行政区划管理
+///
+/// @author Alan Yeh
 @RestController
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/organization/areas")
 public class AreaController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "organization:area:view";
         String ADD = "organization:area:add";
@@ -69,68 +64,58 @@ public class AreaController {
     @Setter(onMethod_ = @Autowired)
     private AreaLogic logic;
 
-    /**
-     * 按条件查询行政区划列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 列表结果
-     */
+    /// 按条件查询行政区划列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 列表结果
     @GetMapping
     @RequiresPermissions(Permissions.VIEW)
     public List<Area> list(@Validated AreaListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.listBy(query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询行政区划详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询行政区划详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
     public Area details(@Validated IdQuery<Area> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
 
-    /**
-     * 新增行政区划
-     *
-     * @param params    行政区划入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 新增后行政区划数据
-     */
+    /// 新增行政区划
+    ///
+    /// @param params    行政区划入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 新增后行政区划数据
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
     public Area add(@RequestBody @Validated({Insert.class, Default.class}) AreaParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新行政区划
-     *
-     * @param params    行政区划数据
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后行政区划数据
-     */
+    /// 更新行政区划
+    ///
+    /// @param params    行政区划数据
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后行政区划数据
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
     public Area update(@RequestBody @Validated({Update.class, Default.class}) AreaParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除行政区划数据
-     *
-     * @param params    待删除主键列表
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除行政区划数据
+    ///
+    /// @param params    待删除主键列表
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

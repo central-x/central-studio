@@ -44,12 +44,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
-/**
- * 插件容器
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// 插件容器
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 public class StrategyContainer implements DisposableBean, GenericApplicationListener {
@@ -57,38 +54,30 @@ public class StrategyContainer implements DisposableBean, GenericApplicationList
     @Setter(onMethod_ = @Autowired)
     private StrategyResolver resolver;
 
-    /**
-     * 安全策略
-     * <p>
-     * tenant -> code -> strategy
-     */
+    /// 安全策略
+    ///
+    /// tenant -> code -> strategy
     private final Map<String, Map<String, DynamicStrategyFilter>> strategies = new HashMap<>();
 
-    /**
-     * 根据标识获取安全策略
-     *
-     * @param tenant 租户标识
-     * @param code   标识
-     */
+    /// 根据标识获取安全策略
+    ///
+    /// @param tenant 租户标识
+    /// @param code   标识
     public @Nullable DynamicStrategyFilter getStrategy(String tenant, String code) {
         return this.strategies.computeIfAbsent(tenant, key -> new HashMap<>()).get(code);
     }
 
-    /**
-     * 获取安全策略
-     *
-     * @param tenant 租户标识
-     */
+    /// 获取安全策略
+    ///
+    /// @param tenant 租户标识
     public @Nonnull List<DynamicStrategyFilter> getStrategies(String tenant) {
         return new ArrayList<>(this.strategies.computeIfAbsent(tenant, key -> new HashMap<>()).values());
     }
 
-    /**
-     * 根据标识获取安全策略
-     *
-     * @param tenant 租户标识
-     * @param code   标识
-     */
+    /// 根据标识获取安全策略
+    ///
+    /// @param tenant 租户标识
+    /// @param code   标识
     public @Nonnull DynamicStrategyFilter requireStrategy(String tenant, String code) {
         return Assertx.requireNotNull(this.getStrategy(tenant, code), () -> new ResponseStatusException(HttpStatus.NOT_FOUND, Stringx.format("安全策略[code={}]不存在", code)));
     }

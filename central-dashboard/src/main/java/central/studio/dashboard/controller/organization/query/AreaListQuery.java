@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Area List Query
- * <p>
- * 行政区划列表查询
- *
- * @author Alan Yeh
- * @since 2024/09/20
- */
+/// Area List Query
+///
+/// 行政区划列表查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AreaListQuery extends ListQuery<Area> {

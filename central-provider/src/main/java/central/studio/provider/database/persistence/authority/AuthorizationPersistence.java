@@ -53,14 +53,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Authorization Persistence
- * <p>
- * 授权持久化
- *
- * @author Alan Yeh
- * @since 2024/06/19
- */
+/// Authorization Persistence
+///
+/// 授权持久化
+///
+/// @author Alan Yeh
 @Component
 public class AuthorizationPersistence {
 
@@ -88,12 +85,10 @@ public class AuthorizationPersistence {
         return context.getData(DataFetcherType.SAAS);
     }
 
-    /**
-     * 根据应用标识和应用密钥获取应用信息
-     *
-     * @param code   应用标识
-     * @param secret 应用密钥
-     */
+    /// 根据应用标识和应用密钥获取应用信息
+    ///
+    /// @param code   应用标识
+    /// @param secret 应用密钥
     public @Nullable Application findApplication(@Nonnull String code,
                                                  @Nonnull String secret) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
@@ -109,14 +104,12 @@ public class AuthorizationPersistence {
     }
 
 
-    /**
-     * 获取指定帐户允许访问的应用列表
-     *
-     * @param accountId 帐户主键
-     * @param type      菜单类型
-     * @param tenant    租户标识
-     * @return 应用列表
-     */
+    /// 获取指定帐户允许访问的应用列表
+    ///
+    /// @param accountId 帐户主键
+    /// @param type      菜单类型
+    /// @param tenant    租户标识
+    /// @return 应用列表
     public @Nonnull List<Application> findApplications(@Nonnull String accountId,
                                                        @Nonnull String type,
                                                        @Nonnull String tenant) {
@@ -131,12 +124,10 @@ public class AuthorizationPersistence {
         return container.getApplicationsByIds(applicationIds);
     }
 
-    /**
-     * 验证应用是否有效
-     *
-     * @param applicationId 应用主键
-     * @param tenantCode    租户
-     */
+    /// 验证应用是否有效
+    ///
+    /// @param applicationId 应用主键
+    /// @param tenantCode    租户
     private void checkApplication(String applicationId, String tenantCode) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
         var tenant = container.getTenantByCode(tenantCode);
@@ -164,15 +155,13 @@ public class AuthorizationPersistence {
         }
     }
 
-    /**
-     * 获取指定用户允许访问的菜单列表
-     *
-     * @param accountId     帐户主键
-     * @param type          菜单类型。如果为空时，则返回所有菜单类型
-     * @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有菜单
-     * @param tenant        租户标识
-     * @return 菜单列表
-     */
+    /// 获取指定用户允许访问的菜单列表
+    ///
+    /// @param accountId     帐户主键
+    /// @param type          菜单类型。如果为空时，则返回所有菜单类型
+    /// @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有菜单
+    /// @param tenant        租户标识
+    /// @return 菜单列表
     public @Nonnull List<MenuEntity> findMenus(@Nonnull String accountId, @Nullable String type, @Nullable String applicationId, @Nonnull String tenant) {
         // 先查询用户被授权了哪些权限，再根据权限反推菜单
         var permissions = this.findPermissions(accountId, applicationId, tenant);
@@ -199,14 +188,12 @@ public class AuthorizationPersistence {
     }
 
 
-    /**
-     * 获取指定用户的所有角色
-     *
-     * @param accountId     帐户主键
-     * @param applicationId 应用主键。如果不指定，则查询所有应用下的所有角色
-     * @param tenant        租户标识
-     * @return 已分配的角色清单
-     */
+    /// 获取指定用户的所有角色
+    ///
+    /// @param accountId     帐户主键
+    /// @param applicationId 应用主键。如果不指定，则查询所有应用下的所有角色
+    /// @param tenant        租户标识
+    /// @return 已分配的角色清单
     public @Nonnull List<RoleEntity> findRoles(@Nonnull String accountId,
                                                @Nullable String applicationId,
                                                @Nonnull String tenant) {
@@ -231,14 +218,12 @@ public class AuthorizationPersistence {
         return rolePersistence.findBy(null, null, Columns.all(), conditions, null, tenant);
     }
 
-    /**
-     * 获取指定用户的所有权限
-     *
-     * @param accountId     帐户主键
-     * @param applicationId 应用主键。如果不指定，则查询所有应用下的所有权限
-     * @param tenant        租户标识
-     * @return 已分配的权限清单
-     */
+    /// 获取指定用户的所有权限
+    ///
+    /// @param accountId     帐户主键
+    /// @param applicationId 应用主键。如果不指定，则查询所有应用下的所有权限
+    /// @param tenant        租户标识
+    /// @return 已分配的权限清单
     public @Nonnull List<PermissionEntity> findPermissions(@Nonnull String accountId,
                                                            @Nullable String applicationId,
                                                            @Nonnull String tenant) {

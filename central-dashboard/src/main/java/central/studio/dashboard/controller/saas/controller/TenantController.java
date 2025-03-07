@@ -43,22 +43,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Tenant Controller
- * <p>
- * 租户管理
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Tenant Controller
+///
+/// 租户管理
+///
+/// @author Alan Yeh
 @RestController
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/saas/tenants")
 public class TenantController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "saas:tenant:view";
         String ADD = "saas:tenant:add";
@@ -71,91 +66,77 @@ public class TenantController {
     @Setter(onMethod_ = @Autowired)
     private TenantLogic logic;
 
-    /**
-     * 按条件分页查询列表
-     *
-     * @param query 查询
-     * @return 分页结果
-     */
+    /// 按条件分页查询列表
+    ///
+    /// @param query 查询
+    /// @return 分页结果
     @GetMapping("/page")
     @RequiresPermissions(Permissions.VIEW)
     public Page<Tenant> page(@Validated TenantPageQuery query) {
         return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null);
     }
 
-    /**
-     * 根据主键查询详情
-     *
-     * @param query 查询
-     * @return 详情
-     */
+    /// 根据主键查询详情
+    ///
+    /// @param query 查询
+    /// @return 详情
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
     public Tenant details(@Validated IdQuery<Tenant> query) {
         return this.logic.findById(query.getId());
     }
 
-    /**
-     * 更新行政数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @return 新增后的数据
-     */
+    /// 更新行政数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @return 新增后的数据
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
     public Tenant add(@RequestBody @Validated({Insert.class, Default.class}) TenantParams params, @RequestAttribute String accountId) {
         return this.logic.insert(params.toInput(), accountId);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @return 更新后的数据
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
     public Tenant update(@RequestBody @Validated({Update.class, Default.class}) TenantParams params, @RequestAttribute String accountId) {
         return this.logic.update(params.toInput(), accountId);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param params    待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param params    待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     @PutMapping("/enable")
     @RequiresPermissions(Permissions.ENABLE)
     public Tenant enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.enable(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param params    待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param params    待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     @PutMapping("/disable")
     @RequiresPermissions(Permissions.DISABLE)
     public Tenant disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.disable(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param params    待删除主键列表
-     * @param accountId 当前登录帐号
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param params    待删除主键列表
+    /// @param accountId 当前登录帐号
+    /// @return 受影响数据行数
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId) {

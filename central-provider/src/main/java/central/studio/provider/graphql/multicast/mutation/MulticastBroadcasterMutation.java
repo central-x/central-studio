@@ -46,14 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Broadcaster Mutation
- * <p>
- * 广播器修改
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// Broadcaster Mutation
+///
+/// 广播器修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "multicast/mutation", types = MulticastBroadcasterDTO.class)
 public class MulticastBroadcasterMutation {
@@ -61,13 +58,11 @@ public class MulticastBroadcasterMutation {
     @Setter(onMethod_ = @Autowired)
     private MulticastBroadcasterPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull MulticastBroadcasterDTO insert(@RequestParam @Validated({Insert.class, Default.class}) MulticastBroadcasterInput input,
                                                    @RequestParam String operator,
@@ -76,13 +71,11 @@ public class MulticastBroadcasterMutation {
         return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<MulticastBroadcasterDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<MulticastBroadcasterInput> inputs,
                                                               @RequestParam String operator,
@@ -91,13 +84,11 @@ public class MulticastBroadcasterMutation {
         return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull MulticastBroadcasterDTO update(@RequestParam @Validated({Update.class, Default.class}) MulticastBroadcasterInput input,
                                                    @RequestParam String operator,
@@ -106,13 +97,11 @@ public class MulticastBroadcasterMutation {
         return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<MulticastBroadcasterDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<MulticastBroadcasterInput> inputs,
                                                               @RequestParam String operator,
@@ -121,24 +110,20 @@ public class MulticastBroadcasterMutation {
         return DTO.wrap(data, MulticastBroadcasterDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<MulticastBroadcasterEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

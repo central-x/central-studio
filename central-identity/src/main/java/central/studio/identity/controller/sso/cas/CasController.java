@@ -79,14 +79,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Central Authentication Service
- *
- * @author Alan Yeh
- * @see <a href="https://apereo.github.io/cas/6.6.x/protocol/CAS-Protocol.html">CAS Protocol</a>
- * @see <a href="https://apereo.github.io/cas/6.6.x/protocol/CAS-Protocol-Specification.html">CAS Protocol Specification</a>
- * @since 2022/10/19
- */
+/// Central Authentication Service
+///
+/// 参考：
+/// - [CAS Protocol](https://apereo.github.io/cas/6.6.x/protocol/CAS-Protocol.html)
+/// - [CAS Protocol Specification](https://apereo.github.io/cas/6.6.x/protocol/CAS-Protocol-Specification.html)
+///
+/// @author Alan Yeh
 @Controller
 @RequestMapping("/identity/sso/cas")
 public class CasController {
@@ -115,11 +114,9 @@ public class CasController {
         });
     }
 
-    /**
-     * 认证入口
-     * <p>
-     * 此接口是接入方重定向进来的入口，使用标准的异常处理即可，不需要使用 CasException
-     */
+    /// 认证入口
+    ///
+    /// 此接口是接入方重定向进来的入口，使用标准的异常处理即可，不需要使用 CasException
     @GetMapping("/login")
     public View login(@Validated LoginParams params,
                       WebMvcRequest request, WebMvcResponse response) throws IOException {
@@ -203,11 +200,9 @@ public class CasController {
         }
     }
 
-    /**
-     * ST 认证
-     * <p>
-     * 此接口是接入方通过调用接口的方式调用，因此需要使用 CasException 来处理异常，以保证遵循 CAS 协议
-     */
+    /// ST 认证
+    ///
+    /// 此接口是接入方通过调用接口的方式调用，因此需要使用 CasException 来处理异常，以保证遵循 CAS 协议
     @PostMapping({"/serviceValidate", "/p3/serviceValidate"})
     public ModelAndView validate(@Validated ValidateParams params,
                                  WebMvcRequest request, WebMvcResponse response) throws CasException {
@@ -317,9 +312,7 @@ public class CasController {
 
     private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new CustomizableThreadFactory("central-security.cas.logout"));
 
-    /**
-     * 退出登录
-     */
+    /// 退出登录
     @GetMapping("/logout")
     public View logout(@Validated LogoutParams params,
                        WebMvcRequest request, WebMvcResponse response) throws IOException, InterruptedException {

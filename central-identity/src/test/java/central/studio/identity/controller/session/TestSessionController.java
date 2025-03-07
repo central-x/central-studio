@@ -41,14 +41,12 @@ import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Session Controller Test Cases
- * 会话测试
- *
- * @author Alan Yeh
- * @see IdentityApplication
- * @since 2022/10/21
- */
+/// Session Controller Test Cases
+///
+/// 会话测试
+///
+/// @author Alan Yeh
+/// @see IdentityApplication
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = IdentityApplication.class)
 public class TestSessionController {
@@ -59,22 +57,18 @@ public class TestSessionController {
     @Setter(onMethod_ = @Autowired)
     private KeyPair keyPair;
 
-    /**
-     * 测试获取公钥
-     *
-     * @see SessionClient#getPublicKey
-     */
+    /// 测试获取公钥
+    ///
+    /// @see SessionClient#getPublicKey
     @Test
     public void case1() throws Exception {
         var token = client.getPublicKey();
         assertEquals(token, Base64.getEncoder().encodeToString(keyPair.getVerifyKey().getEncoded()));
     }
 
-    /**
-     * @see SessionClient#login
-     * @see SessionClient#verify
-     * @see SessionClient#logout
-     */
+    /// @see SessionClient#login
+    /// @see SessionClient#verify
+    /// @see SessionClient#logout
     @Test
     public void case2() {
         // 登录获取会话凭证
@@ -102,11 +96,9 @@ public class TestSessionController {
         assertFalse(verified);
     }
 
-    /**
-     * @see SessionClient#login
-     * @see SessionClient#verify
-     * @see SessionClient#invalid
-     */
+    /// @see SessionClient#login
+    /// @see SessionClient#verify
+    /// @see SessionClient#invalid
     @Test
     public void case3() {
         // 登录获取会话
@@ -125,11 +117,9 @@ public class TestSessionController {
         assertFalse(verified);
     }
 
-    /**
-     * @see SessionClient#login
-     * @see SessionClient#loginByToken
-     * @see SessionClient#logout
-     */
+    /// @see SessionClient#login
+    /// @see SessionClient#loginByToken
+    /// @see SessionClient#logout
     @Test
     public void case4() {
         // 登录获取会话
@@ -162,11 +152,9 @@ public class TestSessionController {
         assertFalse(verified);
     }
 
-    /**
-     * @see SessionClient#login
-     * @see SessionClient#loginByToken
-     * @see SessionClient#invalid
-     */
+    /// @see SessionClient#login
+    /// @see SessionClient#loginByToken
+    /// @see SessionClient#invalid
     @Test
     public void case5() {
         // 登录获取会话

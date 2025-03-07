@@ -26,11 +26,8 @@ package central.multicast.client;
 
 import java.io.Serializable;
 
-/**
- * 消息体
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 消息体
+///
+/// @author Alan Yeh
 public interface MessageBody extends Serializable {
 }

@@ -25,9 +25,9 @@
 package central.identity;
 
 import central.data.authority.Permission;
-import central.lang.Stringx;
 import central.identity.client.Session;
 import central.identity.client.SessionClient;
+import central.lang.Stringx;
 import central.provider.graphql.authority.AuthorizationProvider;
 import central.starter.identity.IdentityProvider;
 import central.util.CachedSupplier;
@@ -47,39 +47,28 @@ import java.security.spec.X509EncodedKeySpec;
 import java.time.Duration;
 import java.util.Base64;
 
-/**
- * Application Identity Provider
- * <p>
- * 应用安全认证
- *
- * @author Alan Yeh
- * @since 2023/05/12
- */
+/// Application Identity Provider
+///
+/// 应用安全认证
+///
+/// @author Alan Yeh
 @Slf4j
 public class DefaultIdentityProvider implements IdentityProvider {
 
     @Setter(onMethod_ = @Autowired)
     private SessionClient client;
 
-    /**
-     * 缓存有效的 Cookie，有效的 Cookie 只在本地校验
-     * 这样可以降低访问服务器的频率
-     */
+    /// 缓存有效的 Cookie，有效的 Cookie 只在本地校验
+    /// 这样可以降低访问服务器的频率
     private final CacheRepository valid = new MemoryCacheRepository();
-    /**
-     * 保存无效的 Cookie，避免无效的 Cookie 频繁访问服务器
-     * 防止内存过大，5 分钟销毁
-     */
+    /// 保存无效的 Cookie，避免无效的 Cookie 频繁访问服务器
+    /// 防止内存过大，5 分钟销毁
     private final CacheRepository invalid = new MemoryCacheRepository();
 
-    /**
-     * 授权缓存
-     */
+    /// 授权缓存
     private final CacheRepository authorization = new MemoryCacheRepository();
 
-    /**
-     * 用于本地校验会话凭证的公钥
-     */
+    /// 用于本地校验会话凭证的公钥
     private final CachedSupplier<RSAPublicKey> pubkey = new CachedSupplier<>(Duration.ofSeconds(5), () -> {
         try {
             return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(client.getPublicKey())));
@@ -88,13 +77,11 @@ public class DefaultIdentityProvider implements IdentityProvider {
         }
     });
 
-    /**
-     * 校验会话凭证
-     * <p>
-     * 这里做了双重缓存机制，一个缓存已确认的凭证，一个是缓存错误的凭证，用于尽可能减少到服务器商校验的过程
-     *
-     * @param token 会话凭证
-     */
+    /// 校验会话凭证
+    ///
+    /// 这里做了双重缓存机制，一个缓存已确认的凭证，一个是缓存错误的凭证，用于尽可能减少到服务器商校验的过程
+    ///
+    /// @param token 会话凭证
     @Override
     public void onReceiveAuthenticationToken(String token) {
         if (Stringx.isNullOrEmpty(token)) {
@@ -143,12 +130,10 @@ public class DefaultIdentityProvider implements IdentityProvider {
     @Setter(onMethod_ = @Autowired)
     private AuthorizationProvider provider;
 
-    /**
-     * 获取授权信息
-     *
-     * @param token             JWT
-     * @param authorizationInfo 授权信息
-     */
+    /// 获取授权信息
+    ///
+    /// @param token             JWT
+    /// @param authorizationInfo 授权信息
     @Override
     public void onReceiveAuthorizationInfo(String token, SimpleAuthorizationInfo authorizationInfo) {
         var session = Session.of(token);
@@ -158,11 +143,9 @@ public class DefaultIdentityProvider implements IdentityProvider {
         authorizationInfo.addStringPermissions(permissions.stream().map(Permission::getCode).toList());
     }
 
-    /**
-     * 注销会话
-     *
-     * @param token 会话凭证
-     */
+    /// 注销会话
+    ///
+    /// @param token 会话凭证
     @Override
     public void onLogout(String token) {
         Session session = Objectx.getSilently(() -> Session.of(token));

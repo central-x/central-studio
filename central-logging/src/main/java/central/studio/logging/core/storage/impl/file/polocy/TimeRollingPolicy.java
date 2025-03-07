@@ -41,34 +41,21 @@ import java.time.temporal.TemporalQueries;
 import java.util.Comparator;
 import java.util.Objects;
 
-/**
- * 基于时间的滚动策略
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 基于时间的滚动策略
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class TimeRollingPolicy implements RollingPolicy {
 
-    /**
-     * 日志保存路径
-     */
+    /// 日志保存路径
     private final String path;
-    /**
-     * 最大日志保存文件数量
-     */
+    /// 最大日志保存文件数量
     private final Integer maxHistory;
-    /**
-     * 最大日志文件大小
-     */
+    /// 最大日志文件大小
     private final Integer maxSize;
-    /**
-     * 文件命名规则
-     */
+    /// 文件命名规则
     private final String fileNamePattern;
-    /**
-     * 文件压缩
-     */
+    /// 文件压缩
     private final Compressor compressor;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

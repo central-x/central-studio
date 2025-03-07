@@ -46,22 +46,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Unit Controller
- * <p>
- * 组织机构管理
- *
- * @author Alan Yeh
- * @since 2024/09/16
- */
+/// Unit Controller
+///
+/// 组织机构管理
+///
+/// @author Alan Yeh
 @RestController
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/organization/units")
 public class UnitController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "organization:unit:view";
         String ADD = "organization:unit:add";
@@ -76,136 +71,116 @@ public class UnitController {
     @Setter(onMethod_ = @Autowired)
     private UnitLogic logic;
 
-    /**
-     * 按条件查询组织机构列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 分页结果
-     */
+    /// 按条件查询组织机构列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 分页结果
     @GetMapping
     @RequiresPermissions(Permissions.VIEW)
     public List<Unit> list(@Validated UnitListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.listBy(query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询组织机构详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询组织机构详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
     public Unit details(@Validated IdQuery<Unit> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
 
-    /**
-     * 新增组织机构
-     *
-     * @param params    组织机构入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 新增后组织机构数据
-     */
+    /// 新增组织机构
+    ///
+    /// @param params    组织机构入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 新增后组织机构数据
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
     public Unit add(@RequestBody @Validated({Insert.class, Default.class}) UnitParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新组织机构
-     *
-     * @param params    组织机构数据
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后组织机构数据
-     */
+    /// 更新组织机构
+    ///
+    /// @param params    组织机构数据
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后组织机构数据
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
     public Unit update(@RequestBody @Validated({Update.class, Default.class}) UnitParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除组织机构数据
-     *
-     * @param params    组织机构数据
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除组织机构数据
+    ///
+    /// @param params    组织机构数据
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deleteByIds(params.getIds(), accountId, tenant);
     }
 
-    /**
-     * 按条件查询组织机构列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 分页结果
-     */
+    /// 按条件查询组织机构列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 分页结果
     @GetMapping("/departments")
     @RequiresPermissions(Permissions.VIEW)
     public List<Department> listDepartments(@Validated DepartmentListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.listDepartmentBy(query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询组织机构详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询组织机构详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/departments/details")
     @RequiresPermissions(Permissions.VIEW)
     public Department detailsDepartment(@Validated IdQuery<Department> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findDepartmentById(query.getId(), tenant);
     }
 
-    /**
-     * 新增组织机构
-     *
-     * @param params    组织机构入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 新增后组织机构数据
-     */
+    /// 新增组织机构
+    ///
+    /// @param params    组织机构入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 新增后组织机构数据
     @PostMapping("/departments")
     @RequiresPermissions(Permissions.DEPARTMENT_ADD)
     public Department addDepartment(@RequestBody @Validated({Insert.class, Default.class}) DepartmentParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertDepartment(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新组织机构
-     *
-     * @param params    组织机构数据
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后组织机构数据
-     */
+    /// 更新组织机构
+    ///
+    /// @param params    组织机构数据
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后组织机构数据
     @PutMapping("/departments")
     @RequiresPermissions(Permissions.DEPARTMENT_EDIT)
     public Department updateDepartment(@RequestBody @Validated({Update.class, Default.class}) DepartmentParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.updateDepartment(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除组织机构数据
-     *
-     * @param params    组织机构数据
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除组织机构数据
+    ///
+    /// @param params    组织机构数据
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping("/departments")
     @RequiresPermissions(Permissions.DEPARTMENT_DELETE)
     public long deleteDepartment(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

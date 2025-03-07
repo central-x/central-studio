@@ -24,6 +24,7 @@
 
 package central.studio.gateway.core.filter.global;
 
+import central.pluglet.PlugletFactory;
 import central.studio.gateway.core.filter.Filter;
 import central.studio.gateway.core.filter.FilterChain;
 import central.studio.gateway.core.filter.GlobalFilter;
@@ -32,7 +33,6 @@ import central.studio.gateway.core.filter.global.routing.HttpRoutingFilter;
 import central.studio.gateway.core.filter.global.routing.NotSupportedProtocolRoutingFilter;
 import central.studio.gateway.core.filter.global.routing.ResourceRoutingFilter;
 import central.studio.gateway.core.filter.global.routing.WebSocketRoutingFilter;
-import central.pluglet.PlugletFactory;
 import lombok.Setter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -45,12 +45,9 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 请求路由
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 请求路由
+///
+/// @author Alan Yeh
 @Component
 @Order
 public class RequestRoutingFilter implements GlobalFilter, ApplicationContextAware, InitializingBean {

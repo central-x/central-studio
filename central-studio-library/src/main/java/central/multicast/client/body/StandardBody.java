@@ -32,28 +32,19 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 标准消息体
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 标准消息体
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class StandardBody implements MessageBody {
     @Serial
     private static final long serialVersionUID = 1846420430779376087L;
-    /**
-     * 主题
-     */
+    /// 主题
     private String subject;
-    /**
-     * 正文
-     */
+    /// 正文
     private String content;
-    /**
-     * 消息接收人
-     */
+    /// 消息接收人
     private List<Recipient> recipients;
 }

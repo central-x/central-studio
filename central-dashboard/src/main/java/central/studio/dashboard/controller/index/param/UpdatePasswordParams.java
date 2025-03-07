@@ -33,21 +33,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 更新密码
- *
- * @author Alan Yeh
- * @since 2025/02/11
- */
+/// 更新密码
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdatePasswordParams {
 
-    /**
-     * 原密码需要经过 SHA256 后再提交
-     */
+    /// 原密码需要经过 SHA256 后再提交
     @Label("原密码")
     @NotBlank
     private String oldPassword;

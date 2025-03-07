@@ -42,63 +42,48 @@ import java.io.Serial;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 单位信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 单位信息
+///
+/// @author Alan Yeh
 @GraphQLType("Unit")
 @EqualsAndHashCode(callSuper = true)
 public class UnitDTO extends UnitEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -7924414310018767718L;
 
-    /**
-     * 行政区划信息
-     */
+    /// 行政区划信息
     @GraphQLGetter
     public CompletableFuture<AreaDTO> getArea(DataLoader<String, AreaDTO> loader) {
         return loader.load(this.getAreaId());
     }
 
-    /**
-     * 父单位信息
-     */
+    /// 父单位信息
     @GraphQLGetter
     public CompletableFuture<UnitDTO> getParent(DataLoader<String, UnitDTO> loader) {
         return loader.load(this.getParentId());
     }
 
-    /**
-     * 子单位信息
-     */
+    /// 子单位信息
     @GraphQLGetter
     public List<UnitDTO> getChildren(@Autowired UnitQuery query,
                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return query.findBy(null, null, Conditions.of(UnitDTO.class).eq(UnitDTO::getParentId, this.getId()), Orders.of(UnitDTO.class).asc(UnitDTO::getOrder).asc(UnitDTO::getCode), tenant);
     }
 
-    /**
-     * 部门信息
-     */
+    /// 部门信息
     @GraphQLGetter
     public List<DepartmentDTO> getDepartments(@Autowired DepartmentQuery query,
                                               @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return query.findBy(null, null, Conditions.of(DepartmentDTO.class).eq(DepartmentDTO::getUnitId, this.getId()), Orders.of(DepartmentDTO.class).asc(DepartmentDTO::getOrder).asc(DepartmentDTO::getCode), tenant);
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

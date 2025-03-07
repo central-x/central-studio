@@ -24,51 +24,42 @@
 
 package central.studio.provider.graphql.storage;
 
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.storage.query.StorageBucketQuery;
 import central.studio.provider.graphql.storage.query.StorageFileQuery;
 import central.studio.provider.graphql.storage.query.StorageObjectQuery;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Storage Query
- * <p>
- * 存储中心查询
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage Query
+///
+/// 存储中心查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "storage", types = {StorageBucketQuery.class, StorageFileQuery.class, StorageObjectQuery.class})
 public class StorageQuery {
 
-    /**
-     * Bucket Query
-     * <p>
-     * 存储桶查询
-     */
+    /// Bucket Query
+    ///
+    /// 存储桶查询
     @GraphQLGetter
     public StorageBucketQuery getBuckets(@Autowired StorageBucketQuery query) {
         return query;
     }
 
-    /**
-     * File Query
-     * <p>
-     * 文件查询
-     */
+    /// File Query
+    ///
+    /// 文件查询
     @GraphQLGetter
     public StorageFileQuery getFiles(@Autowired StorageFileQuery query) {
         return query;
     }
 
-    /**
-     * Object Query
-     * <p>
-     * 对象查询
-     */
+    /// Object Query
+    ///
+    /// 对象查询
     @GraphQLGetter
     public StorageObjectQuery getObjects(@Autowired StorageObjectQuery query) {
         return query;

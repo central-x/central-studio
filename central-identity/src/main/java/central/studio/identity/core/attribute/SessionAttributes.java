@@ -29,23 +29,14 @@ import central.studio.identity.core.CookieManager;
 
 import java.time.Duration;
 
-/**
- * 会话配置
- *
- * @author Alan Yeh
- * @since 2023/02/15
- */
+/// 会话配置
+///
+/// @author Alan Yeh
 public interface SessionAttributes {
-    /**
-     * 会话超时时间
-     */
+    /// 会话超时时间
     Attribute<Duration> TIMEOUT = Attribute.of("session.timeout", () -> Duration.ofMinutes(30));
-    /**
-     * 会话颁发者
-     */
+    /// 会话颁发者
     Attribute<String> ISSUER = Attribute.of("session.issuer", "identity.central-x.com");
-    /**
-     * 会话 Cookie
-     */
+    /// 会话 Cookie
     Attribute<CookieManager> COOKIE = Attribute.of("session.cookie", () -> new CookieManager("Authorization", null, true, false));
 }

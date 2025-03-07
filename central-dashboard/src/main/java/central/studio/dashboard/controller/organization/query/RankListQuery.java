@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Rank List Query
- * <p>
- * 职级列表查询
- *
- * @author Alan Yeh
- * @since 2024/12/06
- */
+/// Rank List Query
+///
+/// 职级列表查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RankListQuery extends ListQuery<Rank> {

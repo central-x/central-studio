@@ -32,12 +32,9 @@ import central.studio.logging.core.filter.predicate.impl.TypePredicate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 断言类型
- *
- * @author Alan Yeh
- * @since 2022/10/28
- */
+/// 断言类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum PredicateType implements OptionalEnum<String> {

@@ -28,12 +28,9 @@ import central.sql.datasource.migration.Migration;
 
 import java.util.List;
 
-/**
- * 初始化数据结构
- *
- * @author Alan Yeh
- * @since 2022/10/26
- */
+/// 初始化数据结构
+///
+/// @author Alan Yeh
 public interface v0 {
     List<Migration> migrations = List.of(
             new v0_0_1_initial(),

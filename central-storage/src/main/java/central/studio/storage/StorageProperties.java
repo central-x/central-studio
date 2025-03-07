@@ -26,12 +26,9 @@ package central.studio.storage;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * 存储中心配置
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 存储中心配置
+///
+/// @author Alan Yeh
 @ConfigurationProperties("central.storage")
 public class StorageProperties {
 }

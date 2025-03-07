@@ -27,12 +27,9 @@ package central.studio.dashboard;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Dashboard Application
- *
- * @author Alan Yeh
- * @since 2024/03/09
- */
+/// Dashboard Application
+///
+/// @author Alan Yeh
 @SpringBootApplication
 public class DashboardApplication {
     public static void main(String[] args) {

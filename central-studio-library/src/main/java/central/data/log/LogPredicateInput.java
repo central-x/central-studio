@@ -32,12 +32,9 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 日志过滤器断言
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志过滤器断言
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

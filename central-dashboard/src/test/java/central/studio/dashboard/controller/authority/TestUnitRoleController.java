@@ -61,13 +61,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Unit Role Controller Test Cases
- *
- * @author Alan Yeh
- * @see UnitRoleController
- * @since 2024/12/13
- */
+/// Unit Role Controller Test Cases
+///
+/// @author Alan Yeh
+/// @see UnitRoleController
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestUnitRoleController extends TestController {
@@ -107,9 +104,7 @@ public class TestUnitRoleController extends TestController {
     @Setter(onMethod_ = @Autowired)
     private DataContext context;
 
-    /**
-     * 获取测试用的应用
-     */
+    /// 获取测试用的应用
     private Application getApplication() {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
         return container.getApplicationByCode("dashboard");
@@ -122,12 +117,10 @@ public class TestUnitRoleController extends TestController {
         return unitLogic.findByCode("central-x", "master");
     }
 
-    /**
-     * @see UnitRoleController#add
-     * @see UnitRoleController#details
-     * @see UnitRoleController#page
-     * @see UnitRoleController#delete
-     */
+    /// @see UnitRoleController#add
+    /// @see UnitRoleController#details
+    /// @see UnitRoleController#page
+    /// @see UnitRoleController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();
@@ -223,12 +216,10 @@ public class TestUnitRoleController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see UnitRoleController#add
-     * @see UnitRoleController#update
-     * @see UnitRoleController#details
-     * @see UnitRoleController#delete
-     */
+    /// @see UnitRoleController#add
+    /// @see UnitRoleController#update
+    /// @see UnitRoleController#details
+    /// @see UnitRoleController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();

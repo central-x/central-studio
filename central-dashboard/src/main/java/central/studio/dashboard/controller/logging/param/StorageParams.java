@@ -34,14 +34,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Log Storage Params
- * <p>
- * 日志存储器入参
- *
- * @author Alan Yeh
- * @since 2024/11/28
- */
+/// Log Storage Params
+///
+/// 日志存储器入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

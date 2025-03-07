@@ -29,29 +29,22 @@ import jakarta.annotation.Nullable;
 
 import java.util.Map;
 
-/**
- * Strategy Resolver
- * <p>
- * 安全策略解析
- *
- * @author Alan Yeh
- * @since 2024/04/20
- */
+/// Strategy Resolver
+///
+/// 安全策略解析
+///
+/// @author Alan Yeh
 public interface StrategyResolver {
-    /**
-     * 根据标识和参数实例化安全策略
-     *
-     * @param code   类型标识
-     * @param params 初始化参数
-     * @return 安全策略实例，如果未找到标识对应的类型，则返回空
-     */
+    /// 根据标识和参数实例化安全策略
+    ///
+    /// @param code   类型标识
+    /// @param params 初始化参数
+    /// @return 安全策略实例，如果未找到标识对应的类型，则返回空
     @Nullable
     StrategyFilter resolve(@Nonnull String code, @Nonnull Map<String, Object> params);
 
-    /**
-     * 销毁安全策略实例
-     *
-     * @param strategy 实例
-     */
+    /// 销毁安全策略实例
+    ///
+    /// @param strategy 实例
     void destroy(@Nonnull StrategyFilter strategy);
 }

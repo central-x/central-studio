@@ -1,0 +1,29 @@
+server:
+  port: 13300
+  servlet:
+    context-path: /
+  tomcat:
+    remoteip:
+      protocol-header: X-Forwarded-Proto
+      host-header: X-Forwarded-Host
+      port-header: X-Forwarded-Port
+      remote-ip-header: X-Forwarded-For
+
+spring:
+  application:
+    name: central-document
+    secret: AkJSi2kmH7vSO5lJcvY
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+logging:
+  config: classpath:logback-default.xml
+
+studio:
+  document:
+    enabled: true
+    type: local
+    local:
+      path: /Volumes/AYData/Workspaces/centralx/central-studio/central-document/src/test/resources/central/document

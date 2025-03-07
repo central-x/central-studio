@@ -35,12 +35,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 日志过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志过滤器
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

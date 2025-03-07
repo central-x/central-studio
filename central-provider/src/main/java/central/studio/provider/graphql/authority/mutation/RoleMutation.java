@@ -30,8 +30,8 @@ import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.studio.provider.graphql.authority.dto.RoleDTO;
 import central.studio.provider.database.persistence.authority.RolePersistence;
+import central.studio.provider.graphql.authority.dto.RoleDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -46,14 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Role Mutation
- * <p>
- * 角色修改
- *
- * @author Alan Yeh
- * @since 2022/10/02
- */
+/// Role Mutation
+///
+/// 角色修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "authority/mutation", types = {RoleDTO.class, RolePermissionMutation.class, RolePrincipalMutation.class, RoleRangeMutation.class})
 public class RoleMutation {
@@ -61,13 +58,11 @@ public class RoleMutation {
     @Setter(onMethod_ = @Autowired)
     private RolePersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull RoleDTO insert(@RequestParam @Validated({Insert.class, Default.class}) RoleInput input,
                                    @RequestParam String operator,
@@ -76,13 +71,11 @@ public class RoleMutation {
         return DTO.wrap(data, RoleDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<RoleDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<RoleInput> inputs,
                                               @RequestParam String operator,
@@ -91,13 +84,11 @@ public class RoleMutation {
         return DTO.wrap(data, RoleDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull RoleDTO update(@RequestParam @Validated({Update.class, Default.class}) RoleInput input,
                                    @RequestParam String operator,
@@ -106,13 +97,11 @@ public class RoleMutation {
         return DTO.wrap(data, RoleDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<RoleDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<RoleInput> inputs,
                                               @RequestParam String operator,
@@ -121,24 +110,20 @@ public class RoleMutation {
         return DTO.wrap(data, RoleDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<RoleDTO> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -149,31 +134,25 @@ public class RoleMutation {
     // 关联关系
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Role Permission Relation
-     * <p>
-     * 角色与权限关联关系
-     */
+    /// Role Permission Relation
+    ///
+    /// 角色与权限关联关系
     @GraphQLGetter
     public RolePermissionMutation getPermissions(@Autowired RolePermissionMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Role Principal Relation
-     * <p>
-     * 角色与主体关联关系
-     */
+    /// Role Principal Relation
+    ///
+    /// 角色与主体关联关系
     @GraphQLGetter
     public RolePrincipalMutation getPrincipals(@Autowired RolePrincipalMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Role Range Relation
-     * <p>
-     * 角色与范围关联关系
-     */
+    /// Role Range Relation
+    ///
+    /// 角色与范围关联关系
     @GraphQLGetter
     public RoleRangeMutation getRanges(@Autowired RoleRangeMutation mutation) {
         return mutation;

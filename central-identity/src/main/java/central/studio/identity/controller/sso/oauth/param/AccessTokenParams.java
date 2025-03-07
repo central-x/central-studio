@@ -36,12 +36,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 获取访问凭证参数
- *
- * @author Alan Yeh
- * @since 2023/04/22
- */
+/// 获取访问凭证参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,25 +46,21 @@ public class AccessTokenParams implements Serializable {
     @Serial
     private static final long serialVersionUID = 662071433992783738L;
 
-    /**
-     * 授权类型
-     * <p>
-     * 此值固定为 authorization_code
-     */
+    /// 授权类型
+    ///
+    /// 此值固定为 authorization_code
     @Label("授权类型")
     @NotBlank
     @Fix("authorization_code")
     private String grantType;
-    /**
-     * @see Application#getCode
-     */
+
+    /// @see Application#getCode
     @Label("应用标识")
     @NotBlank
     @Size(min = 1, max = 50)
     private String clientId;
-    /**
-     * @see Application#getSecret
-     */
+
+    /// @see Application#getSecret
     @Label("应用密钥")
     @NotBlank
     @Size(min = 1, max = 50)

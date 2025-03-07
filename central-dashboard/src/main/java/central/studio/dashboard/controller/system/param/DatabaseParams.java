@@ -38,14 +38,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Database Params
- * <p>
- * 数据库入参
- *
- * @author Alan Yeh
- * @since 2024/10/20
- */
+/// Database Params
+///
+/// 数据库入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

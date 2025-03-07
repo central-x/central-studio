@@ -24,114 +24,93 @@
 
 package central.studio.provider.graphql;
 
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.authority.AuthorityQuery;
 import central.studio.provider.graphql.gateway.GatewayQuery;
 import central.studio.provider.graphql.identity.IdentityQuery;
 import central.studio.provider.graphql.log.LogQuery;
 import central.studio.provider.graphql.multicast.MulticastQuery;
 import central.studio.provider.graphql.organization.OrganizationQuery;
+import central.studio.provider.graphql.saas.SaasQuery;
 import central.studio.provider.graphql.storage.StorageQuery;
 import central.studio.provider.graphql.system.SystemQuery;
-import central.studio.provider.graphql.saas.SaasQuery;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * GraphQL Query
- *
- * @author Alan Yeh
- * @since 2022/10/02
- */
+/// GraphQL Query
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(types = {AuthorityQuery.class, OrganizationQuery.class, SystemQuery.class, SaasQuery.class, IdentityQuery.class, LogQuery.class, StorageQuery.class, MulticastQuery.class, GatewayQuery.class})
 public class Query {
-    /**
-     * Authority Query
-     * <p>
-     * 权限相关相询
-     */
+    /// Authority Query
+    ///
+    /// 权限相关相询
     @GraphQLGetter
     public AuthorityQuery getAuthority(@Autowired AuthorityQuery query) {
         return query;
     }
 
-    /**
-     * Organization Query
-     * <p>
-     * 组织架构相关查询
-     */
+    /// Organization Query
+    ///
+    /// 组织架构相关查询
     @GraphQLGetter
     public OrganizationQuery getOrganization(@Autowired OrganizationQuery query) {
         return query;
     }
 
-    /**
-     * System Query
-     * <p>
-     * 系统配置相关查询
-     */
+    /// System Query
+    ///
+    /// 系统配置相关查询
     @GraphQLGetter
     public SystemQuery getSystem(@Autowired SystemQuery query) {
         return query;
     }
 
-    /**
-     * Tenant Query
-     * <p>
-     * 租户相关查询
-     */
+    /// Tenant Query
+    ///
+    /// 租户相关查询
     @GraphQLGetter
     public SaasQuery getSaas(@Autowired SaasQuery query) {
         return query;
     }
 
-    /**
-     * Identity Query
-     * <p>
-     * 认证相关查询
-     */
+    /// Identity Query
+    ///
+    /// 认证相关查询
     @GraphQLGetter
     public IdentityQuery getIdentity(@Autowired IdentityQuery query) {
         return query;
     }
 
-    /**
-     * Log Query
-     * <p>
-     * 日志中心相关查询
-     */
+    /// Log Query
+    ///
+    /// 日志中心相关查询
     @GraphQLGetter
     public LogQuery getLog(@Autowired LogQuery query) {
         return query;
     }
 
-    /**
-     * Storage Query
-     * <p>
-     * 存储中心相关查询
-     */
+    /// Storage Query
+    ///
+    /// 存储中心相关查询
     @GraphQLGetter
     public StorageQuery getStorage(@Autowired StorageQuery query) {
         return query;
     }
 
-    /**
-     * Multicast Query
-     * <p>
-     * 广播中心查询
-     */
+    /// Multicast Query
+    ///
+    /// 广播中心查询
     @GraphQLGetter
     public MulticastQuery getMulticast(@Autowired MulticastQuery query) {
         return query;
     }
 
-    /**
-     * Gateway Query
-     * <p>
-     * 网关中心查询
-     */
+    /// Gateway Query
+    ///
+    /// 网关中心查询
     @GraphQLGetter
     public GatewayQuery getGateway(@Autowired GatewayQuery query) {
         return query;

@@ -27,12 +27,9 @@ package central.studio.identity;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Identity Application
- *
- * @author Alan Yeh
- * @since 2024/03/03
- */
+/// Identity Application
+///
+/// @author Alan Yeh
 @SpringBootApplication
 public class IdentityApplication {
     public static void main(String[] args) {

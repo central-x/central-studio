@@ -35,14 +35,11 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Application Route
- * <p>
- * 应用路由
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// Application Route
+///
+/// 应用路由
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor
@@ -52,27 +49,19 @@ public class ApplicationRoute implements Serializable, Available, Remarkable {
     @Serial
     private static final long serialVersionUID = -4968804715373126621L;
 
-    /**
-     * 上下文路径
-     */
+    /// 上下文路径
     @Nonnull
     private String contextPath;
 
-    /**
-     * 服务地址
-     */
+    /// 服务地址
     @Nonnull
     private String url;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 备注
-     */
+    /// 备注
     @Nonnull
     private String remark;
 

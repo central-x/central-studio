@@ -25,46 +25,37 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.database.persistence.organization.entity.RankEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.organization.entity.RankEntity;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 职级信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 职级信息
+///
+/// @author Alan Yeh
 @GraphQLType("Rank")
 @EqualsAndHashCode(callSuper = true)
 public class RankDTO extends RankEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 3512477933648760947L;
 
-    /**
-     * 单位
-     */
+    /// 单位
     @GraphQLGetter
     public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
         return loader.load(this.getUnitId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

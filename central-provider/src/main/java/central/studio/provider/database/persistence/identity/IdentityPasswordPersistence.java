@@ -47,14 +47,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Identity Password Persistence
- * <p>
- * 帐户认证密码持久化
- *
- * @author Alan Yeh
- * @since 2024/12/24
- */
+/// Identity Password Persistence
+///
+/// 帐户认证密码持久化
+///
+/// @author Alan Yeh
 @Component
 public class IdentityPasswordPersistence {
 
@@ -64,13 +61,11 @@ public class IdentityPasswordPersistence {
     @Setter(onMethod_ = @Autowired)
     private ProviderProperties properties;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nullable IdentityPasswordEntity findById(@Nullable String id,
                                                      @Nullable Columns<? extends IdentityPasswordEntity> columns,
                                                      @Nonnull String tenant) {
@@ -81,9 +76,7 @@ public class IdentityPasswordPersistence {
         }
     }
 
-    /**
-     * 获取超级管理员密码
-     */
+    /// 获取超级管理员密码
     private IdentityPasswordEntity getSupervisorPassword(String tenant) {
         var password = new IdentityPasswordEntity();
         password.setId(properties.getSupervisor().getUsername());
@@ -95,13 +88,11 @@ public class IdentityPasswordPersistence {
         return password;
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nonnull List<IdentityPasswordEntity> findByIds(@Nullable List<String> ids,
                                                            @Nullable Columns<? extends IdentityPasswordEntity> columns,
                                                            @Nonnull String tenant) {
@@ -116,16 +107,14 @@ public class IdentityPasswordPersistence {
         return entities;
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<IdentityPasswordEntity> findBy(@Nullable Long limit,
                                                         @Nullable Long offset,
                                                         @Nullable Columns<? extends IdentityPasswordEntity> columns,
@@ -136,16 +125,14 @@ public class IdentityPasswordPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<IdentityPasswordEntity> pageBy(@Nonnull Long pageIndex,
                                                         @Nonnull Long pageSize,
                                                         @Nullable Columns<? extends IdentityPasswordEntity> columns,
@@ -156,26 +143,22 @@ public class IdentityPasswordPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends IdentityPasswordEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(IdentityPasswordEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作帐号
-     * @param tenant   租户标识
-     * @return 保存后的数据
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作帐号
+    /// @param tenant   租户标识
+    /// @return 保存后的数据
     public IdentityPasswordEntity insert(@Nonnull @Validated({Insert.class, Default.class}) IdentityPasswordInput input,
                                          @Nonnull String operator,
                                          @Nonnull String tenant) {
@@ -192,25 +175,21 @@ public class IdentityPasswordPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public List<IdentityPasswordEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<IdentityPasswordInput> inputs,
                                                     @Nonnull String operator,
                                                     @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -220,12 +199,10 @@ public class IdentityPasswordPersistence {
         return this.mapper.deleteBy(Conditions.of(IdentityPasswordEntity.class).in(IdentityPasswordEntity::getId, ids).eq(IdentityPasswordEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends IdentityPasswordEntity> conditions,
                          @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(IdentityPasswordEntity::getTenantCode, tenant);

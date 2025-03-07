@@ -27,19 +27,14 @@ package central.identity;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Identity Properties
- * <p>
- * 认证中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/17
- */
+/// Identity Properties
+///
+/// 认证中心配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties(prefix = "studio.identity")
 public class IdentityProperties {
-    /**
-     * 访问地址
-     */
+    /// 访问地址
     private String url = "http://central-identity";
 }

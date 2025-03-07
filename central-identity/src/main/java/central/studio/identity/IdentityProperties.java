@@ -27,12 +27,9 @@ package central.studio.identity;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * 应用配置
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// 应用配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties("studio.identity")
 public class IdentityProperties {

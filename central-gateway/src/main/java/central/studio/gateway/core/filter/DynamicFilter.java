@@ -41,12 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 动态过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 动态过滤器
+///
+/// @author Alan Yeh
 public class DynamicFilter implements Filter, Ordered, DisposableBean {
 
     @Getter

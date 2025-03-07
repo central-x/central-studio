@@ -39,14 +39,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Role Range Relation
- * <p>
- * 角色与范围关联关系
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Range Relation
+///
+/// 角色与范围关联关系
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
@@ -66,60 +63,39 @@ public class RoleRangeInput implements Serializable {
     @Size(min = 1, max = 32)
     private String roleId;
 
-    /**
-     * 如果数据与组织架构相关，则使用 {@link RangeCategory#ORGANIZATION }，通过授权组织架构来授权数据范围
-     * <p>
-     * 如果想直接授权数据，则使用 {@link RangeCategory#DATA}
-     */
-    @Label("范围分类")
+    /// 如果数据与组织架构相关，则使用 [RangeCategory#ORGANIZATION]，通过授权组织架构来授权数据范围
+    ///
+    /// 如果想直接授权数据，则使用 [RangeCategory#DATA] @Label("范围分类")
     @NotBlank
     @Enums(RangeCategory.class)
     private String category;
 
-    /**
-     * 如果授权分类是 {@link RangeCategory#ORGANIZATION} 时，type 必须是 {@link RangeType} 的枚举值
-     * <p>
-     * 如果授权分类是 {@link RangeCategory#DATA} 时，则需要开发者自行定义数据类型标识
-     */
+    /// 如果授权分类是 [RangeCategory#ORGANIZATION] 时，type 必须是 [RangeType] 的枚举值
+    ///
+    /// 如果授权分类是 [RangeCategory#DATA] 时，则需要开发者自行定义数据类型标识
     @Label("授权数据类型")
     @NotBlank
     private String type;
 
-    /**
-     * 如果授权分类是 {@link RangeCategory#ORGANIZATION} 时，则需要根据授权数据类型决定
-     *
-     * <ul>
-     *    <li>{@link Account#getId()}
-     *       <ul>
-     *          <li>{@link RangeType#ACCOUNT}</li>
-     *          <li>{@link RangeType#ACCOUNT_DEPARTMENT}</li>
-     *          <li>{@link RangeType#ACCOUNT_DEPARTMENT_RECURSION}</li>
-     *          <li>{@link RangeType#ACCOUNT_UNIT}</li>
-     *          <li>{@link RangeType#ACCOUNT_UNIT_RECURSION}</li>
-     *       </ul>
-     *    </li>
-     *    <li>{@link Department#getId()}
-     *       <ul>
-     *          <li>{@link RangeType#DEPARTMENT}</li>
-     *          <li>{@link RangeType#DEPARTMENT_RECURSION}</li>
-     *       </ul>
-     *    </li>
-     *    <li>{@link Unit#getId()}
-     *       <ul>
-     *          <li>{@link RangeType#UNIT}</li>
-     *          <li>{@link RangeType#UNIT_RECURSION}</li>
-     *       </ul>
-     *    </li>
-     *    <li>{@link Area#getId()}
-     *       <ul>
-     *          <li>{@link RangeType#AREA}</li>
-     *          <li>{@link RangeType#AREA_RECURSION}</li>
-     *       </ul>
-     *    </li>
-     * </ul>
-     * <p>
-     * 如果授权分类是 {@link RangeCategory#DATA} 时，则为待授权的数据的主键
-     */
+    /// 如果授权分类是 [RangeCategory#ORGANIZATION] 时，则需要根据授权数据类型决定
+    ///
+    /// - [Account#getId()]
+    ///     - [RangeType#ACCOUNT]
+    ///     - [RangeType#ACCOUNT_DEPARTMENT]
+    ///     - [RangeType#ACCOUNT_DEPARTMENT_RECURSION]
+    ///     - [RangeType#ACCOUNT_UNIT]
+    ///     - [RangeType#ACCOUNT_UNIT_RECURSION]
+    /// - [Department#getId()]
+    ///     - [RangeType#DEPARTMENT]
+    ///     - [RangeType#DEPARTMENT_RECURSION]
+    /// - [Unit#getId()]
+    ///     - [RangeType#UNIT]
+    ///     - [RangeType#UNIT_RECURSION]
+    /// - [Area#getId()]
+    ///     - [RangeType#AREA]
+    ///     - [RangeType#AREA_RECURSION]
+    ///
+    /// 如果授权分类是 [RangeCategory#DATA] 时，则为待授权的数据的主键
     @Label("数据主键")
     @NotBlank
     private String dataId;

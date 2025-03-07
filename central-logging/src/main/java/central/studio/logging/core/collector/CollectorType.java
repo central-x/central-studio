@@ -30,12 +30,9 @@ import central.studio.logging.core.collector.impl.local.LocalCollector;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 采集器类型
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 采集器类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum CollectorType implements OptionalEnum<String> {

@@ -24,8 +24,8 @@
 
 package central.provider.scheduled.fetcher.storage;
 
-import central.provider.scheduled.DataContainer;
 import central.data.storage.StorageBucket;
+import central.provider.scheduled.DataContainer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,22 +37,17 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * 存储中心数据容器
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 存储中心数据容器
+///
+/// @author Alan Yeh
 @NoArgsConstructor
 public class StorageContainer extends DataContainer {
     @Serial
     private static final long serialVersionUID = -4597030574643128388L;
 
-    /**
-     * 存储桶
-     * <p>
-     * tenant -> id -> bucket
-     */
+    /// 存储桶
+    ///
+    /// tenant -> id -> bucket
     @Getter
     private final Map<String, Map<String, StorageBucket>> buckets = new HashMap<>();
 
@@ -64,21 +59,17 @@ public class StorageContainer extends DataContainer {
         this.buckets.putAll(idMap);
     }
 
-    /**
-     * 获取存储桶
-     *
-     * @param tenant 租户标识
-     */
+    /// 获取存储桶
+    ///
+    /// @param tenant 租户标识
     public List<StorageBucket> getBuckets(String tenant) {
         return new ArrayList<>(this.buckets.computeIfAbsent(tenant, key -> new HashMap<>()).values());
     }
 
-    /**
-     * 获取存储桶
-     *
-     * @param tenant 租户标识
-     * @param id     主键
-     */
+    /// 获取存储桶
+    ///
+    /// @param tenant 租户标识
+    /// @param id     主键
     public StorageBucket getBucket(String tenant, String id) {
         return this.buckets.computeIfAbsent(tenant, key -> new HashMap<>()).get(id);
     }

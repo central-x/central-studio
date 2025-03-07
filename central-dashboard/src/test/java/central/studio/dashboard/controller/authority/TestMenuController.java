@@ -55,13 +55,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Menu Controller Test Cases
- *
- * @author Alan Yeh
- * @see MenuController
- * @since 2024/12/10
- */
+/// Menu Controller Test Cases
+///
+/// @author Alan Yeh
+/// @see MenuController
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestMenuController extends TestController {
@@ -79,20 +76,16 @@ public class TestMenuController extends TestController {
     @Setter(onMethod_ = @Autowired)
     private DataContext context;
 
-    /**
-     * 获取测试用的应用
-     */
+    /// 获取测试用的应用
     private Application getApplication() {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
         return container.getApplicationByCode("dashboard");
     }
 
-    /**
-     * @see MenuController#add
-     * @see MenuController#details
-     * @see MenuController#list
-     * @see MenuController#delete
-     */
+    /// @see MenuController#add
+    /// @see MenuController#details
+    /// @see MenuController#list
+    /// @see MenuController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();
@@ -195,12 +188,10 @@ public class TestMenuController extends TestController {
 
     }
 
-    /**
-     * @see MenuController#add
-     * @see MenuController#update
-     * @see MenuController#details
-     * @see MenuController#delete
-     */
+    /// @see MenuController#add
+    /// @see MenuController#update
+    /// @see MenuController#details
+    /// @see MenuController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();
@@ -314,14 +305,12 @@ public class TestMenuController extends TestController {
     }
 
 
-    /**
-     * @see MenuController#add
-     * @see MenuController#addPermission
-     * @see MenuController#updatePermission
-     * @see MenuController#listPermissions
-     * @see MenuController#deletePermissions
-     * @see MenuController#delete
-     */
+    /// @see MenuController#add
+    /// @see MenuController#addPermission
+    /// @see MenuController#updatePermission
+    /// @see MenuController#listPermissions
+    /// @see MenuController#deletePermissions
+    /// @see MenuController#delete
     @Test
     public void case2(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();
@@ -437,7 +426,7 @@ public class TestMenuController extends TestController {
 
         // 删除权限
         var deletePermissionRequest = MockMvcRequestBuilders.delete(PATH + "/permissions")
-                .cookie(this.getSessionCookie(PATH+ "/permissions", mvc, cookieStore))
+                .cookie(this.getSessionCookie(PATH + "/permissions", mvc, cookieStore))
                 .queryParam("ids", permissionBody.getId())
                 .header(XForwardedHeaders.TENANT, "master")
                 .accept(MediaType.APPLICATION_JSON);

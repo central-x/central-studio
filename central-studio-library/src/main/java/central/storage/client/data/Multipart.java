@@ -36,12 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-/**
- * 分片上传信息
- *
- * @author Alan Yeh
- * @since 2022/11/01
- */
+/// 分片上传信息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,33 +46,19 @@ public class Multipart implements Serializable {
     @Serial
     private static final long serialVersionUID = -4984737642326600349L;
 
-    /**
-     * 创建时间
-     */
+    /// 创建时间
     private final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    /**
-     * 分片上传主键
-     */
+    /// 分片上传主键
     private String id;
-    /**
-     * 文件摘要（Sha256）
-     */
+    /// 文件摘要（Sha256）
     private String digest;
-    /**
-     * 文件大小
-     */
+    /// 文件大小
     private Long size;
-    /**
-     * 分片大小
-     */
+    /// 分片大小
     private Long chunkSize;
-    /**
-     * 分片总数
-     */
+    /// 分片总数
     private Long chunkCount;
-    /**
-     * 待上传分片下标数组
-     */
+    /// 待上传分片下标数组
     private List<Integer> chunks;
 
     public Multipart(String digest, Long size) {

@@ -40,23 +40,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Index Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/03/09
- */
+/// Index Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestIndexController extends TestController {
 
-    /**
-     * 测试会话
-     * <p>
-     * 获取用户
-     *
-     * @see IndexController#getAccount
-     */
+    /// 测试会话
+    ///
+    /// 获取用户
+    ///
+    /// @see IndexController#getAccount
     @Test
     public void case1(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/dashboard/api/account")
@@ -71,11 +66,9 @@ public class TestIndexController extends TestController {
                 .andReturn().getResponse();
     }
 
-    /**
-     * 测试会话
-     * <p>
-     * 未登录重定向到登录界面
-     */
+    /// 测试会话
+    ///
+    /// 未登录重定向到登录界面
     @Test
     public void case2(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/dashboard/")
@@ -97,9 +90,7 @@ public class TestIndexController extends TestController {
                 .andExpect(header().string(HttpHeaders.LOCATION, "/identity/?redirect_uri=https%3A%2F%2Ftest.central-x.com%3A9443%2Fdashboard%2F"));
     }
 
-    /**
-     * 登录之后
-     */
+    /// 登录之后
     @Test
     public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 验证会话

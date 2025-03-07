@@ -27,17 +27,12 @@ package central.studio.gateway.core.filter;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-/**
- * 网关调用链
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 网关调用链
+///
+/// @author Alan Yeh
 public interface FilterChain {
-    /**
-     * 下一个网关的代理
-     *
-     * @param exchange 待过滤的 Server Web Exchange
-     */
+    /// 下一个网关的代理
+    ///
+    /// @param exchange 待过滤的 Server Web Exchange
     Mono<Void> filter(ServerWebExchange exchange);
 }

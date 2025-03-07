@@ -37,21 +37,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-/**
- * Logging Configuration
- * <p>
- * 日志中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/21
- */
+/// Logging Configuration
+///
+/// 日志中心配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableConfigurationProperties(LoggingProperties.class)
 public class LoggingConfiguration {
 
-    /**
-     * 采集器客户端
-     */
+    /// 采集器客户端
     @Bean
     public CollectorClient collectorClient(LoggingProperties properties) {
         return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())

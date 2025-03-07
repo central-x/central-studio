@@ -35,14 +35,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Identity Record
- * <p>
- * 认证记录
- *
- * @author Alan Yeh
- * @since 2025/03/02
- */
+/// Identity Record
+///
+/// 认证记录
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,51 +48,35 @@ public class IdentityRecord extends ModifiableEntity {
     @Serial
     private static final long serialVersionUID = 5097816191394163613L;
 
-    /**
-     * 主键
-     */
+    /// 主键
     @Nonnull
     private String id;
 
-    /**
-     * 会话主键
-     */
+    /// 会话主键
     @Nonnull
     private String sessionId;
 
-    /**
-     * 终端类型
-     */
+    /// 终端类型
     @Nonnull
     private String endpoint;
 
-    /**
-     * 主机归属地
-     */
+    /// 主机归属地
     @Nonnull
     private String address;
 
-    /**
-     * 主机地址
-     */
+    /// 主机地址
     @Nonnull
     private String host;
 
-    /**
-     * 设备
-     */
+    /// 设备
     @Nonnull
     private String device;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

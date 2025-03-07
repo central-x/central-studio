@@ -28,28 +28,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-/**
- * 响应体序列化
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 响应体序列化
+///
+/// @author Alan Yeh
 public interface BodySerializer {
-    /**
-     * 读响应体
-     *
-     * @param body    响应体流
-     * @param charset 字符集
-     * @return 响应体字符串
-     */
+    /// 读响应体
+    ///
+    /// @param body    响应体流
+    /// @param charset 字符集
+    /// @return 响应体字符串
     String read(InputStream body, Charset charset) throws IOException;
 
-    /**
-     * 写响应体
-     *
-     * @param body    响应体字符串
-     * @param charset 字符集
-     * @return 响应体字节码
-     */
+    /// 写响应体
+    ///
+    /// @param body    响应体字符串
+    /// @param charset 字符集
+    /// @return 响应体字节码
     byte[] write(String body, Charset charset) throws IOException;
 }

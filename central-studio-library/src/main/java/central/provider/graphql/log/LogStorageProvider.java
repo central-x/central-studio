@@ -31,12 +31,9 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * 日志存储器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志存储器
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("log.storages")
 @GraphQLStub(path = "log", client = "masterProviderClient")

@@ -41,30 +41,19 @@ import java.time.temporal.TemporalQueries;
 import java.util.Comparator;
 import java.util.Objects;
 
-/**
- * 基于文件大小的滚动策略
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 基于文件大小的滚动策略
+///
+/// @author Alan Yeh
 @Slf4j
 @RequiredArgsConstructor
 public class SizeRollingPolicy implements RollingPolicy {
-    /**
-     * 日志保存路径
-     */
+    /// 日志保存路径
     private final String path;
-    /**
-     * 日志保存天数
-     */
+    /// 日志保存天数
     private final Integer maxHistory;
-    /**
-     * 最大文件大小
-     */
+    /// 最大文件大小
     private final long fileSize;
-    /**
-     * 压缩
-     */
+    /// 压缩
     private final Compressor compressor;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

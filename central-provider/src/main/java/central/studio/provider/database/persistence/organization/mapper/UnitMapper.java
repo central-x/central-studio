@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.organization.mapper;
 
-import central.studio.provider.database.persistence.organization.entity.UnitEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.organization.entity.UnitEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 单位信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 单位信息
+///
+/// @author Alan Yeh
 @Repository
 public interface UnitMapper extends Mapper<UnitEntity> {
 }

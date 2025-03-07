@@ -31,16 +31,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-/**
- * Default Bucket Resolver
- * <p>
- * 默认存储桶解析器，解析内部支持的存储桶类型
- * <p>
- * 第三方扩展时，可以通过实现 BucketResolver 接口，来自定义存储桶类型
- *
- * @author Alan Yeh
- * @since 2024/04/11
- */
+/// Default Bucket Resolver
+///
+/// 默认存储桶解析器，解析内部支持的存储桶类型
+///
+/// 第三方扩展时，可以通过实现 BucketResolver 接口，来自定义存储桶类型
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class DefaultBucketResolver implements BucketResolver {
 
@@ -55,7 +52,7 @@ public class DefaultBucketResolver implements BucketResolver {
 
         return this.instance(type.getType(), params);
     }
-    
+
     protected Bucket instance(@Nonnull Class<? extends Bucket> type, @Nonnull Map<String, Object> params) {
         return this.factory.create(type, params);
     }

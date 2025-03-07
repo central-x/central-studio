@@ -34,14 +34,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Multicast Broadcaster Params
- * <p>
- * 广播器入参
- *
- * @author Alan Yeh
- * @since 2024/11/07
- */
+/// Multicast Broadcaster Params
+///
+/// 广播器入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

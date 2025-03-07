@@ -39,14 +39,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Role Principal Relation Params
- * <p>
- * 角色与主体关联关系入参
- *
- * @author Alan Yeh
- * @since 2024/12/16
- */
+/// Role Principal Relation Params
+///
+/// 角色与主体关联关系入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

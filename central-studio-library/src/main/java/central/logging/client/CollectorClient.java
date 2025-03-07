@@ -31,16 +31,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.InputStream;
 
-/**
- * 日志收集器客户端
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志收集器客户端
+///
+/// @author Alan Yeh
 public interface CollectorClient {
-    /**
-     * 上传日志
-     */
+    /// 上传日志
     @PostMapping("/{path}")
     void collect(@PathVariable String path, @RequestHeader String contentEncoding, @RequestBody InputStream body);
 }

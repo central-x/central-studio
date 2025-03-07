@@ -24,7 +24,8 @@
 
 package central.data.organization;
 
-import central.bean.*;
+import central.bean.Nonnull;
+import central.bean.Nullable;
 import central.sql.data.Entity;
 import central.util.Listx;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,12 +37,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 帐户与单位关系
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 帐户与单位关系
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,61 +48,43 @@ public class AccountUnit extends Entity {
     @Serial
     private static final long serialVersionUID = 1003060823011256788L;
 
-    /**
-     * 帐户主键
-     */
+    /// 帐户主键
     @Nonnull
     private String accountId;
 
-    /**
-     * 帐户信息
-     */
+    /// 帐户信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account account;
 
-    /**
-     * 单位主键
-     */
+    /// 单位主键
     @Nonnull
     private String unitId;
 
-    /**
-     * 单位信息
-     */
+    /// 单位信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Unit unit;
 
-    /**
-     * 部门信息
-     */
+    /// 部门信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<AccountDepartment> departments;
 
-    /**
-     * 职级主键
-     */
+    /// 职级主键
     @Nullable
     private String rankId;
 
-    /**
-     * 职级信息
-     */
+    /// 职级信息
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Rank rank;
 
-    /**
-     * 是否主要部门
-     */
+    /// 是否主要部门
     @Nonnull
     private Boolean primary;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;

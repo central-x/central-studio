@@ -51,14 +51,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Identity Strategy
- * <p>
- * 认证策略
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// Identity Strategy
+///
+/// 认证策略
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "identity/query", types = IdentityStrategyDTO.class)
 public class IdentityStrategyQuery {
@@ -66,12 +63,10 @@ public class IdentityStrategyQuery {
     @Setter(onMethod_ = @Autowired)
     private IdentityStrategyPersistence persistence;
 
-    /**
-     * 批量数据加载器
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 批量数据加载器
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLBatchLoader
     public @Nonnull Map<String, IdentityStrategyDTO> batchLoader(@RequestParam List<String> ids,
                                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -80,12 +75,10 @@ public class IdentityStrategyQuery {
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nullable IdentityStrategyDTO findById(@RequestParam String id,
                                                   @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -94,12 +87,10 @@ public class IdentityStrategyQuery {
     }
 
 
-    /**
-     * 查询数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nonnull List<IdentityStrategyDTO> findByIds(@RequestParam List<String> ids,
                                                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -107,15 +98,13 @@ public class IdentityStrategyQuery {
         return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull List<IdentityStrategyDTO> findBy(@RequestParam(required = false) Long limit,
                                                      @RequestParam(required = false) Long offset,
@@ -126,15 +115,13 @@ public class IdentityStrategyQuery {
         return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull Page<IdentityStrategyDTO> pageBy(@RequestParam long pageIndex,
                                                      @RequestParam long pageSize,
@@ -145,12 +132,10 @@ public class IdentityStrategyQuery {
         return DTO.wrap(data, IdentityStrategyDTO.class);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<IdentityStrategyEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

@@ -24,42 +24,35 @@
 
 package central.provider.scheduled.fetcher.system;
 
-import central.provider.scheduled.DataContainer;
 import central.data.system.Dictionary;
+import central.provider.scheduled.DataContainer;
 import lombok.RequiredArgsConstructor;
 
 import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 系统数据容器
- *
- * @author Alan Yeh
- * @since 2022/10/14
- */
+/// 系统数据容器
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class SysContainer extends DataContainer {
     @Serial
     private static final long serialVersionUID = 7527120121005302705L;
 
-    /**
-     * 字典
-     * tenantCode -> applicationCode -> dictionaryCode -> Dictionary
-     */
+    /// 字典
+    /// tenantCode -> applicationCode -> dictionaryCode -> Dictionary
     private final Map<String, Map<String, Map<String, Dictionary>>> dictionaries;
 
     public SysContainer() {
         this.dictionaries = new HashMap<>();
     }
 
-    /**
-     * 获取字典
-     *
-     * @param tenantCode      租户标识
-     * @param applicationCode 应用标识
-     * @param dictionaryCode  字典标识
-     */
+    /// 获取字典
+    ///
+    /// @param tenantCode      租户标识
+    /// @param applicationCode 应用标识
+    /// @param dictionaryCode  字典标识
     public Dictionary getDictionary(String tenantCode, String applicationCode, String dictionaryCode) {
         return this.dictionaries.computeIfAbsent(tenantCode, key -> new HashMap<>())
                 .computeIfAbsent(applicationCode, key -> new HashMap<>())

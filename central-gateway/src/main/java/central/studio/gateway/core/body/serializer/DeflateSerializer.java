@@ -33,12 +33,9 @@ import java.nio.charset.Charset;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.DeflaterOutputStream;
 
-/**
- * Deflate 压缩
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// Deflate 压缩
+///
+/// @author Alan Yeh
 public class DeflateSerializer implements BodySerializer {
     @Override
     public String read(InputStream body, Charset charset) throws IOException {

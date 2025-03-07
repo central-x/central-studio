@@ -24,11 +24,11 @@
 
 package central.provider.scheduled.fetcher.identity;
 
+import central.data.identity.IdentityStrategy;
 import central.provider.graphql.identity.IdentityStrategyProvider;
 import central.provider.graphql.saas.TenantProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
-import central.data.identity.IdentityStrategy;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,12 +36,9 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * 认证中心数据获取
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// 认证中心数据获取
+///
+/// @author Alan Yeh
 public class IdentityFetcher implements DataFetcher<IdentityContainer> {
     @Setter
     private BeanSupplier supplier;

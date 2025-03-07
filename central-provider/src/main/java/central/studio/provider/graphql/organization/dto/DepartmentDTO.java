@@ -25,12 +25,12 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.database.persistence.organization.entity.DepartmentEntity;
-import central.studio.provider.graphql.organization.query.DepartmentQuery;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.organization.entity.DepartmentEntity;
+import central.studio.provider.graphql.organization.query.DepartmentQuery;
 import central.web.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
@@ -41,54 +41,41 @@ import java.io.Serial;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 部门信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 部门信息
+///
+/// @author Alan Yeh
 @GraphQLType("Department")
 @EqualsAndHashCode(callSuper = true)
 public class DepartmentDTO extends DepartmentEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -5935775736872065997L;
 
-    /**
-     * 单位
-     */
+    /// 单位
     @GraphQLGetter
     public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
         return loader.load(this.getUnitId());
     }
 
-    /**
-     * 父部门信息
-     */
+    /// 父部门信息
     @GraphQLGetter
     public CompletableFuture<DepartmentDTO> getParent(DataLoader<String, DepartmentDTO> loader) {
         return loader.load(this.getParentId());
     }
 
-    /**
-     * 子部门
-     */
+    /// 子部门
     @GraphQLGetter
     public List<DepartmentDTO> getChildren(@Autowired DepartmentQuery query,
                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return query.findBy(null, null, Conditions.of(DepartmentDTO.class).eq(DepartmentDTO::getParentId, this.getId()), Orders.of(DepartmentDTO.class).asc(DepartmentDTO::getOrder).asc(DepartmentDTO::getCode), tenant);
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

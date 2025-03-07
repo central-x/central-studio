@@ -68,12 +68,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * 存储对象上传下载接口
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 存储对象上传下载接口
+///
+/// @author Alan Yeh
 @RestController
 @RequestMapping("/storage/api/buckets/{code}/objects")
 public class ObjectController {
@@ -84,14 +81,12 @@ public class ObjectController {
     @Setter(onMethod_ = @Autowired)
     private StorageObjectProvider provider;
 
-    /**
-     * 校验访问对象的凭证是否有效以及是否包要求的权限
-     *
-     * @param token      访问凭证
-     * @param bucket     存储桶（Bucket）
-     * @param permission 必要权限
-     * @param ids        必要对象主键
-     */
+    /// 校验访问对象的凭证是否有效以及是否包要求的权限
+    ///
+    /// @param token      访问凭证
+    /// @param bucket     存储桶（Bucket）
+    /// @param permission 必要权限
+    /// @param ids        必要对象主键
     private void validate(String token, DynamicBucket bucket, Permission permission, List<String> ids) {
         DecodedJWT jwt;
 
@@ -149,14 +144,12 @@ public class ObjectController {
         }
     }
 
-    /**
-     * 上传文件
-     *
-     * @param code      存储桶（Bucket）标识
-     * @param params    参数
-     * @param accountId 当前用户
-     * @param tenant    租户标识
-     */
+    /// 上传文件
+    ///
+    /// @param code      存储桶（Bucket）标识
+    /// @param params    参数
+    /// @param accountId 当前用户
+    /// @param tenant    租户标识
     @PostMapping
     public StorageObject upload(@PathVariable String code,
                                 @Validated UploadParams params,
@@ -185,14 +178,12 @@ public class ObjectController {
         return object;
     }
 
-    /**
-     * 快速上传（秒传）
-     *
-     * @param code      存储桶（Bucket）标识
-     * @param params    参数
-     * @param accountId 当前用户
-     * @param tenant    租户标识
-     */
+    /// 快速上传（秒传）
+    ///
+    /// @param code      存储桶（Bucket）标识
+    /// @param params    参数
+    /// @param accountId 当前用户
+    /// @param tenant    租户标识
     @PostMapping("/rapid")
     public StorageObject rapidUpload(@PathVariable String code,
                                      @Validated @RequestBody RapidUploadParams params,
@@ -226,14 +217,12 @@ public class ObjectController {
         return object;
     }
 
-    /**
-     * 二次确认
-     *
-     * @param code      存储桶（Bucket）标识
-     * @param params    参数
-     * @param accountId 当前用户
-     * @param tenant    租户标识
-     */
+    /// 二次确认
+    ///
+    /// @param code      存储桶（Bucket）标识
+    /// @param params    参数
+    /// @param accountId 当前用户
+    /// @param tenant    租户标识
     @PostMapping("/confirm")
     public Long confirm(@PathVariable String code,
                         @Validated @RequestBody ConfirmParams params,
@@ -252,13 +241,11 @@ public class ObjectController {
         return (long) this.provider.updateBatch(inputs, Objectx.getOrDefault(accountId, "syssa"), tenant).size();
     }
 
-    /**
-     * 删除对象
-     *
-     * @param code   存储桶（Bucket）标识
-     * @param params 参数
-     * @param tenant 租户标识
-     */
+    /// 删除对象
+    ///
+    /// @param code   存储桶（Bucket）标识
+    /// @param params 参数
+    /// @param tenant 租户标识
     @DeleteMapping
     public Long delete(@PathVariable String code,
                        @Validated DeleteParams params,
@@ -284,13 +271,11 @@ public class ObjectController {
         return this.provider.deleteByIds(params.getIds(), tenant);
     }
 
-    /**
-     * 查询对象信息
-     *
-     * @param code   存储桶（Bucket）标识
-     * @param query  参数
-     * @param tenant 租户标识
-     */
+    /// 查询对象信息
+    ///
+    /// @param code   存储桶（Bucket）标识
+    /// @param query  参数
+    /// @param tenant 租户标识
     @GetMapping("/details")
     public StorageObject findById(@PathVariable String code,
                                   @Validated DetailsQuery query,
@@ -308,13 +293,11 @@ public class ObjectController {
         }).orElse(null);
     }
 
-    /**
-     * 查询对象信息列表
-     *
-     * @param code   存储桶（Bucket）标识
-     * @param query  参数
-     * @param tenant 租户标识
-     */
+    /// 查询对象信息列表
+    ///
+    /// @param code   存储桶（Bucket）标识
+    /// @param query  参数
+    /// @param tenant 租户标识
     @GetMapping("/list")
     public List<StorageObject> findByIds(@PathVariable String code, @Validated ListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var bucket = this.container.requireBucket(tenant, code);
@@ -328,14 +311,12 @@ public class ObjectController {
                 .toList();
     }
 
-    /**
-     * 下载对象
-     *
-     * @param code     存储桶（Bucket）标识
-     * @param query    参数
-     * @param request  请求
-     * @param response 响应
-     */
+    /// 下载对象
+    ///
+    /// @param code     存储桶（Bucket）标识
+    /// @param query    参数
+    /// @param request  请求
+    /// @param response 响应
     @GetMapping
     public void download(@PathVariable String code,
                          @Validated DownloadQuery query,
@@ -386,7 +367,7 @@ public class ObjectController {
 
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 分片上传
 
 
@@ -395,13 +376,11 @@ public class ObjectController {
     @Setter(onMethod_ = @Autowired)
     private BucketCache cache;
 
-    /**
-     * 创建分片上传
-     *
-     * @param code   存储桶（Bucket）标识
-     * @param params 参数
-     * @param tenant 租户标识
-     */
+    /// 创建分片上传
+    ///
+    /// @param code   存储桶（Bucket）标识
+    /// @param params 参数
+    /// @param tenant 租户标识
     @PostMapping("/multiparts")
     public Multipart createMultipart(@PathVariable String code,
                                      @Validated @RequestBody CreateMultipartParams params,
@@ -414,13 +393,11 @@ public class ObjectController {
         return multipart;
     }
 
-    /**
-     * 上传分片数据
-     *
-     * @param code   存储桶（Bucket）标识
-     * @param params 参数
-     * @param tenant 租户标识
-     */
+    /// 上传分片数据
+    ///
+    /// @param code   存储桶（Bucket）标识
+    /// @param params 参数
+    /// @param tenant 租户标识
     @PatchMapping("/multiparts")
     public Multipart patchMultipart(@PathVariable String code,
                                     @Validated PatchMultipartParams params,
@@ -446,14 +423,12 @@ public class ObjectController {
         return multipart;
     }
 
-    /**
-     * 完成分片上传
-     *
-     * @param code      存储桶（Bucket）标识
-     * @param params    参数
-     * @param accountId 当前用户
-     * @param tenant    租户标识
-     */
+    /// 完成分片上传
+    ///
+    /// @param code      存储桶（Bucket）标识
+    /// @param params    参数
+    /// @param accountId 当前用户
+    /// @param tenant    租户标识
     @PutMapping("/multiparts")
     public StorageObject completeMultipart(@PathVariable String code,
                                            @Validated @RequestBody CompleteMultipartParams params,
@@ -503,13 +478,11 @@ public class ObjectController {
         }
     }
 
-    /**
-     * 取消分片上传
-     *
-     * @param code   存储桶（Bucket）标识
-     * @param params 参数
-     * @param tenant 租户标识
-     */
+    /// 取消分片上传
+    ///
+    /// @param code   存储桶（Bucket）标识
+    /// @param params 参数
+    /// @param tenant 租户标识
     @DeleteMapping("/multiparts")
     public Long cancelMultipart(@PathVariable String code,
                                 @Validated CancelMultipartParams params,

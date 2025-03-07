@@ -28,12 +28,9 @@ import central.bean.OptionalEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 日志类型
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志类型
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum LogType implements OptionalEnum<String> {

@@ -36,12 +36,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 邮件消息体
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 邮件消息体
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

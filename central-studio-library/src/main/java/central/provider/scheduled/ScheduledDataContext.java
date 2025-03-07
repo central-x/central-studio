@@ -44,29 +44,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * 定期刷新的数据
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 定期刷新的数据
+///
+/// @author Alan Yeh
 public class ScheduledDataContext extends Observable<ScheduledDataContext> implements DataContext {
-    /**
-     * 数据刷新事件
-     */
+    /// 数据刷新事件
     @Getter
     @RequiredArgsConstructor
     public static class DataRefreshedEvent implements ObserveEvent<ScheduledDataContext> {
         private final ScheduledDataContext observable;
 
-        /**
-         * 刷新数据的 Fetcher
-         */
+        /// 刷新数据的 Fetcher
         private final DataFetcherType fetcher;
 
-        /**
-         * 刷新的数据
-         */
+        /// 刷新的数据
         private final DataContainer container;
 
         public static DataRefreshedEvent of(ScheduledDataContext context, DataFetcherType fetcher, DataContainer container) {
@@ -76,26 +67,18 @@ public class ScheduledDataContext extends Observable<ScheduledDataContext> imple
 
     private ExecutorService service;
 
-    /**
-     * 数据获取器
-     */
+    /// 数据获取器
     private final ObservableList<DataFetcherType> fetchers = new ObservableList<>();
 
-    /**
-     * 数据容器
-     */
+    /// 数据容器
     private final Map<String, DataContainer> data = new ObservableMap<>(new ConcurrentHashMap<>());
 
-    /**
-     * Bean 获取器
-     */
+    /// Bean 获取器
     private final BeanSupplier supplier;
 
-    /**
-     * 创建定时刷新数据容器
-     *
-     * @param supplier 类型获取器，用于给数据获取器获取组件
-     */
+    /// 创建定时刷新数据容器
+    ///
+    /// @param supplier 类型获取器，用于给数据获取器获取组件
     public ScheduledDataContext(BeanSupplier supplier) {
         this.supplier = supplier;
         service = Executors.newFixedThreadPool(1, new CustomizableThreadFactory("central-data-fetcher"));
@@ -109,12 +92,10 @@ public class ScheduledDataContext extends Observable<ScheduledDataContext> imple
         service = null;
     }
 
-    /**
-     * 添加定期获取数据任务
-     *
-     * @param fetcher 数据获取器
-     * @param <T>     数据类型
-     */
+    /// 添加定期获取数据任务
+    ///
+    /// @param fetcher 数据获取器
+    /// @param <T>     数据类型
     public <T extends DataContainer> void addFetcher(DataFetcherType fetcher) {
         if (this.fetchers.contains(fetcher)) {
             throw new IllegalStateException(Stringx.format("数据任务[{}]冲突", fetcher.getValue()));
@@ -122,31 +103,25 @@ public class ScheduledDataContext extends Observable<ScheduledDataContext> imple
         this.fetchers.add(fetcher);
     }
 
-    /**
-     * 移除定期获取数据任务
-     *
-     * @param fetcher 数据获取器
-     * @param <T>     数据类型
-     */
+    /// 移除定期获取数据任务
+    ///
+    /// @param fetcher 数据获取器
+    /// @param <T>     数据类型
     public <T extends DataContainer> void removeFetcher(DataFetcherType fetcher) {
         this.fetchers.remove(fetcher);
     }
 
-    /**
-     * 获取数据
-     *
-     * @param fetcher 数据获取器
-     * @param <T>     数据类型
-     * @return 数据
-     */
+    /// 获取数据
+    ///
+    /// @param fetcher 数据获取器
+    /// @param <T>     数据类型
+    /// @return 数据
     @SuppressWarnings("unchecked")
     public <T extends DataContainer> T getData(DataFetcherType fetcher) {
         return (T) this.data.get(fetcher.getValue());
     }
 
-    /**
-     * 定期刷新数据
-     */
+    /// 定期刷新数据
     @Slf4j
     private static class ScheduledFetcher implements Runnable {
         // 延迟队列，把 DataFetcher 放到这个队列里，就不需要通过循环来检测下一次更新数据的时间了

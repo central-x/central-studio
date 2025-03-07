@@ -24,8 +24,8 @@
 
 package central.provider.scheduled.fetcher.identity;
 
-import central.provider.scheduled.DataContainer;
 import central.data.identity.IdentityStrategy;
+import central.provider.scheduled.DataContainer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,22 +37,17 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * 认证中心数据容器
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// 认证中心数据容器
+///
+/// @author Alan Yeh
 @NoArgsConstructor
 public class IdentityContainer extends DataContainer {
     @Serial
     private static final long serialVersionUID = 6940307581203336301L;
 
-    /**
-     * 安全策略
-     * <p>
-     * tenant -> code -> strategy
-     */
+    /// 安全策略
+    ///
+    /// tenant -> code -> strategy
     @Getter
     private final Map<String, Map<String, IdentityStrategy>> strategies = new HashMap<>();
 
@@ -64,21 +59,17 @@ public class IdentityContainer extends DataContainer {
         this.strategies.putAll(idMap);
     }
 
-    /**
-     * 获取安全策略
-     *
-     * @param tenant 租户标识
-     */
+    /// 获取安全策略
+    ///
+    /// @param tenant 租户标识
     public List<IdentityStrategy> getStrategies(String tenant) {
         return new ArrayList<>(this.strategies.computeIfAbsent(tenant, key -> new HashMap<>()).values());
     }
 
-    /**
-     * 获取安全策略
-     *
-     * @param tenant 租户标识
-     * @param code   标识
-     */
+    /// 获取安全策略
+    ///
+    /// @param tenant 租户标识
+    /// @param code   标识
     public IdentityStrategy getStrategy(String tenant, String code) {
         return this.strategies.computeIfAbsent(tenant, key -> new HashMap<>()).get(code);
     }

@@ -33,14 +33,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Database Properties Params
- * <p>
- * 数据库配置入参
- *
- * @author Alan Yeh
- * @since 2024/10/20
- */
+/// Database Properties Params
+///
+/// 数据库配置入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

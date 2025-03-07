@@ -63,12 +63,9 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-/**
- * 发送 http、https 请求
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 发送 http、https 请求
+///
+/// @author Alan Yeh
 @Slf4j
 @ExtensionMethod(ServerWebExchangex.class)
 public class HttpRoutingFilter implements Filter, InitializingBean, EnvironmentAware {
@@ -76,9 +73,7 @@ public class HttpRoutingFilter implements Filter, InitializingBean, EnvironmentA
     @Setter
     private Environment environment;
 
-    /**
-     * 支持的协议
-     */
+    /// 支持的协议
     private final Set<String> supportedSchemes = Set.of("http", "https");
 
     private HttpRoutingProperties properties = new HttpRoutingProperties();
@@ -242,22 +237,14 @@ public class HttpRoutingFilter implements Filter, InitializingBean, EnvironmentA
     @Data
     @ConfigurationProperties(prefix = "studio.gateway.filter.http-routing")
     private static class HttpRoutingProperties {
-        /**
-         * 全局超时时间(ms)
-         */
+        /// 全局超时时间(ms)
         private int timeout = 60000;
-        /**
-         * 最大连接数
-         */
+        /// 最大连接数
         private int maxConnections = Integer.MAX_VALUE;
-        /**
-         * 超过最大连接数之后，进入队列的请求最大限制
-         * -1 为不设上限（容易爆内存）
-         */
+        /// 超过最大连接数之后，进入队列的请求最大限制
+        /// -1 为不设上限（容易爆内存）
         private int pendingAcquireMaxCount = -1;
-        /**
-         * 请求进入队列后的最大等待时间（ms）
-         */
+        /// 请求进入队列后的最大等待时间（ms）
         private int pendingAcquireTimeout = 60000;
     }
 }

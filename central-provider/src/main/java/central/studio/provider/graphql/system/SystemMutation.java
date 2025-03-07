@@ -24,37 +24,31 @@
 
 package central.studio.provider.graphql.system;
 
-import central.studio.provider.graphql.system.mutation.DatabaseMutation;
-import central.studio.provider.graphql.system.mutation.DictionaryMutation;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.system.mutation.DatabaseMutation;
+import central.studio.provider.graphql.system.mutation.DictionaryMutation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * System Mutation
- * 系统类修改
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// System Mutation
+///
+/// 系统类修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "system", types = {DatabaseMutation.class, DictionaryMutation.class})
 public class SystemMutation {
 
-    /**
-     * Database Query
-     * 数据库操作
-     */
+    /// Database Query
+    /// 数据库操作
     @GraphQLGetter
     public DatabaseMutation getDatabases(@Autowired DatabaseMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Dictionary Query
-     * 字典查询
-     */
+    /// Dictionary Query
+    /// 字典查询
     @GraphQLGetter
     public DictionaryMutation getDictionaries(@Autowired DictionaryMutation mutation) {
         return mutation;

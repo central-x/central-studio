@@ -36,12 +36,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 应用配置
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 应用配置
+///
+/// @author Alan Yeh
 @EnableProbe // 启用探针
 @Configuration
 @EnablePluglet
@@ -50,9 +47,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(MulticastProperties.class)
 public class MulticastConfiguration {
 
-    /**
-     * 广播器解析
-     */
+    /// 广播器解析
     @Bean
     @ConditionalOnMissingBean(BroadcasterResolver.class)
     public BroadcasterResolver broadcasterResolver(PlugletFactory factory) {

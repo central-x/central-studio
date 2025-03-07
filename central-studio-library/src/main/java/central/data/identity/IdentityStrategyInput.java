@@ -33,14 +33,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Identity Strategy
- * <p>
- * 认证策略
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// Identity Strategy
+///
+/// 认证策略
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

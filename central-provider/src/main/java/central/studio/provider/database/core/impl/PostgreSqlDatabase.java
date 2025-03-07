@@ -33,12 +33,9 @@ import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.Setter;
 
-/**
- * PostgreSql 数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// PostgreSql 数据库
+///
+/// @author Alan Yeh
 public class PostgreSqlDatabase extends Database {
 
     @Setter

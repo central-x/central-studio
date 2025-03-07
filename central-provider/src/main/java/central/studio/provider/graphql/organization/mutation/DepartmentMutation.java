@@ -45,13 +45,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Department Mutation
- * 部门修改
- *
- * @author Alan Yeh
- * @since 2022/10/04
- */
+/// Department Mutation
+///
+/// 部门修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization/mutation", types = DepartmentDTO.class)
 public class DepartmentMutation {
@@ -59,13 +57,11 @@ public class DepartmentMutation {
     @Setter(onMethod_ = @Autowired)
     private DepartmentPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull DepartmentDTO insert(@RequestParam @Validated({Insert.class, Default.class}) DepartmentInput input,
                                          @RequestParam String operator,
@@ -74,13 +70,11 @@ public class DepartmentMutation {
         return DTO.wrap(data, DepartmentDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<DepartmentDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<DepartmentInput> inputs,
                                                     @RequestParam String operator,
@@ -89,13 +83,11 @@ public class DepartmentMutation {
         return DTO.wrap(data, DepartmentDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull DepartmentDTO update(@RequestParam @Validated({Update.class, Default.class}) DepartmentInput input,
                                          @RequestParam String operator,
@@ -104,13 +96,11 @@ public class DepartmentMutation {
         return DTO.wrap(data, DepartmentDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<DepartmentDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<DepartmentInput> inputs,
                                                     @RequestParam String operator,
@@ -119,24 +109,20 @@ public class DepartmentMutation {
         return DTO.wrap(data, DepartmentDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<DepartmentDTO> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

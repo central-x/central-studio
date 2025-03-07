@@ -24,50 +24,41 @@
 
 package central.studio.provider.graphql.storage;
 
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.storage.mutation.StorageBucketMutation;
 import central.studio.provider.graphql.storage.mutation.StorageFileMutation;
 import central.studio.provider.graphql.storage.mutation.StorageObjectMutation;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Storage Mutation
- * <p>
- * 存储中心修改
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage Mutation
+///
+/// 存储中心修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "storage", types = {StorageBucketMutation.class, StorageFileMutation.class, StorageObjectMutation.class})
 public class StorageMutation {
-    /**
-     * Bucket Mutation
-     * <p>
-     * 存储桶修改
-     */
+    /// Bucket Mutation
+    ///
+    /// 存储桶修改
     @GraphQLGetter
     public StorageBucketMutation getBuckets(@Autowired StorageBucketMutation mutation) {
         return mutation;
     }
 
-    /**
-     * File Mutation
-     * <p>
-     * 文件修改
-     */
+    /// File Mutation
+    ///
+    /// 文件修改
     @GraphQLGetter
     public StorageFileMutation getFiles(@Autowired StorageFileMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Object Mutation
-     * <p>
-     * 对象修改
-     */
+    /// Object Mutation
+    ///
+    /// 对象修改
     @GraphQLGetter
     public StorageObjectMutation getObjects(@Autowired StorageObjectMutation mutation) {
         return mutation;

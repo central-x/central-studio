@@ -46,14 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Message Mutation
- * <p>
- * 广播消息修改
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// Message Mutation
+///
+/// 广播消息修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "multicast/mutation", types = MulticastMessageDTO.class)
 public class MulticastMessageMutation {
@@ -61,13 +58,11 @@ public class MulticastMessageMutation {
     @Setter(onMethod_ = @Autowired)
     private MulticastMessagePersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull MulticastMessageDTO insert(@RequestParam @Validated({Insert.class, Default.class}) MulticastMessageInput input,
                                                @RequestParam String operator,
@@ -76,13 +71,11 @@ public class MulticastMessageMutation {
         return DTO.wrap(data, MulticastMessageDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<MulticastMessageDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<MulticastMessageInput> inputs,
                                                           @RequestParam String operator,
@@ -91,13 +84,11 @@ public class MulticastMessageMutation {
         return DTO.wrap(data, MulticastMessageDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull MulticastMessageDTO update(@RequestParam @Validated({Update.class, Default.class}) MulticastMessageInput input,
                                                @RequestParam String operator,
@@ -106,13 +97,11 @@ public class MulticastMessageMutation {
         return DTO.wrap(data, MulticastMessageDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<MulticastMessageDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<MulticastMessageInput> inputs,
                                                           @RequestParam String operator,
@@ -121,24 +110,20 @@ public class MulticastMessageMutation {
         return DTO.wrap(data, MulticastMessageDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<MulticastMessageEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

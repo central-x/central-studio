@@ -37,12 +37,9 @@ import reactor.core.publisher.Flux;
 
 import java.io.InputStream;
 
-/**
- * InputStream Body
- *
- * @author Alan Yeh
- * @since 2022/10/18
- */
+/// InputStream Body
+///
+/// @author Alan Yeh
 public class InputStreamBody implements HttpResponseBody {
 
     private final InputStream body;

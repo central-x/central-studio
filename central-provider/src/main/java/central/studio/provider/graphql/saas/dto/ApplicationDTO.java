@@ -31,8 +31,8 @@ import central.lang.reflect.TypeRef;
 import central.provider.graphql.DTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.util.Jsonx;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
@@ -43,22 +43,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 应用
- *
- * @author Alan Yeh
- * @see central.data.saas.Application
- * @since 2022/09/25
- */
+/// 应用
+///
+/// @author Alan Yeh
+/// @see central.data.saas.Application
 @GraphQLType("Application")
 @EqualsAndHashCode(callSuper = true)
 public class ApplicationDTO extends ApplicationEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 2934394215609108323L;
 
-    /**
-     * 获取 Logo
-     */
+    /// 获取 Logo
     @GraphQLGetter
     public String getLogo() {
         if (Arrayx.isNullOrEmpty(this.getLogoBytes())) {
@@ -68,9 +63,7 @@ public class ApplicationDTO extends ApplicationEntity implements DTO {
         }
     }
 
-    /**
-     * 获取路由
-     */
+    /// 获取路由
     @GraphQLGetter
     public List<ApplicationRoute> getRoutes() {
         if (Stringx.isNullOrEmpty(this.getRoutesJson())) {
@@ -80,17 +73,13 @@ public class ApplicationDTO extends ApplicationEntity implements DTO {
         return Jsonx.Default().deserialize(this.getRoutesJson(), TypeRef.ofList(ApplicationRoute.class));
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

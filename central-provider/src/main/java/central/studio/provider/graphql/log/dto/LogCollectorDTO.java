@@ -24,24 +24,21 @@
 
 package central.studio.provider.graphql.log.dto;
 
-import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Log Collector
- * <p>
- * 日志采集器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Log Collector
+///
+/// 日志采集器
+///
+/// @author Alan Yeh
 @GraphQLType("LogCollector")
 @EqualsAndHashCode(callSuper = true)
 public class LogCollectorDTO extends LogCollectorEntity {
@@ -49,17 +46,13 @@ public class LogCollectorDTO extends LogCollectorEntity {
     private static final long serialVersionUID = 58501224514610039L;
 
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

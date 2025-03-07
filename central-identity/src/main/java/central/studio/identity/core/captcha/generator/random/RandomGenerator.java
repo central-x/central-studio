@@ -29,12 +29,9 @@ import central.studio.identity.core.captcha.CaptchaGenerator;
 
 import java.util.Random;
 
-/**
- * 随机验证码生成器
- *
- * @author Alan Yeh
- * @since 2023/05/29
- */
+/// 随机验证码生成器
+///
+/// @author Alan Yeh
 public class RandomGenerator implements CaptchaGenerator {
 
     // 验证码随机字符数组

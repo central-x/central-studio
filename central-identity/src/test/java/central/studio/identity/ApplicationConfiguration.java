@@ -29,12 +29,9 @@ import central.starter.test.cookie.EnableCookieStore;
 import central.studio.provider.EnableCentralStudioProvider;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 测试应用配置
- *
- * @author Alan Yeh
- * @since 2024/03/03
- */
+/// 测试应用配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableCookieStore
 @EnableCentralProvider

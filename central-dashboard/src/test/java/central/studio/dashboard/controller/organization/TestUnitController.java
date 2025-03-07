@@ -54,12 +54,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Unit Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/09/16
- */
+/// Unit Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestUnitController extends TestController {
@@ -83,15 +80,13 @@ public class TestUnitController extends TestController {
         areaLogic.deleteByIds(List.of(id), "syssa", "master");
     }
 
-    /**
-     * @see UnitController#add
-     * @see UnitController#details
-     * @see UnitController#addDepartment
-     * @see UnitController#detailsDepartment
-     * @see UnitController#listDepartments
-     * @see UnitController#deleteDepartment
-     * @see UnitController#delete
-     */
+    /// @see UnitController#add
+    /// @see UnitController#details
+    /// @see UnitController#addDepartment
+    /// @see UnitController#detailsDepartment
+    /// @see UnitController#listDepartments
+    /// @see UnitController#deleteDepartment
+    /// @see UnitController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增行政区划
@@ -265,11 +260,9 @@ public class TestUnitController extends TestController {
         }
     }
 
-    /**
-     * @see UnitController#add
-     * @see UnitController#list
-     * @see UnitController#delete
-     */
+    /// @see UnitController#add
+    /// @see UnitController#list
+    /// @see UnitController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增行政区划
@@ -330,12 +323,10 @@ public class TestUnitController extends TestController {
         }
     }
 
-    /**
-     * @see UnitController#add
-     * @see UnitController#update
-     * @see UnitController#details
-     * @see UnitController#delete
-     */
+    /// @see UnitController#add
+    /// @see UnitController#update
+    /// @see UnitController#details
+    /// @see UnitController#delete
     @Test
     public void case2(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增行政区划
@@ -425,14 +416,12 @@ public class TestUnitController extends TestController {
         }
     }
 
-    /**
-     * @see UnitController#add
-     * @see UnitController#details
-     * @see UnitController#addDepartment
-     * @see UnitController#detailsDepartment
-     * @see UnitController#deleteDepartment
-     * @see UnitController#delete
-     */
+    /// @see UnitController#add
+    /// @see UnitController#details
+    /// @see UnitController#addDepartment
+    /// @see UnitController#detailsDepartment
+    /// @see UnitController#deleteDepartment
+    /// @see UnitController#delete
     @Test
     public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增行政区划

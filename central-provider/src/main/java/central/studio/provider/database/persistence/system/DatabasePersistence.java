@@ -50,27 +50,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Database Persistence
- * <p>
- * 数据库持久化
- *
- * @author Alan Yeh
- * @since 2024/12/21
- */
+/// Database Persistence
+///
+/// 数据库持久化
+///
+/// @author Alan Yeh
 @Component
 public class DatabasePersistence {
 
     @Setter(onMethod_ = @Autowired)
     private DatabaseMapper mapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nullable DatabaseEntity findById(@Nullable String id,
                                              @Nullable Columns<? extends DatabaseEntity> columns,
                                              @Nonnull String tenant) {
@@ -83,13 +78,11 @@ public class DatabasePersistence {
         return this.mapper.findFirstBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nonnull List<DatabaseEntity> findByIds(@Nullable List<String> ids,
                                                    @Nullable Columns<? extends DatabaseEntity> columns,
                                                    @Nonnull String tenant) {
@@ -101,16 +94,14 @@ public class DatabasePersistence {
         return this.mapper.findBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<DatabaseEntity> findBy(@Nullable Long limit,
                                                 @Nullable Long offset,
                                                 @Nullable Columns<? extends DatabaseEntity> columns,
@@ -121,16 +112,14 @@ public class DatabasePersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<DatabaseEntity> pageBy(@Nonnull Long pageIndex,
                                                 @Nonnull Long pageSize,
                                                 @Nullable Columns<? extends DatabaseEntity> columns,
@@ -141,26 +130,22 @@ public class DatabasePersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends DatabaseEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(DatabaseEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作帐号
-     * @param tenant   租户标识
-     * @return 保存后的数据
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作帐号
+    /// @param tenant   租户标识
+    /// @return 保存后的数据
     public DatabaseEntity insert(@Nonnull @Validated({Insert.class, Default.class}) DatabaseInput input,
                                  @Nonnull String operator,
                                  @Nonnull String tenant) {
@@ -178,26 +163,22 @@ public class DatabasePersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public List<DatabaseEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<DatabaseInput> inputs,
                                             @Nonnull String operator,
                                             @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public DatabaseEntity update(@Nonnull @Validated({Update.class, Default.class}) DatabaseInput input,
                                  @Nonnull String operator,
                                  @Nonnull String tenant) {
@@ -220,25 +201,21 @@ public class DatabasePersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public List<DatabaseEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<DatabaseInput> inputs,
                                             @Nonnull String operator,
                                             @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -248,12 +225,10 @@ public class DatabasePersistence {
         return this.mapper.deleteBy(Conditions.of(DatabaseEntity.class).in(DatabaseEntity::getId, ids).eq(DatabaseEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends DatabaseEntity> conditions,
                          @Nonnull String tenant) {
         var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(DatabaseEntity::getTenantCode, tenant)).stream()

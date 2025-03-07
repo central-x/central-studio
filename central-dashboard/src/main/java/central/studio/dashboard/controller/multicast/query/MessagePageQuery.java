@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Multicast Message Page Query
- * <p>
- * 消息分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/09
- */
+/// Multicast Message Page Query
+///
+/// 消息分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MessagePageQuery extends PageQuery<MulticastMessage> {

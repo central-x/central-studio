@@ -50,14 +50,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * StorageBucketProvider Test Cases
- * <p>
- * 存储桶
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// StorageBucketProvider Test Cases
+///
+/// 存储桶
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestStorageBucketProvider {
 
@@ -86,14 +83,12 @@ public class TestStorageBucketProvider {
         this.persistence.deleteBy(Conditions.of(StorageBucketEntity.class).like(StorageBucketEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see StorageBucketProvider#insert
-     * @see StorageBucketProvider#findById
-     * @see StorageBucketProvider#update
-     * @see StorageBucketProvider#findByIds
-     * @see StorageBucketProvider#countBy
-     * @see StorageBucketProvider#deleteByIds
-     */
+    /// @see StorageBucketProvider#insert
+    /// @see StorageBucketProvider#findById
+    /// @see StorageBucketProvider#update
+    /// @see StorageBucketProvider#findByIds
+    /// @see StorageBucketProvider#countBy
+    /// @see StorageBucketProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -175,13 +170,11 @@ public class TestStorageBucketProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see StorageBucketProvider#insertBatch
-     * @see StorageBucketProvider#findBy
-     * @see StorageBucketProvider#updateBatch
-     * @see StorageBucketProvider#pageBy
-     * @see StorageBucketProvider#deleteBy
-     */
+    /// @see StorageBucketProvider#insertBatch
+    /// @see StorageBucketProvider#findBy
+    /// @see StorageBucketProvider#updateBatch
+    /// @see StorageBucketProvider#pageBy
+    /// @see StorageBucketProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

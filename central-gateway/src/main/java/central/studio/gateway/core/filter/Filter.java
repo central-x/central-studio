@@ -27,28 +27,21 @@ package central.studio.gateway.core.filter;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-/**
- * 网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 网关过滤器
+///
+/// @author Alan Yeh
 public interface Filter {
-    /**
-     * 断言
-     * 用于判断当前过滤器是否执行
-     *
-     * @param exchange 待判断的 Server Web Exchange
-     */
+    /// 断言
+    /// 用于判断当前过滤器是否执行
+    ///
+    /// @param exchange 待判断的 Server Web Exchange
     default boolean predicate(ServerWebExchange exchange) {
         return true;
     }
 
-    /**
-     * 执行过滤器逻辑
-     *
-     * @param exchange 当前 Server Web Exchange
-     * @param chain    处理完毕后，交给下一个过滤器
-     */
+    /// 执行过滤器逻辑
+    ///
+    /// @param exchange 当前 Server Web Exchange
+    /// @param chain    处理完毕后，交给下一个过滤器
     Mono<Void> filter(ServerWebExchange exchange, FilterChain chain);
 }

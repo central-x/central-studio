@@ -48,22 +48,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Unit Role Controller
- * <p>
- * 单位角色管理
- *
- * @author Alan Yeh
- * @since 2024/12/13
- */
+/// Unit Role Controller
+///
+/// 单位角色管理
+///
+/// @author Alan Yeh
 @RestController
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/authority/unit-roles")
 public class UnitRoleController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "*:authority:unit:role:view";
         String ADD = "*:authority:unit:role:add";
@@ -78,68 +73,58 @@ public class UnitRoleController {
     @Setter(onMethod_ = @Autowired)
     private RoleLogic logic;
 
-    /**
-     * 按条件分页查询数据列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 分页结果
-     */
+    /// 按条件分页查询数据列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 分页结果
     @GetMapping("/page")
     @RequiresPermissions(Permissions.VIEW)
     public Page<Role> page(@Validated UnitRolePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询数据详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询数据详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
     public Role details(@Validated IdQuery<Role> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
 
-    /**
-     * 新增数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 新增后数据
-     */
+    /// 新增数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 新增后数据
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
     public Role add(@RequestBody @Validated({Insert.class, Default.class}) UnitRoleParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后数据
-     */
+    /// 更新数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后数据
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
     public Role update(@RequestBody @Validated({Update.class, Default.class}) UnitRoleParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param params    待删除主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param params    待删除主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -149,15 +134,13 @@ public class UnitRoleController {
     @Setter(onMethod_ = @Autowired)
     private MenuLogic menuLogic;
 
-    /**
-     * 获取已授权的权限
-     * <p>
-     * 以菜单树的形式，方便前端展示
-     *
-     * @param query  角色查询
-     * @param tenant 租户标识
-     * @return 授权菜单树
-     */
+    /// 获取已授权的权限
+    ///
+    /// 以菜单树的形式，方便前端展示
+    ///
+    /// @param query  角色查询
+    /// @param tenant 租户标识
+    /// @return 授权菜单树
     @GetMapping("/permissions")
     @RequiresPermissions(Permissions.GRANT)
     public List<Menu> getPermissions(@Validated IdQuery<Role> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -165,109 +148,93 @@ public class UnitRoleController {
         return this.menuLogic.getMenuTreeByPermissionIds(relations.stream().map(RolePermission::getPermissionId).toList(), tenant);
     }
 
-    /**
-     * 为角色授权权限
-     *
-     * @param params 授权参数
-     * @param tenant 租户标识
-     * @return 已添加的授权
-     */
+    /// 为角色授权权限
+    ///
+    /// @param params 授权参数
+    /// @param tenant 租户标识
+    /// @return 已添加的授权
     @PostMapping("/permissions")
     @RequiresPermissions(Permissions.GRANT)
     public List<RolePermission> addPermissions(@Validated @RequestBody RolePermissionParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertPermissions(params.toInputs(), accountId, tenant);
     }
 
-    /**
-     * 移除角色的权限
-     *
-     * @param params    待移除的权限主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 移除角色的权限
+    ///
+    /// @param params    待移除的权限主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping("/permissions")
     @RequiresPermissions(Permissions.GRANT)
     public long deletePermissions(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deletePermissions(params.getIds(), accountId, tenant);
     }
 
-    /**
-     * 获取已授权的主体
-     *
-     * @param query  角色查询
-     * @param tenant 租户标识
-     * @return 授权主体列表
-     */
+    /// 获取已授权的主体
+    ///
+    /// @param query  角色查询
+    /// @param tenant 租户标识
+    /// @return 授权主体列表
     @GetMapping("/principals")
     @RequiresPermissions(Permissions.GRANT)
     public List<RolePrincipal> getPrincipals(@Validated IdQuery<Role> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findPrincipals(query.getId(), tenant);
     }
 
-    /**
-     * 添加授权主体
-     *
-     * @param params    授权主体参数
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 已添加的授权主体
-     */
+    /// 添加授权主体
+    ///
+    /// @param params    授权主体参数
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 已添加的授权主体
     @PostMapping("/principals")
     @RequiresPermissions(Permissions.GRANT)
     public List<RolePrincipal> addPrincipals(@Validated @RequestBody RolePrincipalParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertPrincipals(params.toInputs(), accountId, tenant);
     }
 
-    /**
-     * 删除授权主体
-     *
-     * @param params    待移除的授权主体主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 删除授权主体
+    ///
+    /// @param params    待移除的授权主体主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping("/principals")
     @RequiresPermissions(Permissions.GRANT)
     public long deletePrincipals(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.deletePrincipals(params.getIds(), accountId, tenant);
     }
 
-    /**
-     * 获取已授权的范围
-     *
-     * @param query  角色查询
-     * @param tenant 租户标识
-     * @return 授权范围列表
-     */
+    /// 获取已授权的范围
+    ///
+    /// @param query  角色查询
+    /// @param tenant 租户标识
+    /// @return 授权范围列表
     @GetMapping("/ranges")
     @RequiresPermissions(Permissions.GRANT)
     public List<RoleRange> getRanges(@Validated IdQuery<Role> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findRanges(query.getId(), tenant);
     }
 
-    /**
-     * 添加授权范围
-     *
-     * @param params    授权范围参数
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 已添加的授权范围
-     */
+    /// 添加授权范围
+    ///
+    /// @param params    授权范围参数
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 已添加的授权范围
     @PostMapping("/ranges")
     @RequiresPermissions(Permissions.GRANT)
     public List<RoleRange> addRanges(@Validated @RequestBody RoleRangeParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertRanges(params.toInputs(), accountId, tenant);
     }
 
-    /**
-     * 删除数据范围
-     *
-     * @param params    待删除的数据范围主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 删除数据范围
+    ///
+    /// @param params    待删除的数据范围主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping("/ranges")
     @RequiresPermissions(Permissions.GRANT)
     public long deleteRanges(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

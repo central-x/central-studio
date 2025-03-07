@@ -26,13 +26,10 @@ package central.identity.client;
 
 import java.io.Serial;
 
-/**
- * 会话无效异常
- *
- * @author Alan Yeh
- * @since 2023/11/20
- */
-public class InvalidSessionException extends RuntimeException{
+/// 会话无效异常
+///
+/// @author Alan Yeh
+public class InvalidSessionException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 382917480144936713L;
 

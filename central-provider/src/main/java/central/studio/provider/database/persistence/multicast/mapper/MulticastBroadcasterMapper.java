@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.multicast.mapper;
 
-import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Multicast Broadcaster
- * <p>
- * 广播器
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// Multicast Broadcaster
+///
+/// 广播器
+///
+/// @author Alan Yeh
 @Repository
 public interface MulticastBroadcasterMapper extends Mapper<MulticastBroadcasterEntity> {
 }

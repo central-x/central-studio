@@ -30,12 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-/**
- * 未压缩响应体
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 未压缩响应体
+///
+/// @author Alan Yeh
 public class PlainSerializer implements BodySerializer {
     @Override
     public String read(InputStream body, Charset charset) throws IOException {

@@ -37,12 +37,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 日志过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志过滤器
+///
+/// @author Alan Yeh
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -50,53 +47,35 @@ import java.util.List;
 public class LogFilter extends ModifiableEntity implements Codeable, Available, Remarkable {
     @Serial
     private static final long serialVersionUID = -8320855690325346616L;
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
-    /**
-     * 备注
-     */
+    /// 备注
     @Nullable
     private String remark;
-    /**
-     * 采集器
-     */
+    /// 采集器
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<LogCollector> collectors;
-    /**
-     * 存储器
-     */
+    /// 存储器
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<LogStorage> storages;
-    /**
-     * 断言
-     */
+    /// 断言
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<LogPredicate> predicates;
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

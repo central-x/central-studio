@@ -40,13 +40,19 @@ import central.studio.provider.database.persistence.authority.MenuPersistence;
 import central.studio.provider.database.persistence.authority.PermissionPersistence;
 import central.studio.provider.database.persistence.authority.RolePersistence;
 import central.studio.provider.database.persistence.authority.RoleRangePersistence;
-import central.studio.provider.database.persistence.authority.entity.*;
+import central.studio.provider.database.persistence.authority.entity.MenuEntity;
+import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
+import central.studio.provider.database.persistence.authority.entity.RoleEntity;
+import central.studio.provider.database.persistence.authority.entity.RoleRangeEntity;
 import central.studio.provider.database.persistence.organization.AccountPersistence;
 import central.studio.provider.database.persistence.organization.entity.AccountEntity;
 import central.studio.provider.graphql.TestContext;
 import central.util.Listx;
 import lombok.Setter;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -55,12 +61,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Role Range Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2024/12/15
- */
+/// Role Range Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestRoleRangeProvider {
 
@@ -167,12 +170,10 @@ public class TestRoleRangeProvider {
         return accountPersistence.findFirstBy(Columns.all(), Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, "test"), null, this.context.getTenant().getCode());
     }
 
-    /**
-     * @see RoleRangeProvider#insert
-     * @see RoleRangeProvider#findById
-     * @see RoleRangeProvider#countBy
-     * @see RoleRangeProvider#deleteByIds
-     */
+    /// @see RoleRangeProvider#insert
+    /// @see RoleRangeProvider#findById
+    /// @see RoleRangeProvider#countBy
+    /// @see RoleRangeProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -226,13 +227,11 @@ public class TestRoleRangeProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see RoleRangeProvider#insertBatch
-     * @see RoleRangeProvider#findByIds
-     * @see RoleRangeProvider#findBy
-     * @see RoleRangeProvider#pageBy
-     * @see RoleRangeProvider#deleteBy
-     */
+    /// @see RoleRangeProvider#insertBatch
+    /// @see RoleRangeProvider#findByIds
+    /// @see RoleRangeProvider#findBy
+    /// @see RoleRangeProvider#pageBy
+    /// @see RoleRangeProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

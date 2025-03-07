@@ -29,18 +29,18 @@ import central.data.organization.option.AreaType;
 import central.sql.data.ModifiableEntity;
 import central.util.Objectx;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * 行政区划
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 行政区划
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,88 +49,64 @@ public class Area extends ModifiableEntity implements Codeable, Orderable<Area>,
     @Serial
     private static final long serialVersionUID = 734938509208964402L;
 
-    /**
-     * 所属区划
-     * 如果为空的话，则表示其为根
-     */
+    /// 所属区划
+    /// 如果为空的话，则表示其为根
     @Nullable
     private String parentId;
 
-    /**
-     * 所属区划信息
-     */
+    /// 所属区划信息
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Area parent;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 类型
-     *
-     * @see AreaType
-     */
+    /// 类型
+    ///
+    /// @see AreaType
     @Nonnull
     private String type;
 
-    /**
-     * 排序号
-     */
+    /// 排序号
     @Nonnull
     private Integer order;
 
-    /**
-     * 子列单
-     */
+    /// 子列单
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Area> children;
 
-    /**
-     * 单位
-     */
+    /// 单位
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Unit> units;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    /**
-     * 树构建工具
-     */
+    /// 树构建工具
     public static class Tree {
 
         public static final Comparator<Area> DEFAULT_COMPARATOR = Comparator.comparing((Area it) -> AreaType.resolve(it.getType())).thenComparing(Area::getOrder).thenComparing(Area::getName);
 
-        /**
-         * 构建行政区划树
-         *
-         * @param areas      行政区划
-         * @param comparator 排序器
-         * @return 行政区划树
-         */
+        /// 构建行政区划树
+        ///
+        /// @param areas      行政区划
+        /// @param comparator 排序器
+        /// @return 行政区划树
         public static List<Area> build(List<Area> areas, @Nullable Comparator<Area> comparator) {
             return Treeable.build(areas, Objectx.getOrDefault(comparator, DEFAULT_COMPARATOR));
         }

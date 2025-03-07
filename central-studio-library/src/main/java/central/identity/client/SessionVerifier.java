@@ -38,42 +38,33 @@ import java.io.Closeable;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 
-/**
- * Session Verifier
- * 会话校验
- * <p>
- * 由于会话需要通过 {@link SessionClient#verify} 才能真校验有期，但是这会产生一次 http 远程调用。
- * 为了提高验证效率，每 5 秒才会去服务器检查有效期，期间使用 {@link SessionClient#getPublicKey} 提供的公钥进行验证
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// Session Verifier
+///
+/// 会话校验
+///
+/// 由于会话需要通过 [SessionClient#verify] 才能真校验有期，但是这会产生一次 http 远程调用。
+///
+/// 为了提高验证效率，每 5 秒才会去服务器检查有效期，期间使用 [SessionClient#getPublicKey] 提供的公钥进行验证
+///
+/// @author Alan Yeh
 public class SessionVerifier implements DisposableBean {
 
     @Setter(onMethod_ = @Autowired)
     private SessionClient client;
 
 
-    /**
-     * 用于保存有效的会话
-     */
+    /// 用于保存有效的会话
     private final CacheRepository validRepository = new MemoryCacheRepository();
-    /**
-     * 用户保存无效的会话
-     */
+    /// 用户保存无效的会话
     private final CacheRepository invalidRepository = new MemoryCacheRepository();
 
-    /**
-     * 公钥
-     * 通过 {@link SessionClient#getPublicKey} 方法获取，一般情况下不会更新
-     */
+    /// 公钥
+    /// 通过 [SessionClient#getPublicKey] 方法获取，一般情况下不会更新
     private RSAPublicKey publicKey;
 
-    /**
-     * 验证会话是否有效
-     *
-     * @param token 会话凭证
-     */
+    /// 验证会话是否有效
+    ///
+    /// @param token 会话凭证
     public boolean verify(String token) {
         if (Stringx.isNullOrBlank(token)) {
             return false;
@@ -122,11 +113,9 @@ public class SessionVerifier implements DisposableBean {
         }
     }
 
-    /**
-     * 保存无效会话
-     *
-     * @param token 会话凭证
-     */
+    /// 保存无效会话
+    ///
+    /// @param token 会话凭证
     public void invalid(String token) {
         Session session;
         try {
@@ -145,13 +134,11 @@ public class SessionVerifier implements DisposableBean {
         }
     }
 
-    /**
-     * 通过公钥验证会话有效期
-     * <p>
-     * 这是因为可能会有人直接伪造相同 ID 的会话来攻击，因此通过公钥可以有效避免这个问题
-     *
-     * @param session 会话
-     */
+    /// 通过公钥验证会话有效期
+    ///
+    /// 这是因为可能会有人直接伪造相同 ID 的会话来攻击，因此通过公钥可以有效避免这个问题
+    ///
+    /// @param session 会话
     private boolean verify(Session session) {
         if (this.publicKey == null) {
             this.publicKey = (RSAPublicKey) Signerx.RSA_256.getVerifyKey(this.client.getPublicKey());

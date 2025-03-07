@@ -32,14 +32,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Identity Password Input
- * <p>
- * 密码输入
- *
- * @author Alan Yeh
- * @since 2022/10/07
- */
+/// Identity Password Input
+///
+/// 密码输入
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

@@ -37,16 +37,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * 本地缓存
- *
- * @author Alan Yeh
- * @since 2022/11/02
- */
+/// 本地缓存
+///
+/// @author Alan Yeh
 public class LocalCache implements BucketCache {
     private final Path path;
 
-    public LocalCache(Path path) throws IOException{
+    public LocalCache(Path path) throws IOException {
         this.path = path;
         if (Files.notExists(path)) {
             Files.createDirectories(this.path);

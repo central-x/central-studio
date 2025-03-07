@@ -37,12 +37,9 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 服凭凭证
- *
- * @author Alan Yeh
- * @since 2022/11/07
- */
+/// 服凭凭证
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor
@@ -52,9 +49,7 @@ public class ServiceTicket implements Expired, Serializable {
     private static final long serialVersionUID = -921601202972478549L;
     private final long timestamp = System.currentTimeMillis();
 
-    /**
-     * 过期时间
-     */
+    /// 过期时间
     private Duration expires;
 
     @Override
@@ -62,23 +57,17 @@ public class ServiceTicket implements Expired, Serializable {
         return unit.convert((this.timestamp + this.expires.toMillis()) - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 
-    /**
-     * 应用标识
-     */
+    /// 应用标识
     private String code;
-    /**
-     * Service Ticket
-     */
+    /// Service Ticket
     private String ticket;
-    /**
-     * 会话
-     */
+    /// 会话
     private String session;
 
     private transient DecodedJWT sessionJwt;
 
     public DecodedJWT getSessionJwt() {
-        if (this.sessionJwt == null){
+        if (this.sessionJwt == null) {
             this.sessionJwt = JWT.decode(this.session);
         }
         return sessionJwt;

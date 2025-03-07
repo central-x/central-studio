@@ -52,12 +52,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Multicast Broadcaster Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/11/07
- */
+/// Multicast Broadcaster Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestBroadcasterController extends TestController {
@@ -73,20 +70,16 @@ public class TestBroadcasterController extends TestController {
         }
     }
 
-    /**
-     * 获取测试用的应用
-     */
+    /// 获取测试用的应用
     private Application getApplication(DataContext context) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
         return container.getApplicationByCode("dashboard");
     }
 
-    /**
-     * @see BroadcasterController#add
-     * @see BroadcasterController#details
-     * @see BroadcasterController#page
-     * @see BroadcasterController#delete
-     */
+    /// @see BroadcasterController#add
+    /// @see BroadcasterController#details
+    /// @see BroadcasterController#page
+    /// @see BroadcasterController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var application = this.getApplication(context);
@@ -190,12 +183,10 @@ public class TestBroadcasterController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see BroadcasterController#add
-     * @see BroadcasterController#update
-     * @see BroadcasterController#details
-     * @see BroadcasterController#delete
-     */
+    /// @see BroadcasterController#add
+    /// @see BroadcasterController#update
+    /// @see BroadcasterController#details
+    /// @see BroadcasterController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var application = this.getApplication(context);

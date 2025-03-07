@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.gateway.mapper;
 
-import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Gateway Filter
- * <p>
- * 网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Filter
+///
+/// 网关过滤器
+///
+/// @author Alan Yeh
 @Repository
 public interface GatewayFilterMapper extends Mapper<GatewayFilterEntity> {
 }

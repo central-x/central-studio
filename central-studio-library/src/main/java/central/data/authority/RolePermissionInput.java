@@ -32,14 +32,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Role Permission Relation
- * <p>
- * 角色与权限关联关系修改
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Permission Relation
+///
+/// 角色与权限关联关系修改
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

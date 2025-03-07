@@ -24,9 +24,9 @@
 
 package central.studio.gateway.core.filter.predicate.impl;
 
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.lang.Stringx;
 import central.pluglet.annotation.Control;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.util.Listx;
 import central.validation.Label;
 import central.web.XForwardedHeaders;
@@ -34,14 +34,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Setter;
 import org.springframework.web.server.ServerWebExchange;
 
-/**
- * 主机名断言
- * <p>
- * 判断当前请求的主机名是否是指定主机名
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 主机名断言
+///
+/// 判断当前请求的主机名是否是指定主机名
+///
+/// @author Alan Yeh
 public class HostPredicate implements Predicate {
     @Setter
     @Label("主机名")

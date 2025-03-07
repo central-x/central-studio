@@ -40,14 +40,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Role Principal Relation
- * <p>
- * 角色与主体关联关系修改
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Principal Relation
+///
+/// 角色与主体关联关系修改
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -56,69 +53,50 @@ public class RolePrincipal extends Entity {
     @Serial
     private static final long serialVersionUID = -5715978926136309206L;
 
-    /**
-     * 应用主键
-     */
+    /// 应用主键
     @Nonnull
     private String applicationId;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 角色主键
-     */
+    /// 角色主键
     @Nonnull
     private String roleId;
 
-    /**
-     * 角色
-     */
+    /// 角色
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Role role;
 
-    /**
-     * 授权主体主键
-     */
+    /// 授权主体主键
     @Nonnull
     private String principalId;
 
-    /**
-     * 授权主体类型
-     * @see PrincipalType
-     */
+    /// 授权主体类型
+    ///
+    /// @see PrincipalType
     @Nonnull
     private String type;
 
-    /**
-     * 帐号信息（当 type 为 account 时）
-     */
+    /// 帐号信息（当 type 为 account 时）
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account account;
 
-    /**
-     * 单位信息（当 type 为 unit 时）
-     */
+    /// 单位信息（当 type 为 unit 时）
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Unit unit;
 
-    /**
-     * 部门信息（当 type 为 department 时）
-     */
+    /// 部门信息（当 type 为 department 时）
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Department department;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;

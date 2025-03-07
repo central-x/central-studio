@@ -29,14 +29,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-/**
- * CAS Error Code
- * <p>
- * Cas 错误码
- *
- * @author Alan Yeh
- * @since 2024/08/02
- */
+/// CAS Error Code
+///
+/// Cas 错误码
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum CasErrorCode implements OptionalEnum<HttpStatus> {

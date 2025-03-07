@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.identity.mapper;
 
-import central.studio.provider.database.persistence.identity.entity.IdentityStrategyEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.identity.entity.IdentityStrategyEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Identity Strategy
- * <p>
- * 安全策略
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// Identity Strategy
+///
+/// 安全策略
+///
+/// @author Alan Yeh
 @Repository
 public interface IdentityStrategyMapper extends Mapper<IdentityStrategyEntity> {
 }

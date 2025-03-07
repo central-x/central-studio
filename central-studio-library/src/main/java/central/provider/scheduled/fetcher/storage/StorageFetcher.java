@@ -24,11 +24,11 @@
 
 package central.provider.scheduled.fetcher.storage;
 
-import central.provider.scheduled.fetcher.DataFetcher;
-import central.provider.graphql.storage.StorageBucketProvider;
-import central.provider.graphql.saas.TenantProvider;
-import central.provider.scheduled.BeanSupplier;
 import central.data.storage.StorageBucket;
+import central.provider.graphql.saas.TenantProvider;
+import central.provider.graphql.storage.StorageBucketProvider;
+import central.provider.scheduled.BeanSupplier;
+import central.provider.scheduled.fetcher.DataFetcher;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,12 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * 存储中心数据获取
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 存储中心数据获取
+///
+/// @author Alan Yeh
 public class StorageFetcher implements DataFetcher<StorageContainer> {
 
     @Setter

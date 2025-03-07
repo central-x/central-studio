@@ -27,12 +27,9 @@ package central.studio.provider;
 import central.provider.EnableCentralProvider;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 测试应用配置
- *
- * @author Alan Yeh
- * @since 2022/09/26
- */
+/// 测试应用配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableCentralProvider
 @EnableCentralStudioProvider

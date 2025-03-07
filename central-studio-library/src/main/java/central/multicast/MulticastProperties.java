@@ -27,19 +27,14 @@ package central.multicast;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Multicast Properties
- * <p>
- * 广播中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/21
- */
+/// Multicast Properties
+///
+/// 广播中心配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties(prefix = "studio.multicast")
 public class MulticastProperties {
-    /**
-     * 访问地址
-     */
+    /// 访问地址
     private String url = "http://central-multicast";
 }

@@ -35,47 +35,36 @@ import org.dataloader.DataLoader;
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Role Permission Relation
- * <p>
- * 角色与权限关联关系
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Permission Relation
+///
+/// 角色与权限关联关系
+///
+/// @author Alan Yeh
 @GraphQLType("RolePermission")
 @EqualsAndHashCode(callSuper = true)
 public class RolePermissionDTO extends RolePermissionEntity {
     @Serial
     private static final long serialVersionUID = 3467870578800222096L;
 
-    /**
-     * 应用信息
-     */
+    /// 应用信息
     @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
     }
 
-    /**
-     * 角色信息
-     */
+    /// 角色信息
     @GraphQLGetter
     public CompletableFuture<RoleDTO> getRole(DataLoader<String, RoleDTO> loader) {
         return loader.load(this.getRoleId());
     }
 
-    /**
-     * 权限信息
-     */
+    /// 权限信息
     @GraphQLGetter
     public CompletableFuture<PermissionDTO> getPermission(DataLoader<String, PermissionDTO> loader) {
         return loader.load(this.getPermissionId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());

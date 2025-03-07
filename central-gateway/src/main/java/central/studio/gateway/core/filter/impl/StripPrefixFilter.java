@@ -24,11 +24,11 @@
 
 package central.studio.gateway.core.filter.impl;
 
-import central.studio.gateway.core.filter.Filter;
-import central.studio.gateway.core.filter.FilterChain;
 import central.lang.Arrayx;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.Filter;
+import central.studio.gateway.core.filter.FilterChain;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
@@ -40,12 +40,9 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.util.stream.Collectors;
 
-/**
- * 移除路径前缀
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 移除路径前缀
+///
+/// @author Alan Yeh
 public class StripPrefixFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,

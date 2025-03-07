@@ -25,8 +25,8 @@
 package central.studio.provider.database.persistence.multicast.entity;
 
 import central.data.multicast.MulticastMessageInput;
-import central.data.multicast.option.PublishMode;
 import central.data.multicast.option.MessageStatus;
+import central.data.multicast.option.PublishMode;
 import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.Relation;
 import central.validation.Enums;
@@ -42,14 +42,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Multicast Message
- * <p>
- * 广播消息
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// Multicast Message
+///
+/// 广播消息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -45,26 +45,21 @@ import org.springframework.validation.annotation.Validated;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * AccountDepartment Persistence
- * <p>
- * 帐户部门关联关系持久化
- *
- * @author Alan Yeh
- * @since 2024/12/21
- */
+/// AccountDepartment Persistence
+///
+/// 帐户部门关联关系持久化
+///
+/// @author Alan Yeh
 @Component
 public class AccountDepartmentPersistence {
 
     @Setter(onMethod_ = @Autowired)
     private AccountDepartmentMapper mapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
     public @Nullable AccountDepartmentEntity findById(@Nullable String id,
                                                       @Nonnull Columns<? extends AccountDepartmentEntity> columns,
                                                       @Nonnull String tenant) {
@@ -76,12 +71,10 @@ public class AccountDepartmentPersistence {
         return this.mapper.findFirstBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public @Nonnull List<AccountDepartmentEntity> findByIds(@Nullable List<String> ids,
                                                             @Nonnull Columns<? extends AccountDepartmentEntity> columns,
                                                             @Nonnull String tenant) {
@@ -91,15 +84,13 @@ public class AccountDepartmentPersistence {
         return this.mapper.findBy(columns, Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getId, ids).eq(AccountDepartmentEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<AccountDepartmentEntity> findBy(@Nullable Long limit,
                                                          @Nullable Long offset,
                                                          @Nullable Columns<? extends AccountDepartmentEntity> columns,
@@ -110,15 +101,13 @@ public class AccountDepartmentPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<AccountDepartmentEntity> pageBy(long pageIndex,
                                                          long pageSize,
                                                          @Nullable Columns<? extends AccountDepartmentEntity> columns,
@@ -129,25 +118,21 @@ public class AccountDepartmentPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends AccountDepartmentEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountDepartmentEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public AccountDepartmentEntity insert(@Nonnull @Validated({Insert.class, Default.class}) AccountDepartmentInput input,
                                           @Nonnull String operator,
                                           @Nonnull String tenant) {
@@ -161,25 +146,21 @@ public class AccountDepartmentPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<AccountDepartmentEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<AccountDepartmentInput> inputs,
                                                               @Nonnull String operator,
                                                               @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -189,12 +170,10 @@ public class AccountDepartmentPersistence {
         return this.mapper.deleteBy(Conditions.of(AccountDepartmentEntity.class).in(AccountDepartmentEntity::getId, ids).eq(AccountDepartmentEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends AccountDepartmentEntity> conditions,
                          @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(AccountDepartmentEntity::getTenantCode, tenant);

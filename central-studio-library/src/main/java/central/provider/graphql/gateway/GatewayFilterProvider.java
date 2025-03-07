@@ -31,12 +31,9 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * 过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 过滤器
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("gateway.filters")
 @GraphQLStub(path = "gateway", client = "providerClient")

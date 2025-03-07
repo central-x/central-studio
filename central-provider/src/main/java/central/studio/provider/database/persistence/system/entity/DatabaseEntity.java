@@ -26,9 +26,9 @@ package central.studio.provider.database.persistence.system.entity;
 
 import central.bean.Tenantable;
 import central.data.system.DatabaseInput;
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import central.sql.data.ModifiableEntity;
 import central.sql.meta.annotation.Relation;
+import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import central.util.Jsonx;
 import central.util.Listx;
 import central.validation.Label;
@@ -45,12 +45,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 数据库信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 数据库信息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -129,7 +126,7 @@ public class DatabaseEntity extends ModifiableEntity implements Tenantable {
         this.setEnabled(input.getEnabled());
         this.setRemark(input.getRemark());
         this.setMasterJson(Jsonx.Default().serialize(input.getMaster()));
-        if (Listx.isNotEmpty(input.getSlaves())){
+        if (Listx.isNotEmpty(input.getSlaves())) {
             this.setSlavesJson(Jsonx.Default().serialize(input.getSlaves()));
         } else {
             this.setSlavesJson("");

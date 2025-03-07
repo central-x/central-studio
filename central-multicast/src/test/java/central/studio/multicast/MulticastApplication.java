@@ -27,12 +27,9 @@ package central.studio.multicast;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Multicast Application
- *
- * @author Alan Yeh
- * @since 2024/02/28
- */
+/// Multicast Application
+///
+/// @author Alan Yeh
 @SpringBootApplication
 public class MulticastApplication {
     public static void main(String[] args) {

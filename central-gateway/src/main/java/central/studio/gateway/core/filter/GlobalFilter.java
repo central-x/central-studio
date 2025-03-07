@@ -24,11 +24,8 @@
 
 package central.studio.gateway.core.filter;
 
-/**
- * 全局网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 全局网关过滤器
+///
+/// @author Alan Yeh
 public interface GlobalFilter extends Filter {
 }

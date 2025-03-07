@@ -34,8 +34,8 @@ import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.studio.provider.graphql.organization.dto.AccountUnitDTO;
 import central.studio.provider.database.persistence.organization.AccountUnitPersistence;
+import central.studio.provider.graphql.organization.dto.AccountUnitDTO;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -50,13 +50,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Account Unit Query
- * 帐户与单位关联关系查询
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Account Unit Query
+///
+/// 帐户与单位关联关系查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization/query", types = {AccountUnitDTO.class, AccountDepartmentQuery.class})
 public class AccountUnitQuery {
@@ -64,12 +62,10 @@ public class AccountUnitQuery {
     @Setter(onMethod_ = @Autowired)
     private AccountUnitPersistence persistence;
 
-    /**
-     * 批量数据加载器
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 批量数据加载器
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLBatchLoader
     public @Nonnull Map<String, AccountUnitDTO> batchLoader(@RequestParam List<String> ids,
                                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -78,12 +74,10 @@ public class AccountUnitQuery {
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nullable AccountUnitDTO findById(@RequestParam String id,
                                              @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -92,12 +86,10 @@ public class AccountUnitQuery {
     }
 
 
-    /**
-     * 查询数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nonnull List<AccountUnitDTO> findByIds(@RequestParam List<String> ids,
                                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -105,15 +97,13 @@ public class AccountUnitQuery {
         return DTO.wrap(data, AccountUnitDTO.class);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull List<AccountUnitDTO> findBy(@RequestParam(required = false) Long limit,
                                                 @RequestParam(required = false) Long offset,
@@ -124,15 +114,13 @@ public class AccountUnitQuery {
         return DTO.wrap(data, AccountUnitDTO.class);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull Page<AccountUnitDTO> pageBy(@RequestParam long pageIndex,
                                                 @RequestParam long pageSize,
@@ -143,12 +131,10 @@ public class AccountUnitQuery {
         return DTO.wrap(data, AccountUnitDTO.class);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<AccountUnitDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -159,10 +145,8 @@ public class AccountUnitQuery {
     // 关联查询
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Account Department Query
-     * 帐户与部门关联关系查询
-     */
+    /// Account Department Query
+    /// 帐户与部门关联关系查询
     @GraphQLGetter
     public AccountDepartmentQuery getDepartments(@Autowired AccountDepartmentQuery query) {
         return query;

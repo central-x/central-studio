@@ -37,14 +37,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Permission Params
- * <p>
- * 权限入参
- *
- * @author Alan Yeh
- * @since 2024/12/12
- */
+/// Permission Params
+///
+/// 权限入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

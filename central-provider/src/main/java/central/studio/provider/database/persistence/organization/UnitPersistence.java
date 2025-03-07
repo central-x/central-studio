@@ -50,27 +50,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Unit Persistence
- * <p>
- * 单位持久化
- *
- * @author Alan Yeh
- * @since 2024/12/21
- */
+/// Unit Persistence
+///
+/// 单位持久化
+///
+/// @author Alan Yeh
 @Component
 public class UnitPersistence {
 
     @Setter(onMethod_ = @Autowired)
     private UnitMapper mapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 查询字段
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 查询字段
+    /// @param tenant  租户标识
     public @Nullable UnitEntity findById(@Nullable String id,
                                          @Nonnull Columns<? extends UnitEntity> columns,
                                          @Nonnull String tenant) {
@@ -81,13 +76,11 @@ public class UnitPersistence {
         return this.mapper.findFirstBy(columns, Conditions.of(UnitEntity.class).eq(UnitEntity::getId, id).eq(UnitEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 查询字段
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 查询字段
+    /// @param tenant  租户标识
     public @Nonnull List<UnitEntity> findByIds(@Nullable List<String> ids,
                                                @Nonnull Columns<? extends UnitEntity> columns,
                                                @Nonnull String tenant) {
@@ -98,16 +91,14 @@ public class UnitPersistence {
         return this.mapper.findBy(columns, Conditions.of(UnitEntity.class).in(UnitEntity::getId, ids).eq(UnitEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    查询字段
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    查询字段
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<UnitEntity> findBy(@Nullable Long limit,
                                             @Nullable Long offset,
                                             @Nonnull Columns<? extends UnitEntity> columns,
@@ -118,14 +109,12 @@ public class UnitPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 根据条件查询第一条数据
-     *
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件查询第一条数据
+    ///
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nullable UnitEntity findFirstBy(@Nullable Columns<? extends UnitEntity> columns,
                                             @Nullable Conditions<? extends UnitEntity> conditions,
                                             @Nullable Orders<? extends UnitEntity> orders,
@@ -134,16 +123,14 @@ public class UnitPersistence {
         return this.mapper.findFirstBy(columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    查询字段
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    查询字段
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<UnitEntity> pageBy(long pageIndex,
                                             long pageSize,
                                             @Nonnull Columns<? extends UnitEntity> columns,
@@ -154,25 +141,21 @@ public class UnitPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public long countBy(@Nullable Conditions<? extends UnitEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull UnitEntity insert(@Nonnull @Validated({Insert.class, Default.class}) UnitInput input,
                                       @Nonnull String operator,
                                       @Nonnull String tenant) {
@@ -190,26 +173,22 @@ public class UnitPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<UnitEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<UnitInput> inputs,
                                                  @Nonnull String operator,
                                                  @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull UnitEntity update(@Nonnull @Validated({Update.class, Default.class}) UnitInput input,
                                       @Nonnull String operator,
                                       @Nonnull String tenant) {
@@ -232,25 +211,21 @@ public class UnitPersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<UnitEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<UnitInput> inputs,
                                                  @Nonnull String operator,
                                                  @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -262,12 +237,10 @@ public class UnitPersistence {
         return this.mapper.deleteBy(Conditions.of(UnitEntity.class).in(UnitEntity::getId, ids).eq(UnitEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends UnitEntity> conditions,
                          @Nonnull String tenant) {
         var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(UnitEntity::getTenantCode, tenant)).stream()

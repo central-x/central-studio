@@ -31,26 +31,19 @@ import org.springframework.context.ApplicationEvent;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 日志采集事件
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志采集事件
+///
+/// @author Alan Yeh
 public class CollectEvent extends ApplicationEvent {
     @Serial
     private static final long serialVersionUID = 711281287940621932L;
 
-    /**
-     * 采集器主键
-     */
+    /// 采集器主键
     public String getCollectorId() {
         return this.getSource().toString();
     }
 
-    /**
-     * 日志
-     */
+    /// 日志
     @Getter
     private final List<Log> logs;
 

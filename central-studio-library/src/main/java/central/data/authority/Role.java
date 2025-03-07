@@ -37,12 +37,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 角色
- *
- * @author Alan Yeh
- * @since 2022/09/13
- */
+/// 角色
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,67 +48,47 @@ public class Role extends ModifiableEntity implements Codeable, Available, Remar
     @Serial
     private static final long serialVersionUID = 4370958444526615039L;
 
-    /**
-     * 应用标识
-     */
+    /// 应用标识
     @Nonnull
     private String applicationId;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 所属单位主键
-     * 如果为空，则该角色属于系统角色
-     */
+    /// 所属单位主键
+    /// 如果为空，则该角色属于系统角色
     @Nullable
     private String unitId;
 
-    /**
-     * 所属单位信息
-     */
+    /// 所属单位信息
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Unit unit;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 备注
-     */
+    /// 备注
     @Nullable
     private String remark;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

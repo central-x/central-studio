@@ -29,13 +29,11 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * GraphQL Configurer
- * 配置
- *
- * @author Alan Yeh
- * @since 2022/10/02
- */
+/// GraphQL Configurer
+///
+/// 配置
+///
+/// @author Alan Yeh
 @Component
 public class Configurer implements GraphQLConfigurer {
     @Setter(onMethod_ = @Autowired)

@@ -35,14 +35,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Dictionary Item Params
- * <p>
- * 字典项入参
- *
- * @author Alan Yeh
- * @since 2024/09/24
- */
+/// Dictionary Item Params
+///
+/// 字典项入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

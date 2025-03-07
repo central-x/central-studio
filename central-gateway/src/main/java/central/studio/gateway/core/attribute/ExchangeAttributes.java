@@ -27,9 +27,9 @@ package central.studio.gateway.core.attribute;
 import central.data.saas.Application;
 import central.data.saas.ApplicationRoute;
 import central.data.saas.Tenant;
+import central.lang.Attribute;
 import central.studio.gateway.core.body.EmptyBody;
 import central.studio.gateway.core.body.HttpResponseBody;
-import central.lang.Attribute;
 import central.util.Guidx;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
@@ -40,67 +40,42 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Date;
 
-/**
- * 响应属性
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 响应属性
+///
+/// @author Alan Yeh
 public interface ExchangeAttributes {
 
-    /**
-     * 网关转发的目标服务器地址
-     * 主要取 Schema、Host、Port，其余的由 exchange.getRequest().getURI() 来决定
-     */
+    /// 网关转发的目标服务器地址
+    /// 主要取 Schema、Host、Port，其余的由 exchange.getRequest().getURI() 来决定
     Attribute<URI> TARGET_SERVER = Attribute.of(ExchangeAttributes.class.getName() + ".target_server");
 
-    /**
-     * 租户信息
-     */
+    /// 租户信息
     Attribute<Tenant> TENANT = Attribute.of(ExchangeAttributes.class.getName() + ".tenant");
 
-    /**
-     * 网关转发的目标应用
-     */
+    /// 网关转发的目标应用
     Attribute<Application> TARGET_APPLICATION = Attribute.of(ExchangeAttributes.class.getName() + ".target_application");
 
-    /**
-     * 超时时间
-     */
+    /// 超时时间
     Attribute<Integer> TIMEOUT = Attribute.of(ExchangeAttributes.class.getName() + ".timeout");
 
-    /**
-     * 响应
-     */
+    /// 响应
     Attribute<HttpClientResponse> RESPONSE = Attribute.of(ExchangeAttributes.class.getName() + ".response");
 
-    /**
-     * 响应体
-     */
+    /// 响应体
     Attribute<HttpResponseBody> RESPONSE_BODY = Attribute.of(ExchangeAttributes.class.getName() + ".response_body", EmptyBody::new);
 
-    /**
-     * 网关转发的目标应用路由
-     */
+    /// 网关转发的目标应用路由
     Attribute<ApplicationRoute> TARGET_APPLICATION_ROUTE = Attribute.of(ExchangeAttributes.class.getName() + ".target_application_route");
 
-    /**
-     * 网关实际转发地址
-     */
+    /// 网关实际转发地址
     Attribute<URI> FORWARDING_URI = Attribute.of(ExchangeAttributes.class.getName() + ".forwarding_uri");
 
-    /**
-     * 原始请求路径
-     */
+    /// 原始请求路径
     Attribute<URI> ORIGIN_URI = Attribute.of(ExchangeAttributes.class.getName() + ".origin_uri");
 
-    /**
-     * 当前请求来源地址
-     */
+    /// 当前请求来源地址
     Attribute<InetSocketAddress> REMOTE_ADDRESS = Attribute.of(ExchangeAttributes.class.getName() + ".remote_host");
 
-    /**
-     * JWT Token
-     */
+    /// JWT Token
     Attribute<JWTCreator.Builder> TOKEN = Attribute.of(ExchangeAttributes.class.getName() + ".token", () -> JWT.create().withJWTId(Guidx.nextID()).withExpiresAt(new Date(System.currentTimeMillis() + Duration.ofMinutes(3).toMillis())));
 }

@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Department List Query
- * <p>
- * 部门列表查询
- *
- * @author Alan Yeh
- * @since 2024/12/01
- */
+/// Department List Query
+///
+/// 部门列表查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DepartmentListQuery extends ListQuery<Department> {

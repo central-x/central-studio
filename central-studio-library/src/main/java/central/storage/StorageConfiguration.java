@@ -37,21 +37,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-/**
- * Storage Configuration
- * <p>
- * 存储中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/23
- */
+/// Storage Configuration
+///
+/// 存储中心配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableConfigurationProperties(StorageProperties.class)
 public class StorageConfiguration {
 
-    /**
-     * 对象存储客户端
-     */
+    /// 对象存储客户端
     @Bean
     public ObjectClient objectClient(StorageProperties properties) {
         return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())

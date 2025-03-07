@@ -25,10 +25,10 @@
 package central.studio.gateway.core.filter.impl;
 
 import central.bean.OptionalEnum;
-import central.studio.gateway.core.filter.Filter;
-import central.studio.gateway.core.filter.FilterChain;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.Filter;
+import central.studio.gateway.core.filter.FilterChain;
 import central.util.Objectx;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
@@ -42,12 +42,9 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-/**
- * 拒绝访问
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 拒绝访问
+///
+/// @author Alan Yeh
 public class RequestRefuseFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,

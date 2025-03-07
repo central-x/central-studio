@@ -30,12 +30,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-/**
- * 超级管理员配置
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 超级管理员配置
+///
+/// @author Alan Yeh
 @Data
 public class SupervisorProperties {
     @Label("用户名")

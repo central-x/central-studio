@@ -31,11 +31,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 终端配置
- * @author Alan Yeh
- * @since 2022/10/20
- */
+/// 终端配置
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

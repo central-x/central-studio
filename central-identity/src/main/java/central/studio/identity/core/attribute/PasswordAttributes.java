@@ -29,40 +29,23 @@ import central.lang.Attribute;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * 密码配置
- *
- * @author Alan Yeh
- * @since 2023/02/15
- */
+/// 密码配置
+///
+/// @author Alan Yeh
 public interface PasswordAttributes {
-    /**
-     * 最小长度
-     */
+    /// 最小长度
     Attribute<Integer> MIN = Attribute.of("password.min", 6);
-    /**
-     * 最大长度
-     */
+    /// 最大长度
     Attribute<Integer> MAX = Attribute.of("password.max", 16);
-    /**
-     * 大写字母数量
-     */
+    /// 大写字母数量
     Attribute<Integer> UPPERCASE = Attribute.of("password.capital", 0);
-    /**
-     * 小写字母数量
-     */
+    /// 小写字母数量
     Attribute<Integer> LOWERCASE = Attribute.of("password.lowercase", 0);
-    /**
-     * 数字数量
-     */
+    /// 数字数量
     Attribute<Integer> NUMBER = Attribute.of("password.number", 0);
-    /**
-     * 字符数量
-     */
+    /// 字符数量
     Attribute<Integer> SYMBOL = Attribute.of("password.symbol", 0);
-    /**
-     * 字符范围
-     */
+    /// 字符范围
     Attribute<Set<Character>> SYMBOLS = Attribute.of("password.symbols", "\\!\"#$%&'()*+,-./:;<>=?@[]_^`{}~|".chars().mapToObj(it -> (char) it).collect(Collectors.toSet()));
 
 }

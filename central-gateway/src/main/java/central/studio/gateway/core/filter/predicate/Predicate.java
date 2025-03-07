@@ -26,17 +26,12 @@ package central.studio.gateway.core.filter.predicate;
 
 import org.springframework.web.server.ServerWebExchange;
 
-/**
- * 路由断言
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 路由断言
+///
+/// @author Alan Yeh
 public interface Predicate {
-    /**
-     * 判断当前请求是否满足条件
-     *
-     * @param exchange 当前请求信息
-     */
+    /// 判断当前请求是否满足条件
+    ///
+    /// @param exchange 当前请求信息
     boolean predicate(ServerWebExchange exchange);
 }

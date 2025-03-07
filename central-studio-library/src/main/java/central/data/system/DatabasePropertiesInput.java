@@ -32,12 +32,9 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 数据库属性
- *
- * @author Alan Yeh
- * @since 2022/11/13
- */
+/// 数据库属性
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

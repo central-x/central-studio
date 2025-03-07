@@ -27,28 +27,17 @@ package central.studio.identity.core.attribute;
 import central.lang.Attribute;
 import central.studio.identity.controller.session.support.EndpointConfig;
 
-/**
- * 终端配置
- *
- * @author Alan Yeh
- * @since 2023/02/15
- */
+/// 终端配置
+///
+/// @author Alan Yeh
 public interface EndpointAttributes {
-    /**
-     * Web 端配置
-     */
+    /// Web 端配置
     Attribute<EndpointConfig> WEB = Attribute.of("endpoint.web", () -> new EndpointConfig("lLS4p6skBbBVZX30zR5", -1));
-    /**
-     * PC 客户端配置
-     */
+    /// PC 客户端配置
     Attribute<EndpointConfig> PC = Attribute.of("endpoint.pc", () -> new EndpointConfig("GGp5Zc4NwUkdPvgka6M", -1));
-    /**
-     * 手机客户端配置
-     */
+    /// 手机客户端配置
     Attribute<EndpointConfig> PHONE = Attribute.of("endpoint.phone", () -> new EndpointConfig("Dul8CRGeVLcmi0yM8f7", -1));
-    /**
-     * 平板客户端配置
-     */
+    /// 平板客户端配置
     Attribute<EndpointConfig> PAD = Attribute.of("endpoint.pad", () -> new EndpointConfig("Jrsy8odZ0orSXkKXR2U", -1));
 
 }

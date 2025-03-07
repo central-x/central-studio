@@ -45,27 +45,22 @@ import org.springframework.validation.annotation.Validated;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Role Range Relation Persistence
- * <p>
- * 角色与范围关联关系持久化
- *
- * @author Alan Yeh
- * @since 2024/12/15
- */
+/// Role Range Relation Persistence
+///
+/// 角色与范围关联关系持久化
+///
+/// @author Alan Yeh
 @Component
 public class RoleRangePersistence {
 
     @Setter(onMethod_ = @Autowired)
     private RoleRangeMapper mapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nullable RoleRangeEntity findById(@Nullable String id,
                                               @Nullable Columns<? extends RoleRangeEntity> columns,
                                               @Nonnull String tenant) {
@@ -77,13 +72,11 @@ public class RoleRangePersistence {
         return this.mapper.findFirstBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nonnull List<RoleRangeEntity> findByIds(@Nullable List<String> ids,
                                                     @Nullable Columns<? extends RoleRangeEntity> columns,
                                                     @Nonnull String tenant) {
@@ -95,16 +88,14 @@ public class RoleRangePersistence {
         return this.mapper.findBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<RoleRangeEntity> findBy(@Nullable Long limit,
                                                  @Nullable Long offset,
                                                  @Nullable Columns<? extends RoleRangeEntity> columns,
@@ -115,16 +106,14 @@ public class RoleRangePersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<RoleRangeEntity> pageBy(@Nonnull Long pageIndex,
                                                  @Nonnull Long pageSize,
                                                  @Nullable Columns<? extends RoleRangeEntity> columns,
@@ -135,25 +124,21 @@ public class RoleRangePersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends RoleRangeEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(RoleRangeEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull RoleRangeEntity insert(@Nonnull @Validated({Insert.class, Default.class}) RoleRangeInput input,
                                            @Nonnull String operator,
                                            @Nonnull String tenant) {
@@ -166,25 +151,21 @@ public class RoleRangePersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<RoleRangeEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<RoleRangeInput> inputs,
                                                       @Nonnull String operator,
                                                       @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -194,12 +175,10 @@ public class RoleRangePersistence {
         return this.mapper.deleteBy(Conditions.of(RoleRangeEntity.class).in(RoleRangeEntity::getId, ids).eq(RoleRangeEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends RoleRangeEntity> conditions,
                          @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(RoleRangeEntity::getTenantCode, tenant);

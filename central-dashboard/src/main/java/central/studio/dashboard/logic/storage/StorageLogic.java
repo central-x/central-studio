@@ -52,14 +52,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Storage Logic
- * <p>
- * 存储中心业务逻辑
- *
- * @author Alan Yeh
- * @since 2024/10/29
- */
+/// Storage Logic
+///
+/// 存储中心业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class StorageLogic {
 
@@ -76,11 +73,9 @@ public class StorageLogic {
         return context.getData(DataFetcherType.SAAS);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<StorageBucket> getBucketDefaultOrders(@Nullable Orders<StorageBucket> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -88,11 +83,9 @@ public class StorageLogic {
         return Orders.of(StorageBucket.class).asc(StorageBucket::getCode);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<StorageObject> getObjectDefaultOrders(@Nullable Orders<StorageObject> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -100,40 +93,34 @@ public class StorageLogic {
         return Orders.of(StorageObject.class).asc(StorageObject::getName);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<StorageBucket> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<StorageBucket> conditions, @Nullable Orders<StorageBucket> orders, @Nonnull String tenant) {
         orders = this.getBucketDefaultOrders(orders);
         return this.bucketProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public StorageBucket findById(@Nonnull String id, @Nonnull String tenant) {
         return this.bucketProvider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public StorageBucket insert(@Nonnull @Validated({Insert.class, Default.class}) StorageBucketInput input, @Nonnull String accountId, @Nonnull String tenant) {
         if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
@@ -142,14 +129,12 @@ public class StorageLogic {
         return this.bucketProvider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public StorageBucket update(@Nonnull @Validated({Update.class, Default.class}) StorageBucketInput input, @Nonnull String accountId, @Nonnull String tenant) {
         if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
@@ -158,14 +143,12 @@ public class StorageLogic {
         return this.bucketProvider.update(input, accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param id        待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param id        待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     public @Nonnull StorageBucket enable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.bucketProvider.findById(id, tenant);
         if (data == null) {
@@ -174,14 +157,12 @@ public class StorageLogic {
         return this.bucketProvider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param id        待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param id        待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     public @Nonnull StorageBucket disable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.bucketProvider.findById(id, tenant);
         if (data == null) {
@@ -190,75 +171,63 @@ public class StorageLogic {
         return this.bucketProvider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.bucketProvider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<StorageObject> pageObjects(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<StorageObject> conditions, @Nullable Orders<StorageObject> orders, @Nonnull String tenant) {
         return this.objectProvider.pageBy(pageIndex, pageSize, conditions, this.getObjectDefaultOrders(orders), tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public StorageObject findObjectById(@Nonnull String id, @Nonnull String tenant) {
         return this.objectProvider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public StorageObject insertObject(@Nonnull @Validated({Insert.class, Default.class}) StorageObjectInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.objectProvider.insert(input, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public StorageObject updateObject(@Nonnull @Validated({Update.class, Default.class}) StorageObjectInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.objectProvider.update(input, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteObjectByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.objectProvider.deleteByIds(ids, tenant);
     }

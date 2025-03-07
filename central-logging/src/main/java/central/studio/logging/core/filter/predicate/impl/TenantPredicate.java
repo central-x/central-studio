@@ -25,20 +25,17 @@
 package central.studio.logging.core.filter.predicate.impl;
 
 import central.data.log.Log;
-import central.studio.logging.core.filter.predicate.Predicate;
 import central.pluglet.annotation.Control;
+import central.studio.logging.core.filter.predicate.Predicate;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
-/**
- * 租户标识断言
- *
- * @author Alan Yeh
- * @since 2022/10/28
- */
+/// 租户标识断言
+///
+/// @author Alan Yeh
 public class TenantPredicate implements Predicate {
 
     @Label("租户标识")

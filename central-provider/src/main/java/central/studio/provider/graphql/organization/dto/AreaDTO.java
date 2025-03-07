@@ -25,46 +25,37 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.database.persistence.organization.entity.AreaEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.organization.entity.AreaEntity;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 行政区划
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 行政区划
+///
+/// @author Alan Yeh
 @GraphQLType("Area")
 @EqualsAndHashCode(callSuper = true)
 public class AreaDTO extends AreaEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -8371269671790663860L;
 
-    /**
-     * 父节点信息
-     */
+    /// 父节点信息
     @GraphQLGetter
     public CompletableFuture<AreaDTO> getParent(DataLoader<String, AreaDTO> loader) {
         return loader.load(this.getParentId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

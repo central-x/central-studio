@@ -43,23 +43,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Log Storage Controller
- * <p>
- * <p>
- * 日志存储器管理
- *
- * @author Alan Yeh
- * @since 2024/11/28
- */
+/// Log Storage Controller
+///
+/// 日志存储器管理
+///
+/// @author Alan Yeh
 @RestController("logStorageController")
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/logging/storages")
 public class StorageController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "logging:storage:view";
         String ADD = "logging:storage:add";
@@ -72,96 +66,82 @@ public class StorageController {
     @Setter(onMethod_ = @Autowired)
     private LogLogic logic;
 
-    /**
-     * 按条件分页查询列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 分页结果
-     */
+    /// 按条件分页查询列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 分页结果
     @GetMapping("/page")
     @RequiresPermissions(Permissions.VIEW)
     public Page<LogStorage> page(@Validated StoragePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageStorageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
     public LogStorage details(@Validated IdQuery<LogStorage> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findStorageById(query.getId(), tenant);
     }
 
-    /**
-     * 更新行政数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 新增后的数据
-     */
+    /// 更新行政数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 新增后的数据
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
     public LogStorage add(@RequestBody @Validated({Insert.class, Default.class}) StorageParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insertStorage(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
     public LogStorage update(@RequestBody @Validated({Update.class, Default.class}) StorageParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.updateStorage(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param params    待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param params    待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     @PutMapping("/enable")
     @RequiresPermissions(Permissions.ENABLE)
     public LogStorage enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.enableStorage(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param params    待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param params    待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     @PutMapping("/disable")
     @RequiresPermissions(Permissions.DISABLE)
     public LogStorage disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.disableStorage(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param params    待删除主键列表
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param params    待删除主键列表
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

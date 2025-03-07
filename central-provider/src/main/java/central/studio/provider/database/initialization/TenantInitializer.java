@@ -35,21 +35,16 @@ import central.studio.provider.database.persistence.saas.mapper.TenantApplicatio
 import central.studio.provider.database.persistence.saas.mapper.TenantMapper;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 租户数据初始化
- *
- * @author Alan Yeh
- * @since 2024/06/22
- */
+/// 租户数据初始化
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class TenantInitializer {
     private final SqlExecutor executor;
 
-    /**
-     * 初始化
-     *
-     * @param tenant 租户标识
-     */
+    /// 初始化
+    ///
+    /// @param tenant 租户标识
     public void initialize(String tenant) {
         var tenantMapper = this.executor.getMapper(TenantMapper.class);
         var applicationMapper = this.executor.getMapper(ApplicationMapper.class);

@@ -41,12 +41,9 @@ import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 import java.nio.file.Path;
 
-/**
- * 存储中心配置
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 存储中心配置
+///
+/// @author Alan Yeh
 @EnableProbe // 启用探针
 @Configuration
 @EnablePluglet
@@ -55,17 +52,13 @@ import java.nio.file.Path;
 @EnableConfigurationProperties(StorageProperties.class)
 public class StorageConfiguration {
 
-    /**
-     * 存储桶缓存
-     */
+    /// 存储桶缓存
     @Bean
     public BucketCache bucketCache() throws IOException {
         return new LocalCache(Path.of("tmp", "storage"));
     }
 
-    /**
-     * 存储桶类型解析器
-     */
+    /// 存储桶类型解析器
     @Bean
     @ConditionalOnMissingBean(BucketResolver.class)
     public BucketResolver bucketResolver(PlugletFactory factory) {

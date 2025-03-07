@@ -28,14 +28,11 @@ import central.sql.proxy.Mapper;
 import central.studio.provider.database.persistence.authority.entity.RolePermissionEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Role Permission Relation
- * <p>
- * 角色与权限关联关系
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Permission Relation
+///
+/// 角色与权限关联关系
+///
+/// @author Alan Yeh
 @Repository
 public interface RolePermissionMapper extends Mapper<RolePermissionEntity> {
 }

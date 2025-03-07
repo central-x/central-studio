@@ -27,10 +27,10 @@ package central.studio.provider.graphql.gateway.dto;
 import central.data.gateway.GatewayPredicate;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.gateway.entity.GatewayFilterEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.util.Jsonx;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
@@ -40,23 +40,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Gateway Filter
- * <p>
- * 网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Filter
+///
+/// 网关过滤器
+///
+/// @author Alan Yeh
 @GraphQLType("GatewayFilter")
 @EqualsAndHashCode(callSuper = true)
 public class GatewayFilterDTO extends GatewayFilterEntity {
     @Serial
     private static final long serialVersionUID = 8209052600414051442L;
 
-    /**
-     * 断言
-     */
+    /// 断言
     @GraphQLGetter
     public List<GatewayPredicate> getPredicates() {
         if (Stringx.isNullOrEmpty(this.getPredicateJson())) {
@@ -65,17 +60,13 @@ public class GatewayFilterDTO extends GatewayFilterEntity {
         return Jsonx.Default().deserialize(this.getPredicateJson(), TypeRef.ofList(GatewayPredicate.class));
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

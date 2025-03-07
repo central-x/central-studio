@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Post List Query
- * <p>
- * 职务列表查询
- *
- * @author Alan Yeh
- * @since 2024/12/04
- */
+/// Post List Query
+///
+/// 职务列表查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PostListQuery extends ListQuery<Post> {

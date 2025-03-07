@@ -36,12 +36,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 列表查询
- *
- * @author Alan Yeh
- * @since 2022/11/01
- */
+/// 列表查询
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

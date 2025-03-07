@@ -25,13 +25,13 @@
 package central.studio.provider.graphql.multicast.dto;
 
 import central.data.saas.Application;
-import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,23 +39,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Multicast Broadcaster
- * <p>
- * 广播器
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// Multicast Broadcaster
+///
+/// 广播器
+///
+/// @author Alan Yeh
 @GraphQLType("MulticastBroadcaster")
 @EqualsAndHashCode(callSuper = true)
 public class MulticastBroadcasterDTO extends MulticastBroadcasterEntity {
     @Serial
     private static final long serialVersionUID = 5224256697286733473L;
 
-    /**
-     * 获取应用信息(不支持关联查询)
-     */
+    /// 获取应用信息(不支持关联查询)
     @GraphQLGetter
     public Application getApplication(@Autowired DataContext context) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
@@ -65,17 +60,13 @@ public class MulticastBroadcasterDTO extends MulticastBroadcasterEntity {
         return container.getApplicationById(this.getApplicationId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

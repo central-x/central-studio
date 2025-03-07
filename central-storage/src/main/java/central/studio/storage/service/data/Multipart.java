@@ -30,40 +30,24 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 分片上传
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 分片上传
+///
+/// @author Alan Yeh
 @Data
 public class Multipart implements Serializable {
     @Serial
     private static final long serialVersionUID = -7052466525490977047L;
 
-    /**
-     * 创建时间
-     */
+    /// 创建时间
     private final long timestamp = System.currentTimeMillis();
 
-    /**
-     * 文件摘要
-     */
+    /// 文件摘要
     private String digest;
-    /**
-     * 文件大小
-     */
+    /// 文件大小
     private long size;
-    /**
-     * 分片数量
-     */
+    /// 分片数量
     private int chunkCount;
-    /**
-     * 分片大小
-     */
+    /// 分片大小
     private long chunkSize;
-    /**
-     *
-     */
     private List<Integer> chunks;
 }

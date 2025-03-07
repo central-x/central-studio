@@ -36,14 +36,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Area Params
- * <p>
- * 行政区划入参
- *
- * @author Alan Yeh
- * @since 2024/09/14
- */
+/// Area Params
+///
+/// 行政区划入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

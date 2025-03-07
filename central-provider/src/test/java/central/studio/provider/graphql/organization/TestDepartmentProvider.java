@@ -57,12 +57,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Department Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Department Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestDepartmentProvider extends TestProvider {
 
@@ -99,14 +96,12 @@ public class TestDepartmentProvider extends TestProvider {
         this.areaPersistence.deleteBy(Conditions.of(AreaEntity.class).like(AreaEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see UnitProvider#insert
-     * @see UnitProvider#findById
-     * @see UnitProvider#update
-     * @see UnitProvider#findByIds
-     * @see UnitProvider#countBy
-     * @see UnitProvider#deleteByIds
-     */
+    /// @see UnitProvider#insert
+    /// @see UnitProvider#findById
+    /// @see UnitProvider#update
+    /// @see UnitProvider#findByIds
+    /// @see UnitProvider#countBy
+    /// @see UnitProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -202,13 +197,11 @@ public class TestDepartmentProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see DepartmentProvider#insertBatch
-     * @see DepartmentProvider#findBy
-     * @see DepartmentProvider#updateBatch
-     * @see DepartmentProvider#pageBy
-     * @see DepartmentProvider#deleteBy
-     */
+    /// @see DepartmentProvider#insertBatch
+    /// @see DepartmentProvider#findBy
+    /// @see DepartmentProvider#updateBatch
+    /// @see DepartmentProvider#pageBy
+    /// @see DepartmentProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

@@ -28,14 +28,11 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
-/**
- * Enable Logging
- * <p>
- * 启用日志中心对接
- *
- * @author Alan Yeh
- * @since 2023/09/21
- */
+/// Enable Logging
+///
+/// 启用日志中心对接
+///
+/// @author Alan Yeh
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

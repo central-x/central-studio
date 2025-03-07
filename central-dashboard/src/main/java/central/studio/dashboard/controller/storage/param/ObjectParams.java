@@ -37,14 +37,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Storage Object Params
- * <p>
- * 存储对象入参
- *
- * @author Alan Yeh
- * @since 2024/11/01
- */
+/// Storage Object Params
+///
+/// 存储对象入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

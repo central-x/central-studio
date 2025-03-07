@@ -26,13 +26,11 @@ package central.studio.provider.graphql.authority.query;
 
 import org.springframework.stereotype.Component;
 
-/**
- * Role Account Query
- * 角色与帐户关联关系查询
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Role Account Query
+///
+/// 角色与帐户关联关系查询
+///
+/// @author Alan Yeh
 @Component
 public class RoleAccountQuery {
 }

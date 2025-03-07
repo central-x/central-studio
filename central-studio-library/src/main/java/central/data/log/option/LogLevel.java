@@ -31,12 +31,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 
-/**
- * 日志等级
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志等级
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum LogLevel implements OptionalEnum<String> {

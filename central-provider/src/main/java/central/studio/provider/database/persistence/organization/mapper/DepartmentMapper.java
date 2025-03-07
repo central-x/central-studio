@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.organization.mapper;
 
-import central.studio.provider.database.persistence.organization.entity.DepartmentEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.organization.entity.DepartmentEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 部门信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 部门信息
+///
+/// @author Alan Yeh
 @Repository
 public interface DepartmentMapper extends Mapper<DepartmentEntity> {
 }

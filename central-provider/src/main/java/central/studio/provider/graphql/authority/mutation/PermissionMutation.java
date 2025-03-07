@@ -46,13 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Permission Mutation
- * 权限修改
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Permission Mutation
+///
+/// 权限修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "authority/mutation", types = PermissionDTO.class)
 public class PermissionMutation {
@@ -60,13 +58,11 @@ public class PermissionMutation {
     @Setter(onMethod_ = @Autowired)
     private PermissionPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull PermissionDTO insert(@RequestParam @Validated({Insert.class, Default.class}) PermissionInput input,
                                          @RequestParam String operator,
@@ -75,13 +71,11 @@ public class PermissionMutation {
         return DTO.wrap(data, PermissionDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<PermissionDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<PermissionInput> inputs,
                                                     @RequestParam String operator,
@@ -90,13 +84,11 @@ public class PermissionMutation {
         return DTO.wrap(data, PermissionDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull PermissionDTO update(@RequestParam @Validated({Update.class, Default.class}) PermissionInput input,
                                          @RequestParam String operator,
@@ -105,13 +97,11 @@ public class PermissionMutation {
         return DTO.wrap(data, PermissionDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<PermissionDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<PermissionInput> inputs,
                                                     @RequestParam String operator,
@@ -120,24 +110,20 @@ public class PermissionMutation {
         return DTO.wrap(data, PermissionDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<PermissionEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

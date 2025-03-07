@@ -24,8 +24,8 @@
 
 package central.studio.identity.core.session;
 
-import central.identity.client.Session;
 import central.data.organization.Account;
+import central.identity.client.Session;
 import central.studio.identity.controller.session.support.Endpoint;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -33,73 +33,59 @@ import jakarta.annotation.Nullable;
 import java.time.Duration;
 import java.util.Map;
 
-/**
- * Security Session
- * 安全会话管理
- *
- * @author Alan Yeh
- * @since 2023/05/13
- */
+/// Security Session
+///
+/// 安全会话管理
+///
+/// @author Alan Yeh
 public interface SessionManager {
-    /**
-     * 获取公钥
-     */
+    /// 获取公钥
     @Nonnull
     String getPublicKey();
 
-    /**
-     * 签发会话
-     *
-     * @param tenantCode 租户标识
-     * @param issuer     签发组织（一般是域名）
-     * @param timeout    会话超时时间。如果为空，则默认为 30 分钟
-     * @param account    会话所属帐户
-     * @param endpoint   会话所属终端
-     * @param limit      会话数量上限
-     * @param ip         申请会话时的客户端 IP
-     * @param claims     会话附加属性
-     * @return 已签发的话会
-     */
+    /// 签发会话
+    ///
+    /// @param tenantCode 租户标识
+    /// @param issuer     签发组织（一般是域名）
+    /// @param timeout    会话超时时间。如果为空，则默认为 30 分钟
+    /// @param account    会话所属帐户
+    /// @param endpoint   会话所属终端
+    /// @param limit      会话数量上限
+    /// @param ip         申请会话时的客户端 IP
+    /// @param claims     会话附加属性
+    /// @return 已签发的话会
     @Nonnull
     Session issue(@Nonnull String tenantCode, @Nonnull String issuer, @Nonnull Duration timeout, @Nonnull Account account, @Nonnull Endpoint endpoint, @Nonnull Integer limit, @Nonnull String ip, @Nullable Map<String, Object> claims);
 
-    /**
-     * 使用已有的会话签发新会话
-     *
-     * @param tenantCode 租户标识
-     * @param source     原会话
-     * @param issuer     签发组织（一般是域名）
-     * @param timeout    会话超时时间。如果为空，则默认为 30 分钟
-     * @param endpoint   会话所属终端
-     * @param limit      会话数量上限
-     * @param ip         申请会话时的客户端 IP
-     * @param claims     会话附加属性
-     * @return 已签发的话会
-     */
+    /// 使用已有的会话签发新会话
+    ///
+    /// @param tenantCode 租户标识
+    /// @param source     原会话
+    /// @param issuer     签发组织（一般是域名）
+    /// @param timeout    会话超时时间。如果为空，则默认为 30 分钟
+    /// @param endpoint   会话所属终端
+    /// @param limit      会话数量上限
+    /// @param ip         申请会话时的客户端 IP
+    /// @param claims     会话附加属性
+    /// @return 已签发的话会
     @Nonnull
     Session issue(@Nonnull String tenantCode, @Nonnull Session source, @Nonnull String issuer, @Nonnull Duration timeout, @Nonnull Endpoint endpoint, @Nonnull Integer limit, @Nonnull String ip, @Nullable Map<String, Object> claims);
 
-    /**
-     * 验证会话凭证是否有效
-     *
-     * @param tenantCode 租户
-     * @param session    会话
-     */
+    /// 验证会话凭证是否有效
+    ///
+    /// @param tenantCode 租户
+    /// @param session    会话
     boolean verify(@Nonnull String tenantCode, @Nonnull Session session);
 
-    /**
-     * 将指定会话置为无效
-     *
-     * @param tenantCode 租户
-     * @param session    会话凭证
-     */
+    /// 将指定会话置为无效
+    ///
+    /// @param tenantCode 租户
+    /// @param session    会话凭证
     void invalid(@Nonnull String tenantCode, @Nonnull Session session);
 
-    /**
-     * 将指定的用户的所有会话都置为无效
-     *
-     * @param tenantCode 租户
-     * @param accountId  用户
-     */
+    /// 将指定的用户的所有会话都置为无效
+    ///
+    /// @param tenantCode 租户
+    /// @param accountId  用户
     void clear(@Nonnull String tenantCode, @Nonnull String accountId);
 }

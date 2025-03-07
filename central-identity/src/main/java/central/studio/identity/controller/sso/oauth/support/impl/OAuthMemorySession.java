@@ -36,12 +36,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 内存会话管理
- *
- * @author Alan Yeh
- * @since 2022/11/09
- */
+/// 内存会话管理
+///
+/// @author Alan Yeh
 @Component
 //@ConditionalOnMissingBean(OAuthSession.class)
 public class OAuthMemorySession implements OAuthSession, DisposableBean {

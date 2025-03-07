@@ -1,0 +1,18 @@
+{
+  "version": "v1.0.0",
+  "vendor": "Central Studio",
+  "title": "Central Studio",
+  "categories": {
+    "简介":"about",
+    "接口规范":"spec",
+    "接口文档": {
+      "code": "api",
+      "versions": [
+        "1.0.x",
+        "1.1.x",
+        "1.2.x",
+        "2.0.x"
+      ]
+    }
+  }
+}

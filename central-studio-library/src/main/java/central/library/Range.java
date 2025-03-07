@@ -33,12 +33,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 范围
- *
- * @author Alan Yeh
- * @since 2024/12/20
- */
+/// 范围
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,13 +43,9 @@ public class Range implements Serializable {
     @Serial
     private static final long serialVersionUID = 1310594620672539492L;
 
-    /**
-     * 包括指定范围
-     */
+    /// 包括指定范围
     private List<String> includes = new ArrayList<>();
 
-    /**
-     * 排除指定范围
-     */
+    /// 排除指定范围
     private List<String> excludes = new ArrayList<>();
 }

@@ -24,38 +24,31 @@
 
 package central.studio.provider.graphql.system;
 
-import central.studio.provider.graphql.system.query.DatabaseQuery;
-import central.studio.provider.graphql.system.query.DictionaryQuery;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.system.query.DatabaseQuery;
+import central.studio.provider.graphql.system.query.DictionaryQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * System Query
- * <p>
- * 系统类查询
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// System Query
+///
+/// 系统类查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "system", types = {DatabaseQuery.class, DictionaryQuery.class})
 public class SystemQuery {
 
-    /**
-     * Database Query
-     * 数据库查询
-     */
+    /// Database Query
+    /// 数据库查询
     @GraphQLGetter
     public DatabaseQuery getDatabases(@Autowired DatabaseQuery query) {
         return query;
     }
 
-    /**
-     * Dictionary Query
-     * 字典查询
-     */
+    /// Dictionary Query
+    /// 字典查询
     @GraphQLGetter
     public DictionaryQuery getDictionaries(@Autowired DictionaryQuery query) {
         return query;

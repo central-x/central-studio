@@ -24,7 +24,10 @@
 
 package central.data.storage;
 
-import central.bean.*;
+import central.bean.Codeable;
+import central.bean.Nonnull;
+import central.bean.Nullable;
+import central.bean.Treeable;
 import central.data.organization.Account;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,14 +39,11 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * Storage File
- * <p>
- * 文件
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage File
+///
+/// 文件
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,70 +52,46 @@ public class StorageFile extends ModifiableEntity implements Codeable, Treeable<
     @Serial
     private static final long serialVersionUID = 960422241807610750L;
 
-    /**
-     * 存储桶主键
-     */
+    /// 存储桶主键
     @Nonnull
     private String bucketId;
-    /**
-     * 存储桶
-     */
+    /// 存储桶
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private StorageBucket bucket;
-    /**
-     * 父文件夹主键
-     */
+    /// 父文件夹主键
     @Nullable
     private String parentId;
-    /**
-     * 父文件夹
-     */
+    /// 父文件夹
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private StorageFile parent;
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
-    /**
-     * 扩展名
-     */
+    /// 扩展名
     @Nonnull
     private String extension;
-    /**
-     * 是否文件夹
-     */
+    /// 是否文件夹
     @Nonnull
     private Boolean directory;
-    /**
-     * 确认状态
-     * 如果没有确认，存储中心会在一段时间之后清除该对象
-     */
+    /// 确认状态
+    /// 如果没有确认，存储中心会在一段时间之后清除该对象
     @Nonnull
     private Boolean confirmed;
-    /**
-     * 子文件
-     */
+    /// 子文件
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<StorageFile> children;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

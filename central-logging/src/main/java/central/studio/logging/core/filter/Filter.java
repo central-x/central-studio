@@ -28,15 +28,10 @@ import central.data.log.Log;
 
 import java.util.List;
 
-/**
- * 日志过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志过滤器
+///
+/// @author Alan Yeh
 public interface Filter {
-    /**
-     * 过滤日志
-     */
+    /// 过滤日志
     void filter(List<Log> logs);
 }

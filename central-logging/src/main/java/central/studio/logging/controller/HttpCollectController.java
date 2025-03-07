@@ -48,12 +48,9 @@ import java.util.Map;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
-/**
- * HTTP 日志收集入口
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// HTTP 日志收集入口
+///
+/// @author Alan Yeh
 @RestController
 @RequestMapping("/logging/api/collect/http")
 public class HttpCollectController {
@@ -61,11 +58,9 @@ public class HttpCollectController {
     @Setter(onMethod_ = @Autowired)
     private ApplicationEventPublisher publisher;
 
-    /**
-     * 收集日志
-     *
-     * @param path Http 日志入口
-     */
+    /// 收集日志
+    ///
+    /// @param path Http 日志入口
     @PostMapping("/{path}")
     public Map<String, String> collect(@PathVariable String path,
                                        HttpServletRequest request) throws IOException {

@@ -32,16 +32,13 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 校验参数
- * <p>
- * 不能使用传统的参数校验，否则抛出来的异常处理结果不符合 CAS 规范
- * <p>
- * 只能手动校验
- *
- * @author Alan Yeh
- * @since 2023/04/09
- */
+/// 校验参数
+///
+/// 不能使用传统的参数校验，否则抛出来的异常处理结果不符合 CAS 规范
+///
+/// 只能手动校验
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

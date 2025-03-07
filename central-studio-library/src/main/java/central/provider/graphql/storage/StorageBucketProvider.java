@@ -31,14 +31,11 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * Storage Bucket
- * <p>
- * 存储桶
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage Bucket
+///
+/// 存储桶
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("storage.buckets")
 @GraphQLStub(path = "storage", client = "providerClient")

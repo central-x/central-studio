@@ -24,8 +24,8 @@
 
 package central.studio.logging.core.collector.impl.http;
 
-import central.studio.logging.core.collector.Collector;
 import central.pluglet.annotation.Control;
+import central.studio.logging.core.collector.Collector;
 import central.validation.Label;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;
@@ -41,12 +41,9 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import java.util.Objects;
 
-/**
- * Http 日志收集器
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// Http 日志收集器
+///
+/// @author Alan Yeh
 public class HttpCollector extends Collector implements ApplicationContextAware, InitializingBean, DisposableBean, ApplicationListener<HttpEvent> {
 
     @Setter

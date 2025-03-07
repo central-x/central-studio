@@ -36,12 +36,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * 数据库插件
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 数据库插件
+///
+/// @author Alan Yeh
 public abstract class Database implements InitializingBean {
 
     @Setter(onMethod_ = @Autowired)
@@ -85,8 +82,6 @@ public abstract class Database implements InitializingBean {
         }
     }
 
-    /**
-     * 构建数据库属性
-     */
+    /// 构建数据库属性
     public abstract DatabaseProperties getProperties();
 }

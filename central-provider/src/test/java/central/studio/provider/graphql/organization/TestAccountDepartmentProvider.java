@@ -50,12 +50,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Account Department Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Account Department Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestAccountDepartmentProvider extends TestProvider {
 
@@ -108,13 +105,11 @@ public class TestAccountDepartmentProvider extends TestProvider {
         this.areaPersistence.deleteBy(Conditions.of(AreaEntity.class).like(AreaEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see AccountDepartmentProvider#insert
-     * @see AccountDepartmentProvider#findById
-     * @see AccountDepartmentProvider#findByIds
-     * @see AccountDepartmentProvider#countBy
-     * @see AccountDepartmentProvider#deleteByIds
-     */
+    /// @see AccountDepartmentProvider#insert
+    /// @see AccountDepartmentProvider#findById
+    /// @see AccountDepartmentProvider#findByIds
+    /// @see AccountDepartmentProvider#countBy
+    /// @see AccountDepartmentProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -251,12 +246,10 @@ public class TestAccountDepartmentProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see AccountDepartmentProvider#insertBatch
-     * @see AccountDepartmentProvider#findBy
-     * @see AccountDepartmentProvider#pageBy
-     * @see AccountDepartmentProvider#deleteBy
-     */
+    /// @see AccountDepartmentProvider#insertBatch
+    /// @see AccountDepartmentProvider#findBy
+    /// @see AccountDepartmentProvider#pageBy
+    /// @see AccountDepartmentProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

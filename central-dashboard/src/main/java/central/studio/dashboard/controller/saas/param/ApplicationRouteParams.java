@@ -34,14 +34,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Application Module Params
- * <p>
- * 应用路由参数
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Application Route Params
+///
+/// 应用路由参数
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

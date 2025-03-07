@@ -24,39 +24,32 @@
 
 package central.studio.provider.graphql.multicast;
 
-import central.studio.provider.graphql.multicast.mutation.MulticastBroadcasterMutation;
-import central.studio.provider.graphql.multicast.mutation.MulticastMessageMutation;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.multicast.mutation.MulticastBroadcasterMutation;
+import central.studio.provider.graphql.multicast.mutation.MulticastMessageMutation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Multicast Mutation
- * <p>
- * 广播中心修改
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// Multicast Mutation
+///
+/// 广播中心修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "multicast", types = {MulticastBroadcasterMutation.class, MulticastMessageMutation.class})
 public class MulticastMutation {
-    /**
-     * Broadcaster Mutation
-     * <p>
-     * 广播器修改
-     */
+    /// Broadcaster Mutation
+    ///
+    /// 广播器修改
     @GraphQLGetter
     public MulticastBroadcasterMutation getBroadcasters(@Autowired MulticastBroadcasterMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Message Mutation
-     * <p>
-     * 广播消息修改
-     */
+    /// Message Mutation
+    ///
+    /// 广播消息修改
     @GraphQLGetter
     public MulticastMessageMutation getMessages(@Autowired MulticastMessageMutation mutation) {
         return mutation;

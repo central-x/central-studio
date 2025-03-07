@@ -27,12 +27,12 @@ package central.studio.identity.core.strategy.dynamic;
 import central.lang.BooleanEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.studio.identity.core.CookieManager;
 import central.studio.identity.core.attribute.SessionAttributes;
 import central.studio.identity.core.strategy.StrategyFilter;
 import central.studio.identity.core.strategy.StrategyFilterChain;
-import central.starter.webmvc.servlet.WebMvcRequest;
-import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
 import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.NotBlank;
@@ -42,12 +42,9 @@ import org.springframework.beans.factory.InitializingBean;
 
 import java.io.IOException;
 
-/**
- * 会话 Cookie 策略
- *
- * @author Alan Yeh
- * @since 2022/11/06
- */
+/// 会话 Cookie 策略
+///
+/// @author Alan Yeh
 public class SessionCookieStrategyFilter implements StrategyFilter, InitializingBean {
     @Control(label = "说明", type = ControlType.LABEL, defaultValue = "　　本策略用于控制会话的 Cookie 生成规则。")
     private String label;

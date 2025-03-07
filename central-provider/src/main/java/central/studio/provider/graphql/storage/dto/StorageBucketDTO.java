@@ -25,13 +25,13 @@
 package central.studio.provider.graphql.storage.dto;
 
 import central.data.saas.Application;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.database.persistence.storage.entity.StorageBucketEntity;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
 import central.provider.scheduled.fetcher.saas.SaasContainer;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.storage.entity.StorageBucketEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,23 +39,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Storage Bucket
- * <p>
- * 存储桶
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage Bucket
+///
+/// 存储桶
+///
+/// @author Alan Yeh
 @GraphQLType("StorageBucket")
 @EqualsAndHashCode(callSuper = true)
 public class StorageBucketDTO extends StorageBucketEntity {
     @Serial
     private static final long serialVersionUID = 1390786568265576421L;
 
-    /**
-     * 获取应用信息(不支持关联查询)
-     */
+    /// 获取应用信息(不支持关联查询)
     @GraphQLGetter
     public Application getApplication(@Autowired DataContext context) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
@@ -65,17 +60,13 @@ public class StorageBucketDTO extends StorageBucketEntity {
         return container.getApplicationById(this.getApplicationId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

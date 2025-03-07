@@ -35,14 +35,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Gateway Filter
- * <p>
- * 网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Filter
+///
+/// 网关过滤器
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

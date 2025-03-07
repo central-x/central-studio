@@ -28,12 +28,9 @@ import central.sql.datasource.migration.Migration;
 
 import java.util.List;
 
-/**
- * V1 版本集合
- *
- * @author Alan Yeh
- * @since 2022/09/26
- */
+/// V1 版本集合
+///
+/// @author Alan Yeh
 public interface v1 {
     List<Migration> migrations = List.of();
 }

@@ -40,12 +40,9 @@ import org.springframework.context.ApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 动态采集器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 动态采集器
+///
+/// @author Alan Yeh
 public class DynamicCollector extends Collector implements DisposableBean {
 
     @Getter
@@ -78,16 +75,12 @@ public class DynamicCollector extends Collector implements DisposableBean {
 
     private final List<Filter> filters = new ArrayList<>();
 
-    /**
-     * 注册过滤器
-     */
+    /// 注册过滤器
     public void register(Filter filter) {
         this.filters.add(filter);
     }
 
-    /**
-     * 撤销注册过滤器
-     */
+    /// 撤销注册过滤器
     public void deregister(Filter filter) {
         this.filters.remove(filter);
     }

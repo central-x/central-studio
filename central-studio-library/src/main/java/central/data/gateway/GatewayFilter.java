@@ -29,19 +29,19 @@ import central.data.organization.Account;
 import central.sql.data.ModifiableEntity;
 import central.util.Listx;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.util.List;
 
-/**
- * Gateway Filter
- * <p>
- * 网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Filter
+///
+/// 网关过滤器
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,51 +50,33 @@ public class GatewayFilter extends ModifiableEntity implements Remarkable, Avail
     @Serial
     private static final long serialVersionUID = 1192393390020070868L;
 
-    /**
-     * 类型
-     */
+    /// 类型
     @Nonnull
     private String type;
-    /**
-     * 匹配路径
-     */
+    /// 匹配路径
     @Nonnull
     private String path;
-    /**
-     * 排序号
-     */
+    /// 排序号
     @Nonnull
     private Integer order;
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
-    /**
-     * 备注
-     */
+    /// 备注
     @Nullable
     private String remark;
-    /**
-     * 初始化参数(JSON)
-     */
+    /// 初始化参数(JSON)
     @Nonnull
     private String params;
-    /**
-     * 断言
-     */
+    /// 断言
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<GatewayPredicate> predicates;
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

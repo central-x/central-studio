@@ -24,49 +24,40 @@
 
 package central.studio.provider.graphql.multicast.dto;
 
-import central.studio.provider.database.persistence.multicast.entity.MulticastMessageEntity;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.multicast.entity.MulticastMessageEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Multicast Message
- * <p>
- * 广播消息
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// Multicast Message
+///
+/// 广播消息
+///
+/// @author Alan Yeh
 @GraphQLType("MulticastMessage")
 @EqualsAndHashCode(callSuper = true)
 public class MulticastMessageDTO extends MulticastMessageEntity {
     @Serial
     private static final long serialVersionUID = -5575480692031075125L;
 
-    /**
-     * 广播器信息
-     */
+    /// 广播器信息
     @GraphQLGetter
     public CompletableFuture<MulticastBroadcasterDTO> getBroadcaster(DataLoader<String, MulticastBroadcasterDTO> loader) {
         return loader.load(this.getBroadcasterId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

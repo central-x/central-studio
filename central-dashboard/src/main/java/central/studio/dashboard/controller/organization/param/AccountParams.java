@@ -38,14 +38,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Account Params
- * <p>
- * 帐号入参
- *
- * @author Alan Yeh
- * @since 2024/12/08
- */
+/// Account Params
+///
+/// 帐号入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

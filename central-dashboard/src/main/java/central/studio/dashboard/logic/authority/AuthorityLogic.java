@@ -36,14 +36,11 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Authority Logic
- * <p>
- * 权限逻辑
- *
- * @author Alan Yeh
- * @since 2024/11/20
- */
+/// Authority Logic
+///
+/// 权限逻辑
+///
+/// @author Alan Yeh
 @Service
 public class AuthorityLogic {
 
@@ -56,13 +53,11 @@ public class AuthorityLogic {
     @Setter(onMethod_ = @Autowired)
     private ApplicationLogic applicationLogic;
 
-    /**
-     * 获取指定用户可以访问的应用列表
-     *
-     * @param accountId  帐户主键
-     * @param tenantCode 租户标识
-     * @return 可以访问的应用列表
-     */
+    /// 获取指定用户可以访问的应用列表
+    ///
+    /// @param accountId  帐户主键
+    /// @param tenantCode 租户标识
+    /// @return 可以访问的应用列表
     public @Nonnull List<Application> getApplications(String accountId, String tenantCode) {
         var tenant = tenantLogic.findByCode(tenantCode);
         if (tenant == null) {

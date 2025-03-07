@@ -26,16 +26,11 @@ package central.studio.identity.core.captcha;
 
 import org.springframework.web.servlet.View;
 
-/**
- * 验证码视图
- *
- * @author Alan Yeh
- * @since 2023/05/29
- */
+/// 验证码视图
+///
+/// @author Alan Yeh
 public interface CaptchaView extends View {
 
-    /**
-     * 获取验证码值
-     */
+    /// 获取验证码值
     String getValue();
 }

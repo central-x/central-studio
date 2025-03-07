@@ -13,6 +13,7 @@
         <module>central-studio-views</module>
         <module>central-bootstrap</module>
         <module>central-dashboard</module>
+        <module>central-document</module>
         <module>central-gateway</module>
         <module>central-identity</module>
         <module>central-logging</module>

@@ -27,14 +27,11 @@ package central;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Studio Properties
- * <p>
- * 套件配置
- *
- * @author Alan Yeh
- * @since 2023/09/10
- */
+/// Studio Properties
+///
+/// 套件配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties(prefix = "studio")
 public class StudioProperties {

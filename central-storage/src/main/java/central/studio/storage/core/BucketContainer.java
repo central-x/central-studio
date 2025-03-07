@@ -44,14 +44,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
-/**
- * Bucket Container
- * <p>
- * 存储桶容器
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Bucket Container
+///
+/// 存储桶容器
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 public class BucketContainer implements DisposableBean, GenericApplicationListener {
@@ -59,38 +56,30 @@ public class BucketContainer implements DisposableBean, GenericApplicationListen
     @Setter(onMethod_ = @Autowired)
     private BucketResolver resolver;
 
-    /**
-     * 存储桶
-     * <p>
-     * tenant -> code -> bucket
-     */
+    /// 存储桶
+    ///
+    /// tenant -> code -> bucket
     private final Map<String, Map<String, DynamicBucket>> buckets = new HashMap<>();
 
-    /**
-     * 根据标识获取存储桶
-     *
-     * @param tenant 租户标识
-     * @param code   标识
-     */
+    /// 根据标识获取存储桶
+    ///
+    /// @param tenant 租户标识
+    /// @param code   标识
     public @Nullable DynamicBucket getBucket(String tenant, String code) {
         return this.buckets.computeIfAbsent(tenant, key -> new HashMap<>()).get(code);
     }
 
-    /**
-     * 获取存储桶
-     *
-     * @param tenant 租户标识
-     */
+    /// 获取存储桶
+    ///
+    /// @param tenant 租户标识
     public @Nonnull List<DynamicBucket> getBuckets(String tenant) {
         return new ArrayList<>(this.buckets.computeIfAbsent(tenant, key -> new HashMap<>()).values());
     }
 
-    /**
-     * 根据标识获取存储桶
-     *
-     * @param tenant 租户标识
-     * @param code   标识
-     */
+    /// 根据标识获取存储桶
+    ///
+    /// @param tenant 租户标识
+    /// @param code   标识
     public @Nonnull DynamicBucket requireBucket(String tenant, String code) {
         return Assertx.requireNotNull(this.getBucket(tenant, code), () -> new ResponseStatusException(HttpStatus.NOT_FOUND, Stringx.format("存储桶[code={}]不存在", code)));
     }

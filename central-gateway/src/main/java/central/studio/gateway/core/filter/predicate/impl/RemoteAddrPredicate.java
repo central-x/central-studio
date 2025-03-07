@@ -24,10 +24,10 @@
 
 package central.studio.gateway.core.filter.predicate.impl;
 
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.lang.Arrayx;
 import central.lang.Stringx;
 import central.pluglet.annotation.Control;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.util.Listx;
 import central.validation.Label;
 import io.netty.handler.ipfilter.IpFilterRuleType;
@@ -40,12 +40,9 @@ import java.net.InetAddress;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * 远程主机断言
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 远程主机断言
+///
+/// @author Alan Yeh
 public class RemoteAddrPredicate implements Predicate, InitializingBean {
 
     @Label("白名单")

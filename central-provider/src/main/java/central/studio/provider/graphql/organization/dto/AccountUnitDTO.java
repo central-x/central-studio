@@ -25,54 +25,43 @@
 package central.studio.provider.graphql.organization.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.database.persistence.organization.entity.AccountUnitEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.organization.entity.AccountUnitEntity;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 帐户单位关联关系
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 帐户单位关联关系
+///
+/// @author Alan Yeh
 @GraphQLType("AccountUnit")
 @EqualsAndHashCode(callSuper = true)
 public class AccountUnitDTO extends AccountUnitEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 4980776643576204883L;
 
-    /**
-     * 帐户
-     */
+    /// 帐户
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getAccount(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getAccountId());
     }
 
-    /**
-     * 单位
-     */
+    /// 单位
     @GraphQLGetter
     public CompletableFuture<UnitDTO> getUnit(DataLoader<String, UnitDTO> loader) {
         return loader.load(this.getUnitId());
     }
 
-    /**
-     * 职级
-     */
+    /// 职级
     @GraphQLGetter
     public CompletableFuture<RankDTO> getRank(DataLoader<String, RankDTO> loader) {
         return loader.load(this.getRankId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());

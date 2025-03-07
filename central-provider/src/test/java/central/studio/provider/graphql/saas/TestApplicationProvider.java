@@ -46,13 +46,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Application Provider Test Cases
- * 应用
- *
- * @author Alan Yeh
- * @since 2022/09/28
- */
+/// Application Provider Test Cases
+///
+/// 应用
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestApplicationProvider extends TestProvider {
 
@@ -68,14 +66,12 @@ public class TestApplicationProvider extends TestProvider {
         this.persistence.deleteBy(Conditions.of(ApplicationEntity.class).like(ApplicationEntity::getCode, "test%"));
     }
 
-    /**
-     * @see ApplicationProvider#insert
-     * @see ApplicationProvider#findById
-     * @see ApplicationProvider#update
-     * @see ApplicationProvider#findByIds
-     * @see ApplicationProvider#countBy
-     * @see ApplicationProvider#deleteByIds
-     */
+    /// @see ApplicationProvider#insert
+    /// @see ApplicationProvider#findById
+    /// @see ApplicationProvider#update
+    /// @see ApplicationProvider#findByIds
+    /// @see ApplicationProvider#countBy
+    /// @see ApplicationProvider#deleteByIds
     @Test
     public void case1() {
         var input = ApplicationInput.builder()
@@ -103,7 +99,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getLogo(), insert.getLogo());
         assertEquals(input.getUrl(), insert.getUrl());
         assertEquals(input.getContextPath(), insert.getContextPath());
-        assertEquals(input.getSecret(),insert.getSecret());
+        assertEquals(input.getSecret(), insert.getSecret());
         assertEquals(input.getEnabled(), insert.getEnabled());
         assertEquals(input.getRemark(), insert.getRemark());
         assertEquals(1, insert.getRoutes().size());
@@ -126,7 +122,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(insert.getLogo(), findById.getLogo());
         assertEquals(insert.getUrl(), findById.getUrl());
         assertEquals(insert.getContextPath(), findById.getContextPath());
-        assertEquals(insert.getSecret(),findById.getSecret());
+        assertEquals(insert.getSecret(), findById.getSecret());
         assertEquals(insert.getEnabled(), findById.getEnabled());
         assertEquals(insert.getRemark(), findById.getRemark());
         assertEquals(1, findById.getRoutes().size());
@@ -152,7 +148,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(insert.getLogo(), fetched.getLogo());
         assertEquals(insert.getUrl(), fetched.getUrl());
         assertEquals(insert.getContextPath(), fetched.getContextPath());
-        assertEquals(insert.getSecret(),fetched.getSecret());
+        assertEquals(insert.getSecret(), fetched.getSecret());
         assertEquals(Boolean.FALSE, fetched.getEnabled());
         assertEquals(insert.getRemark(), fetched.getRemark());
         assertEquals(1, fetched.getRoutes().size());
@@ -166,13 +162,11 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see ApplicationProvider#insertBatch
-     * @see ApplicationProvider#findBy
-     * @see ApplicationProvider#updateBatch
-     * @see ApplicationProvider#pageBy
-     * @see ApplicationProvider#deleteBy
-     */
+    /// @see ApplicationProvider#insertBatch
+    /// @see ApplicationProvider#findBy
+    /// @see ApplicationProvider#updateBatch
+    /// @see ApplicationProvider#pageBy
+    /// @see ApplicationProvider#deleteBy
     @Test
     public void case2() {
         var input = ApplicationInput.builder()
@@ -204,7 +198,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(input.getLogo(), insert.getLogo());
         assertEquals(input.getUrl(), insert.getUrl());
         assertEquals(input.getContextPath(), insert.getContextPath());
-        assertEquals(input.getSecret(),insert.getSecret());
+        assertEquals(input.getSecret(), insert.getSecret());
         assertEquals(input.getEnabled(), insert.getEnabled());
         assertEquals(input.getRemark(), insert.getRemark());
         assertEquals(1, insert.getRoutes().size());
@@ -223,7 +217,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(insert.getLogo(), fetched.getLogo());
         assertEquals(insert.getUrl(), fetched.getUrl());
         assertEquals(insert.getContextPath(), fetched.getContextPath());
-        assertEquals(insert.getSecret(),fetched.getSecret());
+        assertEquals(insert.getSecret(), fetched.getSecret());
         assertEquals(insert.getEnabled(), fetched.getEnabled());
         assertEquals(insert.getRemark(), fetched.getRemark());
         assertEquals(1, fetched.getRoutes().size());
@@ -253,7 +247,7 @@ public class TestApplicationProvider extends TestProvider {
         assertEquals(insert.getLogo(), fetched.getLogo());
         assertEquals(insert.getUrl(), fetched.getUrl());
         assertEquals(insert.getContextPath(), fetched.getContextPath());
-        assertEquals(insert.getSecret(),fetched.getSecret());
+        assertEquals(insert.getSecret(), fetched.getSecret());
         assertEquals(Boolean.FALSE, fetched.getEnabled());
         assertEquals(insert.getRemark(), fetched.getRemark());
         assertEquals(1, fetched.getRoutes().size());

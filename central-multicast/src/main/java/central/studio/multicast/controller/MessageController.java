@@ -24,13 +24,13 @@
 
 package central.studio.multicast.controller;
 
-import central.multicast.client.body.StandardBody;
-import central.provider.graphql.multicast.MulticastMessageProvider;
 import central.data.multicast.MulticastMessage;
 import central.data.multicast.MulticastMessageInput;
 import central.data.multicast.option.MessageStatus;
 import central.data.multicast.option.PublishMode;
 import central.lang.reflect.TypeRef;
+import central.multicast.client.body.StandardBody;
+import central.provider.graphql.multicast.MulticastMessageProvider;
 import central.studio.multicast.controller.param.PublishParams;
 import central.studio.multicast.core.BroadcasterContainer;
 import central.studio.multicast.core.DynamicBroadcaster;
@@ -54,12 +54,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * 消息
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 消息
+///
+/// @author Alan Yeh
 @RestController
 @RequestMapping("/multicast/api/broadcasters/{code}/messages")
 public class MessageController {
@@ -85,13 +82,11 @@ public class MessageController {
         }
     }
 
-    /**
-     * 广播消息
-     *
-     * @param code   广播器标识
-     * @param params 广播参数
-     * @param tenant 租户标识
-     */
+    /// 广播消息
+    ///
+    /// @param code   广播器标识
+    /// @param params 广播参数
+    /// @param tenant 租户标识
     @PostMapping
     public List<MulticastMessage> publish(@PathVariable String code,
                                           @Validated @RequestBody PublishParams params,

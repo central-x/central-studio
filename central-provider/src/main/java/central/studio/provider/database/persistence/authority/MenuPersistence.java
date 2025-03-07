@@ -52,14 +52,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Menu Persistence
- * <p>
- * 菜单持久化
- *
- * @author Alan Yeh
- * @since 2023/02/07
- */
+/// Menu Persistence
+///
+/// 菜单持久化
+///
+/// @author Alan Yeh
 @Component
 public class MenuPersistence {
 
@@ -69,13 +66,11 @@ public class MenuPersistence {
     @Setter(onMethod_ = @Autowired)
     private PermissionMapper permissionMapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nullable MenuEntity findById(@Nullable String id,
                                          @Nullable Columns<? extends MenuEntity> columns,
                                          @Nonnull String tenant) {
@@ -87,13 +82,11 @@ public class MenuPersistence {
         return this.mapper.findFirstBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nonnull List<MenuEntity> findByIds(@Nullable List<String> ids,
                                                @Nullable Columns<? extends MenuEntity> columns,
                                                @Nonnull String tenant) {
@@ -105,16 +98,14 @@ public class MenuPersistence {
         return this.mapper.findBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<MenuEntity> findBy(@Nullable Long limit,
                                             @Nullable Long offset,
                                             @Nullable Columns<? extends MenuEntity> columns,
@@ -125,16 +116,14 @@ public class MenuPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<MenuEntity> pageBy(@Nonnull Long pageIndex,
                                             @Nonnull Long pageSize,
                                             @Nullable Columns<? extends MenuEntity> columns,
@@ -145,25 +134,21 @@ public class MenuPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends MenuEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull MenuEntity insert(@Nonnull @Validated({Insert.class, Default.class}) MenuInput input,
                                       @Nonnull String operator,
                                       @Nonnull String tenant) {
@@ -181,26 +166,22 @@ public class MenuPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<MenuEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<MenuInput> inputs,
                                                  @Nonnull String operator,
                                                  @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull MenuEntity update(@Nonnull @Validated({Update.class, Default.class}) MenuInput input,
                                       @Nonnull String operator,
                                       @Nonnull String tenant) {
@@ -223,25 +204,21 @@ public class MenuPersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<MenuEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<MenuInput> inputs,
                                                  @Nonnull String operator,
                                                  @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -254,12 +231,10 @@ public class MenuPersistence {
         return this.mapper.deleteBy(Conditions.of(MenuEntity.class).in(MenuEntity::getId, ids).eq(MenuEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends MenuEntity> conditions,
                          @Nonnull String tenant) {
         var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(MenuEntity::getTenantCode, tenant)).stream()

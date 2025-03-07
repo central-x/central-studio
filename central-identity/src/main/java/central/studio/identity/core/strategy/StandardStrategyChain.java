@@ -33,30 +33,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Standard Security Strategy Chain
- * <p>
- * 标准安全认证链
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// Standard Security Strategy Chain
+///
+/// 标准安全认证链
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class StandardStrategyChain implements StrategyFilterChain {
 
-    /**
-     * 待执行策略下标
-     */
+    /// 待执行策略下标
     private final int index;
 
-    /**
-     * 策略列表
-     */
+    /// 策略列表
     private final List<StrategyFilter> strategies;
 
-    /**
-     * 下一调用链
-     */
+    /// 下一调用链
     private StandardStrategyChain next() {
         return new StandardStrategyChain(this.index + 1, this.strategies);
     }
@@ -66,28 +57,22 @@ public class StandardStrategyChain implements StrategyFilterChain {
         this.index = 0;
     }
 
-    /**
-     * 在末端添加新的策略
-     */
+    /// 在末端添加新的策略
     public StandardStrategyChain addStrategy(StrategyFilter strategy) {
         this.strategies.add(strategy);
         return this;
     }
 
-    /**
-     * 认证链执行完毕后执行此策略
-     */
+    /// 认证链执行完毕后执行此策略
     public interface CompletionAction {
         void execute(WebMvcRequest request, WebMvcResponse response) throws ServletException, IOException;
     }
 
-    /**
-     * 添加认证结束动作
-     * <p>
-     * 在认证链执行完毕后，最终执行指定动作
-     *
-     * @param action 结束动作
-     */
+    /// 添加认证结束动作
+    ///
+    /// 在认证链执行完毕后，最终执行指定动作
+    ///
+    /// @param action 结束动作
     public StandardStrategyChain complete(final CompletionAction action) {
         return this.addStrategy((request, response, chain) -> action.execute(request, response));
     }

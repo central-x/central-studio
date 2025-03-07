@@ -30,19 +30,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
-/**
- * 应用控制器
- *
- * @author Alan Yeh
- * @since 2024/02/18
- */
+/// 应用控制器
+///
+/// @author Alan Yeh
 @Controller
 @RequestMapping
 public class BootstrapController {
 
-    /**
-     * 应用首页
-     */
+    /// 应用首页
     @GetMapping({"", "/"})
     public View index() {
         return new RedirectView("/dashboard/");

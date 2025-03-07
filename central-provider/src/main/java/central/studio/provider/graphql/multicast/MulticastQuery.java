@@ -24,39 +24,32 @@
 
 package central.studio.provider.graphql.multicast;
 
-import central.studio.provider.graphql.multicast.query.MulticastBroadcasterQuery;
-import central.studio.provider.graphql.multicast.query.MulticastMessageQuery;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.multicast.query.MulticastBroadcasterQuery;
+import central.studio.provider.graphql.multicast.query.MulticastMessageQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Multicast Query
- * <p>
- * 广播中心查易
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// Multicast Query
+///
+/// 广播中心查易
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "multicast", types = {MulticastBroadcasterQuery.class, MulticastMessageQuery.class})
 public class MulticastQuery {
-    /**
-     * Broadcaster Query
-     * <p>
-     * 广播器查询
-     */
+    /// Broadcaster Query
+    ///
+    /// 广播器查询
     @GraphQLGetter
     public MulticastBroadcasterQuery getBroadcasters(@Autowired MulticastBroadcasterQuery query) {
         return query;
     }
 
-    /**
-     * Message Query
-     * <p>
-     * 广播消息查询
-     */
+    /// Message Query
+    ///
+    /// 广播消息查询
     @GraphQLGetter
     public MulticastMessageQuery getMessages(@Autowired MulticastMessageQuery query) {
         return query;

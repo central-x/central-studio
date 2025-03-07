@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Unit Role Page Query
- * <p>
- * 单位角色分页查询
- *
- * @author Alan Yeh
- * @since 2024/12/13
- */
+/// Unit Role Page Query
+///
+/// 单位角色分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UnitRolePageQuery extends PageQuery<Role> {

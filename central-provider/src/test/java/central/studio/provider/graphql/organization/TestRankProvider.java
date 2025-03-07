@@ -57,12 +57,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Rank Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Rank Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestRankProvider extends TestProvider {
 
@@ -100,14 +97,12 @@ public class TestRankProvider extends TestProvider {
         this.areaPersistence.deleteBy(Conditions.of(AreaEntity.class).like(AreaEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see RankProvider#insert
-     * @see RankProvider#findById
-     * @see RankProvider#update
-     * @see RankProvider#findByIds
-     * @see RankProvider#countBy
-     * @see RankProvider#deleteByIds
-     */
+    /// @see RankProvider#insert
+    /// @see RankProvider#findById
+    /// @see RankProvider#update
+    /// @see RankProvider#findByIds
+    /// @see RankProvider#countBy
+    /// @see RankProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -195,13 +190,11 @@ public class TestRankProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see RankProvider#insertBatch
-     * @see RankProvider#findBy
-     * @see RankProvider#updateBatch
-     * @see RankProvider#pageBy
-     * @see RankProvider#deleteBy
-     */
+    /// @see RankProvider#insertBatch
+    /// @see RankProvider#findBy
+    /// @see RankProvider#updateBatch
+    /// @see RankProvider#pageBy
+    /// @see RankProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

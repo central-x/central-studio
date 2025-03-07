@@ -40,12 +40,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * 动态过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 动态过滤器
+///
+/// @author Alan Yeh
 public class DynamicFilter implements Filter, DisposableBean {
     @Getter
     private final LogFilter data;
@@ -54,18 +51,14 @@ public class DynamicFilter implements Filter, DisposableBean {
 
     private final LoggingContainer container;
 
-    /**
-     * 采集器主键
-     * <p>
-     * 集合里的采集器会将日志传输到本过滤器进行过滤
-     */
+    /// 采集器主键
+    ///
+    /// 集合里的采集器会将日志传输到本过滤器进行过滤
     private final Set<String> collectorIds = new HashSet<>();
 
-    /**
-     * 存储器主键
-     * <p>
-     * 过滤完的日志会交给这些存储器进行保存
-     */
+    /// 存储器主键
+    ///
+    /// 过滤完的日志会交给这些存储器进行保存
     private final Set<String> storageIds = new HashSet<>();
 
     private final List<DynamicPredicate> predicates = new ArrayList<>();

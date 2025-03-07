@@ -50,12 +50,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Area Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Area Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestAreaProvider extends TestProvider {
 
@@ -83,14 +80,12 @@ public class TestAreaProvider extends TestProvider {
         this.persistence.deleteBy(Conditions.of(AreaEntity.class).like(AreaEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see AreaProvider#insert
-     * @see AreaProvider#findById
-     * @see AreaProvider#update
-     * @see AreaProvider#findByIds
-     * @see AreaProvider#countBy
-     * @see AreaProvider#deleteByIds
-     */
+    /// @see AreaProvider#insert
+    /// @see AreaProvider#findById
+    /// @see AreaProvider#update
+    /// @see AreaProvider#findByIds
+    /// @see AreaProvider#countBy
+    /// @see AreaProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -164,13 +159,11 @@ public class TestAreaProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see AreaProvider#insertBatch
-     * @see AreaProvider#findBy
-     * @see AreaProvider#updateBatch
-     * @see AreaProvider#pageBy
-     * @see AreaProvider#deleteBy
-     */
+    /// @see AreaProvider#insertBatch
+    /// @see AreaProvider#findBy
+    /// @see AreaProvider#updateBatch
+    /// @see AreaProvider#pageBy
+    /// @see AreaProvider#deleteBy
     @Test
     public void case2() {
 

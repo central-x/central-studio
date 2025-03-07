@@ -35,14 +35,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Identity Record
- * <p>
- * 认证记录
- *
- * @author Alan Yeh
- * @since 2025/03/02
- */
+/// Identity Record
+///
+/// 认证记录
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

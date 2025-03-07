@@ -35,12 +35,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 单位
- *
- * @author Alan Yeh
- * @since 2022/09/24
- */
+/// 单位
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,76 +46,54 @@ public class Unit extends ModifiableEntity implements Codeable, Orderable<Unit>,
     @Serial
     private static final long serialVersionUID = 1043257253332275916L;
 
-    /**
-     * 父单位主键
-     * <p>
-     * 如果为空，则表示该单位是独立单位
-     */
+    /// 父单位主键
+    ///
+    /// 如果为空，则表示该单位是独立单位
     @Nullable
     private String parentId;
 
-    /**
-     * 父单位
-     */
+    /// 父单位
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Unit parent;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 所属行政区划主键
-     */
+    /// 所属行政区划主键
     @Nonnull
     private String areaId;
 
-    /**
-     * 所属行政区划
-     */
+    /// 所属行政区划
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Area area;
 
-    /**
-     * 排序号
-     */
+    /// 排序号
     @Nonnull
     private Integer order;
 
-    /**
-     * 子单位
-     */
+    /// 子单位
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Unit> children;
 
-    /**
-     * 子部门
-     */
+    /// 子部门
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Department> departments;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

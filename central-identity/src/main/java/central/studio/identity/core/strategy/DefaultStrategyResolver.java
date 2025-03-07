@@ -32,14 +32,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-/**
- * Default Strategy Resolver
- * <p>
- * 安全策略解析
- *
- * @author Alan Yeh
- * @since 2024/04/20
- */
+/// Default Strategy Resolver
+///
+/// 安全策略解析
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class DefaultStrategyResolver implements StrategyResolver {
 

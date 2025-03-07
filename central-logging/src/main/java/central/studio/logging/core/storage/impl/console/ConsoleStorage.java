@@ -27,9 +27,9 @@ package central.studio.logging.core.storage.impl.console;
 import central.data.log.Log;
 import central.data.log.option.LogLevel;
 import central.lang.Stringx;
-import central.studio.logging.core.storage.Storage;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.logging.core.storage.Storage;
 import central.util.concurrent.DelayedElement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.DisposableBean;
@@ -43,12 +43,9 @@ import java.util.concurrent.DelayQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * 控制台
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 控制台
+///
+/// @author Alan Yeh
 public class ConsoleStorage implements Storage, InitializingBean, DisposableBean {
 
     @Control(label = "说明", type = ControlType.LABEL, defaultValue = "　　本存储器不保存日志，主要用于在控制台实时监控日志。")

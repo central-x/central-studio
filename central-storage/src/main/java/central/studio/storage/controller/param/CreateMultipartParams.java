@@ -35,12 +35,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 创建分片上传参数
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 创建分片上传参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

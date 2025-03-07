@@ -34,14 +34,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Application Page Query
- * <p>
- * 应用分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Application Page Query
+///
+/// 应用分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ApplicationPageQuery extends PageQuery<Application> {

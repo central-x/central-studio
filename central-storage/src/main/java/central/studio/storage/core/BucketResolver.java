@@ -29,29 +29,22 @@ import jakarta.annotation.Nullable;
 
 import java.util.Map;
 
-/**
- * Bucket Resolver
- * <p>
- * 存储桶解析
- *
- * @author Alan Yeh
- * @since 2024/04/11
- */
+/// Bucket Resolver
+///
+/// 存储桶解析
+///
+/// @author Alan Yeh
 public interface BucketResolver {
-    /**
-     * 根据标识和参数实例化存储桶
-     *
-     * @param code   类型标识
-     * @param params 初始化参数
-     * @return 存储桶实例，如果未找到标识对应的类型，则返回空
-     */
+    /// 根据标识和参数实例化存储桶
+    ///
+    /// @param code   类型标识
+    /// @param params 初始化参数
+    /// @return 存储桶实例，如果未找到标识对应的类型，则返回空
     @Nullable
     Bucket resolve(@Nonnull String code, @Nonnull Map<String, Object> params);
 
-    /**
-     * 销毁存储桶实例
-     *
-     * @param bucket 实例
-     */
+    /// 销毁存储桶实例
+    ///
+    /// @param bucket 实例
     void destroy(@Nonnull Bucket bucket);
 }

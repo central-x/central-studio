@@ -1,0 +1,86 @@
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'nunito_for_arco', 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-1);
+  background-color: #f5f5f5;
+}
+
+/* Arco Design CSS 变量 */
+:root {
+  /* 主色 */
+  --color-primary-1: #e8f3ff;
+  --color-primary-2: #bedaff;
+  --color-primary-3: #94bfff;
+  --color-primary-4: #6aa1ff;
+  --color-primary-5: #4080ff;
+  --color-primary-6: #165dff;
+  --color-primary-7: #0e42d2;
+
+  /* 中性色 */
+  --color-text-1: #1d2129;
+  --color-text-2: #4e5969;
+  --color-text-3: #86909c;
+  --color-text-4: #c9cdd4;
+
+  /* 边框色 */
+  --color-border-1: #f2f3f5;
+  --color-border-2: #e5e6eb;
+  --color-border-3: #c9cdd4;
+  --color-border-4: #86909c;
+
+  /* 填充色 */
+  --color-fill-1: #f7f8fa;
+  --color-fill-2: #f2f3f5;
+  --color-fill-3: #e5e6e8;
+  --color-fill-4: #c9cdd4;
+
+  /* 成功 */
+  --color-success-1: #e8ffea;
+  --color-success-2: #aff0b5;
+  --color-success-3: #7be188;
+  --color-success-4: #4cd263;
+  --color-success-5: #23c343;
+  --color-success-6: #00b42a;
+  --color-success-7: #009a29;
+
+  /* 警告 */
+  --color-warning-1: #fff7eb;
+  --color-warning-2: #ffe4ba;
+  --color-warning-3: #ffcf8b;
+  --color-warning-4: #ffb65d;
+  --color-warning-5: #ff9a2e;
+  --color-warning-6: #ff7d00;
+  --color-warning-7: #d25f00;
+
+  /* 错误 */
+  --color-danger-1: #ffece8;
+  --color-danger-2: #fdcdc5;
+  --color-danger-3: #fbaca3;
+  --color-danger-4: #f98981;
+  --color-danger-5: #f76560;
+  --color-danger-6: #f53f3f;
+  --color-danger-7: #cb2634;
+
+  /* 链接 */
+  --color-link-1: #e8f3ff;
+  --color-link-2: #bedaff;
+  --color-link-3: #94bfff;
+  --color-link-4: #6aa1ff;
+  --color-link-5: #4080ff;
+  --color-link-6: #165dff;
+  --color-link-7: #0e42d2;
+
+  /* 遮罩色 */
+  --color-mask-1: rgba(0, 0, 0, 0.6);
+}

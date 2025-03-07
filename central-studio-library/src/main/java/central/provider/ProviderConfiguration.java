@@ -45,21 +45,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-/**
- * Provider Configuration
- * <p>
- * 数据服务中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/10
- */
+/// Provider Configuration
+///
+/// 数据服务中心配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableGraphQLStub(packages = "central.provider.graphql")
 @EnableConfigurationProperties(ProviderProperties.class)
 public class ProviderConfiguration {
-    /**
-     * 其它数据用的 HTTP 客户端
-     */
+    /// 其它数据用的 HTTP 客户端
     @Bean
     public ProviderClient providerClient(ProviderProperties properties) {
         return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
@@ -72,9 +67,7 @@ public class ProviderConfiguration {
                 .target(ProviderClient.class);
     }
 
-    /**
-     * 租户用的 HTTP 客户端
-     */
+    /// 租户用的 HTTP 客户端
     @Bean
     public ProviderClient masterProviderClient(ProviderProperties properties) {
         return HttpProxyFactory.builder(ApacheHttpClientExecutor.Default())
@@ -87,9 +80,7 @@ public class ProviderConfiguration {
                 .target(ProviderClient.class);
     }
 
-    /**
-     * 热数据容器
-     */
+    /// 热数据容器
     @Bean(initMethod = "initialized", destroyMethod = "destroy")
     public DataContext dataContext(ApplicationContext applicationContext, ProviderProperties properties) {
         var context = new ScheduledDataContext(new SpringBeanSupplier(applicationContext));

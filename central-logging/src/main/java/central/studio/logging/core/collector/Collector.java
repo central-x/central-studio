@@ -30,26 +30,19 @@ import lombok.Setter;
 
 import java.util.List;
 
-/**
- * 采集日志
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 采集日志
+///
+/// @author Alan Yeh
 public abstract class Collector {
 
-    /**
-     * 采集器代理
-     * <p>
-     * 子类采集到的日志需要交给代理去处理
-     */
+    /// 采集器代理
+    ///
+    /// 子类采集到的日志需要交给代理去处理
     @Getter
     @Setter
     private Collector delegate;
 
-    /**
-     * 采集日志
-     */
+    /// 采集日志
     public void collect(List<Log> logs) {
         this.getDelegate().collect(logs);
     }

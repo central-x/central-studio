@@ -47,24 +47,19 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Tenant Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Tenant Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestTenantController extends TestController {
 
     private static final String PATH = "/dashboard/api/saas/tenants";
 
-    /**
-     * @see TenantController#add
-     * @see TenantController#details
-     * @see TenantController#page
-     * @see TenantController#delete
-     */
+    /// @see TenantController#add
+    /// @see TenantController#details
+    /// @see TenantController#page
+    /// @see TenantController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DatabaseLogic databaseLogic) throws Exception {
         // 新增
@@ -149,12 +144,10 @@ public class TestTenantController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see TenantController#add
-     * @see TenantController#update
-     * @see TenantController#details
-     * @see TenantController#delete
-     */
+    /// @see TenantController#add
+    /// @see TenantController#update
+    /// @see TenantController#details
+    /// @see TenantController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         // 新增

@@ -32,14 +32,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Gateway Predicate
- * <p>
- * 断言
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Predicate
+///
+/// 断言
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

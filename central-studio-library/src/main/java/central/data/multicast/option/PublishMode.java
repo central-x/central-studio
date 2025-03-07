@@ -29,12 +29,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 广播模式
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 广播模式
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum PublishMode implements OptionalEnum<String> {

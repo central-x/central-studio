@@ -53,12 +53,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Password Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/10/07
- */
+/// Password Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestIdentityPasswordProvider extends TestProvider {
 
@@ -91,13 +88,11 @@ public class TestIdentityPasswordProvider extends TestProvider {
         this.accountPersistence.deleteBy(Conditions.of(AccountEntity.class).eq(AccountEntity::getUsername, "test"), tenant.getCode());
     }
 
-    /**
-     * @see IdentityPasswordProvider#insert
-     * @see IdentityPasswordProvider#findById
-     * @see IdentityPasswordProvider#findByIds
-     * @see IdentityPasswordProvider#countBy
-     * @see IdentityPasswordProvider#deleteByIds
-     */
+    /// @see IdentityPasswordProvider#insert
+    /// @see IdentityPasswordProvider#findById
+    /// @see IdentityPasswordProvider#findByIds
+    /// @see IdentityPasswordProvider#countBy
+    /// @see IdentityPasswordProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -160,12 +155,10 @@ public class TestIdentityPasswordProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see IdentityPasswordProvider#insertBatch
-     * @see IdentityPasswordProvider#findBy
-     * @see IdentityPasswordProvider#pageBy
-     * @see IdentityPasswordProvider#deleteBy
-     */
+    /// @see IdentityPasswordProvider#insertBatch
+    /// @see IdentityPasswordProvider#findBy
+    /// @see IdentityPasswordProvider#pageBy
+    /// @see IdentityPasswordProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

@@ -45,12 +45,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 行政区划
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 行政区划
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -100,7 +97,7 @@ public class AreaEntity extends ModifiableEntity implements Tenantable {
     @Size(min = 1, max = 32)
     private String tenantCode;
 
-    public void fromInput(AreaInput input){
+    public void fromInput(AreaInput input) {
         this.setId(input.getId());
         this.setParentId(Objectx.getOrDefault(input.getParentId(), ""));
         this.setCode(input.getCode());

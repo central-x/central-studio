@@ -32,14 +32,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-/**
- * Default Predicate Resolver
- * <p>
- * 默认断言解析
- *
- * @author Alan Yeh
- * @since 2024/05/19
- */
+/// Default Predicate Resolver
+///
+/// 默认断言解析
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class DefaultPredicateResolver implements PredicateResolver {
 

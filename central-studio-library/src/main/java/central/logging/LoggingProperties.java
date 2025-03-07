@@ -27,19 +27,14 @@ package central.logging;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Logging Properties
- * <p>
- * 日志中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/21
- */
+/// Logging Properties
+///
+/// 日志中心配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties(prefix = "studio.logging")
 public class LoggingProperties {
-    /**
-     * 访问地址
-     */
+    /// 访问地址
     private String url = "http://central-gateway";
 }

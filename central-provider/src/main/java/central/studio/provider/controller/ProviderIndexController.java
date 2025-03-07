@@ -4,12 +4,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Index
- *
- * @author Alan Yeh
- * @since 2022/07/07
- */
+/// Index
+///
+/// @author Alan Yeh
 @RestController
 @RequestMapping("/provider")
 public class ProviderIndexController {

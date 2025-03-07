@@ -27,12 +27,9 @@ package central.studio.multicast.core.impl.baidu;
 import central.multicast.client.body.StandardBody;
 import central.studio.multicast.core.Broadcaster;
 
-/**
- * 苹果广播
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 苹果广播
+///
+/// @author Alan Yeh
 public class AppleBroadcaster implements Broadcaster<Object> {
     @Override
     public void standardPublish(StandardBody body) {

@@ -30,27 +30,16 @@ import central.studio.identity.controller.sso.cas.support.Scope;
 import java.time.Duration;
 import java.util.Set;
 
-/**
- * 中央认证服务（CAS）配置
- *
- * @author Alan Yeh
- * @since 2023/02/15
- */
+/// 中央认证服务（CAS）配置
+///
+/// @author Alan Yeh
 public interface CasAttributes {
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     Attribute<Boolean> ENABLED = Attribute.of("cas.enabled", false);
-    /**
-     * 授权范围
-     */
+    /// 授权范围
     Attribute<Set<Scope>> SCOPES = Attribute.of("cas.scopes", Set.of(Scope.BASIC));
-    /**
-     * 服务凭证（Service Ticket）有效期
-     */
+    /// 服务凭证（Service Ticket）有效期
     Attribute<Duration> TIMEOUT = Attribute.of("cas.timeout", Duration.ofMinutes(10));
-    /**
-     * 是否启用单点退出
-     */
+    /// 是否启用单点退出
     Attribute<Boolean> SINGLE_LOGOUT_ENABLED = Attribute.of("cas.single_logout", true);
 }

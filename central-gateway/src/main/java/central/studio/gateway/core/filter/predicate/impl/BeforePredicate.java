@@ -24,9 +24,9 @@
 
 package central.studio.gateway.core.filter.predicate.impl;
 
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.validation.Label;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
@@ -34,14 +34,11 @@ import org.springframework.web.server.ServerWebExchange;
 
 import java.sql.Timestamp;
 
-/**
- * Before 断言
- * <p>
- * 判断请求进来的当前时间是否在配置的时间之前
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Before 断言
+///
+/// 判断请求进来的当前时间是否在配置的时间之前
+///
+/// @author Alan Yeh
 public class BeforePredicate implements Predicate {
 
     @Setter

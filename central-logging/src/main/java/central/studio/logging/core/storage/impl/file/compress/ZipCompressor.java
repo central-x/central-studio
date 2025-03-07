@@ -34,12 +34,9 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.zip.ZipOutputStream;
 
-/**
- * ZIP 压缩
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// ZIP 压缩
+///
+/// @author Alan Yeh
 public class ZipCompressor implements Compressor {
     @Override
     public void compress(File file) throws IOException {

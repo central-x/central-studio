@@ -29,12 +29,9 @@ import central.studio.gateway.core.filter.predicate.impl.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 断言类型
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 断言类型
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum PredicateType implements OptionalEnum<String> {

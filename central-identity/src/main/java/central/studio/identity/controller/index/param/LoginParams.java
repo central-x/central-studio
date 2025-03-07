@@ -33,12 +33,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 登录参数
- *
- * @author Alan Yeh
- * @since 2023/03/18
- */
+/// 登录参数
+///
+/// @author Alan Yeh
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -50,9 +47,7 @@ public class LoginParams implements Serializable {
     @NotBlank
     private String account;
 
-    /**
-     * 密码需要经过 SHA256 后再提交
-     */
+    /// 密码需要经过 SHA256 后再提交
     @Label("密码")
     @NotBlank
     private String password;

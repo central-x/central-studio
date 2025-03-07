@@ -33,12 +33,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * 授权范围
- *
- * @author Alan Yeh
- * @since 2022/11/07
- */
+/// 授权范围
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum GrantScope implements OptionalEnum<String> {

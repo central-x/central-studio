@@ -27,14 +27,11 @@ package central.gateway;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Gateway Configuration
- * <p>
- * 网关配置
- *
- * @author Alan Yeh
- * @since 2023/09/19
- */
+/// Gateway Configuration
+///
+/// 网关配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableConfigurationProperties(GatewayProperties.class)
 public class GatewayConfiguration {

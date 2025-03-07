@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.identity.mapper;
 
-import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.identity.entity.IdentityPasswordEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Identity Password
- * <p>
- * 密码
- *
- * @author Alan Yeh
- * @since 2022/10/07
- */
+/// Identity Password
+///
+/// 密码
+///
+/// @author Alan Yeh
 @Repository
 public interface IdentityPasswordMapper extends Mapper<IdentityPasswordEntity> {
 }

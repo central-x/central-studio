@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.storage.mapper;
 
-import central.studio.provider.database.persistence.storage.entity.StorageFileEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.storage.entity.StorageFileEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Storage File
- * <p>
- * 文件
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage File
+///
+/// 文件
+///
+/// @author Alan Yeh
 @Repository
 public interface StorageFileMapper extends Mapper<StorageFileEntity> {
 }

@@ -33,14 +33,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Storage File
- * <p>
- * 文件
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage File
+///
+/// 文件
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

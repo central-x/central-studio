@@ -37,11 +37,17 @@ import central.studio.provider.database.persistence.authority.MenuPersistence;
 import central.studio.provider.database.persistence.authority.PermissionPersistence;
 import central.studio.provider.database.persistence.authority.RolePermissionPersistence;
 import central.studio.provider.database.persistence.authority.RolePersistence;
-import central.studio.provider.database.persistence.authority.entity.*;
+import central.studio.provider.database.persistence.authority.entity.MenuEntity;
+import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
+import central.studio.provider.database.persistence.authority.entity.RoleEntity;
+import central.studio.provider.database.persistence.authority.entity.RolePermissionEntity;
 import central.studio.provider.graphql.TestContext;
 import central.util.Listx;
 import lombok.Setter;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -50,12 +56,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Role Permission Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2024/12/15
- */
+/// Role Permission Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestRolePermissionProvider {
 
@@ -149,12 +152,10 @@ public class TestRolePermissionProvider {
         return rolePersistence.findFirstBy(Columns.all(), Conditions.of(RoleEntity.class).eq(RoleEntity::getCode, "test"), null, this.context.getTenant().getCode());
     }
 
-    /**
-     * @see RolePermissionProvider#insert
-     * @see RolePermissionProvider#countBy
-     * @see RolePermissionProvider#findById
-     * @see RolePermissionProvider#deleteByIds
-     */
+    /// @see RolePermissionProvider#insert
+    /// @see RolePermissionProvider#countBy
+    /// @see RolePermissionProvider#findById
+    /// @see RolePermissionProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -204,13 +205,11 @@ public class TestRolePermissionProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see RolePermissionProvider#insertBatch
-     * @see RolePermissionProvider#findByIds
-     * @see RolePermissionProvider#findBy
-     * @see RolePermissionProvider#pageBy
-     * @see RolePermissionProvider#deleteBy
-     */
+    /// @see RolePermissionProvider#insertBatch
+    /// @see RolePermissionProvider#findByIds
+    /// @see RolePermissionProvider#findBy
+    /// @see RolePermissionProvider#pageBy
+    /// @see RolePermissionProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

@@ -40,12 +40,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 租户信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 租户信息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

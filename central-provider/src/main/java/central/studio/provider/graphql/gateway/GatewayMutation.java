@@ -24,29 +24,24 @@
 
 package central.studio.provider.graphql.gateway;
 
-import central.studio.provider.graphql.gateway.mutation.GatewayFilterMutation;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.gateway.mutation.GatewayFilterMutation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Central Gateway Mutation
- * <p>
- * 网关中心修改
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Central Gateway Mutation
+///
+/// 网关中心修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "gateway", types = {GatewayFilterMutation.class})
 public class GatewayMutation {
 
-    /**
-     * Gateway Filter
-     * <p>
-     * 过滤器
-     */
+    /// Gateway Filter
+    ///
+    /// 过滤器
     @GraphQLGetter
     public GatewayFilterMutation getFilters(@Autowired GatewayFilterMutation mutation) {
         return mutation;

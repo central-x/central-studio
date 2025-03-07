@@ -24,10 +24,10 @@
 
 package central.studio.gateway.core.filter.global.routing;
 
+import central.lang.Stringx;
+import central.studio.gateway.core.attribute.ExchangeAttributes;
 import central.studio.gateway.core.filter.Filter;
 import central.studio.gateway.core.filter.FilterChain;
-import central.studio.gateway.core.attribute.ExchangeAttributes;
-import central.lang.Stringx;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
@@ -35,12 +35,9 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-/**
- * 不支持的协议
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 不支持的协议
+///
+/// @author Alan Yeh
 public class NotSupportedProtocolRoutingFilter implements Filter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {

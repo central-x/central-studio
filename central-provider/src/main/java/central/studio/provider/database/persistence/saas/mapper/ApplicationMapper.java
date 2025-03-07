@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.saas.mapper;
 
-import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.saas.entity.ApplicationEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 应用信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 应用信息
+///
+/// @author Alan Yeh
 @Repository
 public interface ApplicationMapper extends Mapper<ApplicationEntity> {
 }

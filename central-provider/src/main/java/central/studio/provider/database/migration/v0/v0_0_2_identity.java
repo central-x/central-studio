@@ -31,12 +31,9 @@ import central.util.Version;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * 初始化认证中心
- *
- * @author Alan Yeh
- * @since 2022/10/26
- */
+/// 初始化认证中心
+///
+/// @author Alan Yeh
 public class v0_0_2_identity extends Migration {
     public v0_0_2_identity() {
         super(Version.of("0.0.1"), Version.of("0.0.2"));

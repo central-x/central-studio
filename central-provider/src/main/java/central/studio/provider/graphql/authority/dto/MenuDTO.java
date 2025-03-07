@@ -25,16 +25,16 @@
 package central.studio.provider.graphql.authority.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.database.persistence.authority.entity.MenuEntity;
-import central.studio.provider.database.persistence.authority.MenuPersistence;
-import central.studio.provider.database.persistence.authority.PermissionPersistence;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.authority.MenuPersistence;
+import central.studio.provider.database.persistence.authority.PermissionPersistence;
+import central.studio.provider.database.persistence.authority.entity.MenuEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
+import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import central.web.XForwardedHeaders;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
@@ -47,22 +47,18 @@ import java.io.Serial;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Menu
- * 菜单
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// Menu
+///
+/// 菜单
+///
+/// @author Alan Yeh
 @GraphQLType("Menu")
 @EqualsAndHashCode(callSuper = true)
 public class MenuDTO extends MenuEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 7340521210113303617L;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataFetchingEnvironment environment,
                                                             DataLoader<String, ApplicationDTO> loader) {
@@ -70,18 +66,14 @@ public class MenuDTO extends MenuEntity implements DTO {
     }
 
 
-    /**
-     * 父菜单
-     */
+    /// 父菜单
     @GraphQLGetter
     public CompletableFuture<MenuDTO> getParent(DataFetchingEnvironment environment,
                                                 DataLoader<String, MenuDTO> loader) {
         return loader.load(this.getParentId(), environment);
     }
 
-    /**
-     * 子菜单
-     */
+    /// 子菜单
     @GraphQLGetter
     public List<MenuDTO> getChildren(DataFetchingEnvironment environment,
                                      @Autowired MenuPersistence persistence,
@@ -94,9 +86,7 @@ public class MenuDTO extends MenuEntity implements DTO {
         return DTO.wrap(data, MenuDTO.class);
     }
 
-    /**
-     * 权限信息
-     */
+    /// 权限信息
     @GraphQLGetter
     public List<PermissionDTO> getPermissions(DataFetchingEnvironment environment,
                                               @Autowired PermissionPersistence persistence,
@@ -109,18 +99,14 @@ public class MenuDTO extends MenuEntity implements DTO {
         return DTO.wrap(data, PermissionDTO.class);
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataFetchingEnvironment environment,
                                                     DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId(), environment);
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataFetchingEnvironment environment,
                                                      DataLoader<String, AccountDTO> loader) {

@@ -35,22 +35,17 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
-/**
- * 授权参数
- *
- * @author Alan Yeh
- * @since 2023/04/16
- */
+/// 授权参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class GrantParams implements Serializable {
     @Serial
     private static final long serialVersionUID = 3239983781501295240L;
-    
-    /**
-     * 用户同意的授权列表
-     */
+
+    /// 用户同意的授权列表
     @Label("授权列表")
     @Enums(GrantScope.class)
     private Set<String> scope;

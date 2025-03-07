@@ -39,21 +39,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 应用配置
- *
- * @author Alan Yeh
- * @since 2022/10/09
- */
+/// 应用配置
+///
+/// @author Alan Yeh
 @EnableProbe
 @Configuration
 @EnableCentralProvider
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ApplicationConfiguration {
 
-    /**
-     * 插件工厂
-     */
+    /// 插件工厂
     @Bean
     public PlugletFactory plugletFactory(ApplicationContext applicationContext) {
         var factory = new PlugletFactory();
@@ -62,18 +57,14 @@ public class ApplicationConfiguration {
         return factory;
     }
 
-    /**
-     * 过滤器类型解析器
-     */
+    /// 过滤器类型解析器
     @Bean
     @ConditionalOnMissingBean(FilterResolver.class)
     public FilterResolver filterResolver(PlugletFactory factory) {
         return new DefaultFilterResolver(factory);
     }
 
-    /**
-     * 路由断言类型解析器
-     */
+    /// 路由断言类型解析器
     @Bean
     @ConditionalOnMissingBean(PredicateResolver.class)
     public PredicateResolver predicateResolver(PlugletFactory factory) {

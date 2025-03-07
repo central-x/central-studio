@@ -26,8 +26,8 @@ package central.data.system;
 
 import central.bean.*;
 import central.data.organization.Account;
-import central.data.system.option.DatabaseType;
 import central.data.saas.Application;
+import central.data.system.option.DatabaseType;
 import central.sql.data.ModifiableEntity;
 import central.util.Listx;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -39,12 +39,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 数据库
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 数据库
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,83 +50,59 @@ public class Database extends ModifiableEntity implements Codeable, Available, R
     @Serial
     private static final long serialVersionUID = -6675888705633426897L;
 
-    /**
-     * 应用主键
-     */
+    /// 应用主键
     @Nonnull
     private String applicationId;
 
-    /**
-     * 应用信息
-     */
+    /// 应用信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 类型
-     *
-     * @see DatabaseType
-     */
+    /// 类型
+    ///
+    /// @see DatabaseType
     @Nonnull
     private String type;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 备注
-     */
+    /// 备注
     @Nullable
     private String remark;
 
-    /**
-     * 主数据库属性
-     */
+    /// 主数据库属性
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private DatabaseProperties master;
 
-    /**
-     * 从数据库属性
-     */
+    /// 从数据库属性
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<DatabaseProperties> slaves;
 
-    /**
-     * 初始化参数(JSON)
-     * <p>
-     * {@code {"master": "", "slaves": ""}}
-     */
+    /// 初始化参数(JSON)
+    ///
+    /// {@code {"master": "", "slaves": ""}}
     @Nonnull
     private String params;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

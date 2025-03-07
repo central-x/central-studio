@@ -51,12 +51,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Account Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/09/26
- */
+/// Account Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestAccountProvider extends TestProvider {
 
@@ -89,9 +86,7 @@ public class TestAccountProvider extends TestProvider {
         this.persistence.deleteBy(Conditions.of(AccountEntity.class).like(AccountEntity::getUsername, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see AccountProvider#findById
-     */
+    /// @see AccountProvider#findById
     @Test
     public void case1() {
         // 查询超级管理员数据
@@ -116,14 +111,12 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(this.properties.getSupervisor().getName(), supervisor.getModifier().getName());
     }
 
-    /**
-     * @see AccountProvider#insert
-     * @see AccountProvider#findById
-     * @see AccountProvider#update
-     * @see AccountProvider#findByIds
-     * @see AccountProvider#countBy
-     * @see AccountProvider#deleteByIds
-     */
+    /// @see AccountProvider#insert
+    /// @see AccountProvider#findById
+    /// @see AccountProvider#update
+    /// @see AccountProvider#findByIds
+    /// @see AccountProvider#countBy
+    /// @see AccountProvider#deleteByIds
     @Test
     public void case2() {
         var tenant = this.context.getTenant();
@@ -218,13 +211,11 @@ public class TestAccountProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see AccountProvider#insertBatch
-     * @see AccountProvider#findBy
-     * @see AccountProvider#updateBatch
-     * @see AccountProvider#pageBy
-     * @see AccountProvider#deleteBy
-     */
+    /// @see AccountProvider#insertBatch
+    /// @see AccountProvider#findBy
+    /// @see AccountProvider#updateBatch
+    /// @see AccountProvider#pageBy
+    /// @see AccountProvider#deleteBy
     @Test
     public void case3() {
         var tenant = this.context.getTenant();

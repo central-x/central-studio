@@ -24,8 +24,8 @@
 
 package central.provider.scheduled.fetcher.gateway;
 
-import central.provider.scheduled.DataContainer;
 import central.data.gateway.GatewayFilter;
+import central.provider.scheduled.DataContainer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,22 +35,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 网关中心数据容器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 网关中心数据容器
+///
+/// @author Alan Yeh
 @NoArgsConstructor
 public class GatewayContainer extends DataContainer {
     @Serial
     private static final long serialVersionUID = -6116018017073023899L;
 
-    /**
-     * 过滤器
-     * <p>
-     * tenant -> filters
-     */
+    /// 过滤器
+    ///
+    /// tenant -> filters
     @Getter
     private final Map<String, List<GatewayFilter>> filters = new HashMap<>();
 
@@ -58,11 +53,9 @@ public class GatewayContainer extends DataContainer {
         this.filters.putAll(filters);
     }
 
-    /**
-     * 获取过滤器
-     *
-     * @param tenant 租户标识
-     */
+    /// 获取过滤器
+    ///
+    /// @param tenant 租户标识
     public List<GatewayFilter> getFilters(String tenant) {
         return new ArrayList<>(this.filters.computeIfAbsent(tenant, key -> new ArrayList<>()));
     }

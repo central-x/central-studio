@@ -31,14 +31,11 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * Identity Password Provider
- * <p>
- * 密码
- *
- * @author Alan Yeh
- * @since 2022/10/07
- */
+/// Identity Password Provider
+///
+/// 密码
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("identity.passwords")
 @GraphQLStub(path = "identity", client = "providerClient")

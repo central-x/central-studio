@@ -45,14 +45,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * LogCollectorProvider Test Cases
- * <p>
- * 日志采集器
- *
- * @author Alan Yeh
- * @since 2022/10/26
- */
+/// LogCollectorProvider Test Cases
+///
+/// 日志采集器
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestLogCollectorProvider {
 
@@ -68,14 +65,12 @@ public class TestLogCollectorProvider {
         this.persistence.deleteBy(Conditions.of(LogCollectorEntity.class).like(LogCollectorEntity::getCode, "test%"));
     }
 
-    /**
-     * @see LogCollectorProvider#insert
-     * @see LogCollectorProvider#findById
-     * @see LogCollectorProvider#update
-     * @see LogCollectorProvider#findByIds
-     * @see LogCollectorProvider#countBy
-     * @see LogCollectorProvider#deleteByIds
-     */
+    /// @see LogCollectorProvider#insert
+    /// @see LogCollectorProvider#findById
+    /// @see LogCollectorProvider#update
+    /// @see LogCollectorProvider#findByIds
+    /// @see LogCollectorProvider#countBy
+    /// @see LogCollectorProvider#deleteByIds
     @Test
     public void case1() {
         var input = LogCollectorInput.builder()
@@ -147,13 +142,11 @@ public class TestLogCollectorProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see LogCollectorProvider#insertBatch
-     * @see LogCollectorProvider#findBy
-     * @see LogCollectorProvider#updateBatch
-     * @see LogCollectorProvider#pageBy
-     * @see LogCollectorProvider#deleteBy
-     */
+    /// @see LogCollectorProvider#insertBatch
+    /// @see LogCollectorProvider#findBy
+    /// @see LogCollectorProvider#updateBatch
+    /// @see LogCollectorProvider#pageBy
+    /// @see LogCollectorProvider#deleteBy
     @Test
     public void case2() {
         var input = LogCollectorInput.builder()

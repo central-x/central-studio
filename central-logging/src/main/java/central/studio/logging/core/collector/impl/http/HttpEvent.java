@@ -31,12 +31,9 @@ import org.springframework.context.ApplicationEvent;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * Http 日志收集事件
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// Http 日志收集事件
+///
+/// @author Alan Yeh
 public class HttpEvent extends ApplicationEvent {
     @Serial
     private static final long serialVersionUID = -1706322837701010796L;

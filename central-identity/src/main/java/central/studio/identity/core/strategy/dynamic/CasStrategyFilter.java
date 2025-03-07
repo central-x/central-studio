@@ -27,12 +27,12 @@ package central.studio.identity.core.strategy.dynamic;
 import central.lang.BooleanEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.studio.identity.controller.sso.cas.support.Scope;
 import central.studio.identity.core.attribute.CasAttributes;
 import central.studio.identity.core.strategy.StrategyFilter;
 import central.studio.identity.core.strategy.StrategyFilterChain;
-import central.starter.webmvc.servlet.WebMvcRequest;
-import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
 import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.NotEmpty;
@@ -43,12 +43,9 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * CAS 策略
- *
- * @author Alan Yeh
- * @since 2022/11/06
- */
+/// CAS 策略
+///
+/// @author Alan Yeh
 public class CasStrategyFilter implements StrategyFilter {
 
     @Control(label = "说明", type = ControlType.LABEL,

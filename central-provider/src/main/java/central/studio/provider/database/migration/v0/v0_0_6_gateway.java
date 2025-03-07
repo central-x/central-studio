@@ -31,12 +31,9 @@ import central.util.Version;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * 初始化网关中心
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 初始化网关中心
+///
+/// @author Alan Yeh
 public class v0_0_6_gateway extends Migration {
     public v0_0_6_gateway() {
         super(Version.of("0.0.5"), Version.of("0.0.6"));

@@ -48,14 +48,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Tenant Mutation
- * <p>
- * 租户修改
- *
- * @author Alan Yeh
- * @since 2022/10/04
- */
+/// Tenant Mutation
+///
+/// 租户修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "saas/mutation", types = {TenantDTO.class, TenantApplicationMutation.class})
 public class TenantMutation {
@@ -63,13 +60,11 @@ public class TenantMutation {
     @Setter(onMethod_ = @Autowired)
     private TenantPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull TenantDTO insert(@RequestParam @Validated({Insert.class, Default.class}) TenantInput input,
                                      @RequestParam String operator,
@@ -80,13 +75,11 @@ public class TenantMutation {
         return DTO.wrap(data, TenantDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<TenantDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<TenantInput> inputs,
                                                 @RequestParam String operator,
@@ -97,13 +90,11 @@ public class TenantMutation {
         return DTO.wrap(data, TenantDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull TenantDTO update(@RequestParam @Validated({Update.class, Default.class}) TenantInput input,
                                      @RequestParam String operator,
@@ -114,13 +105,11 @@ public class TenantMutation {
         return DTO.wrap(data, TenantDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<TenantDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<TenantInput> inputs,
                                                 @RequestParam String operator,
@@ -131,12 +120,10 @@ public class TenantMutation {
         return DTO.wrap(data, TenantDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -145,12 +132,10 @@ public class TenantMutation {
         return this.persistence.deleteByIds(ids);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<TenantEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -163,10 +148,8 @@ public class TenantMutation {
     // 关联查询
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Tenant Application Mutation
-     * 租户与应用关联关系修改
-     */
+    /// Tenant Application Mutation
+    /// 租户与应用关联关系修改
     @GraphQLGetter
     public TenantApplicationMutation getApplications(@Autowired TenantApplicationMutation mutation) {
         return mutation;

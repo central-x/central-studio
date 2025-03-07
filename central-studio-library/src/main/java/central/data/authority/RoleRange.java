@@ -38,14 +38,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Role Range Relation
- * <p>
- * 角色与范围关联关系
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Range Relation
+///
+/// 角色与范围关联关系
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,57 +51,41 @@ public class RoleRange extends Entity {
     @Serial
     private static final long serialVersionUID = -6531487161414182643L;
 
-    /**
-     * 应用主键
-     */
+    /// 应用主键
     @Nonnull
     private String applicationId;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 角色主键
-     */
+    /// 角色主键
     @Nonnull
     private String roleId;
 
-    /**
-     * 角色
-     */
+    /// 角色
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Role role;
 
-    /**
-     * 范围分类
-     *
-     * @see RangeCategory
-     */
+    /// 范围分类
+    ///
+    /// @see RangeCategory
     @Nonnull
     private String category;
 
-    /**
-     * 授权数据类型
-     *
-     * @see RangeType
-     */
+    /// 授权数据类型
+    ///
+    /// @see RangeType
     @Nonnull
     private String type;
 
-    /**
-     * 数据主键
-     */
+    /// 数据主键
     @Nonnull
     private String dataId;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;

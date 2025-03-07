@@ -30,28 +30,19 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-/**
- * 标准的网关过滤器调用链
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 标准的网关过滤器调用链
+///
+/// @author Alan Yeh
 public class StandardFilterChain implements FilterChain {
 
-    /**
-     * 待执行过滤器下标
-     */
+    /// 待执行过滤器下标
     private final int index;
 
-    /**
-     * 过滤器列表
-     */
+    /// 过滤器列表
     @Getter
     private final List<? extends Filter> filters;
 
-    /**
-     * 获取下一个调用链
-     */
+    /// 获取下一个调用链
     private StandardFilterChain next() {
         return new StandardFilterChain(this, this.index + 1);
     }
@@ -70,11 +61,9 @@ public class StandardFilterChain implements FilterChain {
         return new StandardFilterChain(filters);
     }
 
-    /**
-     * 执行调用链
-     *
-     * @param exchange 待过滤的 Server Web Exchange
-     */
+    /// 执行调用链
+    ///
+    /// @param exchange 待过滤的 Server Web Exchange
     @Override
     public Mono<Void> filter(ServerWebExchange exchange) {
         return Mono.defer(() -> {

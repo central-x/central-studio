@@ -33,14 +33,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Gateway Predicate Params
- * <p>
- * 网关断言入参
- *
- * @author Alan Yeh
- * @since 2024/11/15
- */
+/// Gateway Predicate Params
+///
+/// 网关断言入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

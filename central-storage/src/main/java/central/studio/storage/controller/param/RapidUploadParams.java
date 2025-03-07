@@ -34,12 +34,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 快速上传（秒传）参数
- *
- * @author Alan Yeh
- * @since 2022/11/01
- */
+/// 快速上传（秒传）参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

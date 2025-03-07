@@ -24,9 +24,9 @@
 
 package central.studio.gateway.core.filter.predicate.impl;
 
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.validation.Label;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
@@ -35,12 +35,9 @@ import org.springframework.web.server.ServerWebExchange;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 
-/**
- * 每日区间断言
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 每日区间断言
+///
+/// @author Alan Yeh
 public class DailyPredicate implements Predicate {
 
     @Setter

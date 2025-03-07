@@ -24,7 +24,8 @@
 
 package central.data.identity;
 
-import central.bean.*;
+import central.bean.Available;
+import central.bean.Nonnull;
 import central.data.organization.Account;
 import central.sql.data.Entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -35,14 +36,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Identity Password
- * <p>
- * 密码
- *
- * @author Alan Yeh
- * @since 2022/10/07
- */
+/// Identity Password
+///
+/// 密码
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,34 +49,24 @@ public class IdentityPassword extends Entity implements Available {
     @Serial
     private static final long serialVersionUID = -5570891457253320202L;
 
-    /**
-     * 帐户主键
-     */
+    /// 帐户主键
     @Nonnull
     private String accountId;
 
-    /**
-     * 帐户
-     */
+    /// 帐户
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Account account;
 
-    /**
-     * 密码值
-     */
+    /// 密码值
     @Nonnull
     private String value;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;

@@ -31,15 +31,14 @@ import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.studio.provider.database.core.Database;
 import central.validation.Label;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Setter;
 
-/**
- * H2 数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// H2 数据库
+///
+/// @author Alan Yeh
 public class H2Database extends Database {
 
     @Setter

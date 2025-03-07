@@ -39,75 +39,62 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * 授权查询
- *
- * @author Alan Yeh
- * @since 2024/05/27
- */
+/// 授权查询
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("authority.authorizations")
 @GraphQLStub(path = "authority", client = "providerClient")
 public interface AuthorizationProvider extends Provider<Menu, MenuInput> {
 
-    /**
-     * 根据应用标识和应用密钥获取应用信息
-     *
-     * @param code   应用标识
-     * @param secret 应用密钥
-     * @param tenant 租户标识
-     * @return 应用信息
-     */
+    /// 根据应用标识和应用密钥获取应用信息
+    ///
+    /// @param code   应用标识
+    /// @param secret 应用密钥
+    /// @param tenant 租户标识
+    /// @return 应用信息
     Application findApplication(@RequestParam String code, @RequestParam String secret, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
     Application findApplication(String code, String secret);
 
-    /**
-     * 获取指定帐户允许访问的应用列表
-     *
-     * @param accountId 帐户主键
-     * @param type      应用菜单类型
-     * @param tenant    租户标识
-     * @return 应用列表
-     */
-    List<Application> findApplications(@RequestParam String accountId, @RequestParam(required = false)  String type, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    /// 获取指定帐户允许访问的应用列表
+    ///
+    /// @param accountId 帐户主键
+    /// @param type      应用菜单类型
+    /// @param tenant    租户标识
+    /// @return 应用列表
+    List<Application> findApplications(@RequestParam String accountId, @RequestParam(required = false) String type, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Application> findApplications(@RequestParam String accountId, @RequestParam(required = false)  String type);
+    List<Application> findApplications(@RequestParam String accountId, @RequestParam(required = false) String type);
 
-    /**
-     * 获取指定帐户在指定应用下被授权的角色清单
-     *
-     * @param accountId     帐户主键
-     * @param applicationId 应用主键
-     * @param tenant        租户标识
-     * @return 角色清单
-     */
-    List<Role> findRoles(@RequestParam String accountId, @RequestParam(required = false)  String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    /// 获取指定帐户在指定应用下被授权的角色清单
+    ///
+    /// @param accountId     帐户主键
+    /// @param applicationId 应用主键
+    /// @param tenant        租户标识
+    /// @return 角色清单
+    List<Role> findRoles(@RequestParam String accountId, @RequestParam(required = false) String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Role> findRoles(@RequestParam String accountId, @RequestParam(required = false)  String applicationId);
+    List<Role> findRoles(@RequestParam String accountId, @RequestParam(required = false) String applicationId);
 
-    /**
-     * 获取指定帐户在指定应用下被授权的菜单清单
-     *
-     * @param accountId     帐户主键
-     * @param type          应用菜单类型
-     * @param applicationId 应用主键
-     * @param tenant        租户标识
-     * @return 菜单清单
-     */
-    List<Menu> findMenus(@RequestParam String accountId, @RequestParam(required = false) String type, @RequestParam(required = false)  String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    /// 获取指定帐户在指定应用下被授权的菜单清单
+    ///
+    /// @param accountId     帐户主键
+    /// @param type          应用菜单类型
+    /// @param applicationId 应用主键
+    /// @param tenant        租户标识
+    /// @return 菜单清单
+    List<Menu> findMenus(@RequestParam String accountId, @RequestParam(required = false) String type, @RequestParam(required = false) String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Menu> findMenus(@RequestParam String accountId, @RequestParam(required = false)  String type, @RequestParam(required = false)  String applicationId);
+    List<Menu> findMenus(@RequestParam String accountId, @RequestParam(required = false) String type, @RequestParam(required = false) String applicationId);
 
-    /**
-     * 获取指定帐户在指定应用下被授权的权限列表
-     *
-     * @param accountId     帐户主键
-     * @param applicationId 应用主键
-     * @param tenant        租户标识
-     * @return 权限清单
-     */
-    List<Permission> findPermissions(@RequestParam String accountId, @RequestParam(required = false)  String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
+    /// 获取指定帐户在指定应用下被授权的权限列表
+    ///
+    /// @param accountId     帐户主键
+    /// @param applicationId 应用主键
+    /// @param tenant        租户标识
+    /// @return 权限清单
+    List<Permission> findPermissions(@RequestParam String accountId, @RequestParam(required = false) String applicationId, @RequestHeader(XForwardedHeaders.TENANT) String tenant);
 
-    List<Permission> findPermissions(@RequestParam String accountId, @RequestParam(required = false)  String applicationId);
+    List<Permission> findPermissions(@RequestParam String accountId, @RequestParam(required = false) String applicationId);
 }

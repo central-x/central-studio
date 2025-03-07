@@ -33,12 +33,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-/**
- * 验证码管理器
- *
- * @author Alan Yeh
- * @since 2023/05/29
- */
+/// 验证码管理器
+///
+/// @author Alan Yeh
 @Component
 @RequiredArgsConstructor
 public class DefaultCaptchaManager implements CaptchaManager {

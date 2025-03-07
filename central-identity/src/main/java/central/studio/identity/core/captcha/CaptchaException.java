@@ -29,12 +29,9 @@ import central.lang.Stringx;
 
 import java.io.Serial;
 
-/**
- * 验证码异常
- *
- * @author Alan Yeh
- * @since 2023/06/02
- */
+/// 验证码异常
+///
+/// @author Alan Yeh
 public class CaptchaException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 3367332525131620922L;

@@ -34,12 +34,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
-/**
- * 文件对象数据流
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 文件对象数据流
+///
+/// @author Alan Yeh
 public class FileObjectStream extends ObjectStream {
 
     private final File file;

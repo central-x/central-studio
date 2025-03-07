@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.authority.mapper;
 
-import central.studio.provider.database.persistence.authority.entity.MenuEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.authority.entity.MenuEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 菜单
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 菜单
+///
+/// @author Alan Yeh
 @Repository
 public interface MenuMapper extends Mapper<MenuEntity> {
 }

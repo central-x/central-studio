@@ -24,17 +24,12 @@
 
 package central.studio.identity.core.captcha;
 
-/**
- * 验证码生成器
- *
- * @author Alan Yeh
- * @since 2023/05/26
- */
+/// 验证码生成器
+///
+/// @author Alan Yeh
 public interface CaptchaGenerator {
-    /**
-     * 生成一个验证码
-     *
-     * @param code 验证码标识
-     */
+    /// 生成一个验证码
+    ///
+    /// @param code 验证码标识
     Captcha generator(String code);
 }

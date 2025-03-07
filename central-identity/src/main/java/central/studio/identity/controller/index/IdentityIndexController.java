@@ -34,9 +34,11 @@ import central.starter.webmvc.servlet.WebMvcResponse;
 import central.studio.identity.controller.index.param.IndexParams;
 import central.studio.identity.controller.index.param.LoginParams;
 import central.studio.identity.controller.index.support.LoginOptions;
+import central.studio.identity.controller.index.vo.IdentityRecordVo;
 import central.studio.identity.core.attribute.CaptchaAttributes;
 import central.studio.identity.core.attribute.SessionAttributes;
 import central.studio.identity.core.captcha.CaptchaManager;
+import central.util.Guidx;
 import com.auth0.jwt.JWT;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,15 +52,14 @@ import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-/**
- * 首页
- *
- * @author Alan Yeh
- * @since 2022/10/14
- */
+/// 首页
+///
+/// @author Alan Yeh
 @Controller
 @RequestMapping("/identity")
 public class IdentityIndexController {
@@ -75,9 +76,7 @@ public class IdentityIndexController {
     @Setter(onMethod_ = @Autowired)
     private CaptchaManager captchaManager;
 
-    /**
-     * 获取首页
-     */
+    /// 获取首页
     @GetMapping("/")
     public View index(@Validated IndexParams params,
                       WebMvcRequest request) {
@@ -106,9 +105,7 @@ public class IdentityIndexController {
         return new InternalResourceView("/identity/index.html");
     }
 
-    /**
-     * 获取当前已登录的用户信息
-     */
+    /// 获取当前已登录的用户信息
     @ResponseBody
     @GetMapping("/api/account")
     public Account getAccount(WebMvcRequest request) {
@@ -137,9 +134,123 @@ public class IdentityIndexController {
         return account;
     }
 
-    /**
-     * 获取登录选项
-     */
+    /// 获取会话信息
+    @ResponseBody
+    @GetMapping("/api/sessions")
+    public List<IdentityRecordVo> getSessions(WebMvcRequest request) {
+        // 检测会话有效性
+        var cookie = request.getRequiredAttribute(SessionAttributes.COOKIE);
+        var token = cookie.get(request);
+
+        if (Stringx.isNotBlank(token)) {
+            if (!verifier.verify(token)) {
+                token = null;
+            }
+        }
+
+        if (token == null) {
+            // 未登录或会话无效
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "未登录");
+        }
+
+        var decodedJwt = JWT.decode(token);
+
+        var account = provider.findById(decodedJwt.getSubject());
+        if (account == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, Stringx.format("用户[id={}]不存在", decodedJwt.getSubject()));
+        }
+
+        var records = List.of(
+                new IdentityRecordVo(
+                        Guidx.nextID(),
+                        Guidx.nextID(),
+                        "Guangzhou, China",
+                        "web",
+                        "127.0.0.1",
+                        "Safari on macOS",
+                        "online",
+                        account,
+                        account
+                ),
+                new IdentityRecordVo(
+                        Guidx.nextID(),
+                        Guidx.nextID(),
+                        "Guangzhou, China",
+                        "web",
+                        "192.168.0.1",
+                        "Microsoft Edge on Windows",
+                        "online",
+                        account,
+                        account
+                ),
+                new IdentityRecordVo(
+                        Guidx.nextID(),
+                        Guidx.nextID(),
+                        "Guangzhou, China",
+                        "web",
+                        "127.0.0.1",
+                        "Microsoft Edge on Windows",
+                        "offline",
+                        account,
+                        account
+                ),
+                new IdentityRecordVo(
+                        Guidx.nextID(),
+                        Guidx.nextID(),
+                        "Guangzhou, China",
+                        "web",
+                        "127.0.0.1",
+                        "Safari on macOS",
+                        "offline",
+                        account,
+                        account
+                ),
+                new IdentityRecordVo(
+                        Guidx.nextID(),
+                        Guidx.nextID(),
+                        "Guangzhou, China",
+                        "phone",
+                        "127.0.0.1",
+                        "Safari on iPhone",
+                        "offline",
+                        account,
+                        account
+                ),
+                new IdentityRecordVo(
+                        Guidx.nextID(),
+                        Guidx.nextID(),
+                        "Guangzhou, China",
+                        "phone",
+                        "127.0.0.1",
+                        "Safari on iPhone",
+                        "offline",
+                        account,
+                        account
+                ),
+                new IdentityRecordVo(
+                        Guidx.nextID(),
+                        Guidx.nextID(),
+                        "Guangzhou, China",
+                        "phone",
+                        "127.0.0.1",
+                        "Safari on iPhone",
+                        "offline",
+                        account,
+                        account
+                )
+        );
+
+        for (var record : records) {
+            record.setCreatorId(record.getCreator().getId());
+            record.setCreateDate(new Timestamp(System.currentTimeMillis()));
+            record.setModifierId(record.getCreator().getId());
+            record.setModifyDate(new Timestamp(System.currentTimeMillis()));
+        }
+
+        return records;
+    }
+
+    /// 获取登录选项
     @GetMapping("/api/options")
     @ResponseBody
     public HashMap<String, Map<String, Object>> getOptions(WebMvcRequest request) {
@@ -154,9 +265,7 @@ public class IdentityIndexController {
         return result;
     }
 
-    /**
-     * 获取验证码
-     */
+    /// 获取验证码
     @GetMapping("/api/captcha")
     public View getCaptcha(WebMvcRequest request, WebMvcResponse response) {
         var generator = request.getRequiredAttribute(CaptchaAttributes.GENERATOR);
@@ -170,9 +279,7 @@ public class IdentityIndexController {
         return captcha.getView();
     }
 
-    /**
-     * 登录
-     */
+    /// 登录
     @PostMapping("/api/login")
     @ResponseBody
     public boolean login(@Validated @RequestBody LoginParams params,
@@ -199,9 +306,7 @@ public class IdentityIndexController {
         }
     }
 
-    /**
-     * 退出登录
-     */
+    /// 退出登录
     @GetMapping("/api/logout")
     @ResponseBody
     public boolean logout(WebMvcRequest request, WebMvcResponse response) {

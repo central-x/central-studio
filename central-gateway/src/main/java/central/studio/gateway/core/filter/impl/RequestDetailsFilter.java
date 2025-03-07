@@ -24,13 +24,13 @@
 
 package central.studio.gateway.core.filter.impl;
 
-import central.studio.gateway.core.attribute.ExchangeAttributes;
-import central.studio.gateway.core.filter.Filter;
-import central.studio.gateway.core.filter.FilterChain;
 import central.lang.Attribute;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.starter.web.reactive.extension.ServerWebExchangex;
+import central.studio.gateway.core.attribute.ExchangeAttributes;
+import central.studio.gateway.core.filter.Filter;
+import central.studio.gateway.core.filter.FilterChain;
 import lombok.experimental.ExtensionMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -40,12 +40,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 请求详情
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 请求详情
+///
+/// @author Alan Yeh
 @Slf4j
 @ExtensionMethod(ServerWebExchangex.class)
 public class RequestDetailsFilter implements Filter {

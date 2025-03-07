@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.organization.mapper;
 
-import central.studio.provider.database.persistence.organization.entity.AccountUnitEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.organization.entity.AccountUnitEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 帐户单位关联关系
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 帐户单位关联关系
+///
+/// @author Alan Yeh
 @Repository
 public interface AccountUnitMapper extends Mapper<AccountUnitEntity> {
 }

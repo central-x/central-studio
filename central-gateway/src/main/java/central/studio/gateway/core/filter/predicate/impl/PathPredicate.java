@@ -24,20 +24,17 @@
 
 package central.studio.gateway.core.filter.predicate.impl;
 
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.pluglet.annotation.Control;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Setter;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 
-/**
- * 路径匹配
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 路径匹配
+///
+/// @author Alan Yeh
 public class PathPredicate implements Predicate {
 
     @Setter

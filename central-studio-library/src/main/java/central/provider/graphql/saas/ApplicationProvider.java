@@ -31,12 +31,9 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * 应用
- *
- * @author Alan Yeh
- * @since 2022/09/28
- */
+/// 应用
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("saas.applications")
 @GraphQLStub(path = "saas", client = "masterProviderClient")

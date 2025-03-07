@@ -38,12 +38,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 
-/**
- * 用户自定义网关
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 用户自定义网关
+///
+/// @author Alan Yeh
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 3)
 @ExtensionMethod(ServerWebExchangex.class)

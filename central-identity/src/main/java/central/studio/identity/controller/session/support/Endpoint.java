@@ -27,19 +27,17 @@ package central.studio.identity.controller.session.support;
 import central.bean.OptionalEnum;
 import central.lang.Arrayx;
 import central.lang.Attribute;
-import central.studio.identity.core.attribute.EndpointAttributes;
+import central.starter.webmvc.servlet.HttpAttributes;
 import central.starter.webmvc.servlet.WebMvcRequest;
+import central.studio.identity.core.attribute.EndpointAttributes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 
-/**
- * 终端类型
- *
- * @author Alan Yeh
- * @since 2022/10/20
- */
+/// 终端类型
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum Endpoint implements OptionalEnum<String> {
@@ -55,6 +53,10 @@ public enum Endpoint implements OptionalEnum<String> {
 
     public static Endpoint resolve(String value) {
         return Arrayx.asStream(Endpoint.values()).filter(it -> Objects.equals(it.getValue(), value)).findFirst().orElse(null);
+    }
+
+    public static Endpoint resolve(HttpAttributes attributes, String secret) {
+        return Arrayx.asStream(Endpoint.values()).filter(it -> Objects.equals(attributes.getRequiredAttribute(it.getAttribute()).getSecret(), secret)).findFirst().orElse(null);
     }
 
     public static Endpoint resolve(WebMvcRequest request, String secret) {

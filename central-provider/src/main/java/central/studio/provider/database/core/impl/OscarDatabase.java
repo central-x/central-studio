@@ -33,12 +33,9 @@ import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.Setter;
 
-/**
- * 神舟通用数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 神舟通用数据库
+///
+/// @author Alan Yeh
 public class OscarDatabase extends Database {
 
     @Setter

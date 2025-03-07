@@ -31,14 +31,11 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Application Query
- * <p>
- * 应用查询
- *
- * @author Alan Yeh
- * @since 2025/01/10
- */
+/// Application Query
+///
+/// 应用查询
+///
+/// @author Alan Yeh
 @Data
 public class ApplicationQuery implements Serializable {
     @Serial

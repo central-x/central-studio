@@ -36,14 +36,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Menu Params
- * <p>
- * 菜单入参
- *
- * @author Alan Yeh
- * @since 2024/12/10
- */
+/// Menu Params
+///
+/// 菜单入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

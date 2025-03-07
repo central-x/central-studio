@@ -36,71 +36,58 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 消息广播
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 消息广播
+///
+/// @author Alan Yeh
 public interface MessageClient {
 
-    /**
-     * 获取广播访问凭证
-     *
-     * @param secret  应用密钥
-     * @param expires 凭证过期时间（毫秒）
-     * @return 消息访问凭证
-     */
+    /// 获取广播访问凭证
+    ///
+    /// @param secret  应用密钥
+    /// @param expires 凭证过期时间（毫秒）
+    /// @return 消息访问凭证
     default String createToken(String secret, Long expires) {
         return JWT.create().withJWTId(Guidx.nextID())
                 .withExpiresAt(new Date(System.currentTimeMillis() + expires))
                 .sign(Algorithm.HMAC256(secret));
     }
 
-    /**
-     * 广播消息
-     *
-     * @param code     广播器标识
-     * @param token    访问凭证
-     * @param mode     广播模式（{@link PublishMode}）
-     * @param messages 消息
-     * @return 消息记录（可根据 {@link #findByIds} 查询消息推送状态）
-     */
+    /// 广播消息
+    ///
+    /// @param code     广播器标识
+    /// @param token    访问凭证
+    /// @param mode     广播模式（[PublishMode]）
+    /// @param messages 消息
+    /// @return 消息记录（可根据 [#findByIds] 查询消息推送状态）
     @PostMapping(value = "/multicast/api/broadcasters/{code}/messages", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     List<MulticastMessage> publish(@PathVariable String code, @RequestPart String token, @RequestPart PublishMode mode, @RequestPart List<MessageBody> messages);
 
-    /**
-     * 广播消息
-     *
-     * @param code     广播器标识
-     * @param token    访问凭证
-     * @param mode     广播模式（{@link PublishMode}）
-     * @param messages 消息
-     * @param tenant   租户标识
-     * @return 消息记录（可根据 {@link #findByIds} 查询消息推送状态）
-     */
+    /// 广播消息
+    ///
+    /// @param code     广播器标识
+    /// @param token    访问凭证
+    /// @param mode     广播模式（[PublishMode]）
+    /// @param messages 消息
+    /// @param tenant   租户标识
+    /// @return 消息记录（可根据 [#findByIds] 查询消息推送状态）
     @PostMapping(value = "/multicast/api/broadcasters/{code}/messages", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     List<MulticastMessage> publish(@PathVariable String code, @RequestPart String token, @RequestPart PublishMode mode, @RequestPart List<MessageBody> messages, @RequestHeader(value = XForwardedHeaders.TENANT, required = false) String tenant);
 
-    /**
-     * 查询消息信息
-     *
-     * @param code  广播器标识
-     * @param token 访问凭证
-     * @param ids   消息主键
-     * @return 消息记录
-     */
+    /// 查询消息信息
+    ///
+    /// @param code  广播器标识
+    /// @param token 访问凭证
+    /// @param ids   消息主键
+    /// @return 消息记录
     @GetMapping(value = "/multicast/api/broadcasters/{code}/messages", produces = MediaType.APPLICATION_JSON_VALUE)
     List<MulticastMessage> findByIds(@PathVariable String code, @RequestParam String token, @RequestParam List<String> ids);
 
-    /**
-     * 查询消息信息
-     *
-     * @param code  广播器标识
-     * @param token 访问凭证
-     * @param ids   消息主键
-     * @return 消息记录
-     */
+    /// 查询消息信息
+    ///
+    /// @param code  广播器标识
+    /// @param token 访问凭证
+    /// @param ids   消息主键
+    /// @return 消息记录
     @GetMapping(value = "/multicast/api/broadcasters/{code}/messages", produces = MediaType.APPLICATION_JSON_VALUE)
     List<MulticastMessage> findByIds(@PathVariable String code, @RequestParam String token, @RequestParam List<String> ids, @RequestHeader(value = XForwardedHeaders.TENANT, required = false) String tenant);
 }

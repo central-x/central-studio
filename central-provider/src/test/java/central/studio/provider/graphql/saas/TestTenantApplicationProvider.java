@@ -56,12 +56,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Tenant Application Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Tenant Application Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestTenantApplicationProvider extends TestProvider {
 
@@ -88,14 +85,12 @@ public class TestTenantApplicationProvider extends TestProvider {
         this.databasePersistence.deleteBy(Conditions.of(DatabaseEntity.class).like(DatabaseEntity::getCode, "test%"), "master");
     }
 
-    /**
-     * @see TenantApplicationProvider#insert
-     * @see TenantApplicationProvider#findById
-     * @see TenantApplicationProvider#update
-     * @see TenantApplicationProvider#findByIds
-     * @see TenantApplicationProvider#countBy
-     * @see TenantApplicationProvider#deleteByIds
-     */
+    /// @see TenantApplicationProvider#insert
+    /// @see TenantApplicationProvider#findById
+    /// @see TenantApplicationProvider#update
+    /// @see TenantApplicationProvider#findByIds
+    /// @see TenantApplicationProvider#countBy
+    /// @see TenantApplicationProvider#deleteByIds
     @Test
     public void case1() {
         var saasApplication = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "saas"), null);
@@ -202,13 +197,11 @@ public class TestTenantApplicationProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see TenantApplicationProvider#insertBatch
-     * @see TenantApplicationProvider#findBy
-     * @see TenantApplicationProvider#updateBatch
-     * @see TenantApplicationProvider#pageBy
-     * @see TenantApplicationProvider#deleteBy
-     */
+    /// @see TenantApplicationProvider#insertBatch
+    /// @see TenantApplicationProvider#findBy
+    /// @see TenantApplicationProvider#updateBatch
+    /// @see TenantApplicationProvider#pageBy
+    /// @see TenantApplicationProvider#deleteBy
     @Test
     public void case2() {
         var saasApplication = applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "saas"), null);

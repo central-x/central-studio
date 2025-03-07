@@ -29,12 +29,9 @@ import org.springframework.http.MediaType;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-/**
- * String Body
- *
- * @author Alan Yeh
- * @since 2022/10/18
- */
+/// String Body
+///
+/// @author Alan Yeh
 public class StringBody extends InputStreamBody {
     public StringBody(String body, MediaType contentType) {
         super(new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)), new MediaType(contentType, StandardCharsets.UTF_8));

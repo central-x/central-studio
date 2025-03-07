@@ -33,14 +33,11 @@ import lombok.Getter;
 import lombok.experimental.Delegate;
 import org.springframework.beans.factory.DisposableBean;
 
-/**
- * Dynamic Strategy
- * <p>
- * 动态策略
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// Dynamic Strategy
+///
+/// 动态策略
+///
+/// @author Alan Yeh
 public class DynamicStrategyFilter implements StrategyFilter, DisposableBean {
 
     @Getter

@@ -33,14 +33,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Log Filter Predicate Params
- * <p>
- * 日志过滤器断言入参
- *
- * @author Alan Yeh
- * @since 2024/11/30
- */
+/// Log Filter Predicate Params
+///
+/// 日志过滤器断言入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

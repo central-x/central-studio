@@ -53,14 +53,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * Menu Logic
- * <p>
- * 菜单业务逻辑
- *
- * @author Alan Yeh
- * @since 2024/12/10
- */
+/// Menu Logic
+///
+/// 菜单业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class MenuLogic {
 
@@ -77,11 +74,9 @@ public class MenuLogic {
         return context.getData(DataFetcherType.SAAS);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<Menu> getMenuDefaultOrders(@Nullable Orders<Menu> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -89,11 +84,9 @@ public class MenuLogic {
         return Orders.of(Menu.class).asc(Menu::getCode);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<Permission> getPermissionDefaultOrders(@Nullable Orders<Permission> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -101,55 +94,47 @@ public class MenuLogic {
         return Orders.of(Permission.class).asc(Permission::getCode);
     }
 
-    /**
-     * 列表查询
-     *
-     * @param limit      数据量（不传的话，就返回所有数据）
-     * @param offset     偏移量（跳过前 N 条数据）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 列表查询
+    ///
+    /// @param limit      数据量（不传的话，就返回所有数据）
+    /// @param offset     偏移量（跳过前 N 条数据）
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public List<Menu> findBy(Long limit, Long offset, @Nullable Conditions<Menu> conditions, @Nullable Orders<Menu> orders, @Nonnull String tenant) {
         orders = this.getMenuDefaultOrders(orders);
         return this.provider.findBy(limit, offset, conditions, orders, tenant);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<Menu> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Menu> conditions, @Nullable Orders<Menu> orders, @Nonnull String tenant) {
         orders = this.getMenuDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public Menu findById(@Nonnull String id, @Nonnull String tenant) {
         return this.provider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public Menu insert(@Nonnull @Validated({Insert.class, Default.class}) MenuInput input, @Nonnull String accountId, @Nonnull String tenant) {
         if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
@@ -158,14 +143,12 @@ public class MenuLogic {
         return this.provider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public Menu update(@Nonnull @Validated({Update.class, Default.class}) MenuInput input, @Nonnull String accountId, @Nonnull String tenant) {
         if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
@@ -173,51 +156,43 @@ public class MenuLogic {
         return this.provider.update(input, accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 删除数据
-     *
-     * @param conditions 筛选条件
-     * @return 己删除的数据量
-     */
+    /// 删除数据
+    ///
+    /// @param conditions 筛选条件
+    /// @return 己删除的数据量
     public long deleteBy(@Nonnull Conditions<Menu> conditions, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteBy(conditions, tenant);
     }
 
-    /**
-     * 列表查询
-     *
-     * @param limit      数据量（不传的话，就返回所有数据）
-     * @param offset     偏移量（跳过前 N 条数据）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 列表查询
+    ///
+    /// @param limit      数据量（不传的话，就返回所有数据）
+    /// @param offset     偏移量（跳过前 N 条数据）
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public List<Permission> findPermissionsBy(Long limit, Long offset, @Nullable Conditions<Permission> conditions, @Nullable Orders<Permission> orders, @Nonnull String tenant) {
         orders = this.getPermissionDefaultOrders(orders);
         return this.permissionProvider.findBy(limit, offset, conditions, orders, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public Permission insertPermission(@Nonnull @Validated({Insert.class, Default.class}) PermissionInput input, @Nonnull String accountId, @Nonnull String tenant) {
         if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
@@ -226,14 +201,12 @@ public class MenuLogic {
         return this.permissionProvider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public Permission updatePermission(@Nonnull @Validated({Update.class, Default.class}) PermissionInput input, @Nonnull String accountId, @Nonnull String tenant) {
         if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
@@ -241,37 +214,31 @@ public class MenuLogic {
         return this.permissionProvider.update(input, accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deletePermissionsByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.permissionProvider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param conditions 筛选条件
-     * @param accountId  操作帐号主键
-     * @param tenant     租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param conditions 筛选条件
+    /// @param accountId  操作帐号主键
+    /// @param tenant     租户标识
+    /// @return 受影响数据行数
     public long deletePermissionsBy(@Nonnull Conditions<Permission> conditions, @Nonnull String accountId, @Nonnull String tenant) {
         return this.permissionProvider.deleteBy(conditions, tenant);
     }
 
-    /**
-     * 根据权限主键查询菜单树
-     *
-     * @param permissionIds 权限主键
-     * @param tenant        租户标识
-     * @return 菜单树
-     */
+    /// 根据权限主键查询菜单树
+    ///
+    /// @param permissionIds 权限主键
+    /// @param tenant        租户标识
+    /// @return 菜单树
     public List<Menu> getMenuTreeByPermissionIds(@Nonnull List<String> permissionIds, @Nonnull String tenant) {
         var permissions = this.permissionProvider.findByIds(permissionIds, tenant);
 

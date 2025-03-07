@@ -29,12 +29,9 @@ import central.studio.logging.core.storage.impl.file.Compressor;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * 不压缩
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 不压缩
+///
+/// @author Alan Yeh
 public class NoneCompressor implements Compressor {
     @Override
     public void compress(File file) throws IOException {

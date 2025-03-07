@@ -24,51 +24,42 @@
 
 package central.studio.provider.graphql.log;
 
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.log.query.LogCollectorQuery;
 import central.studio.provider.graphql.log.query.LogFilterQuery;
 import central.studio.provider.graphql.log.query.LogStorageQuery;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Log Query
- * <p>
- * 日志中心查询
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Log Query
+///
+/// 日志中心查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "log", types = {LogCollectorQuery.class, LogFilterQuery.class, LogStorageQuery.class})
 public class LogQuery {
 
-    /**
-     * Collector Query
-     * <p>
-     * 采集器查询
-     */
+    /// Collector Query
+    ///
+    /// 采集器查询
     @GraphQLGetter
     public LogCollectorQuery getCollectors(@Autowired LogCollectorQuery query) {
         return query;
     }
 
-    /**
-     * Filter Query
-     * <p>
-     * 过滤器查询
-     */
+    /// Filter Query
+    ///
+    /// 过滤器查询
     @GraphQLGetter
     public LogFilterQuery getFilters(@Autowired LogFilterQuery query) {
         return query;
     }
 
-    /**
-     * Storage Query
-     * <p>
-     * 存储器查询
-     */
+    /// Storage Query
+    ///
+    /// 存储器查询
     @GraphQLGetter
     public LogStorageQuery getStorages(@Autowired LogStorageQuery query) {
         return query;

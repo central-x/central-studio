@@ -25,8 +25,8 @@
 package central.data.multicast;
 
 import central.bean.Nonnull;
-import central.data.multicast.option.PublishMode;
 import central.data.multicast.option.MessageStatus;
+import central.data.multicast.option.PublishMode;
 import central.data.organization.Account;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -37,12 +37,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 广播消息
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 广播消息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,46 +48,32 @@ public class MulticastMessage extends ModifiableEntity {
     @Serial
     private static final long serialVersionUID = 8486004779238241933L;
 
-    /**
-     * 广播器主键
-     *
-     * @see MulticastBroadcaster
-     */
+    /// 广播器主键
+    ///
+    /// @see MulticastBroadcaster
     @Nonnull
     private String broadcasterId;
-    /**
-     * 广播器
-     */
+    /// 广播器
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private MulticastBroadcaster broadcaster;
-    /**
-     * 消息体
-     */
+    /// 消息体
     @Nonnull
     private String body;
-    /**
-     * 推送模式
-     *
-     * @see PublishMode
-     */
+    /// 推送模式
+    ///
+    /// @see PublishMode
     private String mode;
-    /**
-     * 消息状态
-     *
-     * @see MessageStatus
-     */
+    /// 消息状态
+    ///
+    /// @see MessageStatus
     @Nonnull
     private String status;
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

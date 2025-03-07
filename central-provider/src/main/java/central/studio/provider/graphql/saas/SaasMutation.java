@@ -24,38 +24,31 @@
 
 package central.studio.provider.graphql.saas;
 
-import central.studio.provider.graphql.saas.mutation.ApplicationMutation;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.saas.mutation.ApplicationMutation;
 import central.studio.provider.graphql.saas.mutation.TenantMutation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Tenant Mutation
- * <p>
- * 租户中心修改
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Tenant Mutation
+///
+/// 租户中心修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "saas", types = {TenantMutation.class, ApplicationMutation.class})
 public class SaasMutation {
 
-    /**
-     * Tenant Mutation
-     * 租户修改
-     */
+    /// Tenant Mutation
+    /// 租户修改
     @GraphQLGetter
     public TenantMutation getTenants(@Autowired TenantMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Application Mutation
-     * 应用修改
-     */
+    /// Application Mutation
+    /// 应用修改
     @GraphQLGetter
     public ApplicationMutation getApplications(@Autowired ApplicationMutation mutation) {
         return mutation;

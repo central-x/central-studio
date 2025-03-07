@@ -24,32 +24,27 @@
 
 package central.data.gateway;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Gateway Predicate
- * <p>
- * 断言
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Predicate
+///
+/// 断言
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class GatewayPredicate implements Serializable {
     @Serial
     private static final long serialVersionUID = -1545677868280131846L;
-    /**
-     * 类型
-     */
+    /// 类型
     private String type;
-    /**
-     * 参数（JSON）
-     */
+    /// 参数（JSON）
     private String params;
 
     public GatewayPredicateInput.Builder toInput() {

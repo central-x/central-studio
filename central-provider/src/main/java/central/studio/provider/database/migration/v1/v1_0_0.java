@@ -24,15 +24,12 @@
 
 package central.studio.provider.database.migration.v1;
 
-import central.sql.datasource.migration.*;
+import central.sql.datasource.migration.Migration;
 import central.util.Version;
 
-/**
- * 初始化基础数据结构
- *
- * @author Alan Yeh
- * @since 2022/09/26
- */
+/// 初始化基础数据结构
+///
+/// @author Alan Yeh
 public class v1_0_0 extends Migration {
     public v1_0_0() {
         super(Version.of("1.0.0"));

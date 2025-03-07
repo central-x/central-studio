@@ -50,13 +50,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Dictionary Provider Test Cases
- * 字典
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Dictionary Provider Test Cases
+///
+/// 字典
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestDictionaryProvider extends TestProvider {
 
@@ -85,14 +83,12 @@ public class TestDictionaryProvider extends TestProvider {
         this.persistence.deleteBy(Conditions.of(DictionaryEntity.class).like(DictionaryEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see DictionaryProvider#insert
-     * @see DictionaryProvider#findById
-     * @see DictionaryProvider#update
-     * @see DictionaryProvider#findByIds
-     * @see DictionaryProvider#countBy
-     * @see DictionaryProvider#deleteByIds
-     */
+    /// @see DictionaryProvider#insert
+    /// @see DictionaryProvider#findById
+    /// @see DictionaryProvider#update
+    /// @see DictionaryProvider#findByIds
+    /// @see DictionaryProvider#countBy
+    /// @see DictionaryProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -179,13 +175,11 @@ public class TestDictionaryProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see DictionaryProvider#insertBatch
-     * @see DictionaryProvider#findBy
-     * @see DictionaryProvider#updateBatch
-     * @see DictionaryProvider#pageBy
-     * @see DictionaryProvider#deleteBy
-     */
+    /// @see DictionaryProvider#insertBatch
+    /// @see DictionaryProvider#findBy
+    /// @see DictionaryProvider#updateBatch
+    /// @see DictionaryProvider#pageBy
+    /// @see DictionaryProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

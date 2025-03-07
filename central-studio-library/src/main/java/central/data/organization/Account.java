@@ -24,22 +24,25 @@
 
 package central.data.organization;
 
+import central.bean.Available;
+import central.bean.Deletable;
+import central.bean.Nonnull;
+import central.bean.Nullable;
 import central.data.authority.Role;
-import central.bean.*;
 import central.sql.data.ModifiableEntity;
 import central.util.Listx;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 帐户
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 帐户
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,103 +51,71 @@ public class Account extends ModifiableEntity implements Available, Deletable {
     @Serial
     private static final long serialVersionUID = -9196700805612029968L;
 
-    /**
-     * 用户名
-     */
+    /// 用户名
     @Nonnull
     private String username;
 
-    /**
-     * 邮箱
-     */
+    /// 邮箱
     @Nullable
     private String email;
 
-    /**
-     * 手机号
-     */
+    /// 手机号
     @Nullable
     private String mobile;
 
-    /**
-     * 姓名
-     */
+    /// 姓名
     @Nonnull
     private String name;
 
-    /**
-     * 位置
-     */
+    /// 位置
     @Nullable
     private String location;
 
-    /**
-     * 个人网站
-     */
+    /// 个人网站
     @Nullable
     private String website;
 
-    /**
-     * 头像
-     */
+    /// 头像
     @Nullable
     private String avatar;
 
-    /**
-     * 是否管理员
-     * 管理员是指三员（系统管理员，安全管理员、安全保密员）
-     */
+    /// 是否管理员
+    /// 管理员是指三员（系统管理员，安全管理员、安全保密员）
     @Nonnull
     private Boolean admin;
 
-    /**
-     * 是否超级管理员
-     * 超级管理员是虚拟帐户，不存在数据库表中
-     */
+    /// 是否超级管理员
+    /// 超级管理员是虚拟帐户，不存在数据库表中
     @Nonnull
     private Boolean supervisor;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 是否已删除
-     */
+    /// 是否已删除
     @Nonnull
     private Boolean deleted;
 
-    /**
-     * 配置信息
-     */
+    /// 配置信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private AccountProfile profile;
 
-    /**
-     * 单列列表
-     */
+    /// 单列列表
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<AccountUnit> units;
 
-    /**
-     * 角色表
-     */
+    /// 角色表
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Role> roles;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

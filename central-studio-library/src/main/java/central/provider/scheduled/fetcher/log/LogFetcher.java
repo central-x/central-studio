@@ -24,14 +24,14 @@
 
 package central.provider.scheduled.fetcher.log;
 
+import central.data.log.LogCollector;
+import central.data.log.LogFilter;
+import central.data.log.LogStorage;
 import central.provider.graphql.log.LogCollectorProvider;
 import central.provider.graphql.log.LogFilterProvider;
 import central.provider.graphql.log.LogStorageProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
-import central.data.log.LogCollector;
-import central.data.log.LogFilter;
-import central.data.log.LogStorage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,12 +39,9 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * 日志中心数据获取
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志中心数据获取
+///
+/// @author Alan Yeh
 public class LogFetcher implements DataFetcher<LogContainer> {
 
     @Setter

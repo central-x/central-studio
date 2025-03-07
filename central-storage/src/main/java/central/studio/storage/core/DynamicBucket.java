@@ -33,12 +33,9 @@ import lombok.Getter;
 import lombok.experimental.Delegate;
 import org.springframework.beans.factory.DisposableBean;
 
-/**
- * 动态存储桶
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// 动态存储桶
+///
+/// @author Alan Yeh
 public class DynamicBucket implements Bucket, DisposableBean {
 
     @Getter

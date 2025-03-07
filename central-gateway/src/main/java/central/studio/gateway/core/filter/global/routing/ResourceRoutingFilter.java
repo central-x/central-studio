@@ -30,12 +30,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-/**
- * 本地资源托管
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 本地资源托管
+///
+/// @author Alan Yeh
 public class ResourceRoutingFilter implements Filter, InitializingBean {
 
     @Override

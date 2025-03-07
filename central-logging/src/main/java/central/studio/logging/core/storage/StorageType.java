@@ -30,12 +30,9 @@ import central.studio.logging.core.storage.impl.file.FileStorage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 存储器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 存储器
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum StorageType implements OptionalEnum<String> {

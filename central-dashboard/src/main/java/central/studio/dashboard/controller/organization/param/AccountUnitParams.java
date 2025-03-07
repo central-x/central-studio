@@ -38,10 +38,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * @author Alan Yeh
- * @since 2024/12/08
- */
+/// Account Unit
+///
+/// 帐户与单位关系入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

@@ -50,27 +50,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Rank Persistence
- * <p>
- * 职级持久化
- *
- * @author Alan Yeh
- * @since 2024/12/31
- */
+/// Rank Persistence
+///
+/// 职级持久化
+///
+/// @author Alan Yeh
 @Component
 public class RankPersistence {
 
     @Setter(onMethod_ = @Autowired)
     private RankMapper mapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nullable RankEntity findById(@Nullable String id,
                                          @Nullable Columns<? extends RankEntity> columns,
                                          @Nonnull String tenant) {
@@ -82,13 +77,11 @@ public class RankPersistence {
         return this.mapper.findFirstBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nonnull List<RankEntity> findByIds(@Nullable List<String> ids,
                                                @Nullable Columns<? extends RankEntity> columns,
                                                @Nonnull String tenant) {
@@ -100,16 +93,14 @@ public class RankPersistence {
         return this.mapper.findBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<RankEntity> findBy(@Nullable Long limit,
                                             @Nullable Long offset,
                                             @Nullable Columns<? extends RankEntity> columns,
@@ -120,14 +111,12 @@ public class RankPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 根据条件查询第一条数据
-     *
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件查询第一条数据
+    ///
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nullable RankEntity findFirstBy(@Nullable Columns<? extends RankEntity> columns,
                                             @Nullable Conditions<? extends RankEntity> conditions,
                                             @Nullable Orders<? extends RankEntity> orders,
@@ -136,16 +125,14 @@ public class RankPersistence {
         return this.mapper.findFirstBy(columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<RankEntity> pageBy(@Nonnull Long pageIndex,
                                             @Nonnull Long pageSize,
                                             @Nullable Columns<? extends RankEntity> columns,
@@ -156,26 +143,22 @@ public class RankPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends RankEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作帐号
-     * @param tenant   租户标识
-     * @return 保存后的数据
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作帐号
+    /// @param tenant   租户标识
+    /// @return 保存后的数据
     public RankEntity insert(@Nonnull @Validated({Insert.class, Default.class}) RankInput input,
                              @Nonnull String operator,
                              @Nonnull String tenant) {
@@ -193,26 +176,22 @@ public class RankPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public List<RankEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<RankInput> inputs,
                                         @Nonnull String operator,
                                         @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public RankEntity update(@Nonnull @Validated({Update.class, Default.class}) RankInput input,
                              @Nonnull String operator,
                              @Nonnull String tenant) {
@@ -235,25 +214,21 @@ public class RankPersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public List<RankEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<RankInput> inputs,
                                         @Nonnull String operator,
                                         @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -263,12 +238,10 @@ public class RankPersistence {
         return this.mapper.deleteBy(Conditions.of(RankEntity.class).in(RankEntity::getId, ids).eq(RankEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends RankEntity> conditions,
                          @Nonnull String tenant) {
         var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(RankEntity::getTenantCode, tenant)).stream()

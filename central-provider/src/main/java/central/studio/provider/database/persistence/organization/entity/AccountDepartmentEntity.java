@@ -40,12 +40,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 帐户部门关联关系
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 帐户部门关联关系
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

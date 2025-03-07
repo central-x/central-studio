@@ -24,7 +24,10 @@
 
 package central.studio.provider.database.persistence.gateway.entity;
 
-import central.bean.*;
+import central.bean.Available;
+import central.bean.Orderable;
+import central.bean.Remarkable;
+import central.bean.Tenantable;
 import central.data.gateway.GatewayFilterInput;
 import central.sql.data.ModifiableEntity;
 import central.util.Jsonx;
@@ -39,14 +42,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Gateway Filter
- * <p>
- * 网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Filter
+///
+/// 网关过滤器
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

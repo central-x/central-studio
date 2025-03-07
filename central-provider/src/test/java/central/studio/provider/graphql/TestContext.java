@@ -48,14 +48,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
-/**
- * Test Context
- * <p>
- * 测试上下文
- *
- * @author Alan Yeh
- * @since 2024/12/29
- */
+/// Test Context
+///
+/// 测试上下文
+///
+/// @author Alan Yeh
 @Component
 public class TestContext implements InitializingBean, DisposableBean {
 
@@ -131,16 +128,12 @@ public class TestContext implements InitializingBean, DisposableBean {
         this.databasePersistence.deleteBy(Conditions.of(DatabaseEntity.class).eq(DatabaseEntity::getCode, "test"), "master");
     }
 
-    /**
-     * 获取测试租户
-     */
+    /// 获取测试租户
     public TenantEntity getTenant() {
         return this.tenantPersistence.findFirstBy(Columns.all(), Conditions.of(TenantEntity.class).eq(TenantEntity::getCode, "master"), null);
     }
 
-    /**
-     * 测试应用
-     */
+    /// 测试应用
     public ApplicationEntity getApplication() {
         return this.applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "identity"), null);
     }

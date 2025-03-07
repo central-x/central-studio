@@ -31,14 +31,11 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * Role Principal Relation
- * <p>
- * 角色与主体关联关系修改
- *
- * @author Alan Yeh
- * @since 2024/12/15
- */
+/// Role Principal Relation
+///
+/// 角色与主体关联关系修改
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("authority.roles.principals")
 @GraphQLStub(path = "authority", client = "providerClient")

@@ -31,12 +31,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-/**
- * Application Filter
- *
- * @author Alan Yeh
- * @since 2024/02/28
- */
+/// Application Filter
+///
+/// @author Alan Yeh
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApplicationFilter implements Filter {

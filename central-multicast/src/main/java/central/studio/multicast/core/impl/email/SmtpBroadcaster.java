@@ -26,10 +26,10 @@ package central.studio.multicast.core.impl.email;
 
 import central.multicast.client.body.MailBody;
 import central.multicast.client.body.StandardBody;
-import central.studio.multicast.core.Broadcaster;
-import central.studio.multicast.core.impl.email.option.AvailableEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.multicast.core.Broadcaster;
+import central.studio.multicast.core.impl.email.option.AvailableEnum;
 import central.util.Listx;
 import central.util.Objectx;
 import central.validation.Label;
@@ -45,12 +45,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Properties;
 
-/**
- * SMTP 协议广播
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// SMTP 协议广播
+///
+/// @author Alan Yeh
 public class SmtpBroadcaster implements Broadcaster<MailBody>, InitializingBean {
 
     @Control(label = "说明", type = ControlType.LABEL, required = false, defaultValue = "　　通过 SMTP 协议发送邮件。")
@@ -92,9 +89,7 @@ public class SmtpBroadcaster implements Broadcaster<MailBody>, InitializingBean 
     @Control(label = "发件人")
     private String name;
 
-    /**
-     * 邮件会话
-     */
+    /// 邮件会话
     private Session session;
 
     @Override

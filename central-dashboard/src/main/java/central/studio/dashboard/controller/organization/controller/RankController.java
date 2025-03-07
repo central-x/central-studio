@@ -43,22 +43,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Rank Controller
- * <p>
- * 职级管理
- *
- * @author Alan Yeh
- * @since 2024/12/06
- */
+/// Rank Controller
+///
+/// 职级管理
+///
+/// @author Alan Yeh
 @RestController
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/organization/ranks")
 public class RankController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "organization:rank:view";
         String ADD = "organization:rank:add";
@@ -69,68 +64,58 @@ public class RankController {
     @Setter(onMethod_ = @Autowired)
     private RankLogic logic;
 
-    /**
-     * 按条件查询数据列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 分页结果
-     */
+    /// 按条件查询数据列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 分页结果
     @GetMapping
     @RequiresPermissions(Permissions.VIEW)
     public List<Rank> list(@Validated RankListQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.listBy(query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询数据详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询数据详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
     public Rank details(@Validated IdQuery<Rank> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
 
-    /**
-     * 新增数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 新增后数据
-     */
+    /// 新增数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 新增后数据
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
     public Rank add(@RequestBody @Validated({Insert.class, Default.class}) RankParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param params    数据入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后数据
-     */
+    /// 更新数据
+    ///
+    /// @param params    数据入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后数据
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
     public Rank update(@RequestBody @Validated({Update.class, Default.class}) RankParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param params    待删除主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param params    待删除主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

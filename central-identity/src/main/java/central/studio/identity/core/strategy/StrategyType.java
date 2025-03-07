@@ -29,12 +29,9 @@ import central.studio.identity.core.strategy.dynamic.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 策略类型
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// 策略类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum StrategyType implements OptionalEnum<String> {

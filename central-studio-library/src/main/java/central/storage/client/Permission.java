@@ -28,12 +28,9 @@ import central.bean.OptionalEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 对象访问权限
- *
- * @author Alan Yeh
- * @since 2022/10/31
- */
+/// 对象访问权限
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum Permission implements OptionalEnum<String> {

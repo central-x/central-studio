@@ -24,9 +24,6 @@
 
 package central.studio.gateway;
 
-import central.studio.gateway.core.attribute.ExchangeAttributes;
-import central.studio.gateway.core.filter.GlobalFilter;
-import central.studio.gateway.core.filter.StandardFilterChain;
 import central.lang.Stringx;
 import central.provider.scheduled.DataContext;
 import central.provider.scheduled.fetcher.DataFetcherType;
@@ -36,6 +33,9 @@ import central.starter.web.reactive.support.RemoteAddressResolver;
 import central.starter.web.reactive.support.resolver.DefaultRemoteAddressResolver;
 import central.starter.web.reactive.support.resolver.ProxyRemoteAddressResolver;
 import central.starter.web.reactive.support.resolver.XForwardedRemoteAddressResolver;
+import central.studio.gateway.core.attribute.ExchangeAttributes;
+import central.studio.gateway.core.filter.GlobalFilter;
+import central.studio.gateway.core.filter.StandardFilterChain;
 import central.util.Objectx;
 import central.web.XForwardedHeaders;
 import jakarta.annotation.Nonnull;
@@ -61,12 +61,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * 网关请求分发
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 网关请求分发
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 @ExtensionMethod(ServerWebExchangex.class)
@@ -86,20 +83,16 @@ public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordere
         return Ordered.LOWEST_PRECEDENCE - 1;
     }
 
-    /**
-     * 返回当前对象作为请求处理器
-     */
+    /// 返回当前对象作为请求处理器
     @Override
     public @Nonnull Mono<Object> getHandler(@Nonnull ServerWebExchange exchange) {
         return Mono.just(this);
     }
 
-    /**
-     * 处理请求
-     *
-     * @param exchange the current server exchange
-     * @return 用于指示当前请求是否已经完成处理
-     */
+    /// 处理请求
+    ///
+    /// @param exchange the current server exchange
+    /// @return 用于指示当前请求是否已经完成处理
     @Override
     public @Nonnull Mono<Void> handle(@Nonnull ServerWebExchange exchange) {
         var request = exchange.getRequest();
@@ -236,9 +229,7 @@ public class ApplicationDispatcher implements WebHandler, HandlerMapping, Ordere
             new DefaultRemoteAddressResolver()
     );
 
-    /**
-     * 解析调用方 IP
-     */
+    /// 解析调用方 IP
     protected InetSocketAddress getRemoteAddress(ServerWebExchange exchange) {
         for (var resolver : this.remoteAddressResolvers) {
             var remoteAddress = resolver.resolve(exchange);

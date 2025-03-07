@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Menu List Query
- * <p>
- * 菜单列表查询
- *
- * @author Alan Yeh
- * @since 2024/12/10
- */
+/// Menu List Query
+///
+/// 菜单列表查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MenuListQuery extends ListQuery<Menu> {

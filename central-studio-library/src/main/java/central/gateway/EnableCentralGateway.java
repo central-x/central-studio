@@ -28,14 +28,11 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
-/**
- * Enable Gateway
- * <p>
- * 启用网关对接
- *
- * @author Alan Yeh
- * @since 2023/09/19
- */
+/// Enable Gateway
+///
+/// 启用网关对接
+///
+/// @author Alan Yeh
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

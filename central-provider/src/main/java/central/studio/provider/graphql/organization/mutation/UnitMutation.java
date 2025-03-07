@@ -29,8 +29,8 @@ import central.provider.graphql.DTO;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.studio.provider.graphql.organization.dto.UnitDTO;
 import central.studio.provider.database.persistence.organization.UnitPersistence;
+import central.studio.provider.graphql.organization.dto.UnitDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -45,13 +45,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Unit Mutation
- * 单位修改
- *
- * @author Alan Yeh
- * @since 2022/10/04
- */
+/// Unit Mutation
+///
+/// 单位修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization/mutation", types = UnitDTO.class)
 public class UnitMutation {
@@ -59,13 +57,11 @@ public class UnitMutation {
     @Setter(onMethod_ = @Autowired)
     private UnitPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull UnitDTO insert(@RequestParam @Validated({Insert.class, Default.class}) UnitInput input,
                                    @RequestParam String operator,
@@ -74,13 +70,11 @@ public class UnitMutation {
         return DTO.wrap(data, UnitDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<UnitDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<UnitInput> inputs,
                                               @RequestParam String operator,
@@ -89,13 +83,11 @@ public class UnitMutation {
         return DTO.wrap(data, UnitDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull UnitDTO update(@RequestParam @Validated({Update.class, Default.class}) UnitInput input,
                                    @RequestParam String operator,
@@ -104,13 +96,11 @@ public class UnitMutation {
         return DTO.wrap(data, UnitDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<UnitDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<UnitInput> inputs,
                                               @RequestParam String operator,
@@ -119,24 +109,20 @@ public class UnitMutation {
         return DTO.wrap(data, UnitDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<UnitDTO> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

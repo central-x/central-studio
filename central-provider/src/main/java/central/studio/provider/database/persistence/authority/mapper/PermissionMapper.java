@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.authority.mapper;
 
-import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 权限
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 权限
+///
+/// @author Alan Yeh
 @Repository
 public interface PermissionMapper extends Mapper<PermissionEntity> {
 }

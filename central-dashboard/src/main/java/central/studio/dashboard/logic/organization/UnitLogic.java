@@ -47,14 +47,11 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-/**
- * Unit Logic
- * <p>
- * 组织机构业务逻辑
- *
- * @author Alan Yeh
- * @since 2024/09/16
- */
+/// Unit Logic
+///
+/// 组织机构业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class UnitLogic {
 
@@ -64,11 +61,9 @@ public class UnitLogic {
     @Setter(onMethod_ = @Autowired)
     private DepartmentProvider departmentProvider;
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<Unit> getUnitDefaultOrders(Orders<Unit> orders) {
         if (Collectionx.isNotEmpty(orders)) {
             return orders;
@@ -76,11 +71,9 @@ public class UnitLogic {
         return Orders.of(Unit.class).desc(Unit::getOrder).asc(Unit::getName);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<Department> getDepartmentDefaultOrders(Orders<Department> orders) {
         if (Collectionx.isNotEmpty(orders)) {
             return orders;
@@ -88,186 +81,156 @@ public class UnitLogic {
         return Orders.of(Department.class).desc(Department::getOrder).asc(Department::getName);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public @Nonnull Page<Unit> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
         orders = this.getUnitDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 列表查询
-     *
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 列表数据
-     */
+    /// 列表查询
+    ///
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 列表数据
     public @Nonnull List<Unit> listBy(@Nullable Conditions<Unit> conditions, @Nullable Orders<Unit> orders, @Nonnull String tenant) {
         orders = this.getUnitDefaultOrders(orders);
         return this.provider.findBy(null, null, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public @Nullable Unit findById(@Nonnull String id, @Nonnull String tenant) {
         return this.provider.findById(id, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param code   标识
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param code   标识
+    /// @param tenant 租户标识
+    /// @return 详情
     public @Nullable Unit findByCode(@Nonnull String code, @Nonnull String tenant) {
         var units = this.provider.findBy(1L, 0L, Conditions.of(Unit.class).eq(Unit::getCode, code), null, tenant);
         return Listx.getFirstOrNull(units);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public Unit insert(@Nonnull @Validated({Insert.class, Default.class}) UnitInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public Unit update(@Nonnull @Validated({Update.class, Default.class}) UnitInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.update(input, accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据标识删除数据
-     *
-     * @param codes     标识
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据标识删除数据
+    ///
+    /// @param codes     标识
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByCodes(@Nullable List<String> codes, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteBy(Conditions.of(Unit.class).in(Unit::getCode, codes));
     }
 
 
-    /**
-     * 列表查询
-     *
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 列表数据
-     */
+    /// 列表查询
+    ///
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 列表数据
     public List<Department> listDepartmentBy(@Nullable Conditions<Department> conditions, @Nullable Orders<Department> orders, @Nonnull String tenant) {
         orders = this.getDepartmentDefaultOrders(orders);
         return this.departmentProvider.findBy(null, null, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public Department findDepartmentById(@Nonnull String id, @Nonnull String tenant) {
         return this.departmentProvider.findById(id, tenant);
     }
 
-    /**
-     * 标识查询
-     *
-     * @param code   标识
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 标识查询
+    ///
+    /// @param code   标识
+    /// @param tenant 租户标识
+    /// @return 详情
     public @Nullable Department findDepartmentByCode(@Nonnull String code, @Nonnull String tenant) {
         var departments = this.departmentProvider.findBy(1L, 0L, Conditions.of(Department.class).eq(Department::getCode, code), null, tenant);
         return Listx.getFirstOrNull(departments);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public Department insertDepartment(@Nonnull @Validated({Insert.class, Default.class}) DepartmentInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.departmentProvider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public Department updateDepartment(@Nonnull @Validated({Update.class, Default.class}) DepartmentInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.departmentProvider.update(input, accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteDepartmentByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.departmentProvider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据标识删除数据
-     *
-     * @param codes     标识
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据标识删除数据
+    ///
+    /// @param codes     标识
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteDepartmentByCodes(@Nullable List<String> codes, @Nonnull String accountId, @Nonnull String tenant) {
         return this.departmentProvider.deleteBy(Conditions.of(Department.class).in(Department::getCode, codes), tenant);
     }

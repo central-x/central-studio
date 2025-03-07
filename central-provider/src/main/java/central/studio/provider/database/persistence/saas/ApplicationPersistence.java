@@ -52,14 +52,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Application Service
- * <p>
- * 应用服务
- *
- * @author Alan Yeh
- * @since 2024/12/21
- */
+/// Application Service
+///
+/// 应用服务
+///
+/// @author Alan Yeh
 @Component
 public class ApplicationPersistence {
 
@@ -69,12 +66,10 @@ public class ApplicationPersistence {
     @Setter(onMethod_ = @Autowired)
     private TenantApplicationMapper tenantApplicationMapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
     public @Nullable ApplicationEntity findById(@Nullable String id,
                                                 @Nullable Columns<? extends ApplicationEntity> columns) {
         if (Stringx.isNullOrBlank(id)) {
@@ -84,12 +79,10 @@ public class ApplicationPersistence {
         return this.mapper.findById(id, columns);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
     public @Nonnull List<ApplicationEntity> findByIds(@Nullable List<String> ids,
                                                       @Nullable Columns<? extends ApplicationEntity> columns) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -99,15 +92,13 @@ public class ApplicationPersistence {
         return this.mapper.findByIds(ids, columns);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nonnull List<ApplicationEntity> findBy(@Nullable Long limit,
                                                    @Nullable Long offset,
                                                    @Nullable Columns<? extends ApplicationEntity> columns,
@@ -116,27 +107,23 @@ public class ApplicationPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 查询第一条数据
-     *
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 查询第一条数据
+    ///
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nullable ApplicationEntity findFirstBy(@Nullable Columns<? extends ApplicationEntity> columns,
                                                    @Nullable Conditions<? extends ApplicationEntity> conditions,
                                                    @Nullable Orders<? extends ApplicationEntity> orders) {
         return this.mapper.findFirstBy(columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
     public @Nonnull Page<ApplicationEntity> findPageBy(long pageIndex,
                                                        long pageSize,
                                                        @Nullable Columns<? extends ApplicationEntity> columns,
@@ -145,21 +132,17 @@ public class ApplicationPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
     public long countBy(@Nullable Conditions<? extends ApplicationEntity> conditions) {
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
     public @Nonnull ApplicationEntity insert(@Nonnull @Validated({Insert.class, Default.class}) ApplicationInput input,
                                              @Nonnull String operator) {
         // 标识唯一性校验
@@ -175,23 +158,19 @@ public class ApplicationPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
     public @Nonnull List<ApplicationEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<ApplicationInput> inputs,
                                                         @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
     public @Nonnull ApplicationEntity update(@Nonnull @Validated({Update.class, Default.class}) ApplicationInput input,
                                              @Nonnull String operator) {
         var entity = this.mapper.findFirstBy(Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getId, input.getId()));
@@ -213,22 +192,18 @@ public class ApplicationPersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
     public @Nonnull List<ApplicationEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<ApplicationInput> inputs,
                                                         @Nonnull String operator) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids 主键
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids 主键
     public long deleteByIds(@Nullable List<String> ids) {
         if (Listx.isNullOrEmpty(ids)) {
             return 0;
@@ -240,11 +215,9 @@ public class ApplicationPersistence {
         return this.mapper.deleteByIds(ids);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
     public long deleteBy(@Nullable Conditions<? extends ApplicationEntity> conditions) {
         var ids = this.mapper.findBy(Columns.of(ApplicationEntity::getId), conditions).stream()
                 .map(Entity::getId).toList();

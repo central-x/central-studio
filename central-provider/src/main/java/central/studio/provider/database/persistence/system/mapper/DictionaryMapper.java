@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.system.mapper;
 
-import central.studio.provider.database.persistence.system.entity.DictionaryEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.system.entity.DictionaryEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 字典信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 字典信息
+///
+/// @author Alan Yeh
 @Repository
 public interface DictionaryMapper extends Mapper<DictionaryEntity> {
 }

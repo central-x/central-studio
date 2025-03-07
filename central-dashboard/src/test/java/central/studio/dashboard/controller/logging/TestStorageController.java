@@ -48,24 +48,19 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Log Storage Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/11/28
- */
+/// Log Storage Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestStorageController extends TestController {
 
     private static final String PATH = "/dashboard/api/logging/storages";
 
-    /**
-     * @see StorageController#add
-     * @see StorageController#details
-     * @see StorageController#page
-     * @see StorageController#delete
-     */
+    /// @see StorageController#add
+    /// @see StorageController#details
+    /// @see StorageController#page
+    /// @see StorageController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增
@@ -162,12 +157,10 @@ public class TestStorageController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see StorageController#add
-     * @see StorageController#update
-     * @see StorageController#details
-     * @see StorageController#delete
-     */
+    /// @see StorageController#add
+    /// @see StorageController#update
+    /// @see StorageController#details
+    /// @see StorageController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         // 新增

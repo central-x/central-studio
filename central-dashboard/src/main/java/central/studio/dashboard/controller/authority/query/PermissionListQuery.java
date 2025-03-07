@@ -35,14 +35,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Permission List Query
- * <p>
- * 权限列表查询
- *
- * @author Alan Yeh
- * @since 2024/12/12
- */
+/// Permission List Query
+///
+/// 权限列表查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PermissionListQuery extends ListQuery<Permission> {

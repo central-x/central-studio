@@ -33,12 +33,9 @@ import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.Setter;
 
-/**
- * 海量数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 海量数据库
+///
+/// @author Alan Yeh
 public class VastbaseDatabase extends Database {
 
     @Setter

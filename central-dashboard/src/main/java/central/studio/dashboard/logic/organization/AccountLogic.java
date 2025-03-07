@@ -46,25 +46,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Account Logic
- * <p>
- * 帐户业务逻辑
- *
- * @author Alan Yeh
- * @since 2023/10/07
- */
+/// Account Logic
+///
+/// 帐户业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class AccountLogic {
 
     @Setter(onMethod_ = @Autowired)
     private AccountProvider provider;
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<Account> getDefaultOrders(Orders<Account> orders) {
         if (Collectionx.isNotEmpty(orders)) {
             return orders;
@@ -72,79 +67,67 @@ public class AccountLogic {
         return Orders.of(Account.class).desc(Account::getUsername);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<Account> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Account> conditions, @Nullable Orders<Account> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 列表查询
-     *
-     * @param limit      数据量（不传的话，就返回所有数据）
-     * @param offset     偏移量（跳过前 N 条数据）
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 列表数据
-     */
+    /// 列表查询
+    ///
+    /// @param limit      数据量（不传的话，就返回所有数据）
+    /// @param offset     偏移量（跳过前 N 条数据）
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 列表数据
     public List<Account> findBy(Long limit, Long offset, @Nullable Conditions<Account> conditions, @Nullable Orders<Account> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.findBy(limit, offset, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public Account findById(@Nonnull String id, @Nonnull String tenant) {
         return this.provider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public Account insert(@Nonnull @Validated({Insert.class, Default.class}) AccountInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public Account update(@Nonnull @Validated({Update.class, Default.class}) AccountInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.update(input, accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param id        待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param id        待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     public @Nonnull Account enable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.provider.findById(id, tenant);
         if (data == null) {
@@ -153,14 +136,12 @@ public class AccountLogic {
         return this.provider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param id        待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param id        待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     public @Nonnull Account disable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.provider.findById(id, tenant);
         if (data == null) {
@@ -169,26 +150,22 @@ public class AccountLogic {
         return this.provider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 删除数据
-     *
-     * @param conditions 条件
-     * @param accountId  操作帐号主键
-     * @param tenant     租户标识
-     * @return 受影响数据行数
-     */
+    /// 删除数据
+    ///
+    /// @param conditions 条件
+    /// @param accountId  操作帐号主键
+    /// @param tenant     租户标识
+    /// @return 受影响数据行数
     public long deleteBy(@Nonnull Conditions<Account> conditions, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteBy(conditions, tenant);
     }

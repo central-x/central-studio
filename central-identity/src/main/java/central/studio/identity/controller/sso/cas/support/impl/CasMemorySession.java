@@ -38,27 +38,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 内存会话
- *
- * @author Alan Yeh
- * @since 2022/11/09
- */
+/// 内存会话
+///
+/// @author Alan Yeh
 @Component
 //@ConditionalOnMissingBean(CasSession.class)
 public class CasMemorySession implements CasSession, DisposableBean {
-    /**
-     * ticket 缓存
-     * <p>
-     * tenant -> ticketId -> ticket
-     */
+    /// ticket 缓存
+    ///
+    /// tenant -> ticketId -> ticket
     private final Map<String, Map<String, ServiceTicket>> tickets = new ConcurrentHashMap<>();
 
-    /**
-     * ticket 与会话的绑定关系
-     * <p>
-     * tenant -> sessionId -> ticket
-     */
+    /// ticket 与会话的绑定关系
+    ///
+    /// tenant -> sessionId -> ticket
     private final Map<String, Map<String, List<ServiceTicket>>> bindings = new ConcurrentHashMap<>();
 
     @Override

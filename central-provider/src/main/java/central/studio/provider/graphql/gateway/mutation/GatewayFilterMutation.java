@@ -46,14 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Gateway Filter
- * <p>
- * 网关过滤器
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Filter
+///
+/// 网关过滤器
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "gateway/mutation", types = GatewayFilterDTO.class)
 public class GatewayFilterMutation {
@@ -61,13 +58,11 @@ public class GatewayFilterMutation {
     @Setter(onMethod_ = @Autowired)
     private GatewayFilterPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull GatewayFilterDTO insert(@RequestParam @Validated({Insert.class, Default.class}) GatewayFilterInput input,
                                             @RequestParam String operator,
@@ -76,13 +71,11 @@ public class GatewayFilterMutation {
         return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<GatewayFilterDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<GatewayFilterInput> inputs,
                                                        @RequestParam String operator,
@@ -91,13 +84,11 @@ public class GatewayFilterMutation {
         return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull GatewayFilterDTO update(@RequestParam @Validated({Update.class, Default.class}) GatewayFilterInput input,
                                             @RequestParam String operator,
@@ -106,13 +97,11 @@ public class GatewayFilterMutation {
         return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<GatewayFilterDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<GatewayFilterInput> inputs,
                                                        @RequestParam String operator,
@@ -121,24 +110,20 @@ public class GatewayFilterMutation {
         return DTO.wrap(data, GatewayFilterDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<GatewayFilterEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

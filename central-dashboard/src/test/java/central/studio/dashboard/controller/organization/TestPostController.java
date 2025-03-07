@@ -56,13 +56,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Post Controller Test Cases
- *
- * @author Alan Yeh
- * @see PostController
- * @since 2024/12/04
- */
+/// Post Controller Test Cases
+///
+/// @author Alan Yeh
+/// @see PostController
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestPostController extends TestController {
@@ -102,12 +99,10 @@ public class TestPostController extends TestController {
         return unitLogic.findByCode("central-x", "master");
     }
 
-    /**
-     * @see PostController#add
-     * @see PostController#details
-     * @see PostController#list
-     * @see PostController#delete
-     */
+    /// @see PostController#add
+    /// @see PostController#details
+    /// @see PostController#list
+    /// @see PostController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var unit = this.getUnit();
@@ -187,12 +182,10 @@ public class TestPostController extends TestController {
 
     }
 
-    /**
-     * @see PostController#add
-     * @see PostController#update
-     * @see PostController#details
-     * @see PostController#delete
-     */
+    /// @see PostController#add
+    /// @see PostController#update
+    /// @see PostController#details
+    /// @see PostController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var unit = this.getUnit();

@@ -33,12 +33,9 @@ import lombok.Getter;
 
 import java.util.Objects;
 
-/**
- * 区划类型
- *
- * @author Alan Yeh
- * @since 2022/09/24
- */
+/// 区划类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum AreaType implements OptionalEnum<String> {

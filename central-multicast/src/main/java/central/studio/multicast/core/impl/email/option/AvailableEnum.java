@@ -28,12 +28,9 @@ import central.bean.OptionalEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 可用状态
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 可用状态
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum AvailableEnum implements OptionalEnum<String> {

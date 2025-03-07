@@ -48,13 +48,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Object Controller Test Cases
- *
- * @author Alan Yeh
- * @see ObjectController
- * @since 2022/11/03
- */
+/// Object Controller Test Cases
+///
+/// @author Alan Yeh
+/// @see ObjectController
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = StorageApplication.class)
 public class TestObjectController {
 
@@ -73,10 +70,8 @@ public class TestObjectController {
         }
     }
 
-    /**
-     * @see ObjectController#upload
-     * @see ObjectController#download
-     */
+    /// @see ObjectController#upload
+    /// @see ObjectController#download
     @Test
     public void case1() throws IOException {
         // 创建随机文件
@@ -115,10 +110,8 @@ public class TestObjectController {
         }
     }
 
-    /**
-     * @see ObjectController#upload
-     * @see ObjectController#rapidUpload
-     */
+    /// @see ObjectController#upload
+    /// @see ObjectController#rapidUpload
     @Test
     public void case2() throws IOException {
         var file = new File("./test.txt");
@@ -161,13 +154,11 @@ public class TestObjectController {
         }
     }
 
-    /**
-     * @see ObjectController#upload
-     * @see ObjectController#confirm
-     * @see ObjectController#findById
-     * @see ObjectController#findByIds
-     * @see ObjectController#delete
-     */
+    /// @see ObjectController#upload
+    /// @see ObjectController#confirm
+    /// @see ObjectController#findById
+    /// @see ObjectController#findByIds
+    /// @see ObjectController#delete
     @Test
     public void case3() throws IOException {
         // 创建随机文件
@@ -226,14 +217,12 @@ public class TestObjectController {
         }
     }
 
-    /**
-     * 分片上传
-     *
-     * @see ObjectController#createMultipart
-     * @see ObjectController#patchMultipart
-     * @see ObjectController#completeMultipart
-     * @see ObjectController#completeMultipart
-     */
+    /// 分片上传
+    ///
+    /// @see ObjectController#createMultipart
+    /// @see ObjectController#patchMultipart
+    /// @see ObjectController#completeMultipart
+    /// @see ObjectController#completeMultipart
     @Test
     public void case4() throws IOException {
         // 创建随机文件

@@ -29,15 +29,10 @@ import central.studio.identity.core.LoginField;
 
 import java.util.List;
 
-/**
- * 认证配置
- *
- * @author Alan Yeh
- * @since 2023/11/20
- */
+/// 认证配置
+///
+/// @author Alan Yeh
 public interface AuthenticateAttributes {
-    /**
-     * 登录时搜索的字段
-     */
+    /// 登录时搜索的字段
     Attribute<List<LoginField>> LOGIN_FIELD = Attribute.of("authenticate.login_field", () -> List.of(LoginField.values()));
 }

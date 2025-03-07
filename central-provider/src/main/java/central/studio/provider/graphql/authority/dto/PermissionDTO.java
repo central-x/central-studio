@@ -24,57 +24,47 @@
 
 package central.studio.provider.graphql.authority.dto;
 
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLType;
 import central.studio.provider.database.persistence.authority.entity.PermissionEntity;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLType;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Permission
- * 权限
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// Permission
+///
+/// 权限
+///
+/// @author Alan Yeh
 @GraphQLType("Permission")
 @EqualsAndHashCode(callSuper = true)
 public class PermissionDTO extends PermissionEntity {
     @Serial
     private static final long serialVersionUID = -3462948911635473156L;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @GraphQLGetter
-    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader){
+    public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
     }
 
-    /**
-     * 菜单
-     */
+    /// 菜单
     @GraphQLGetter
     public CompletableFuture<MenuDTO> getMenu(DataLoader<String, MenuDTO> loader) {
         return loader.load(this.getMenuId());
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

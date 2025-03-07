@@ -31,21 +31,16 @@ import org.springframework.context.ApplicationEvent;
 
 import java.io.Serial;
 
-/**
- * 数据更新事件
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 数据更新事件
+///
+/// @author Alan Yeh
 public class DataRefreshEvent<T extends DataContainer> extends ApplicationEvent {
     @Serial
     private static final long serialVersionUID = -8441489623994722578L;
 
-    /**
-     * 数据标识
-     *
-     * @see DataFetcherType#getValue()
-     */
+    /// 数据标识
+    ///
+    /// @see DataFetcherType#getValue()
     public String getValue() {
         return this.getSource().toString();
     }

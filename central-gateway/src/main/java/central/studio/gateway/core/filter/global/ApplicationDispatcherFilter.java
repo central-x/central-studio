@@ -27,12 +27,12 @@ package central.studio.gateway.core.filter.global;
 import central.bean.Orderable;
 import central.data.saas.ApplicationRoute;
 import central.data.saas.Tenant;
-import central.studio.gateway.core.filter.FilterChain;
-import central.studio.gateway.core.filter.GlobalFilter;
-import central.studio.gateway.core.attribute.ExchangeAttributes;
 import central.lang.Stringx;
 import central.starter.web.reactive.extension.ServerWebExchangex;
 import central.starter.web.reactive.render.RedirectRender;
+import central.studio.gateway.core.attribute.ExchangeAttributes;
+import central.studio.gateway.core.filter.FilterChain;
+import central.studio.gateway.core.filter.GlobalFilter;
 import central.util.Listx;
 import com.auth0.jwt.RegisteredClaims;
 import lombok.experimental.ExtensionMethod;
@@ -47,14 +47,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Objects;
 
-/**
- * 网关分发
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 网关分发
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)

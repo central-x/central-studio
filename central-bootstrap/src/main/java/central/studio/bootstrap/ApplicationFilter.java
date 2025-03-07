@@ -38,12 +38,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-/**
- * Application Filter
- *
- * @author Alan Yeh
- * @since 2024/01/20
- */
+/// Application Filter
+///
+/// @author Alan Yeh
 @Component
 @Priority(Ordered.HIGHEST_PRECEDENCE)
 public class ApplicationFilter implements Filter {

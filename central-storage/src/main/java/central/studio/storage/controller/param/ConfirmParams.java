@@ -36,12 +36,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 二确确认参数
- *
- * @author Alan Yeh
- * @since 2022/11/01
- */
+/// 二确确认参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

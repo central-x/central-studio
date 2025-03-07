@@ -31,12 +31,9 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * 部门
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// 部门
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("organization.departments")
 @GraphQLStub(path = "organization", client = "providerClient")

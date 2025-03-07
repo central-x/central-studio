@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Log Storage Page Query
- * <p>
- * 日志存储器分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/28
- */
+/// Log Storage Page Query
+///
+/// 日志存储器分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class StoragePageQuery extends PageQuery<LogStorage> {

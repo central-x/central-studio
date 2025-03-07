@@ -25,14 +25,14 @@
 package central.studio.provider.graphql.saas.dto;
 
 import central.provider.graphql.DTO;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.graphql.system.dto.DatabaseDTO;
-import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
-import central.studio.provider.database.persistence.saas.entity.TenantEntity;
-import central.studio.provider.graphql.saas.query.TenantApplicationQuery;
 import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
+import central.studio.provider.database.persistence.saas.entity.TenantEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
+import central.studio.provider.graphql.saas.query.TenantApplicationQuery;
+import central.studio.provider.graphql.system.dto.DatabaseDTO;
 import central.web.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
@@ -43,46 +43,35 @@ import java.io.Serial;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 租户信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 租户信息
+///
+/// @author Alan Yeh
 @GraphQLType("Tenant")
 @EqualsAndHashCode(callSuper = true)
 public class TenantDTO extends TenantEntity implements DTO {
     @Serial
     private static final long serialVersionUID = 1074908736228849278L;
 
-    /**
-     * 数据库信息
-     */
+    /// 数据库信息
     @GraphQLGetter
     public CompletableFuture<DatabaseDTO> getDatabase(DataLoader<String, DatabaseDTO> loader) {
         return loader.load(this.getDatabaseId());
     }
 
-    /**
-     * 获取应用信息
-     */
+    /// 获取应用信息
     @GraphQLGetter
     public List<TenantApplicationDTO> getApplications(@Autowired TenantApplicationQuery query,
                                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return query.findBy(null, null, Conditions.of(TenantApplicationEntity.class).eq(TenantApplicationEntity::getTenantId, this.getId()), null, tenant);
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

@@ -57,12 +57,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * MulticastMessageProvider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// MulticastMessageProvider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestMulticastMessageProvider {
 
@@ -95,14 +92,12 @@ public class TestMulticastMessageProvider {
         this.broadcasterPersistence.deleteBy(Conditions.of(MulticastBroadcasterEntity.class).like(MulticastBroadcasterEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see MulticastMessageProvider#insert
-     * @see MulticastMessageProvider#findById
-     * @see MulticastMessageProvider#update
-     * @see MulticastMessageProvider#findByIds
-     * @see MulticastMessageProvider#countBy
-     * @see MulticastMessageProvider#deleteByIds
-     */
+    /// @see MulticastMessageProvider#insert
+    /// @see MulticastMessageProvider#findById
+    /// @see MulticastMessageProvider#update
+    /// @see MulticastMessageProvider#findByIds
+    /// @see MulticastMessageProvider#countBy
+    /// @see MulticastMessageProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -188,13 +183,11 @@ public class TestMulticastMessageProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see MulticastMessageProvider#insertBatch
-     * @see MulticastMessageProvider#findBy
-     * @see MulticastMessageProvider#updateBatch
-     * @see MulticastMessageProvider#pageBy
-     * @see MulticastMessageProvider#deleteBy
-     */
+    /// @see MulticastMessageProvider#insertBatch
+    /// @see MulticastMessageProvider#findBy
+    /// @see MulticastMessageProvider#updateBatch
+    /// @see MulticastMessageProvider#pageBy
+    /// @see MulticastMessageProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

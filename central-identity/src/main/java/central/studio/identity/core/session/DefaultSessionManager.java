@@ -24,11 +24,11 @@
 
 package central.studio.identity.core.session;
 
-import central.identity.client.Session;
 import central.data.organization.Account;
+import central.identity.client.Session;
 import central.lang.Stringx;
-import central.studio.identity.controller.session.support.Endpoint;
 import central.security.signer.KeyPair;
+import central.studio.identity.controller.session.support.Endpoint;
 import central.util.cache.CacheRepository;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -41,23 +41,16 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Map;
 
-/**
- * 默认的会话
- *
- * @author Alan Yeh
- * @since 2023/05/13
- */
+/// 默认的会话
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 public class DefaultSessionManager implements SessionManager {
-    /**
-     * 会话密钥
-     */
+    /// 会话密钥
     private final KeyPair sessionKey;
 
-    /**
-     * 会话容器
-     */
+    /// 会话容器
     private final SessionStorage storage;
 
     public DefaultSessionManager(KeyPair sessionKey, CacheRepository repository) {
@@ -166,12 +159,10 @@ public class DefaultSessionManager implements SessionManager {
             return Stringx.format("{}:security:session:endpoint:{}:{}", tenantCode, accountId, endpoint);
         }
 
-        /**
-         * 保存会话凭证
-         *
-         * @param session 会话
-         * @param limit   会话限制
-         */
+        /// 保存会话凭证
+        ///
+        /// @param session 会话
+        /// @param limit   会话限制
         public void save(Session session, Integer limit) {
             // 获取当前用户所有终端会话
             var list = this.repository.opsList(this.getEndpointKey(session.getTenantCode(), session.getAccountId(), session.getEndpoint()));
@@ -207,14 +198,12 @@ public class DefaultSessionManager implements SessionManager {
             value.set(session.getToken(), session.getTimeout());
         }
 
-        /**
-         * 验证会话是否有效
-         * <p>
-         * 如果会话有效，则延长会话有效期
-         *
-         * @param session 会话
-         * @return 是否有效
-         */
+        /// 验证会话是否有效
+        ///
+        /// 如果会话有效，则延长会话有效期
+        ///
+        /// @param session 会话
+        /// @return 是否有效
         public boolean verify(Session session) {
             // 去会话仓库中查看该会话是否已过期
             if (this.repository.hasKey(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getId()))) {
@@ -234,11 +223,9 @@ public class DefaultSessionManager implements SessionManager {
             }
         }
 
-        /**
-         * 清除会话
-         *
-         * @param session 会话
-         */
+        /// 清除会话
+        ///
+        /// @param session 会话
         public void invalid(Session session) {
             // 删除会话
             this.repository.delete(this.getTokenKey(session.getTenantCode(), session.getAccountId(), session.getId()));
@@ -248,12 +235,10 @@ public class DefaultSessionManager implements SessionManager {
                     .remove(session.getId());
         }
 
-        /**
-         * 清除该用户所有会话
-         *
-         * @param tenantCode 租户标识
-         * @param accountId  帐户主键
-         */
+        /// 清除该用户所有会话
+        ///
+        /// @param tenantCode 租户标识
+        /// @param accountId  帐户主键
         public void clear(String tenantCode, String accountId) {
             // TODO MemoryCacheRepository 不支持遍历
             this.repository.delete(this.getTokenKey(tenantCode, accountId, "*"));

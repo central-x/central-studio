@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.system.mapper;
 
-import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 数据库信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 数据库信息
+///
+/// @author Alan Yeh
 @Repository
 public interface DatabaseMapper extends Mapper<DatabaseEntity> {
 }

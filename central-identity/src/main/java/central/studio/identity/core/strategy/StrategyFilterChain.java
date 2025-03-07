@@ -30,21 +30,16 @@ import jakarta.servlet.ServletException;
 
 import java.io.IOException;
 
-/**
- * Strategy Chain
- * <p>
- * 策略执行链
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// Strategy Chain
+///
+/// 策略执行链
+///
+/// @author Alan Yeh
 public interface StrategyFilterChain {
 
-    /**
-     * 执行下一策略
-     *
-     * @param request  Current request
-     * @param response Current response
-     */
+    /// 执行下一策略
+    ///
+    /// @param request  Current request
+    /// @param response Current response
     void execute(WebMvcRequest request, WebMvcResponse response) throws IOException, ServletException;
 }

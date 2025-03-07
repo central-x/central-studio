@@ -37,12 +37,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 租户
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 租户
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,60 +48,42 @@ public class Tenant extends ModifiableEntity implements Codeable, Available, Rem
     @Serial
     private static final long serialVersionUID = 6604857763442173130L;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 数据库主键
-     */
+    /// 数据库主键
     @Nonnull
     private String databaseId;
 
-    /**
-     * 数据库信息
-     */
+    /// 数据库信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Database database;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 备注
-     */
+    /// 备注
     @Nullable
     private String remark;
 
-    /**
-     * 租用信息
-     */
+    /// 租用信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<TenantApplication> applications;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

@@ -33,12 +33,9 @@ import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.Setter;
 
-/**
- * Oracle 数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// Oracle 数据库
+///
+/// @author Alan Yeh
 public class OracleDatabase extends Database {
 
     @Setter

@@ -24,23 +24,20 @@
 
 package central.studio.gateway.core.filter.predicate.impl;
 
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.lang.Stringx;
 import central.pluglet.annotation.Control;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.util.Listx;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Setter;
 import org.springframework.web.server.ServerWebExchange;
 
-/**
- * Query 断言
- * <p>
- * 判断当前请求的 URL 参数是否包含指定参数和值
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Query 断言
+///
+/// 判断当前请求的 URL 参数是否包含指定参数和值
+///
+/// @author Alan Yeh
 public class QueryPredicate implements Predicate {
 
     @Setter

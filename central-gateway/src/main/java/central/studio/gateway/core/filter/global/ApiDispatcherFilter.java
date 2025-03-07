@@ -32,12 +32,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-/**
- * 接口中心分发
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 接口中心分发
+///
+/// @author Alan Yeh
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
 public class ApiDispatcherFilter implements GlobalFilter {

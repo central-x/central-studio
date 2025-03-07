@@ -24,41 +24,34 @@
 
 package central.studio.provider.graphql.storage.dto;
 
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.database.persistence.storage.entity.StorageFileEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.storage.entity.StorageFileEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Storage File
- * <p>
- * 文件
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage File
+///
+/// 文件
+///
+/// @author Alan Yeh
 @GraphQLType("StorageFile")
 @EqualsAndHashCode(callSuper = true)
 public class StorageFileDTO extends StorageFileEntity {
     @Serial
     private static final long serialVersionUID = -5905086584088787620L;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

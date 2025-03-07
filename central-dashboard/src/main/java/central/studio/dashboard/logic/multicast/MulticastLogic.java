@@ -51,14 +51,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Multicast Logic
- * <p>
- * 广播中心业务逻辑
- *
- * @author Alan Yeh
- * @since 2024/11/07
- */
+/// Multicast Logic
+///
+/// 广播中心业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class MulticastLogic {
 
@@ -75,11 +72,9 @@ public class MulticastLogic {
         return context.getData(DataFetcherType.SAAS);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<MulticastBroadcaster> getBroadcasterDefaultOrders(@Nullable Orders<MulticastBroadcaster> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -87,11 +82,9 @@ public class MulticastLogic {
         return Orders.of(MulticastBroadcaster.class).asc(MulticastBroadcaster::getCode).asc(MulticastBroadcaster::getName);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<MulticastMessage> getMessageDefaultOrders(@Nullable Orders<MulticastMessage> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -99,40 +92,34 @@ public class MulticastLogic {
         return Orders.of(MulticastMessage.class).desc(MulticastMessage::getCreateDate);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<MulticastBroadcaster> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<MulticastBroadcaster> conditions, @Nullable Orders<MulticastBroadcaster> orders, @Nonnull String tenant) {
         orders = this.getBroadcasterDefaultOrders(orders);
         return this.broadcasterProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public MulticastBroadcaster findById(@Nonnull String id, @Nonnull String tenant) {
         return this.broadcasterProvider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public MulticastBroadcaster insert(@Nonnull @Validated({Insert.class, Default.class}) MulticastBroadcasterInput input, @Nonnull String accountId, @Nonnull String tenant) {
         if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
@@ -141,14 +128,12 @@ public class MulticastLogic {
         return this.broadcasterProvider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public MulticastBroadcaster update(@Nonnull @Validated({Update.class, Default.class}) MulticastBroadcasterInput input, @Nonnull String accountId, @Nonnull String tenant) {
         if (this.getSaasContainer().getApplicationById(input.getApplicationId()) == null) {
             throw new IllegalArgumentException(Stringx.format("应用[id={}]不存在", input.getApplicationId()));
@@ -157,14 +142,12 @@ public class MulticastLogic {
         return this.broadcasterProvider.update(input, accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param id        待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param id        待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     public @Nonnull MulticastBroadcaster enable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.broadcasterProvider.findById(id, tenant);
         if (data == null) {
@@ -173,14 +156,12 @@ public class MulticastLogic {
         return this.broadcasterProvider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param id        待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param id        待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     public @Nonnull MulticastBroadcaster disable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.broadcasterProvider.findById(id, tenant);
         if (data == null) {
@@ -189,40 +170,34 @@ public class MulticastLogic {
         return this.broadcasterProvider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.broadcasterProvider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<MulticastMessage> pageMessages(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<MulticastMessage> conditions, @Nullable Orders<MulticastMessage> orders, @Nonnull String tenant) {
         return this.messageProvider.pageBy(pageIndex, pageSize, conditions, this.getMessageDefaultOrders(orders), tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteMessagesByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.messageProvider.deleteByIds(ids, tenant);
     }

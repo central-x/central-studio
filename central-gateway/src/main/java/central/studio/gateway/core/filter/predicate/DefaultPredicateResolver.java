@@ -33,14 +33,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-/**
- * Default Predicate Resolver
- * <p>
- * 默认路由断言类型解析器
- *
- * @author Alan Yeh
- * @since 2024/05/24
- */
+/// Default Predicate Resolver
+///
+/// 默认路由断言类型解析器
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class DefaultPredicateResolver implements PredicateResolver {
 

@@ -34,12 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-/**
- * Message Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// Message Controller Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = MulticastApplication.class)
 public class TestMessageController {
 
@@ -57,9 +54,7 @@ public class TestMessageController {
         }
     }
 
-    /**
-     * @see MessageController#publish
-     */
+    /// @see MessageController#publish
     @Test
     public void case1() {
 //        var token = this.client.createToken("AkJSi2kmH7vSO5lJcvY", Duration.ofMinutes(30).toMillis());

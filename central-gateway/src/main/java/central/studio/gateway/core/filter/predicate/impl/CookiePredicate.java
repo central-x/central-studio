@@ -24,23 +24,20 @@
 
 package central.studio.gateway.core.filter.predicate.impl;
 
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.lang.Stringx;
 import central.pluglet.annotation.Control;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.util.Listx;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Setter;
 import org.springframework.web.server.ServerWebExchange;
 
-/**
- * Cookie 断言
- * <p>
- * 判断请求是否包含指定的 Cookie
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Cookie 断言
+///
+/// 判断请求是否包含指定的 Cookie
+///
+/// @author Alan Yeh
 public class CookiePredicate implements Predicate {
     @Setter
     @Label("Cookie")

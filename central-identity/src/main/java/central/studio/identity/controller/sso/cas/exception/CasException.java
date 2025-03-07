@@ -28,14 +28,11 @@ import lombok.Getter;
 
 import java.io.Serial;
 
-/**
- * CAS Exception
- * <p>
- * CAS 异常
- *
- * @author Alan Yeh
- * @since 2024/08/02
- */
+/// CAS Exception
+///
+/// CAS 异常
+///
+/// @author Alan Yeh
 public class CasException extends Exception {
     @Serial
     private static final long serialVersionUID = -5720313359099797353L;

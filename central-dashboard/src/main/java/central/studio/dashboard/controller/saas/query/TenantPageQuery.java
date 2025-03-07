@@ -34,14 +34,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Tenant Page Query
- * <p>
- * 租户分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Tenant Page Query
+///
+/// 租户分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TenantPageQuery extends PageQuery<Tenant> {

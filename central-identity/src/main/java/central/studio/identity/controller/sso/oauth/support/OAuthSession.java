@@ -24,42 +24,31 @@
 
 package central.studio.identity.controller.sso.oauth.support;
 
-/**
- * OAuth 会话管理
- *
- * @author Alan Yeh
- * @since 2022/11/07
- */
+/// OAuth 会话管理
+///
+/// @author Alan Yeh
 public interface OAuthSession {
-    /**
-     * 保存授权码
-     *
-     * @param tenant  租户标识
-     * @param code    授权码
-     */
+    /// 保存授权码
+    ///
+    /// @param tenant 租户标识
+    /// @param code   授权码
     void saveCode(String tenant, AuthorizationCode code);
 
-    /**
-     * 获取授权码
-     *
-     * @param tenant 租户标识
-     * @param code   授权码标识
-     */
+    /// 获取授权码
+    ///
+    /// @param tenant 租户标识
+    /// @param code   授权码标识
     AuthorizationCode getCode(String tenant, String code);
 
-    /**
-     * 保存授权事务
-     *
-     * @param tenant      租户标识
-     * @param transaction 事务
-     */
+    /// 保存授权事务
+    ///
+    /// @param tenant      租户标识
+    /// @param transaction 事务
     void saveTransaction(String tenant, AuthorizationTransaction transaction);
 
-    /**
-     * 获取授权事务
-     *
-     * @param tenant 租户标识
-     * @param id     事务主键
-     */
+    /// 获取授权事务
+    ///
+    /// @param tenant 租户标识
+    /// @param id     事务主键
     AuthorizationTransaction getAndRemoveTransaction(String tenant, String id);
 }

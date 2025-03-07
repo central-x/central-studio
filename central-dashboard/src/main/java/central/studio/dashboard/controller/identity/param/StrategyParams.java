@@ -34,14 +34,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Identity Strategy Params
- * <p>
- * 认证策略入参
- *
- * @author Alan Yeh
- * @since 2024/11/11
- */
+/// Identity Strategy Params
+///
+/// 认证策略入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

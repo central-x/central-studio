@@ -31,24 +31,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Provider Properties
- * <p>
- * 数据中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/10
- */
+/// Provider Properties
+///
+/// 数据中心配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties(prefix = "studio.provider")
 public class ProviderProperties {
-    /**
-     * 访问地址
-     */
+    /// 访问地址
     private String url = "http://central-provider";
 
-    /**
-     * 数据
-     */
+    /// 数据
     private List<DataFetcherType> fetchers = new ArrayList<>();
 }

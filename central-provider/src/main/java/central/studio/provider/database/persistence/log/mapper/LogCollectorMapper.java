@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.log.mapper;
 
-import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Log Collector
- * <p>
- * 日志采集器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Log Collector
+///
+/// 日志采集器
+///
+/// @author Alan Yeh
 @Repository
 public interface LogCollectorMapper extends Mapper<LogCollectorEntity> {
 }

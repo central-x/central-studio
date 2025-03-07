@@ -24,9 +24,6 @@
 
 package central.studio.logging.core.collector.impl.rabbit;
 
-/**
- * @author Alan Yeh
- * @since 2024/01/21
- */
+/// @author Alan Yeh
 public class RabbitEvent {
 }

@@ -33,12 +33,9 @@ import lombok.Setter;
 
 import java.time.Duration;
 
-/**
- * 租户中心数据获取
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 租户中心数据获取
+///
+/// @author Alan Yeh
 public class SaasFetcher implements DataFetcher<SaasContainer> {
 
     @Setter
@@ -49,7 +46,7 @@ public class SaasFetcher implements DataFetcher<SaasContainer> {
 
     @Override
     public SaasContainer get() {
-        if (supplier == null){
+        if (supplier == null) {
             return new SaasContainer();
         }
 

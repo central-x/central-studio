@@ -24,10 +24,10 @@
 
 package central.studio.gateway.core.filter.impl;
 
-import central.studio.gateway.core.filter.Filter;
-import central.studio.gateway.core.filter.FilterChain;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.Filter;
+import central.studio.gateway.core.filter.FilterChain;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -35,12 +35,9 @@ import lombok.Setter;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-/**
- * 设置响应头
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 设置响应头
+///
+/// @author Alan Yeh
 public class SetResponseHeaderFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,

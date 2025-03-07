@@ -25,16 +25,16 @@
 package central.studio.gateway.core.filter.impl;
 
 import central.bean.OptionalEnum;
-import central.studio.gateway.core.attribute.ExchangeAttributes;
-import central.studio.gateway.core.body.EmptyBody;
-import central.studio.gateway.core.filter.Filter;
-import central.studio.gateway.core.filter.FilterChain;
 import central.lang.Arrayx;
 import central.lang.BooleanEnum;
 import central.lang.Stringx;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.starter.web.reactive.extension.ServerWebExchangex;
+import central.studio.gateway.core.attribute.ExchangeAttributes;
+import central.studio.gateway.core.body.EmptyBody;
+import central.studio.gateway.core.filter.Filter;
+import central.studio.gateway.core.filter.FilterChain;
 import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -54,12 +54,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 允许跨域
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 允许跨域
+///
+/// @author Alan Yeh
 @ExtensionMethod(ServerWebExchangex.class)
 public class CrossOriginFilter implements Filter, InitializingBean {
 

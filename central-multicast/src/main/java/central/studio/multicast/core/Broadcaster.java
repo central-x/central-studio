@@ -26,24 +26,17 @@ package central.studio.multicast.core;
 
 import central.multicast.client.body.StandardBody;
 
-/**
- * 广播器
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 广播器
+///
+/// @author Alan Yeh
 public interface Broadcaster<T> {
-    /**
-     * 标准推送
-     *
-     * @param body 消息体
-     */
+    /// 标准推送
+    ///
+    /// @param body 消息体
     void standardPublish(StandardBody body);
 
-    /**
-     * 自定义推送
-     *
-     * @param body 消息体
-     */
+    /// 自定义推送
+    ///
+    /// @param body 消息体
     void customPublish(T body);
 }

@@ -32,12 +32,9 @@ import lombok.Getter;
 
 import java.util.Objects;
 
-/**
- * 菜单类型
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 菜单类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum MenuType implements OptionalEnum<String> {

@@ -27,19 +27,14 @@ package central.gateway;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Gateway Properties
- * <p>
- * 网关中心配置
- *
- * @author Alan Yeh
- * @since 2023/09/19
- */
+/// Gateway Properties
+///
+/// 网关中心配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties(prefix = "studio.gateway")
 public class GatewayProperties {
-    /**
-     * 访问地址
-     */
+    /// 访问地址
     private String url = "http://central-gateway";
 }

@@ -36,12 +36,9 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 租户与应用关联关系输入
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 租户与应用关联关系输入
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

@@ -24,41 +24,34 @@
 
 package central.studio.provider.graphql.identity.dto;
 
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.database.persistence.identity.entity.IdentityStrategyEntity;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.identity.entity.IdentityStrategyEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
 
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Identity Strategy
- * <p>
- * 安全策略
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// Identity Strategy
+///
+/// 安全策略
+///
+/// @author Alan Yeh
 @GraphQLType("IdentityStrategy")
 @EqualsAndHashCode(callSuper = true)
 public class IdentityStrategyDTO extends IdentityStrategyEntity {
     @Serial
     private static final long serialVersionUID = -8664168439331981176L;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

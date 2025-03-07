@@ -50,12 +50,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Gateway Filter Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/11/15
- */
+/// Gateway Filter Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestFilterController extends TestController {
@@ -63,12 +60,10 @@ public class TestFilterController extends TestController {
 
     private static final String PATH = "/dashboard/api/gateway/filters";
 
-    /**
-     * @see FilterController#add
-     * @see FilterController#details
-     * @see FilterController#page
-     * @see FilterController#delete
-     */
+    /// @see FilterController#add
+    /// @see FilterController#details
+    /// @see FilterController#page
+    /// @see FilterController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增
@@ -167,12 +162,10 @@ public class TestFilterController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see FilterController#add
-     * @see FilterController#update
-     * @see FilterController#details
-     * @see FilterController#delete
-     */
+    /// @see FilterController#add
+    /// @see FilterController#update
+    /// @see FilterController#details
+    /// @see FilterController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         // 新增

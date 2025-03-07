@@ -27,23 +27,16 @@ package central.studio.dashboard;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * 应用配置
- *
- * @author Alan Yeh
- * @since 2022/11/17
- */
+/// 应用配置
+///
+/// @author Alan Yeh
 @Data
 @ConfigurationProperties("studio.dashboard")
 public class DashboardProperties {
 
-    /**
-     * 应用标识
-     */
+    /// 应用标识
     private String code = "dashboard";
 
-    /**
-     * 应用密钥
-     */
+    /// 应用密钥
     private String secret;
 }

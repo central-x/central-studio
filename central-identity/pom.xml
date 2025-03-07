@@ -51,6 +51,18 @@
             <artifactId>java-jwt</artifactId>
         </dependency>
 
+        <!-- IP 归属地 -->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+        </dependency>
+
+        <!-- 浏览器解析 -->
+        <dependency>
+            <groupId>nl.basjes.parse.useragent</groupId>
+            <artifactId>yauaa</artifactId>
+        </dependency>
+
         <!-- 测试依赖 -->
         <dependency>
             <groupId>com.central-x.framework</groupId>

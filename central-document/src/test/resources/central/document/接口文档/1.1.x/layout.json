@@ -1,0 +1,11 @@
+{
+  "关于.md": "about",
+  "文档中心": {
+    "关于.md": "document-about",
+    "使用手册.md": "document-guide"
+  },
+  "日志中心": {
+    "关于.md": "logging-about",
+    "使用手册.md": "logging-guide"
+  }
+}

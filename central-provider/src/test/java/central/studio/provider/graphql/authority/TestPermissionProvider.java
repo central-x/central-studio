@@ -53,14 +53,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Permission Provider Test Cases
- * <p>
- * 权限测试
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Permission Provider Test Cases
+///
+/// 权限测试
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestPermissionProvider extends TestProvider {
 
@@ -94,14 +91,12 @@ public class TestPermissionProvider extends TestProvider {
         this.menuPersistence.deleteBy(Conditions.of(MenuEntity.class).eq(MenuEntity::getApplicationId, application.getId()), tenant.getCode());
     }
 
-    /**
-     * @see PermissionProvider#insert
-     * @see PermissionProvider#findById
-     * @see PermissionProvider#update
-     * @see PermissionProvider#findByIds
-     * @see PermissionProvider#countBy
-     * @see PermissionProvider#deleteByIds
-     */
+    /// @see PermissionProvider#insert
+    /// @see PermissionProvider#findById
+    /// @see PermissionProvider#update
+    /// @see PermissionProvider#findByIds
+    /// @see PermissionProvider#countBy
+    /// @see PermissionProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -197,13 +192,11 @@ public class TestPermissionProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see PermissionProvider#insertBatch
-     * @see PermissionProvider#findBy
-     * @see PermissionProvider#updateBatch
-     * @see PermissionProvider#pageBy
-     * @see PermissionProvider#deleteBy
-     */
+    /// @see PermissionProvider#insertBatch
+    /// @see PermissionProvider#findBy
+    /// @see PermissionProvider#updateBatch
+    /// @see PermissionProvider#pageBy
+    /// @see PermissionProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

@@ -34,14 +34,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Post Params
- * <p>
- * 职务入参
- *
- * @author Alan Yeh
- * @since 2024/12/04
- */
+/// Post Params
+///
+/// 职务入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

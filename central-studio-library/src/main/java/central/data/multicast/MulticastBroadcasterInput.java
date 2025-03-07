@@ -33,14 +33,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Multicast Broadcaster
- * <p>
- * 广播器
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// Multicast Broadcaster
+///
+/// 广播器
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

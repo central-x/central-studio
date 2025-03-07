@@ -64,21 +64,16 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Cas Controller Test Cases
- * <p>
- * CAS 协议测试
- *
- * @author Alan Yeh
- * @since 2024/07/12
- */
+/// Cas Controller Test Cases
+///
+/// CAS 协议测试
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = IdentityApplication.class)
 public class TestCasController extends TestController {
 
-    /**
-     * 设置 CAS 策略
-     */
+    /// 设置 CAS 策略
     @BeforeAll
     public static void setup(@Autowired DataContext context, @Autowired StrategyContainer container, @Autowired StrategyResolver resolver) throws Exception {
         {
@@ -106,9 +101,7 @@ public class TestCasController extends TestController {
         container.putStrategy("master", new DynamicStrategyFilter(strategy, resolver));
     }
 
-    /**
-     * 获取 CAS 策略
-     */
+    /// 获取 CAS 策略
     private CasStrategyFilter getStrategyFilter(StrategyContainer container) {
         var dynamic = container.getStrategy("master", "cas");
         assertNotNull(dynamic);
@@ -117,9 +110,7 @@ public class TestCasController extends TestController {
         return (CasStrategyFilter) dynamic.getDelegate();
     }
 
-    /**
-     * 测试禁用 CAS 协议
-     */
+    /// 测试禁用 CAS 协议
     @Test
     void case0(@Autowired MockMvc mvc, @Autowired StrategyContainer container) throws Exception {
         var strategy = this.getStrategyFilter(container);
@@ -145,11 +136,9 @@ public class TestCasController extends TestController {
         strategy.setEnabled(BooleanEnum.TRUE);
     }
 
-    /**
-     * 未登记的应用不允许接入 CAS 功能
-     *
-     * @see CasController#login
-     */
+    /// 未登记的应用不允许接入 CAS 功能
+    ///
+    /// @see CasController#login
     @Test
     public void case1(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
@@ -168,12 +157,10 @@ public class TestCasController extends TestController {
     }
 
 
-    /**
-     * 未登录时，重定向到 /identity/ 进行认证
-     *
-     * @see CasController#login
-     * @see IdentityIndexController#login
-     */
+    /// 未登录时，重定向到 /identity/ 进行认证
+    ///
+    /// @see CasController#login
+    /// @see IdentityIndexController#login
     @Test
     public void case2(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
@@ -203,12 +190,10 @@ public class TestCasController extends TestController {
                 );
     }
 
-    /**
-     * 无效 Cookie 时，重定向到 /identity/ 进行认证
-     *
-     * @see CasController#login
-     * @see IdentityIndexController#login
-     */
+    /// 无效 Cookie 时，重定向到 /identity/ 进行认证
+    ///
+    /// @see CasController#login
+    /// @see IdentityIndexController#login
     @Test
     public void case3(@Autowired MockMvc mvc) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
@@ -239,12 +224,10 @@ public class TestCasController extends TestController {
                 );
     }
 
-    /**
-     * 已登录时，但 renew 参数为 true 时，则要求重定向到 /identity/ 进行认证
-     *
-     * @see CasController#login
-     * @see IdentityIndexController#login
-     */
+    /// 已登录时，但 renew 参数为 true 时，则要求重定向到 /identity/ 进行认证
+    ///
+    /// @see CasController#login
+    /// @see IdentityIndexController#login
     @Test
     public void case4(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
@@ -276,12 +259,10 @@ public class TestCasController extends TestController {
                 );
     }
 
-    /**
-     * 已登录时，协带参数跳转到用户指定的地址
-     *
-     * @see CasController#login
-     * @see CasController#validate
-     */
+    /// 已登录时，协带参数跳转到用户指定的地址
+    ///
+    /// @see CasController#login
+    /// @see CasController#validate
     @Test
     public void case5(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var request = MockMvcRequestBuilders.get("/identity/sso/cas/login")
@@ -333,11 +314,9 @@ public class TestCasController extends TestController {
                 .andExpect(jsonPath("$.description").isNotEmpty());
     }
 
-    /**
-     * 测试无效的 ST
-     *
-     * @see CasController#validate
-     */
+    /// 测试无效的 ST
+    ///
+    /// @see CasController#validate
     @Test
     public void case6(@Autowired MockMvc mvc) throws Exception {
         // 验证 ST

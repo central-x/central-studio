@@ -29,12 +29,9 @@ import central.studio.provider.database.core.impl.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 数据库类型
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 数据库类型
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum DatabaseType implements OptionalEnum<String> {

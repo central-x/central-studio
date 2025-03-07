@@ -43,22 +43,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Database Controller
- * <p>
- * 数据源管理
- *
- * @author Alan Yeh
- * @since 2024/10/20
- */
+/// Database Controller
+///
+/// 数据源管理
+///
+/// @author Alan Yeh
 @RestController
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/system/databases")
 public class DatabaseController {
 
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "*:system:database:view";
         String ADD = "*:system:database:add";
@@ -71,95 +66,81 @@ public class DatabaseController {
     @Setter(onMethod_ = @Autowired)
     private DatabaseLogic logic;
 
-    /**
-     * 按条件分页查询字典列表
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 分页结果
-     */
+    /// 按条件分页查询字典列表
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 分页结果
     @GetMapping("/page")
     @RequiresPermissions(Permissions.VIEW)
     public Page<Database> page(@Validated DatabasePageQuery query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.pageBy(query.getPageIndex(), query.getPageSize(), query.build(), null, tenant);
     }
 
-    /**
-     * 根据主键查询字典详情
-     *
-     * @param query  查询
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 根据主键查询字典详情
+    ///
+    /// @param query  查询
+    /// @param tenant 租户标识
+    /// @return 详情
     @GetMapping("/details")
     @RequiresPermissions(Permissions.VIEW)
     public Database details(@Validated IdQuery<Database> query, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.findById(query.getId(), tenant);
     }
 
-    /**
-     * 新增字典
-     *
-     * @param params 字典入参
-     * @param tenant 租户标识
-     * @return 新增后的字典
-     */
+    /// 新增字典
+    ///
+    /// @param params 字典入参
+    /// @param tenant 租户标识
+    /// @return 新增后的字典
     @PostMapping
     @RequiresPermissions(Permissions.ADD)
     public Database add(@RequestBody @Validated({Insert.class, Default.class}) DatabaseParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.insert(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 更新字典
-     *
-     * @param params    字典入参
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 更新后字典数据
-     */
+    /// 更新字典
+    ///
+    /// @param params    字典入参
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 更新后字典数据
     @PutMapping
     @RequiresPermissions(Permissions.EDIT)
     public Database update(@RequestBody @Validated({Update.class, Default.class}) DatabaseParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.update(params.toInput(), accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param params    待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param params    待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     @PutMapping("/enable")
     @RequiresPermissions(Permissions.ENABLE)
     public Database enable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.enable(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param params    待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param params    待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     @PutMapping("/disable")
     @RequiresPermissions(Permissions.DISABLE)
     public Database disable(@RequestBody @Validated IdParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.logic.disable(params.getId(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除字典数据
-     *
-     * @param params    待删除主键列表
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除字典数据
+    ///
+    /// @param params    待删除主键列表
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     @DeleteMapping
     @RequiresPermissions(Permissions.DELETE)
     public long delete(@Validated IdsParams params, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

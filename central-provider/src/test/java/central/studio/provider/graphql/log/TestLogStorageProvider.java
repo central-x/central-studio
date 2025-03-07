@@ -45,14 +45,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * LogStorageProvider Test Cases
- * <p>
- * 日志存储器
- *
- * @author Alan Yeh
- * @since 2022/10/26
- */
+/// LogStorageProvider Test Cases
+///
+/// 日志存储器
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestLogStorageProvider {
 
@@ -68,14 +65,12 @@ public class TestLogStorageProvider {
         this.persistence.deleteBy(Conditions.of(LogStorageEntity.class).like(LogStorageEntity::getCode, "test%"));
     }
 
-    /**
-     * @see LogStorageProvider#insert
-     * @see LogStorageProvider#findById
-     * @see LogStorageProvider#update
-     * @see LogStorageProvider#findByIds
-     * @see LogStorageProvider#countBy
-     * @see LogStorageProvider#deleteByIds
-     */
+    /// @see LogStorageProvider#insert
+    /// @see LogStorageProvider#findById
+    /// @see LogStorageProvider#update
+    /// @see LogStorageProvider#findByIds
+    /// @see LogStorageProvider#countBy
+    /// @see LogStorageProvider#deleteByIds
     @Test
     public void case1() {
         var input = LogStorageInput.builder()
@@ -152,13 +147,11 @@ public class TestLogStorageProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see LogStorageProvider#insertBatch
-     * @see LogStorageProvider#findBy
-     * @see LogStorageProvider#updateBatch
-     * @see LogStorageProvider#pageBy
-     * @see LogStorageProvider#deleteBy
-     */
+    /// @see LogStorageProvider#insertBatch
+    /// @see LogStorageProvider#findBy
+    /// @see LogStorageProvider#updateBatch
+    /// @see LogStorageProvider#pageBy
+    /// @see LogStorageProvider#deleteBy
     @Test
     public void case2() {
         var input = LogStorageInput.builder()

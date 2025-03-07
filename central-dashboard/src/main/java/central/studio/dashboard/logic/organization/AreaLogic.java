@@ -43,25 +43,20 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-/**
- * Area Logic
- * <p>
- * 行政区划业务逻辑
- *
- * @author Alan Yeh
- * @since 2024/09/14
- */
+/// Area Logic
+///
+/// 行政区划业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class AreaLogic {
 
     @Setter(onMethod_ = @Autowired)
     private AreaProvider provider;
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<Area> getDefaultOrders(Orders<Area> orders) {
         if (Collectionx.isNotEmpty(orders)) {
             return orders;
@@ -69,99 +64,83 @@ public class AreaLogic {
         return Orders.of(Area.class).desc(Area::getOrder).asc(Area::getName);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<Area> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Area> conditions, @Nullable Orders<Area> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 列表查询
-     *
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 列表数据
-     */
+    /// 列表查询
+    ///
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 列表数据
     public List<Area> listBy(@Nullable Conditions<Area> conditions, @Nullable Orders<Area> orders, @Nonnull String tenant) {
         orders = this.getDefaultOrders(orders);
         return this.provider.findBy(null, null, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public Area findById(@Nonnull String id, @Nonnull String tenant) {
         return this.provider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public Area insert(@Nonnull @Validated({Insert.class, Default.class}) AreaInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public Area update(@Nonnull @Validated({Update.class, Default.class}) AreaInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.update(input, accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param codes     标识
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param codes     标识
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteByCodes(@Nullable List<String> codes, @Nonnull String accountId, @Nonnull String tenant) {
         return this.provider.deleteBy(Conditions.of(Area.class).in(Area::getCode, codes), tenant);
     }
 
-    /**
-     * 查询符合条件的数据是否存在
-     *
-     * @param conditions 筛选条件
-     * @return 存在返回true，否则返回false
-     */
+    /// 查询符合条件的数据是否存在
+    ///
+    /// @param conditions 筛选条件
+    /// @return 存在返回true，否则返回false
     public boolean exists(@Nonnull Conditions<Area> conditions) {
         return this.provider.countBy(conditions) > 0;
     }

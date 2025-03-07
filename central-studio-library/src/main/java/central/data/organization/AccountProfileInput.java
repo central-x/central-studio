@@ -31,14 +31,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Account Profile
- * <p>
- * 帐户配置
- *
- * @author Alan Yeh
- * @since 2025/02/15
- */
+/// Account Profile
+///
+/// 帐户配置
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

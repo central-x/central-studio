@@ -24,20 +24,15 @@
 
 package central.provider.scheduled;
 
-/**
- * 数据更新监听
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 数据更新监听
+///
+/// @author Alan Yeh
 @FunctionalInterface
 public interface DataListener<T extends DataContainer> {
 
-    /**
-     * 数据刷新
-     *
-     * @param code      租户标识
-     * @param container 被刷新的数据
-     */
+    /// 数据刷新
+    ///
+    /// @param code      租户标识
+    /// @param container 被刷新的数据
     void refresh(String code, T container);
 }

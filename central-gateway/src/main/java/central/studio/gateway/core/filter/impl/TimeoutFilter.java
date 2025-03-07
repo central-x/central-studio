@@ -24,12 +24,12 @@
 
 package central.studio.gateway.core.filter.impl;
 
-import central.studio.gateway.core.attribute.ExchangeAttributes;
-import central.studio.gateway.core.filter.Filter;
-import central.studio.gateway.core.filter.FilterChain;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
 import central.starter.web.reactive.extension.ServerWebExchangex;
+import central.studio.gateway.core.attribute.ExchangeAttributes;
+import central.studio.gateway.core.filter.Filter;
+import central.studio.gateway.core.filter.FilterChain;
 import central.validation.Label;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -39,12 +39,9 @@ import lombok.experimental.ExtensionMethod;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-/**
- * 设置代理请求的超时时间
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 设置代理请求的超时时间
+///
+/// @author Alan Yeh
 @ExtensionMethod(ServerWebExchangex.class)
 public class TimeoutFilter implements Filter {
 

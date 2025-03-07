@@ -45,14 +45,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Identity Strategy
- * <p>
- * 安全策略
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// Identity Strategy
+///
+/// 安全策略
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

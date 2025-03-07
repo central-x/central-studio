@@ -50,14 +50,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Post Query
- * <p>
- * 职务查询
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Post Query
+///
+/// 职务查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization/query", types = PostDTO.class)
 public class PostQuery {
@@ -65,12 +62,10 @@ public class PostQuery {
     @Setter(onMethod_ = @Autowired)
     private PostPersistence persistence;
 
-    /**
-     * 批量数据加载器
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 批量数据加载器
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLBatchLoader
     public @Nonnull Map<String, PostDTO> batchLoader(@RequestParam List<String> ids,
                                                      @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -79,12 +74,10 @@ public class PostQuery {
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nullable PostDTO findById(@RequestParam String id,
                                       @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -93,12 +86,10 @@ public class PostQuery {
     }
 
 
-    /**
-     * 查询数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public @Nonnull List<PostDTO> findByIds(@RequestParam List<String> ids,
                                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -106,15 +97,13 @@ public class PostQuery {
         return DTO.wrap(data, PostDTO.class);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull List<PostDTO> findBy(@RequestParam(required = false) Long limit,
                                          @RequestParam(required = false) Long offset,
@@ -125,15 +114,13 @@ public class PostQuery {
         return DTO.wrap(data, PostDTO.class);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public @Nonnull Page<PostDTO> pageBy(@RequestParam long pageIndex,
                                          @RequestParam long pageSize,
@@ -144,12 +131,10 @@ public class PostQuery {
         return DTO.wrap(data, PostDTO.class);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<PostEntity> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

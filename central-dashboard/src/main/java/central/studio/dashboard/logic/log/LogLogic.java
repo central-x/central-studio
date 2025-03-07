@@ -47,14 +47,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Log Logic
- * <p>
- * 日志中心业务逻辑
- *
- * @author Alan Yeh
- * @since 2024/11/24
- */
+/// Log Logic
+///
+/// 日志中心业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class LogLogic {
 
@@ -67,11 +64,9 @@ public class LogLogic {
     @Setter(onMethod_ = @Autowired)
     private LogFilterProvider filterProvider;
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<LogCollector> getCollectorDefaultOrders(@Nullable Orders<LogCollector> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -79,11 +74,9 @@ public class LogLogic {
         return Orders.of(LogCollector.class).asc(LogCollector::getCode);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<LogStorage> getStorageDefaultOrders(@Nullable Orders<LogStorage> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -91,11 +84,9 @@ public class LogLogic {
         return Orders.of(LogStorage.class).asc(LogStorage::getCode);
     }
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<LogFilter> getFilterDefaultOrders(@Nullable Orders<LogFilter> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -103,64 +94,54 @@ public class LogLogic {
         return Orders.of(LogFilter.class).asc(LogFilter::getCode);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<LogCollector> pageCollectorBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<LogCollector> conditions, @Nullable Orders<LogCollector> orders, @Nonnull String tenant) {
         orders = this.getCollectorDefaultOrders(orders);
         return this.collectorProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public LogCollector findCollectorById(@Nonnull String id, @Nonnull String tenant) {
         return this.collectorProvider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public LogCollector insertCollector(@Nonnull @Validated({Insert.class, Default.class}) LogCollectorInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.collectorProvider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public LogCollector updateCollector(@Nonnull @Validated({Update.class, Default.class}) LogCollectorInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.collectorProvider.update(input, accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param id        待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param id        待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     public @Nonnull LogCollector enableCollector(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.collectorProvider.findById(id, tenant);
         if (data == null) {
@@ -169,14 +150,12 @@ public class LogLogic {
         return this.collectorProvider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param id        待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param id        待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     public @Nonnull LogCollector disableCollector(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.collectorProvider.findById(id, tenant);
         if (data == null) {
@@ -185,77 +164,65 @@ public class LogLogic {
         return this.collectorProvider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteCollectorByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.collectorProvider.deleteByIds(ids, tenant);
     }
 
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<LogStorage> pageStorageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<LogStorage> conditions, @Nullable Orders<LogStorage> orders, @Nonnull String tenant) {
         orders = this.getStorageDefaultOrders(orders);
         return this.storageProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public LogStorage findStorageById(@Nonnull String id, @Nonnull String tenant) {
         return this.storageProvider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public LogStorage insertStorage(@Nonnull @Validated({Insert.class, Default.class}) LogStorageInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.storageProvider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public LogStorage updateStorage(@Nonnull @Validated({Update.class, Default.class}) LogStorageInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.storageProvider.update(input, accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param id        待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param id        待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     public @Nonnull LogStorage enableStorage(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.storageProvider.findById(id, tenant);
         if (data == null) {
@@ -264,14 +231,12 @@ public class LogLogic {
         return this.storageProvider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param id        待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param id        待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     public @Nonnull LogStorage disableStorage(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.storageProvider.findById(id, tenant);
         if (data == null) {
@@ -280,76 +245,64 @@ public class LogLogic {
         return this.storageProvider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteStorageByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.storageProvider.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
+    /// @return 分页数据
     public Page<LogFilter> pageFilterBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<LogFilter> conditions, @Nullable Orders<LogFilter> orders, @Nonnull String tenant) {
         orders = this.getFilterDefaultOrders(orders);
         return this.filterProvider.pageBy(pageIndex, pageSize, conditions, orders, tenant);
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id     主键
-     * @param tenant 租户标识
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id     主键
+    /// @param tenant 租户标识
+    /// @return 详情
     public LogFilter findFilterById(@Nonnull String id, @Nonnull String tenant) {
         return this.filterProvider.findById(id, tenant);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 插入后的数据
     public LogFilter insertFilter(@Nonnull @Validated({Insert.class, Default.class}) LogFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.filterProvider.insert(input, accountId, tenant);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 更新后的数据
     public LogFilter updateFilter(@Nonnull @Validated({Update.class, Default.class}) LogFilterInput input, @Nonnull String accountId, @Nonnull String tenant) {
         return this.filterProvider.update(input, accountId, tenant);
     }
 
-    /**
-     * 启用数据
-     *
-     * @param id        待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param id        待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     public @Nonnull LogFilter enableFilter(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.filterProvider.findById(id, tenant);
         if (data == null) {
@@ -358,14 +311,12 @@ public class LogLogic {
         return this.filterProvider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param id        待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param id        待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     public @Nonnull LogFilter disableFilter(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.filterProvider.findById(id, tenant);
         if (data == null) {
@@ -374,14 +325,12 @@ public class LogLogic {
         return this.filterProvider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @param tenant    租户标识
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @param tenant    租户标识
+    /// @return 受影响数据行数
     public long deleteFilterByIds(@Nullable List<String> ids, @Nonnull String accountId, @Nonnull String tenant) {
         return this.filterProvider.deleteByIds(ids, tenant);
     }

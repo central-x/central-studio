@@ -39,14 +39,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Role Permission Relation
- * <p>
- * 角色与权限关联关系
- *
- * @author Alan Yeh
- * @since 2022/09/28
- */
+/// Role Permission Relation
+///
+/// 角色与权限关联关系
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

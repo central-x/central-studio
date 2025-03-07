@@ -27,16 +27,16 @@ package central.studio.provider.graphql.log.dto;
 import central.data.log.LogPredicate;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
+import central.sql.query.Conditions;
+import central.sql.query.Orders;
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLType;
 import central.studio.provider.database.persistence.log.entity.LogCollectorEntity;
 import central.studio.provider.database.persistence.log.entity.LogFilterEntity;
 import central.studio.provider.database.persistence.log.entity.LogStorageEntity;
 import central.studio.provider.graphql.log.query.LogCollectorQuery;
 import central.studio.provider.graphql.log.query.LogStorageQuery;
 import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.sql.query.Conditions;
-import central.sql.query.Orders;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLType;
 import central.util.Jsonx;
 import central.web.XForwardedHeaders;
 import lombok.EqualsAndHashCode;
@@ -49,23 +49,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Log Filter
- * <p>
- * 日志过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Log Filter
+///
+/// 日志过滤器
+///
+/// @author Alan Yeh
 @GraphQLType("LogFilter")
 @EqualsAndHashCode(callSuper = true)
 public class LogFilterDTO extends LogFilterEntity {
     @Serial
     private static final long serialVersionUID = 6277488185273187769L;
 
-    /**
-     * 采集器
-     */
+    /// 采集器
     @GraphQLGetter
     public List<LogCollectorDTO> getCollectors(@Autowired LogCollectorQuery query,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -75,9 +70,7 @@ public class LogFilterDTO extends LogFilterEntity {
                 tenant);
     }
 
-    /**
-     * 存储器
-     */
+    /// 存储器
     @GraphQLGetter
     public List<LogStorageDTO> getStorages(@Autowired LogStorageQuery query,
                                            @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -87,9 +80,7 @@ public class LogFilterDTO extends LogFilterEntity {
                 tenant);
     }
 
-    /**
-     * 断言
-     */
+    /// 断言
     @GraphQLGetter
     public List<LogPredicate> getPredicates() {
         if (Stringx.isNullOrBlank(this.getPredicateJson())) {
@@ -99,17 +90,13 @@ public class LogFilterDTO extends LogFilterEntity {
         }
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

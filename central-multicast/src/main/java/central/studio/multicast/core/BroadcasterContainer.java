@@ -44,14 +44,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
-/**
- * Multicast Container
- * <p>
- * 实例容器
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// Multicast Container
+///
+/// 实例容器
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 public class BroadcasterContainer implements DisposableBean, GenericApplicationListener {
@@ -59,38 +56,30 @@ public class BroadcasterContainer implements DisposableBean, GenericApplicationL
     @Setter(onMethod_ = @Autowired)
     private BroadcasterResolver resolver;
 
-    /**
-     * 存储桶
-     * <p>
-     * tenant -> code -> broadcaster
-     */
+    /// 存储桶
+    ///
+    /// tenant -> code -> broadcaster
     private final Map<String, Map<String, DynamicBroadcaster>> broadcasters = new HashMap<>();
 
-    /**
-     * 根据标识获取存储桶
-     *
-     * @param tenant 租户标识
-     * @param code   标识
-     */
+    /// 根据标识获取存储桶
+    ///
+    /// @param tenant 租户标识
+    /// @param code   标识
     public @Nullable DynamicBroadcaster getBroadcaster(String tenant, String code) {
         return this.broadcasters.computeIfAbsent(tenant, key -> new HashMap<>()).get(code);
     }
 
-    /**
-     * 获取存储桶
-     *
-     * @param tenant 租户标识
-     */
+    /// 获取存储桶
+    ///
+    /// @param tenant 租户标识
     public @Nonnull List<DynamicBroadcaster> getBroadcasters(String tenant) {
         return new ArrayList<>(this.broadcasters.computeIfAbsent(tenant, key -> new HashMap<>()).values());
     }
 
-    /**
-     * 根据标识获取存储桶
-     *
-     * @param tenant 租户标识
-     * @param code   标识
-     */
+    /// 根据标识获取存储桶
+    ///
+    /// @param tenant 租户标识
+    /// @param code   标识
     public @Nonnull DynamicBroadcaster requireBroadcaster(String tenant, String code) {
         return Assertx.requireNotNull(this.getBroadcaster(tenant, code), () -> new ResponseStatusException(HttpStatus.NOT_FOUND, Stringx.format("存储桶[code={}]不存在", code)));
     }

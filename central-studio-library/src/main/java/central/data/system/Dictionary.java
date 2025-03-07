@@ -24,7 +24,10 @@
 
 package central.data.system;
 
-import central.bean.*;
+import central.bean.Available;
+import central.bean.Codeable;
+import central.bean.Nonnull;
+import central.bean.Remarkable;
 import central.data.organization.Account;
 import central.data.saas.Application;
 import central.lang.Stringx;
@@ -40,12 +43,9 @@ import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * 字典
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 字典
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,69 +54,49 @@ public class Dictionary extends ModifiableEntity implements Codeable, Available,
     @Serial
     private static final long serialVersionUID = -4035082966502858225L;
 
-    /**
-     * 所属应用主键
-     */
+    /// 所属应用主键
     @Nonnull
     private String applicationId;
 
-    /**
-     * 所属应用信息
-     */
+    /// 所属应用信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 备注
-     */
+    /// 备注
     @Nonnull
     private String remark;
 
-    /**
-     * 字项项
-     */
+    /// 字项项
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<DictionaryItem> items;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;
 
-    /**
-     * 判断当前字典是否包含指定项典项值
-     *
-     * @param value 字典项值
-     */
+    /// 判断当前字典是否包含指定项典项值
+    ///
+    /// @param value 字典项值
     public boolean containsValue(String value) {
         if (Stringx.isNullOrBlank(value)) {
             return false;

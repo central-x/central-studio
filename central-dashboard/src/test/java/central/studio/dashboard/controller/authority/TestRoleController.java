@@ -68,13 +68,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Role Controller Test Cases
- *
- * @author Alan Yeh
- * @see RoleController
- * @since 2024/12/13
- */
+/// Role Controller Test Cases
+///
+/// @author Alan Yeh
+/// @see RoleController
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestRoleController extends TestController {
@@ -142,9 +139,7 @@ public class TestRoleController extends TestController {
     @Setter(onMethod_ = @Autowired)
     private DataContext context;
 
-    /**
-     * 获取测试用的应用
-     */
+    /// 获取测试用的应用
     private Application getApplication() {
         SaasContainer container = this.context.getData(DataFetcherType.SAAS);
         return container.getApplicationByCode("dashboard");
@@ -170,12 +165,10 @@ public class TestRoleController extends TestController {
     @Setter(onMethod_ = @Autowired)
     private RoleLogic roleLogic;
 
-    /**
-     * @see RoleController#add
-     * @see RoleController#details
-     * @see RoleController#page
-     * @see RoleController#delete
-     */
+    /// @see RoleController#add
+    /// @see RoleController#details
+    /// @see RoleController#page
+    /// @see RoleController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();
@@ -265,12 +258,10 @@ public class TestRoleController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see RoleController#add
-     * @see RoleController#update
-     * @see RoleController#details
-     * @see RoleController#delete
-     */
+    /// @see RoleController#add
+    /// @see RoleController#update
+    /// @see RoleController#details
+    /// @see RoleController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();
@@ -361,11 +352,9 @@ public class TestRoleController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see RoleController#addPermissions
-     * @see RoleController#getPermissions
-     * @see RoleController#deletePermissions
-     */
+    /// @see RoleController#addPermissions
+    /// @see RoleController#getPermissions
+    /// @see RoleController#deletePermissions
     @Test
     public void case2(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();
@@ -439,11 +428,9 @@ public class TestRoleController extends TestController {
         this.roleLogic.deleteByIds(List.of(role.getId()), "syssa", "master");
     }
 
-    /**
-     * @see RoleController#addPrincipals
-     * @see RoleController#getPrincipals
-     * @see RoleController#deletePrincipals
-     */
+    /// @see RoleController#addPrincipals
+    /// @see RoleController#getPrincipals
+    /// @see RoleController#deletePrincipals
     @Test
     public void case3(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();
@@ -525,11 +512,9 @@ public class TestRoleController extends TestController {
         this.roleLogic.deleteByIds(List.of(role.getId()), "syssa", "master");
     }
 
-    /**
-     * @see RoleController#addRanges
-     * @see RoleController#getRanges
-     * @see RoleController#deleteRanges
-     */
+    /// @see RoleController#addRanges
+    /// @see RoleController#getRanges
+    /// @see RoleController#deleteRanges
     @Test
     public void case4(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var application = this.getApplication();

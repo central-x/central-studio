@@ -25,20 +25,19 @@
 package central.data.organization;
 
 import central.validation.Label;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Account Department Input
- * <p>
- * 帐户与部门关系输入
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// Account Department Input
+///
+/// 帐户与部门关系输入
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

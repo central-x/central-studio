@@ -55,31 +55,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 应用数据初始化器
- *
- * @author Alan Yeh
- * @since 2024/06/22
- */
+/// 应用数据初始化器
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class ApplicationInitializer {
 
     private final SqlExecutor executor;
 
-    /**
-     * 初始化
-     *
-     * @param tenant      租户标识
-     * @param application 应用
-     */
+    /// 初始化
+    ///
+    /// @param tenant      租户标识
+    /// @param application 应用
     public void initialize(String tenant, ApplicationEntity application) {
         // 初始化菜单数据
         this.initMenus(tenant, application);
     }
 
-    /**
-     * 初始化菜单
-     */
+    /// 初始化菜单
     private void initMenus(String tenant, ApplicationEntity application) {
         var menuMapper = executor.getMapper(MenuMapper.class);
         var permissionMapper = executor.getMapper(PermissionMapper.class);
@@ -129,13 +122,11 @@ public class ApplicationInitializer {
         }
     }
 
-    /**
-     * 构建菜单输入
-     *
-     * @param application 应用
-     * @param parentId    父菜单
-     * @param configs     菜单配置
-     */
+    /// 构建菜单输入
+    ///
+    /// @param application 应用
+    /// @param parentId    父菜单
+    /// @param configs     菜单配置
     private List<MenuInput> buildInput(@Nonnull ApplicationEntity application, @Nullable String parentId, @Nonnull List<MenuConfig> configs) {
         var result = new ArrayList<MenuInput>();
 
@@ -182,9 +173,7 @@ public class ApplicationInitializer {
         return result;
     }
 
-    /**
-     * 菜单配置实体
-     */
+    /// 菜单配置实体
     @Data
     private static class MenuConfig implements Serializable {
         @Serial

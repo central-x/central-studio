@@ -31,14 +31,11 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * Identity Strategy
- * <p>
- * 认证策略
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// Identity Strategy
+///
+/// 认证策略
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("identity.strategies")
 @GraphQLStub(path = "identity", client = "providerClient")

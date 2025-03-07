@@ -24,21 +24,18 @@
 
 package central.studio.dashboard;
 
+import central.identity.EnableCentralIdentity;
 import central.logging.EnableCentralLogging;
 import central.provider.EnableCentralProvider;
-import central.identity.EnableCentralIdentity;
 import central.starter.identity.EnableIdentity;
 import central.starter.probe.EnableProbe;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 应用配置
- *
- * @author Alan Yeh
- * @since 2022/11/17
- */
+/// 应用配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableProbe // 启用探针
 @EnableIdentity // 启用 Shiro

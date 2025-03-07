@@ -46,23 +46,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Area Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/09/14
- */
+/// Area Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestAreaController extends TestController {
 
     private static final String PATH = "/dashboard/api/organization/areas";
 
-    /**
-     * @see AreaController#add
-     * @see AreaController#details
-     * @see AreaController#delete
-     */
+    /// @see AreaController#add
+    /// @see AreaController#details
+    /// @see AreaController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增
@@ -115,11 +110,9 @@ public class TestAreaController extends TestController {
 
     }
 
-    /**
-     * @see AreaController#add
-     * @see AreaController#list
-     * @see AreaController#delete
-     */
+    /// @see AreaController#add
+    /// @see AreaController#list
+    /// @see AreaController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增
@@ -171,12 +164,10 @@ public class TestAreaController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see AreaController#add
-     * @see AreaController#update
-     * @see AreaController#details
-     * @see AreaController#delete
-     */
+    /// @see AreaController#add
+    /// @see AreaController#update
+    /// @see AreaController#details
+    /// @see AreaController#delete
     @Test
     public void case2(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         // 新增

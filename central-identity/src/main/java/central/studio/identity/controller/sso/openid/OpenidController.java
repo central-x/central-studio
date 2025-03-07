@@ -27,13 +27,11 @@ package central.studio.identity.controller.sso.openid;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/**
- * OpenId 2.0
- *
- * @author Alan Yeh
- * @see <a href="https://openid.net/specs/openid-connect-core-1_0.html">openid connect core</a>
- * @since 2022/10/19
- */
+/// OpenId 2.0
+///
+/// [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html)
+///
+/// @author Alan Yeh
 @Controller
 @RequestMapping("/identity/sso/openid")
 public class OpenidController {

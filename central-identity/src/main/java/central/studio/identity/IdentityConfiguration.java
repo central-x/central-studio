@@ -43,12 +43,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 应用配置
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// 应用配置
+///
+/// @author Alan Yeh
 @EnableProbe // 启用探针
 @Configuration
 @EnablePluglet
@@ -57,43 +54,33 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(IdentityProperties.class)
 public class IdentityConfiguration {
 
-    /**
-     * 签发会话时使用的安全密钥
-     */
+    /// 签发会话时使用的安全密钥
     @Bean
     public KeyPair keyPair() {
         return Signerx.RSA_256.generateKeyPair();
     }
 
-    /**
-     * 会话验证器
-     */
+    /// 会话验证器
     @Bean
     public SessionVerifier sessionVerifier() {
         return new SessionVerifier();
     }
 
-    /**
-     * 缓存仓库
-     */
+    /// 缓存仓库
     @Bean
     @ConditionalOnMissingBean(CacheRepository.class)
     public CacheRepository memoryCacheRepository() {
         return new MemoryCacheRepository();
     }
 
-    /**
-     * 缓存仓库
-     */
+    /// 缓存仓库
     @Bean
     @ConditionalOnProperty(name = "central.security.cache.type", havingValue = "redis")
     public CacheRepository redisCacheRepository() {
         return new RedisCacheRepository();
     }
 
-    /**
-     * 安全策略解析器
-     */
+    /// 安全策略解析器
     @Bean
     @ConditionalOnMissingBean(StrategyResolver.class)
     public StrategyResolver resolver(PlugletFactory factory) {

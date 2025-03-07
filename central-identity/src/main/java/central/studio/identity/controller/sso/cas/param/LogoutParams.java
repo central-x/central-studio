@@ -34,12 +34,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 退出登录参数
- *
- * @author Alan Yeh
- * @since 2023/04/13
- */
+/// 退出登录参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

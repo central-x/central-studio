@@ -46,14 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * File Mutation
- * <p>
- * 文件查询
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// File Mutation
+///
+/// 文件查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "storage/mutation", types = StorageFileDTO.class)
 public class StorageFileMutation {
@@ -61,13 +58,11 @@ public class StorageFileMutation {
     @Setter(onMethod_ = @Autowired)
     private StorageFilePersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull StorageFileDTO insert(@RequestParam @Validated({Insert.class, Default.class}) StorageFileInput input,
                                           @RequestParam String operator,
@@ -76,13 +71,11 @@ public class StorageFileMutation {
         return DTO.wrap(data, StorageFileDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<StorageFileDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<StorageFileInput> inputs,
                                                      @RequestParam String operator,
@@ -91,13 +84,11 @@ public class StorageFileMutation {
         return DTO.wrap(data, StorageFileDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull StorageFileDTO update(@RequestParam @Validated({Update.class, Default.class}) StorageFileInput input,
                                           @RequestParam String operator,
@@ -106,13 +97,11 @@ public class StorageFileMutation {
         return DTO.wrap(data, StorageFileDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<StorageFileDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<StorageFileInput> inputs,
                                                      @RequestParam String operator,
@@ -121,24 +110,20 @@ public class StorageFileMutation {
         return DTO.wrap(data, StorageFileDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<StorageFileEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

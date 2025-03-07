@@ -33,12 +33,9 @@ import central.studio.storage.EnableCentralStudioStorage;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Application Configuration
- *
- * @author Alan Yeh
- * @since 2024/01/20
- */
+/// Application Configuration
+///
+/// @author Alan Yeh
 @Configuration
 // Central Studio
 @EnableCentralStudioLogging // 日志中心

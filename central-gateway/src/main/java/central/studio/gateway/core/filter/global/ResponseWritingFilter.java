@@ -24,10 +24,10 @@
 
 package central.studio.gateway.core.filter.global;
 
+import central.starter.web.reactive.extension.ServerWebExchangex;
+import central.studio.gateway.core.attribute.ExchangeAttributes;
 import central.studio.gateway.core.filter.FilterChain;
 import central.studio.gateway.core.filter.GlobalFilter;
-import central.studio.gateway.core.attribute.ExchangeAttributes;
-import central.starter.web.reactive.extension.ServerWebExchangex;
 import lombok.experimental.ExtensionMethod;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -40,12 +40,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-/**
- * 写响应过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 写响应过滤器
+///
+/// @author Alan Yeh
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ExtensionMethod(ServerWebExchangex.class)

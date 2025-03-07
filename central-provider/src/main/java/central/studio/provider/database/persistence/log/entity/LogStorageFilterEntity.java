@@ -37,12 +37,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 日志存储器与过滤器关联关系
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志存储器与过滤器关联关系
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

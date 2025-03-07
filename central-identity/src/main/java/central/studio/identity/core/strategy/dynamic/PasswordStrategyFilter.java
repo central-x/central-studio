@@ -26,11 +26,11 @@ package central.studio.identity.core.strategy.dynamic;
 
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.studio.identity.core.attribute.PasswordAttributes;
 import central.studio.identity.core.strategy.StrategyFilter;
 import central.studio.identity.core.strategy.StrategyFilterChain;
-import central.starter.webmvc.servlet.WebMvcRequest;
-import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
 import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.Max;
@@ -44,12 +44,9 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * 密码策略
- *
- * @author Alan Yeh
- * @since 2022/11/06
- */
+/// 密码策略
+///
+/// @author Alan Yeh
 public class PasswordStrategyFilter implements StrategyFilter, InitializingBean {
 
     @Control(label = "说明", type = ControlType.LABEL, defaultValue = "　　本策略用于控制用户的密码规则。")

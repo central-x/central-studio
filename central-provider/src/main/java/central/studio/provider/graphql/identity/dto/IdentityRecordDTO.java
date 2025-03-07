@@ -35,27 +35,22 @@ import org.dataloader.DataLoader;
 import java.io.Serial;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * @author Alan Yeh
- * @since 2025/03/02
- */
+/// 认证记录
+///
+/// @author Alan Yeh
 @GraphQLType("IdentityRecord")
 @EqualsAndHashCode(callSuper = true)
 public class IdentityRecordDTO extends IdentityRecordEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -2173675791703622968L;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

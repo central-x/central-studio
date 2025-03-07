@@ -24,11 +24,11 @@
 
 package central.provider.scheduled.fetcher.multicast;
 
+import central.data.multicast.MulticastBroadcaster;
 import central.provider.graphql.multicast.MulticastBroadcasterProvider;
 import central.provider.graphql.saas.TenantProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
-import central.data.multicast.MulticastBroadcaster;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,12 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * 广播中心数据获取
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 广播中心数据获取
+///
+/// @author Alan Yeh
 public class MulticastFetcher implements DataFetcher<MulticastContainer> {
 
     @Setter

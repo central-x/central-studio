@@ -27,27 +27,20 @@ package central.provider.scheduled;
 import central.bean.LifeCycle;
 import central.provider.scheduled.fetcher.DataFetcherType;
 
-/**
- * 数据上下文
- *
- * @author Alan Yeh
- * @since 2022/11/10
- */
+/// 数据上下文
+///
+/// @author Alan Yeh
 public interface DataContext extends LifeCycle {
-    /**
-     * 添加数据获取器
-     *
-     * @param fetcher 数据获取器
-     * @param <T>     数据类型
-     */
+    /// 添加数据获取器
+    ///
+    /// @param fetcher 数据获取器
+    /// @param <T>     数据类型
     <T extends DataContainer> void addFetcher(DataFetcherType fetcher);
 
-    /**
-     * 获取数据
-     *
-     * @param fetcher 数据获取器
-     * @param <T>     数据类型
-     * @return 数据容器
-     */
+    /// 获取数据
+    ///
+    /// @param fetcher 数据获取器
+    /// @param <T>     数据类型
+    /// @return 数据容器
     <T extends DataContainer> T getData(DataFetcherType fetcher);
 }

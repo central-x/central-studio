@@ -30,78 +30,63 @@ import central.studio.provider.graphql.organization.mutation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Organization Mutation
- * <p>
- * 组织架构中心修改
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Organization Mutation
+///
+/// 组织架构中心修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization", types = {AreaMutation.class, UnitMutation.class, DepartmentMutation.class, RankMutation.class, PostMutation.class, AccountMutation.class})
 public class OrganizationMutation {
-    /**
-     * Area Mutation
-     * <p>
-     * 行政区划修改
-     */
+    /// Area Mutation
+    ///
+    /// 行政区划修改
     @GraphQLGetter
     public AreaMutation getAreas(@Autowired AreaMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Unit Mutation
-     * <p>
-     * 单位修改
-     */
+    /// Unit Mutation
+    ///
+    /// 单位修改
     @GraphQLGetter
     public UnitMutation getUnits(@Autowired UnitMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Department Mutation
-     * <p>
-     * 部门修改
-     * <p>
-     * TODO 这个是不是应该放到 UnitMutation 下
-     */
+    /// Department Mutation
+    ///
+    /// 部门修改
+    ///
+    /// TODO 这个是不是应该放到 UnitMutation 下
     @GraphQLGetter
     public DepartmentMutation getDepartments(@Autowired DepartmentMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Rank Mutation
-     * <p>
-     * 职级修改
-     * <p>
-     * TODO 这个是不是应该放到 UnitMutation 下
-     */
+    /// Rank Mutation
+    ///
+    /// 职级修改
+    ///
+    /// TODO 这个是不是应该放到 UnitMutation 下
     @GraphQLGetter
     public RankMutation getRanks(@Autowired RankMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Post Mutation
-     * <p>
-     * 职务修改
-     * <p>
-     * TODO 这个是不是应该放到 UnitMutation 下
-     */
+    /// Post Mutation
+    ///
+    /// 职务修改
+    ///
+    /// TODO 这个是不是应该放到 UnitMutation 下
     @GraphQLGetter
     public PostMutation getPosts(@Autowired PostMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Account Mutation
-     * <p>
-     * 帐户修改
-     */
+    /// Account Mutation
+    ///
+    /// 帐户修改
     @GraphQLGetter
     public AccountMutation getAccounts(@Autowired AccountMutation mutation) {
         return mutation;

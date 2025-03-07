@@ -35,12 +35,9 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 行政区划输入
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 行政区划输入
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

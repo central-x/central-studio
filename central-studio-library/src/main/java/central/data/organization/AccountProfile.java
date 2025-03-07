@@ -29,22 +29,17 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Account Profile
- * <p>
- * 帐户配置
- *
- * @author Alan Yeh
- * @since 2025/02/15
- */
+/// Account Profile
+///
+/// 帐户配置
+///
+/// @author Alan Yeh
 @Data
 public class AccountProfile implements Serializable {
     @Serial
     private static final long serialVersionUID = -8248462977830850651L;
 
-    /**
-     * 用户保存的壁纸
-     */
+    /// 用户保存的壁纸
     private String wallpaper;
 
     public AccountProfileInput toInput() {

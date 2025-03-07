@@ -44,12 +44,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.Serial;
 import java.util.Base64;
 
-/**
- * 应用信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 应用信息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

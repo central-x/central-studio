@@ -25,9 +25,9 @@
 package central.studio.gateway.core.filter.predicate.impl;
 
 import central.bean.OptionalEnum;
-import central.studio.gateway.core.filter.predicate.Predicate;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.predicate.Predicate;
 import central.validation.Label;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -39,12 +39,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * 每年固定月份
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 每年固定月份
+///
+/// @author Alan Yeh
 public class AnnuallyPredicate implements Predicate {
 
     @Setter

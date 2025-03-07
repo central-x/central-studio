@@ -28,10 +28,10 @@ import central.bean.OptionalEnum;
 import central.lang.Arrayx;
 import central.provider.scheduled.DataContainer;
 import central.provider.scheduled.fetcher.gateway.GatewayFetcher;
+import central.provider.scheduled.fetcher.identity.IdentityFetcher;
 import central.provider.scheduled.fetcher.log.LogFetcher;
 import central.provider.scheduled.fetcher.multicast.MulticastFetcher;
 import central.provider.scheduled.fetcher.saas.SaasFetcher;
-import central.provider.scheduled.fetcher.identity.IdentityFetcher;
 import central.provider.scheduled.fetcher.storage.StorageFetcher;
 import central.provider.scheduled.fetcher.system.SystemFetcher;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -41,12 +41,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-/**
- * 数据获取器
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 数据获取器
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum DataFetcherType implements OptionalEnum<String> {

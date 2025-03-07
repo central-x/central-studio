@@ -28,18 +28,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Index Controller
- *
- * @author Alan Yeh
- * @since 2023/12/21
- */
+/// Index Controller
+///
+/// @author Alan Yeh
 @RestController
 @RequestMapping("/logging")
 public class LoggingIndexController {
 
     @GetMapping
-    public String index(){
+    public String index() {
         return "Welcome to Central Logging.";
     }
 }

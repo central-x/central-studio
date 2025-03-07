@@ -28,12 +28,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-/**
- * Application Properties
- *
- * @author Alan Yeh
- * @since 2024/01/20
- */
+/// Application Properties
+///
+/// @author Alan Yeh
 @Data
 @Validated
 @ConfigurationProperties("studio")

@@ -38,14 +38,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Dictionary Params
- * <p>
- * 字典入参
- *
- * @author Alan Yeh
- * @since 2024/09/24
- */
+/// Dictionary Params
+///
+/// 字典入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

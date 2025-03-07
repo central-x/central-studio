@@ -24,15 +24,15 @@
 
 package central.studio.provider.graphql.system.dto;
 
-import central.provider.graphql.DTO;
 import central.data.system.DatabaseProperties;
 import central.lang.Stringx;
 import central.lang.reflect.TypeRef;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
-import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
-import central.studio.provider.graphql.saas.dto.ApplicationDTO;
+import central.provider.graphql.DTO;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLType;
+import central.studio.provider.database.persistence.system.entity.DatabaseEntity;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
+import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import central.util.Jsonx;
 import lombok.EqualsAndHashCode;
 import org.dataloader.DataLoader;
@@ -42,37 +42,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 数据库信息
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 数据库信息
+///
+/// @author Alan Yeh
 @GraphQLType("Database")
 @EqualsAndHashCode(callSuper = true)
 public class DatabaseDTO extends DatabaseEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -9060113532481068358L;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @GraphQLGetter
     public CompletableFuture<ApplicationDTO> getApplication(DataLoader<String, ApplicationDTO> loader) {
         return loader.load(this.getApplicationId());
     }
 
-    /**
-     * 获取主数据库属性
-     */
+    /// 获取主数据库属性
     @GraphQLGetter
     public DatabaseProperties getMaster() {
         return Jsonx.Default().deserialize(this.getMasterJson(), DatabaseProperties.class);
     }
 
-    /**
-     * 获取从数据库属性
-     */
+    /// 获取从数据库属性
     @GraphQLGetter
     public List<DatabaseProperties> getSlaves() {
         if (Stringx.isNullOrBlank(this.getSlavesJson())) {
@@ -82,17 +73,13 @@ public class DatabaseDTO extends DatabaseEntity implements DTO {
         }
     }
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());

@@ -24,18 +24,15 @@
 
 package central.studio.provider.database.persistence.log.mapper;
 
-import central.studio.provider.database.persistence.log.entity.LogFilterEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.log.entity.LogFilterEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Log Filter
- * <p>
- * 日志过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Log Filter
+///
+/// 日志过滤器
+///
+/// @author Alan Yeh
 @Repository
 public interface LogFilterMapper extends Mapper<LogFilterEntity> {
 }

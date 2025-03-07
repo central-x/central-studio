@@ -27,10 +27,10 @@ package central.studio.provider.database.persistence.identity.entity;
 import central.bean.Available;
 import central.bean.Tenantable;
 import central.data.identity.IdentityPasswordInput;
-import central.studio.provider.database.persistence.organization.entity.AccountEntity;
 import central.security.Passwordx;
 import central.sql.data.Entity;
 import central.sql.meta.annotation.Relation;
+import central.studio.provider.database.persistence.organization.entity.AccountEntity;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -41,14 +41,11 @@ import lombok.*;
 
 import java.io.Serial;
 
-/**
- * Identity Password
- * <p>
- * 密码
- *
- * @author Alan Yeh
- * @since 2022/10/07
- */
+/// Identity Password
+///
+/// 密码
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

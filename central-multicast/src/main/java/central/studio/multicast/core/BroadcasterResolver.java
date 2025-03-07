@@ -29,30 +29,23 @@ import jakarta.annotation.Nullable;
 
 import java.util.Map;
 
-/**
- * Broadcaster Resolver
- * <p>
- * 广播器解析
- *
- * @author Alan Yeh
- * @since 2024/04/16
- */
+/// Broadcaster Resolver
+///
+/// 广播器解析
+///
+/// @author Alan Yeh
 public interface BroadcasterResolver {
 
-    /**
-     * 根据标识和参数实例化广播器
-     *
-     * @param code   类型标识
-     * @param params 初始化参数
-     * @return 广播器实例，如果未找到标识对应的类型，则返回空
-     */
+    /// 根据标识和参数实例化广播器
+    ///
+    /// @param code   类型标识
+    /// @param params 初始化参数
+    /// @return 广播器实例，如果未找到标识对应的类型，则返回空
     @Nullable
     Broadcaster<?> resolve(@Nonnull String code, @Nonnull Map<String, Object> params);
 
-    /**
-     * 销毁广播器实例
-     *
-     * @param broadcaster 实例
-     */
+    /// 销毁广播器实例
+    ///
+    /// @param broadcaster 实例
     void destroy(@Nonnull Broadcaster<?> broadcaster);
 }

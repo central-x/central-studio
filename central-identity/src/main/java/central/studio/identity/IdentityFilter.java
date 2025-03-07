@@ -38,20 +38,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 应用过滤器
- * <p>
- * 在此过滤器中注入安全策略
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// 应用过滤器
+///
+/// 在此过滤器中注入安全策略
+///
+/// @author Alan Yeh
 @Component
 public class IdentityFilter implements Filter {
 
-    /**
-     * 全局安全策略
-     */
+    /// 全局安全策略
     @Setter(onMethod_ = @Autowired)
     private List<GlobalStrategyFilter> strategies;
 

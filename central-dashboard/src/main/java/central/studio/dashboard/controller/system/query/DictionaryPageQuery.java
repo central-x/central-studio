@@ -35,14 +35,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Dictionary Page Query
- * <p>
- * 字典分页查询
- *
- * @author Alan Yeh
- * @since 2024/09/24
- */
+/// Dictionary Page Query
+///
+/// 字典分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DictionaryPageQuery extends PageQuery<Dictionary> {

@@ -27,17 +27,12 @@ package central.studio.logging.core.storage.impl.file;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * 压缩
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 压缩
+///
+/// @author Alan Yeh
 public interface Compressor {
-    /**
-     * 压缩指定文件
-     *
-     * @param file 待压缩文件
-     */
+    /// 压缩指定文件
+    ///
+    /// @param file 待压缩文件
     void compress(File file) throws IOException;
 }

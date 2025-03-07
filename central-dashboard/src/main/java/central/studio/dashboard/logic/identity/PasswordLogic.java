@@ -39,14 +39,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-/**
- * Identity Password Logic
- * <p>
- * 密码逻辑
- *
- * @author Alan Yeh
- * @since 2025/02/11
- */
+/// Identity Password Logic
+///
+/// 密码逻辑
+///
+/// @author Alan Yeh
 @Service
 public class PasswordLogic {
 
@@ -56,13 +53,11 @@ public class PasswordLogic {
     @Setter(onMethod_ = @Autowired)
     private AccountProvider accountProvider;
 
-    /**
-     * 检测密码
-     *
-     * @param accountId 帐户主键
-     * @param password  密码
-     * @return 校验是否通过
-     */
+    /// 检测密码
+    ///
+    /// @param accountId 帐户主键
+    /// @param password  密码
+    /// @return 校验是否通过
     public boolean checkPassword(String accountId, String password) {
         var account = this.accountProvider.findById(accountId);
         if (account == null) {
@@ -72,14 +67,12 @@ public class PasswordLogic {
         return true;
     }
 
-    /**
-     * 更新密码
-     *
-     * @param accountId   帐户主键
-     * @param oldPassword 原密码
-     * @param newPassword 新密码
-     * @param retention   保留最多密码数量
-     */
+    /// 更新密码
+    ///
+    /// @param accountId   帐户主键
+    /// @param oldPassword 原密码
+    /// @param newPassword 新密码
+    /// @param retention   保留最多密码数量
     public boolean updatePassword(String accountId, String oldPassword, String newPassword, Long retention) {
         var account = this.accountProvider.findById(accountId);
         if (account == null) {

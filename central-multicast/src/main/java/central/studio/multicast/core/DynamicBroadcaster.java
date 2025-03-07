@@ -35,12 +35,9 @@ import org.springframework.beans.factory.DisposableBean;
 
 import java.lang.reflect.ParameterizedType;
 
-/**
- * 动态广播
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 动态广播
+///
+/// @author Alan Yeh
 public class DynamicBroadcaster implements Broadcaster<Object>, DisposableBean {
 
     @Getter
@@ -59,8 +56,8 @@ public class DynamicBroadcaster implements Broadcaster<Object>, DisposableBean {
 
         try {
             var params = Jsonx.Default().deserialize(this.data.getParams(), TypeRef.ofMap(String.class, Object.class));
-            this.delegate = (Broadcaster<Object>)Assertx.requireNotNull(resolver.resolve(data.getType(), params), "找不到指定类型的广播器类型: " + data.getType());
-        }catch (Exception ex) {
+            this.delegate = (Broadcaster<Object>) Assertx.requireNotNull(resolver.resolve(data.getType(), params), "找不到指定类型的广播器类型: " + data.getType());
+        } catch (Exception ex) {
             throw new IllegalStateException(Stringx.format("初始化插件[id={}, type={}]出现异常: " + ex.getLocalizedMessage(), this.data.getId(), this.data.getType()), ex);
         }
 

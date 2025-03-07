@@ -51,12 +51,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * 日志插件容器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志插件容器
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 public class LoggingContainer implements ApplicationContextAware, DisposableBean, InitializingBean, GenericApplicationListener {
@@ -73,9 +70,7 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
     @Setter
     private ApplicationContext applicationContext;
 
-    /**
-     * 根据主键获取采集器
-     */
+    /// 根据主键获取采集器
     public DynamicCollector getCollector(String id) {
         return this.collectors.get(id);
     }
@@ -84,15 +79,12 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
         return this.collectors.put(id, collector);
     }
 
-    /**
-     * 采集器
-     * id -> Collector
-     */
+    /// 采集器
+    ///
+    /// id -> Collector
     private final Map<String, DynamicCollector> collectors = new HashMap<>();
 
-    /**
-     * 根据主键获取过滤器
-     */
+    /// 根据主键获取过滤器
     public DynamicFilter getFilter(String id) {
         return this.filters.get(id);
     }
@@ -101,15 +93,12 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
         return this.filters.put(id, filter);
     }
 
-    /**
-     * 过滤器
-     * id -> Filter
-     */
+    /// 过滤器
+    ///
+    /// id -> Filter
     private final Map<String, DynamicFilter> filters = new HashMap<>();
 
-    /**
-     * 根据主键获取存储器
-     */
+    /// 根据主键获取存储器
     public DynamicStorage getStorage(String id) {
         return this.storages.get(id);
     }
@@ -118,10 +107,9 @@ public class LoggingContainer implements ApplicationContextAware, DisposableBean
         return this.storages.put(id, storage);
     }
 
-    /**
-     * 存储器
-     * id -> Storage
-     */
+    /// 存储器
+    ///
+    /// id -> Storage
     private final Map<String, DynamicStorage> storages = new HashMap<>();
 
 

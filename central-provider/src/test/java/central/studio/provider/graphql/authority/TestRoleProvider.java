@@ -46,7 +46,10 @@ import central.studio.provider.graphql.TestContext;
 import central.studio.provider.graphql.TestProvider;
 import central.util.Listx;
 import lombok.Setter;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -55,13 +58,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Role Provider Test Cases
- * 角色
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Role Provider Test Cases
+///
+/// 角色
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestRoleProvider extends TestProvider {
 
@@ -129,14 +130,12 @@ public class TestRoleProvider extends TestProvider {
         return this.unitPersistence.findFirstBy(Columns.all(), Conditions.of(UnitEntity.class).eq(UnitEntity::getCode, "test"), null, this.context.getTenant().getCode());
     }
 
-    /**
-     * @see RoleProvider#insert
-     * @see RoleProvider#findById
-     * @see RoleProvider#update
-     * @see RoleProvider#findByIds
-     * @see RoleProvider#countBy
-     * @see RoleProvider#deleteByIds
-     */
+    /// @see RoleProvider#insert
+    /// @see RoleProvider#findById
+    /// @see RoleProvider#update
+    /// @see RoleProvider#findByIds
+    /// @see RoleProvider#countBy
+    /// @see RoleProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -221,13 +220,11 @@ public class TestRoleProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see RoleProvider#insertBatch
-     * @see RoleProvider#findBy
-     * @see RoleProvider#updateBatch
-     * @see RoleProvider#pageBy
-     * @see RoleProvider#deleteBy
-     */
+    /// @see RoleProvider#insertBatch
+    /// @see RoleProvider#findBy
+    /// @see RoleProvider#updateBatch
+    /// @see RoleProvider#pageBy
+    /// @see RoleProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

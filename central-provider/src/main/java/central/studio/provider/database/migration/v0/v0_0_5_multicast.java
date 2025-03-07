@@ -24,11 +24,11 @@
 
 package central.studio.provider.database.migration.v0;
 
-import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
-import central.studio.provider.database.persistence.multicast.mapper.MulticastBroadcasterMapper;
 import central.sql.SqlExecutor;
 import central.sql.SqlType;
 import central.sql.datasource.migration.*;
+import central.studio.provider.database.persistence.multicast.entity.MulticastBroadcasterEntity;
+import central.studio.provider.database.persistence.multicast.mapper.MulticastBroadcasterMapper;
 import central.util.Jsonx;
 import central.util.Version;
 
@@ -36,12 +36,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 初始化广播中心
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 初始化广播中心
+///
+/// @author Alan Yeh
 public class v0_0_5_multicast extends Migration {
     public v0_0_5_multicast() {
         super(Version.of("0.0.4"), Version.of("0.0.5"));

@@ -24,10 +24,10 @@
 
 package central.studio.gateway.core.filter.impl;
 
-import central.studio.gateway.core.filter.Filter;
-import central.studio.gateway.core.filter.FilterChain;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.Filter;
+import central.studio.gateway.core.filter.FilterChain;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Setter;
@@ -36,12 +36,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 
-/**
- * 移除响应头
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 移除响应头
+///
+/// @author Alan Yeh
 public class RemoveResponseHeaderFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,

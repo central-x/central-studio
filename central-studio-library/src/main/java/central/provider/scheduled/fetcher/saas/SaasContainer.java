@@ -36,12 +36,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * 租户中心数据容器
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// 租户中心数据容器
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class SaasContainer extends DataContainer {
     @Serial
@@ -58,45 +55,37 @@ public class SaasContainer extends DataContainer {
         this.applications = Collections.emptyList();
     }
 
-    /**
-     * 根据标识查询租户数据
-     *
-     * @param code 租户标识
-     * @return 租户数据
-     */
+    /// 根据标识查询租户数据
+    ///
+    /// @param code 租户标识
+    /// @return 租户数据
     public Tenant getTenantByCode(String code) {
         var data = this.tenants.stream().filter(it -> Objects.equals(code, it.getCode())).findFirst().orElse(null);
         return this.clone(data, TypeRef.of(Tenant.class));
     }
 
-    /**
-     * 根据标识查询应用系统数据
-     *
-     * @param code 应用标识
-     * @return 应用数据
-     */
+    /// 根据标识查询应用系统数据
+    ///
+    /// @param code 应用标识
+    /// @return 应用数据
     public Application getApplicationByCode(String code) {
         var data = this.applications.stream().filter(it -> Objects.equals(code, it.getCode())).findFirst().orElse(null);
         return this.clone(data, TypeRef.of(Application.class));
     }
 
-    /**
-     * 根据主键查询应用系统
-     *
-     * @param id 主键
-     * @return 应用
-     */
+    /// 根据主键查询应用系统
+    ///
+    /// @param id 主键
+    /// @return 应用
     public Application getApplicationById(String id) {
         var data = this.applications.stream().filter(it -> Objects.equals(id, it.getId())).findFirst().orElse(null);
         return this.clone(data, TypeRef.of(Application.class));
     }
 
-    /**
-     * 根据主键查询应用系统
-     *
-     * @param ids 主键集合
-     * @return 应用
-     */
+    /// 根据主键查询应用系统
+    ///
+    /// @param ids 主键集合
+    /// @return 应用
     public List<Application> getApplicationsByIds(List<String> ids) {
         var data = this.applications.stream().filter(it -> ids.contains(it.getId())).toList();
         return this.clone(data, TypeRef.ofList(Application.class));

@@ -54,12 +54,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Storage Bucket Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/10/29
- */
+/// Storage Bucket Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestBucketController extends TestController {
@@ -74,20 +71,16 @@ public class TestBucketController extends TestController {
         }
     }
 
-    /**
-     * 获取测试用的应用
-     */
+    /// 获取测试用的应用
     private Application getApplication(DataContext context) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
         return container.getApplicationByCode("dashboard");
     }
 
-    /**
-     * @see BucketController#add
-     * @see BucketController#details
-     * @see BucketController#page
-     * @see BucketController#delete
-     */
+    /// @see BucketController#add
+    /// @see BucketController#details
+    /// @see BucketController#page
+    /// @see BucketController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var application = this.getApplication(context);
@@ -183,12 +176,10 @@ public class TestBucketController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see BucketController#add
-     * @see BucketController#update
-     * @see BucketController#details
-     * @see BucketController#delete
-     */
+    /// @see BucketController#add
+    /// @see BucketController#update
+    /// @see BucketController#details
+    /// @see BucketController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var application = this.getApplication(context);

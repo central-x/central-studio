@@ -29,22 +29,17 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Authority Controller
- * <p>
- * 权限控制
- *
- * @author Alan Yeh
- * @since 2023/11/18
- */
+/// Authority Controller
+///
+/// 权限控制
+///
+/// @author Alan Yeh
 @RestController
 @RequiresAuthentication
 @RequiresPermissions(AuthorityController.Permissions.VIEW)
 @RequestMapping("/dashboard/api/authority")
 public class AuthorityController {
-    /**
-     * 权限
-     */
+    /// 权限
     public interface Permissions {
         String VIEW = "${application}:authority:view";
     }

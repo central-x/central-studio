@@ -32,12 +32,9 @@ import lombok.Getter;
 
 import java.util.Objects;
 
-/**
- * 授权范围类型
- *
- * @author Alan Yeh
- * @since 2022/09/28
- */
+/// 授权范围类型
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum RangeType implements OptionalEnum<String> {
@@ -52,7 +49,8 @@ public enum RangeType implements OptionalEnum<String> {
     UNIT("单位", "unit"),
     UNIT_RECURSION("单位（递归）", "unit_recursion"),
     AREA("行政区划", "area"),
-    AREA_RECURSION("行政区划（递归）", "area_recursion"),;
+    AREA_RECURSION("行政区划（递归）", "area_recursion"),
+    ;
 
     private final String name;
     private final String value;

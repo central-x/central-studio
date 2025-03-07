@@ -28,12 +28,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Index
- *
- * @author Alan Yeh
- * @since 2024/02/04
- */
+/// Index
+///
+/// @author Alan Yeh
 @RestController
 @RequestMapping("/multicast")
 public class MulticastIndexController {

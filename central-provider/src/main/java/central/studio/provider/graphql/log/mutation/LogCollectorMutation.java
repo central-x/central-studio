@@ -47,14 +47,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Log Collector
- * <p>
- * 日志采集器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// Log Collector
+///
+/// 日志采集器
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "log/mutation", types = LogCollectorDTO.class)
 public class LogCollectorMutation {
@@ -62,13 +59,11 @@ public class LogCollectorMutation {
     @Setter(onMethod_ = @Autowired)
     private LogCollectorPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull LogCollectorDTO insert(@RequestParam @Validated({Insert.class, Default.class}) LogCollectorInput input,
                                            @RequestParam String operator,
@@ -79,13 +74,11 @@ public class LogCollectorMutation {
         return DTO.wrap(data, LogCollectorDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<LogCollectorDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<LogCollectorInput> inputs,
                                                       @RequestParam String operator,
@@ -96,13 +89,11 @@ public class LogCollectorMutation {
         return DTO.wrap(data, LogCollectorDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull LogCollectorDTO update(@RequestParam @Validated({Update.class, Default.class}) LogCollectorInput input,
                                            @RequestParam String operator,
@@ -113,13 +104,11 @@ public class LogCollectorMutation {
         return DTO.wrap(data, LogCollectorDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<LogCollectorDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<LogCollectorInput> inputs,
                                                       @RequestParam String operator,
@@ -130,12 +119,10 @@ public class LogCollectorMutation {
         return DTO.wrap(data, LogCollectorDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -144,12 +131,10 @@ public class LogCollectorMutation {
         return this.persistence.deleteByIds(ids);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<LogCollectorEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

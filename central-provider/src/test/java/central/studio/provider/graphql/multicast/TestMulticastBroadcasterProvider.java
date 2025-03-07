@@ -51,12 +51,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * MulticastBroadcasterProvider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// MulticastBroadcasterProvider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestMulticastBroadcasterProvider {
 
@@ -85,14 +82,12 @@ public class TestMulticastBroadcasterProvider {
         this.persistence.deleteBy(Conditions.of(MulticastBroadcasterEntity.class).like(MulticastBroadcasterEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see MulticastBroadcasterProvider#insert
-     * @see MulticastBroadcasterProvider#findById
-     * @see MulticastBroadcasterProvider#update
-     * @see MulticastBroadcasterProvider#findByIds
-     * @see MulticastBroadcasterProvider#countBy
-     * @see MulticastBroadcasterProvider#deleteByIds
-     */
+    /// @see MulticastBroadcasterProvider#insert
+    /// @see MulticastBroadcasterProvider#findById
+    /// @see MulticastBroadcasterProvider#update
+    /// @see MulticastBroadcasterProvider#findByIds
+    /// @see MulticastBroadcasterProvider#countBy
+    /// @see MulticastBroadcasterProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -181,13 +176,11 @@ public class TestMulticastBroadcasterProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see GatewayFilterProvider#insertBatch
-     * @see GatewayFilterProvider#findBy
-     * @see GatewayFilterProvider#updateBatch
-     * @see GatewayFilterProvider#pageBy
-     * @see GatewayFilterProvider#deleteBy
-     */
+    /// @see GatewayFilterProvider#insertBatch
+    /// @see GatewayFilterProvider#findBy
+    /// @see GatewayFilterProvider#updateBatch
+    /// @see GatewayFilterProvider#pageBy
+    /// @see GatewayFilterProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

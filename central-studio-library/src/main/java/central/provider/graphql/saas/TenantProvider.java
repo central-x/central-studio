@@ -24,18 +24,16 @@
 
 package central.provider.graphql.saas;
 
-import central.data.saas.*;
+import central.data.saas.Tenant;
+import central.data.saas.TenantInput;
 import central.starter.graphql.stub.ModifiableProvider;
 import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * 租户
- *
- * @author Alan Yeh
- * @since 2022/09/28
- */
+/// 租户
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("saas.tenants")
 @GraphQLStub(path = "saas", client = "masterProviderClient")

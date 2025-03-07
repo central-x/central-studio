@@ -33,8 +33,8 @@ import central.sql.query.Orders;
 import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.studio.provider.graphql.authority.dto.RolePermissionDTO;
 import central.studio.provider.database.persistence.authority.RolePermissionPersistence;
+import central.studio.provider.graphql.authority.dto.RolePermissionDTO;
 import central.web.XForwardedHeaders;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
@@ -52,14 +52,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Role Permission Relation Query
- * <p>
- * 角色与权限关联关系查询
- *
- * @author Alan Yeh
- * @since 2022/10/02
- */
+/// Role Permission Relation Query
+///
+/// 角色与权限关联关系查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "authority/query", types = RolePermissionDTO.class)
 public class RolePermissionQuery {
@@ -67,13 +64,11 @@ public class RolePermissionQuery {
     @Setter(onMethod_ = @Autowired)
     private RolePermissionPersistence persistence;
 
-    /**
-     * 批量数据加载器
-     *
-     * @param environment Graphql 批量加载上下文环境
-     * @param ids         主键
-     * @param tenant      租户标识
-     */
+    /// 批量数据加载器
+    ///
+    /// @param environment Graphql 批量加载上下文环境
+    /// @param ids         主键
+    /// @param tenant      租户标识
     @GraphQLBatchLoader
     public @Nonnull Map<String, RolePermissionDTO> batchLoader(BatchLoaderEnvironment environment,
                                                                @RequestParam List<String> ids,
@@ -88,13 +83,11 @@ public class RolePermissionQuery {
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param environment Graphql 查询上下文环境
-     * @param id          主键
-     * @param tenant      租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param environment Graphql 查询上下文环境
+    /// @param id          主键
+    /// @param tenant      租户标识
     @GraphQLFetcher
     public @Nullable RolePermissionDTO findById(DataFetchingEnvironment environment,
                                                 @RequestParam String id,
@@ -108,13 +101,11 @@ public class RolePermissionQuery {
     }
 
 
-    /**
-     * 查询数据
-     *
-     * @param environment Graphql 查询上下文环境
-     * @param ids         主键
-     * @param tenant      租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param environment Graphql 查询上下文环境
+    /// @param ids         主键
+    /// @param tenant      租户标识
     @GraphQLFetcher
     public @Nonnull List<RolePermissionDTO> findByIds(DataFetchingEnvironment environment,
                                                       @RequestParam List<String> ids,
@@ -127,16 +118,14 @@ public class RolePermissionQuery {
         return DTO.wrap(data, RolePermissionDTO.class);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param environment Graphql 查询上下文环境
-     * @param limit       获取前 N 条数据
-     * @param offset      偏移量
-     * @param conditions  过滤条件
-     * @param orders      排序条件
-     * @param tenant      租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param environment Graphql 查询上下文环境
+    /// @param limit       获取前 N 条数据
+    /// @param offset      偏移量
+    /// @param conditions  过滤条件
+    /// @param orders      排序条件
+    /// @param tenant      租户标识
     @GraphQLFetcher
     public @Nonnull List<RolePermissionDTO> findBy(DataFetchingEnvironment environment,
                                                    @RequestParam(required = false) Long limit,
@@ -152,16 +141,14 @@ public class RolePermissionQuery {
         return DTO.wrap(data, RolePermissionDTO.class);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param environment Graphql 查询上下文环境
-     * @param pageIndex   分页下标
-     * @param pageSize    分页大小
-     * @param conditions  过滤条件
-     * @param orders      排序条件
-     * @param tenant      租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param environment Graphql 查询上下文环境
+    /// @param pageIndex   分页下标
+    /// @param pageSize    分页大小
+    /// @param conditions  过滤条件
+    /// @param orders      排序条件
+    /// @param tenant      租户标识
     @GraphQLFetcher
     public @Nonnull Page<RolePermissionDTO> pageBy(DataFetchingEnvironment environment,
                                                    @RequestParam long pageIndex,
@@ -178,12 +165,10 @@ public class RolePermissionQuery {
         return DTO.wrap(data, RolePermissionDTO.class);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<RolePermissionDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

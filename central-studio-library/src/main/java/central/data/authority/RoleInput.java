@@ -33,12 +33,8 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 角色输入
- *
- * @author Alan Yeh
- * @since 2022/09/13
- */
+/// 角色输入
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

@@ -24,11 +24,11 @@
 
 package central.provider.scheduled.fetcher.system;
 
+import central.data.system.Dictionary;
+import central.provider.graphql.saas.TenantProvider;
+import central.provider.graphql.system.DictionaryProvider;
 import central.provider.scheduled.BeanSupplier;
 import central.provider.scheduled.fetcher.DataFetcher;
-import central.provider.graphql.system.DictionaryProvider;
-import central.provider.graphql.saas.TenantProvider;
-import central.data.system.Dictionary;
 import central.sql.query.Conditions;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,12 +37,9 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 系统数据
- *
- * @author Alan Yeh
- * @since 2022/10/14
- */
+/// 系统数据
+///
+/// @author Alan Yeh
 public class SystemFetcher implements DataFetcher<SysContainer> {
 
     @Setter

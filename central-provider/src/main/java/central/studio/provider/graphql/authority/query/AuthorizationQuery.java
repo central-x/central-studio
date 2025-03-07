@@ -27,10 +27,10 @@ package central.studio.provider.graphql.authority.query;
 import central.provider.graphql.DTO;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.authority.AuthorizationPersistence;
 import central.studio.provider.graphql.authority.dto.MenuDTO;
 import central.studio.provider.graphql.authority.dto.PermissionDTO;
 import central.studio.provider.graphql.authority.dto.RoleDTO;
-import central.studio.provider.database.persistence.authority.AuthorizationPersistence;
 import central.studio.provider.graphql.saas.dto.ApplicationDTO;
 import central.web.XForwardedHeaders;
 import lombok.Setter;
@@ -41,14 +41,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Authorization Query
- * <p>
- * 授权查询
- *
- * @author Alan Yeh
- * @since 2024/05/27
- */
+/// Authorization Query
+///
+/// 授权查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "authority/query")
 public class AuthorizationQuery {
@@ -56,27 +53,23 @@ public class AuthorizationQuery {
     @Setter(onMethod_ = @Autowired)
     private AuthorizationPersistence persistence;
 
-    /**
-     * 根据应用标识和应用密钥获取应用信息
-     *
-     * @param code   应用标识
-     * @param secret 应用密钥
-     * @return 应用信息
-     */
+    /// 根据应用标识和应用密钥获取应用信息
+    ///
+    /// @param code   应用标识
+    /// @param secret 应用密钥
+    /// @return 应用信息
     @GraphQLFetcher
     public ApplicationDTO findApplication(@RequestParam String code, @RequestParam String secret) {
         var data = this.persistence.findApplication(code, secret);
         return DTO.wrap(data, ApplicationDTO.class);
     }
 
-    /**
-     * 获取指定帐户允许访问的应用列表
-     *
-     * @param accountId 帐户主键
-     * @param type      应用菜单类型
-     * @param tenant    租户标识
-     * @return 应用列表
-     */
+    /// 获取指定帐户允许访问的应用列表
+    ///
+    /// @param accountId 帐户主键
+    /// @param type      应用菜单类型
+    /// @param tenant    租户标识
+    /// @return 应用列表
     @GraphQLFetcher
     public List<ApplicationDTO> findApplications(@RequestParam String accountId, @RequestParam(required = false) String type,
                                                  @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -84,14 +77,12 @@ public class AuthorizationQuery {
         return DTO.wrap(data, ApplicationDTO.class);
     }
 
-    /**
-     * 获取指定帐户在指定应用下被授权的角色清单
-     *
-     * @param accountId     帐户主键
-     * @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有角色
-     * @param tenant        租户标识
-     * @return 角色清单
-     */
+    /// 获取指定帐户在指定应用下被授权的角色清单
+    ///
+    /// @param accountId     帐户主键
+    /// @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有角色
+    /// @param tenant        租户标识
+    /// @return 角色清单
     @GraphQLFetcher
     public List<RoleDTO> findRoles(@RequestParam String accountId, @RequestParam(required = false) String applicationId,
                                    @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -99,15 +90,13 @@ public class AuthorizationQuery {
         return DTO.wrap(data, RoleDTO.class);
     }
 
-    /**
-     * 获取指定帐户在指定应用下被授权的菜单清单
-     *
-     * @param accountId     帐户主键
-     * @param type          应用菜单类型。如果为空时，则返回所有菜单类型
-     * @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有菜单
-     * @param tenant        租户标识
-     * @return 菜单清单
-     */
+    /// 获取指定帐户在指定应用下被授权的菜单清单
+    ///
+    /// @param accountId     帐户主键
+    /// @param type          应用菜单类型。如果为空时，则返回所有菜单类型
+    /// @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有菜单
+    /// @param tenant        租户标识
+    /// @return 菜单清单
     @GraphQLFetcher
     public List<MenuDTO> findMenus(@RequestParam String accountId,
                                    @RequestParam(required = false) String type,
@@ -117,14 +106,12 @@ public class AuthorizationQuery {
         return DTO.wrap(data, MenuDTO.class);
     }
 
-    /**
-     * 获取指定帐户在指定应用下被授权的权限列表
-     *
-     * @param accountId     帐户主键
-     * @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有权限
-     * @param tenant        租户标识
-     * @return 权限清单
-     */
+    /// 获取指定帐户在指定应用下被授权的权限列表
+    ///
+    /// @param accountId     帐户主键
+    /// @param applicationId 应用主键。如果为空时，则返回该用户被授权的所有权限
+    /// @param tenant        租户标识
+    /// @return 权限清单
     @GraphQLFetcher
     public List<PermissionDTO> findPermissions(@RequestParam String accountId, @RequestParam(required = false) String applicationId,
                                                @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

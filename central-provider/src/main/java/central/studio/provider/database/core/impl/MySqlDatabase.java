@@ -34,12 +34,9 @@ import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.Setter;
 
-/**
- * MySql 数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// MySql 数据库
+///
+/// @author Alan Yeh
 public class MySqlDatabase extends Database {
     @Setter
     @Label("主机")

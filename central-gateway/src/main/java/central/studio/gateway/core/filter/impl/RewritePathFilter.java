@@ -24,10 +24,10 @@
 
 package central.studio.gateway.core.filter.impl;
 
-import central.studio.gateway.core.filter.Filter;
-import central.studio.gateway.core.filter.FilterChain;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.studio.gateway.core.filter.Filter;
+import central.studio.gateway.core.filter.FilterChain;
 import central.validation.Label;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -38,12 +38,9 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-/**
- * 重写路径
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 重写路径
+///
+/// @author Alan Yeh
 public class RewritePathFilter implements Filter {
 
     @Control(label = "说明", type = ControlType.LABEL,

@@ -56,12 +56,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Log Filter Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/11/30
- */
+/// Log Filter Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestFilterController extends TestController {
@@ -73,12 +70,10 @@ public class TestFilterController extends TestController {
     @Setter(onMethod_ = @Autowired)
     private LogStorageMapper storageMapper;
 
-    /**
-     * @see FilterController#add
-     * @see FilterController#details
-     * @see FilterController#page
-     * @see FilterController#delete
-     */
+    /// @see FilterController#add
+    /// @see FilterController#details
+    /// @see FilterController#page
+    /// @see FilterController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var collector = this.collectorMapper.findFirstBy(Conditions.of(LogCollectorEntity.class).eq(LogCollectorEntity::getCode, "local"));
@@ -175,12 +170,10 @@ public class TestFilterController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see FilterController#add
-     * @see FilterController#update
-     * @see FilterController#details
-     * @see FilterController#delete
-     */
+    /// @see FilterController#add
+    /// @see FilterController#update
+    /// @see FilterController#details
+    /// @see FilterController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var collector = this.collectorMapper.findFirstBy(Conditions.of(LogCollectorEntity.class).eq(LogCollectorEntity::getCode, "local"));

@@ -24,7 +24,8 @@
 
 package central.data.authority;
 
-import central.bean.*;
+import central.bean.Codeable;
+import central.bean.Nonnull;
 import central.data.organization.Account;
 import central.data.saas.Application;
 import central.sql.data.ModifiableEntity;
@@ -36,12 +37,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 权限
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 权限
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,54 +48,38 @@ public class Permission extends ModifiableEntity implements Codeable {
     @Serial
     private static final long serialVersionUID = -6065228625130524836L;
 
-    /**
-     * 应用主键
-     */
+    /// 应用主键
     @Nonnull
     private String applicationId;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 菜单主键
-     */
+    /// 菜单主键
     @Nonnull
     private String menuId;
 
-    /**
-     * 菜单信息
-     */
+    /// 菜单信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Menu menu;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

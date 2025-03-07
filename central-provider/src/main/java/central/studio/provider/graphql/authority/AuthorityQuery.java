@@ -32,43 +32,34 @@ import central.studio.provider.graphql.authority.query.RoleQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Authority Query
- * <p>
- * 权限类查询
- *
- * @author Alan Yeh
- * @since 2022/10/26
- */
+/// Authority Query
+///
+/// 权限类查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "authority", types = {MenuQuery.class, RoleQuery.class, AuthorizationQuery.class})
 public class AuthorityQuery {
 
-    /**
-     * Menu Query
-     * <p>
-     * 菜单查询
-     */
+    /// Menu Query
+    ///
+    /// 菜单查询
     @GraphQLGetter
     public MenuQuery getMenus(@Autowired MenuQuery query) {
         return query;
     }
 
-    /**
-     * Role Query
-     * <p>
-     * 角色查询
-     */
+    /// Role Query
+    ///
+    /// 角色查询
     @GraphQLGetter
     public RoleQuery getRoles(@Autowired RoleQuery query) {
         return query;
     }
 
-    /**
-     * Authorization Query
-     * <p>
-     * 授权查询
-     */
+    /// Authorization Query
+    ///
+    /// 授权查询
     @GraphQLGetter
     public AuthorizationQuery getAuthorizations(@Autowired AuthorizationQuery query) {
         return query;

@@ -29,12 +29,9 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Account Profile
- *
- * @author Alan Yeh
- * @since 2025/02/05
- */
+/// Account Profile
+///
+/// @author Alan Yeh
 @Data
 public class ProfileVo implements Serializable {
     @Serial

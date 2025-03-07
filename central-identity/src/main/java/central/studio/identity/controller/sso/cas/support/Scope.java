@@ -32,12 +32,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * 用户属性
- *
- * @author Alan Yeh
- * @since 2022/11/07
- */
+/// 用户属性
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum Scope implements OptionalEnum<String> {

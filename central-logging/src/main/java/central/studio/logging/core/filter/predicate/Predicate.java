@@ -26,17 +26,12 @@ package central.studio.logging.core.filter.predicate;
 
 import central.data.log.Log;
 
-/**
- * 断言
- *
- * @author Alan Yeh
- * @since 2022/10/27
- */
+/// 断言
+///
+/// @author Alan Yeh
 public interface Predicate {
-    /**
-     * 判断该指定的日志是否在过滤范围
-     *
-     * @param log 日志
-     */
+    /// 判断该指定的日志是否在过滤范围
+    ///
+    /// @param log 日志
     boolean predicate(Log log);
 }

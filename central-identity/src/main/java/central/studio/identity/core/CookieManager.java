@@ -36,17 +36,12 @@ import org.springframework.http.ResponseCookie;
 
 import java.util.Objects;
 
-/**
- * Cookie Manager
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// Cookie Manager
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class CookieManager {
-    /**
-     * name
-     */
+    /// name
     private final String name;
 
     private final String domain;
@@ -59,9 +54,7 @@ public class CookieManager {
         this(name, null, true, false);
     }
 
-    /**
-     * 设置 Cookie
-     */
+    /// 设置 Cookie
     public void set(WebMvcRequest request, WebMvcResponse response, String value) {
         var builder = ResponseCookie.from(this.name, value)
                 .path(request.getTenantPath())
@@ -77,16 +70,12 @@ public class CookieManager {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
-    /**
-     * 获取 Cookie
-     */
+    /// 获取 Cookie
     public String get(WebMvcRequest request, WebMvcResponse response) {
         return request.getCookie(this.name);
     }
 
-    /**
-     * 获取 Cookie
-     */
+    /// 获取 Cookie
     public String get(HttpServletRequest request) {
         return Arrayx.asStream(request.getCookies())
                 .filter(it -> Objects.equals(this.name, it.getName()))
@@ -95,9 +84,7 @@ public class CookieManager {
                 .orElse(null);
     }
 
-    /**
-     * 删除客户端的 Cookie
-     */
+    /// 删除客户端的 Cookie
     public void remove(WebMvcRequest request, WebMvcResponse response) {
         var builder = ResponseCookie.from(this.name, "deleteMe")
                 .path(request.getTenantPath())

@@ -27,8 +27,6 @@ package central.studio.provider.graphql.authority.query;
 import central.bean.Page;
 import central.provider.graphql.DTO;
 import central.sql.data.Entity;
-import central.studio.provider.graphql.authority.dto.MenuDTO;
-import central.studio.provider.database.persistence.authority.MenuPersistence;
 import central.sql.query.Columns;
 import central.sql.query.Conditions;
 import central.sql.query.Orders;
@@ -36,6 +34,8 @@ import central.starter.graphql.annotation.GraphQLBatchLoader;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.database.persistence.authority.MenuPersistence;
+import central.studio.provider.graphql.authority.dto.MenuDTO;
 import central.web.XForwardedHeaders;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
@@ -53,13 +53,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Menu Query
- * 菜单查询
- *
- * @author Alan Yeh
- * @since 2022/10/02
- */
+/// Menu Query
+///
+/// 菜单查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "authority/query", types = {MenuDTO.class, PermissionQuery.class})
 public class MenuQuery {
@@ -67,13 +65,11 @@ public class MenuQuery {
     @Setter(onMethod_ = @Autowired)
     private MenuPersistence persistence;
 
-    /**
-     * 批量数据加载器
-     *
-     * @param environment Graphql 批量加载上下文环境
-     * @param ids         主键
-     * @param tenant      租户标识
-     */
+    /// 批量数据加载器
+    ///
+    /// @param environment Graphql 批量加载上下文环境
+    /// @param ids         主键
+    /// @param tenant      租户标识
     @GraphQLBatchLoader
     public @Nonnull Map<String, MenuDTO> batchLoader(BatchLoaderEnvironment environment,
                                                      @RequestParam List<String> ids,
@@ -88,13 +84,11 @@ public class MenuQuery {
                 .collect(Collectors.toMap(Entity::getId, Function.identity()));
     }
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param environment Graphql 查询上下文环境
-     * @param id          主键
-     * @param tenant      租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param environment Graphql 查询上下文环境
+    /// @param id          主键
+    /// @param tenant      租户标识
     @GraphQLFetcher
     public @Nullable MenuDTO findById(DataFetchingEnvironment environment,
                                       @RequestParam String id,
@@ -108,13 +102,11 @@ public class MenuQuery {
     }
 
 
-    /**
-     * 查询数据
-     *
-     * @param environment Graphql 查询上下文环境
-     * @param ids         主键
-     * @param tenant      租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param environment Graphql 查询上下文环境
+    /// @param ids         主键
+    /// @param tenant      租户标识
     @GraphQLFetcher
     public @Nonnull List<MenuDTO> findByIds(DataFetchingEnvironment environment,
                                             @RequestParam List<String> ids,
@@ -127,16 +119,14 @@ public class MenuQuery {
         return DTO.wrap(data, MenuDTO.class);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param environment Graphql 查询上下文环境
-     * @param limit       获取前 N 条数据
-     * @param offset      偏移量
-     * @param conditions  过滤条件
-     * @param orders      排序条件
-     * @param tenant      租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param environment Graphql 查询上下文环境
+    /// @param limit       获取前 N 条数据
+    /// @param offset      偏移量
+    /// @param conditions  过滤条件
+    /// @param orders      排序条件
+    /// @param tenant      租户标识
     @GraphQLFetcher
     public @Nonnull List<MenuDTO> findBy(DataFetchingEnvironment environment,
                                          @RequestParam(required = false) Long limit,
@@ -152,16 +142,14 @@ public class MenuQuery {
         return DTO.wrap(data, MenuDTO.class);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param environment Graphql 查询上下文环境
-     * @param pageIndex   分页下标
-     * @param pageSize    分页大小
-     * @param conditions  过滤条件
-     * @param orders      排序条件
-     * @param tenant      租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param environment Graphql 查询上下文环境
+    /// @param pageIndex   分页下标
+    /// @param pageSize    分页大小
+    /// @param conditions  过滤条件
+    /// @param orders      排序条件
+    /// @param tenant      租户标识
     @GraphQLFetcher
     public @Nonnull Page<MenuDTO> pageBy(DataFetchingEnvironment environment,
                                          @RequestParam long pageIndex,
@@ -178,12 +166,10 @@ public class MenuQuery {
         return DTO.wrap(data, MenuDTO.class);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public Long countBy(@RequestParam Conditions<MenuDTO> conditions,
                         @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -194,10 +180,8 @@ public class MenuQuery {
     // 关联查询
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Permission Query
-     * 权限查询
-     */
+    /// Permission Query
+    /// 权限查询
     @GraphQLGetter
     public PermissionQuery getPermissions(@Autowired PermissionQuery query) {
         return query;

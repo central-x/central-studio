@@ -45,27 +45,22 @@ import org.springframework.validation.annotation.Validated;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Role Principal Relation Persistence
- * <p>
- * 角色与主体关联关系持久化
- *
- * @author Alan Yeh
- * @since 2024/12/15
- */
+/// Role Principal Relation Persistence
+///
+/// 角色与主体关联关系持久化
+///
+/// @author Alan Yeh
 @Component
 public class RolePrincipalPersistence {
 
     @Setter(onMethod_ = @Autowired)
     private RolePrincipalMapper mapper;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nullable RolePrincipalEntity findById(@Nullable String id,
                                                   @Nullable Columns<? extends RolePrincipalEntity> columns,
                                                   @Nonnull String tenant) {
@@ -77,13 +72,11 @@ public class RolePrincipalPersistence {
         return this.mapper.findFirstBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 字段列表
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 字段列表
+    /// @param tenant  租户标识
     public @Nonnull List<RolePrincipalEntity> findByIds(@Nullable List<String> ids,
                                                         @Nullable Columns<? extends RolePrincipalEntity> columns,
                                                         @Nonnull String tenant) {
@@ -95,16 +88,14 @@ public class RolePrincipalPersistence {
         return this.mapper.findBy(columns, conditions);
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<RolePrincipalEntity> findBy(@Nullable Long limit,
                                                      @Nullable Long offset,
                                                      @Nullable Columns<? extends RolePrincipalEntity> columns,
@@ -115,16 +106,14 @@ public class RolePrincipalPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<RolePrincipalEntity> pageBy(@Nonnull Long pageIndex,
                                                      @Nonnull Long pageSize,
                                                      @Nullable Columns<? extends RolePrincipalEntity> columns,
@@ -135,25 +124,21 @@ public class RolePrincipalPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends RolePrincipalEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(RolePrincipalEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull RolePrincipalEntity insert(@Nonnull @Validated({Insert.class, Default.class}) RolePrincipalInput input,
                                                @Nonnull String operator,
                                                @Nonnull String tenant) {
@@ -165,25 +150,21 @@ public class RolePrincipalPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<RolePrincipalEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<RolePrincipalInput> inputs,
                                                           @Nonnull String operator,
                                                           @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -193,12 +174,10 @@ public class RolePrincipalPersistence {
         return this.mapper.deleteBy(Conditions.of(RolePrincipalEntity.class).in(RolePrincipalEntity::getId, ids).eq(RolePrincipalEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends RolePrincipalEntity> conditions,
                          @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(RolePrincipalEntity::getTenantCode, tenant);

@@ -30,30 +30,23 @@ import jakarta.servlet.ServletException;
 
 import java.io.IOException;
 
-/**
- * 安全策略
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// 安全策略
+///
+/// @author Alan Yeh
 public interface StrategyFilter {
 
-    /**
-     * 用于判断是否执行当前策略
-     *
-     * @param request  Current request
-     * @param response Current response
-     */
+    /// 用于判断是否执行当前策略
+    ///
+    /// @param request  Current request
+    /// @param response Current response
     default boolean predicate(WebMvcRequest request, WebMvcResponse response) {
         return true;
     }
 
-    /**
-     * 执行安全策略
-     *
-     * @param request  Current request
-     * @param response Current response
-     * @param chain    Next strategy
-     */
+    /// 执行安全策略
+    ///
+    /// @param request  Current request
+    /// @param response Current response
+    /// @param chain    Next strategy
     void execute(WebMvcRequest request, WebMvcResponse response, StrategyFilterChain chain) throws ServletException, IOException;
 }

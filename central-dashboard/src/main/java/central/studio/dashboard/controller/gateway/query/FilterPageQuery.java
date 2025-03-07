@@ -32,14 +32,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Gateway Filter Page Query
- * <p>
- * 网关过滤器分页查询
- *
- * @author Alan Yeh
- * @since 2024/11/15
- */
+/// Gateway Filter Page Query
+///
+/// 网关过滤器分页查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FilterPageQuery extends PageQuery<GatewayFilter> {

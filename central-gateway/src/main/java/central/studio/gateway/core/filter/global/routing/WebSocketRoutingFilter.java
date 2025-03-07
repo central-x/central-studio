@@ -25,10 +25,10 @@
 package central.studio.gateway.core.filter.global.routing;
 
 import central.data.saas.Application;
+import central.starter.web.reactive.extension.ServerWebExchangex;
 import central.studio.gateway.core.attribute.ExchangeAttributes;
 import central.studio.gateway.core.filter.Filter;
 import central.studio.gateway.core.filter.FilterChain;
-import central.starter.web.reactive.extension.ServerWebExchangex;
 import central.util.Listx;
 import central.web.XForwardedHeaders;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -54,18 +54,13 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * WebSocket 转发
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+/// WebSocket 转发
+///
+/// @author Alan Yeh
 @Slf4j
 @ExtensionMethod(ServerWebExchangex.class)
 public class WebSocketRoutingFilter implements Filter, InitializingBean {
-    /**
-     * Sec-Websocket protocol.
-     */
+    /// Sec-Websocket protocol.
     public static final String SEC_WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
 
     private WebSocketClient client;
@@ -121,9 +116,7 @@ public class WebSocketRoutingFilter implements Filter, InitializingBean {
         };
     }
 
-    /**
-     * 移除 WebSocket 相关的请求头 因为代理本身会生成这些请求头，如果不移除，则会生成重复的请求头
-     */
+    /// 移除 WebSocket 相关的请求头 因为代理本身会生成这些请求头，如果不移除，则会生成重复的请求头
     private HttpHeaders getFilteredHeaders(ServerWebExchange exchange) {
         var headers = new HttpHeaders();
         exchange.getRequest().getHeaders().entrySet().stream()

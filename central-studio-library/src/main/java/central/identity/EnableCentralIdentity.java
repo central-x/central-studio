@@ -28,14 +28,11 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
-/**
- * Enable Identity
- * <p>
- * 启用认证中心对接
- *
- * @author Alan Yeh
- * @since 2023/09/17
- */
+/// Enable Identity
+///
+/// 启用认证中心对接
+///
+/// @author Alan Yeh
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

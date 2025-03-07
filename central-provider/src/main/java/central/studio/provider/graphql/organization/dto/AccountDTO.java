@@ -52,29 +52,22 @@ import java.io.Serial;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 帐户信息
- *
- * @author Alan Yeh
- * @since 2022/09/24
- */
+/// 帐户信息
+///
+/// @author Alan Yeh
 @GraphQLType("Account")
 @EqualsAndHashCode(callSuper = true)
 public class AccountDTO extends AccountEntity implements DTO {
     @Serial
     private static final long serialVersionUID = -4014716766819431471L;
 
-    /**
-     * 是否超级管理员
-     */
+    /// 是否超级管理员
     @GraphQLGetter
     public Boolean getSupervisor(@Autowired AccountPersistence persistence) {
         return persistence.isSupervisor(this.getId());
     }
 
-    /**
-     * 配置信息
-     */
+    /// 配置信息
     @GraphQLGetter
     public AccountProfile getProfile() {
         if (Stringx.isNullOrBlank(this.getProfileJson())) {
@@ -84,26 +77,20 @@ public class AccountDTO extends AccountEntity implements DTO {
         }
     }
 
-    /**
-     * 。
-     * 创建人信息
-     */
+    /// 。
+    /// 创建人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getCreator(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getCreatorId());
     }
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @GraphQLGetter
     public CompletableFuture<AccountDTO> getModifier(DataLoader<String, AccountDTO> loader) {
         return loader.load(this.getModifierId());
     }
 
-    /**
-     * 获取所属单位信息
-     */
+    /// 获取所属单位信息
     @GraphQLGetter
     public List<AccountUnitDTO> getUnits(@RequestParam(required = false) Long first,
                                          @RequestParam(required = false) Long offset,
@@ -114,9 +101,7 @@ public class AccountDTO extends AccountEntity implements DTO {
         return query.findBy(first, offset, Conditions.group(conditions).eq(AccountUnitEntity::getAccountId, this.getId()), orders, tenant);
     }
 
-    /**
-     * 获取角色信息
-     */
+    /// 获取角色信息
     @GraphQLGetter
     public List<RoleDTO> getRoles(DataFetchingEnvironment environment,
                                   @RequestParam(required = false) Long first,

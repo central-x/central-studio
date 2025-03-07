@@ -35,14 +35,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Identity Strategy
- * <p>
- * 认证策略
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// Identity Strategy
+///
+/// 认证策略
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,45 +48,29 @@ public class IdentityStrategy extends ModifiableEntity implements Codeable, Rema
     @Serial
     private static final long serialVersionUID = -235209100159246342L;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
-    /**
-     * 类型
-     */
+    /// 类型
     @Nonnull
     private String type;
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
-    /**
-     * 备注
-     */
+    /// 备注
     @Nullable
     private String remark;
-    /**
-     * 初始化参数
-     */
+    /// 初始化参数
     @Nonnull
     private String params;
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

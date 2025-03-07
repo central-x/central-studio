@@ -50,12 +50,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Identity Record Test Cases
- *
- * @author Alan Yeh
- * @since 2025/03/02
- */
+/// Identity Record Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestIdentityRecordProvider {
 
@@ -84,14 +81,12 @@ public class TestIdentityRecordProvider {
         this.persistence.deleteBy(Conditions.of(IdentityRecordEntity.class), tenant.getCode());
     }
 
-    /**
-     * @see IdentityRecordProvider#insert
-     * @see IdentityRecordProvider#findById
-     * @see IdentityRecordProvider#update
-     * @see IdentityRecordProvider#findByIds
-     * @see IdentityRecordProvider#countBy
-     * @see IdentityRecordProvider#deleteByIds
-     */
+    /// @see IdentityRecordProvider#insert
+    /// @see IdentityRecordProvider#findById
+    /// @see IdentityRecordProvider#update
+    /// @see IdentityRecordProvider#findByIds
+    /// @see IdentityRecordProvider#countBy
+    /// @see IdentityRecordProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -161,13 +156,11 @@ public class TestIdentityRecordProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see IdentityRecordProvider#insertBatch
-     * @see IdentityRecordProvider#findBy
-     * @see IdentityRecordProvider#updateBatch
-     * @see IdentityRecordProvider#pageBy
-     * @see IdentityRecordProvider#deleteBy
-     */
+    /// @see IdentityRecordProvider#insertBatch
+    /// @see IdentityRecordProvider#findBy
+    /// @see IdentityRecordProvider#updateBatch
+    /// @see IdentityRecordProvider#pageBy
+    /// @see IdentityRecordProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

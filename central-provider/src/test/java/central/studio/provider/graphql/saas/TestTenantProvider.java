@@ -54,13 +54,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Tenant Provider Test Cases
- * 租户
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Tenant Provider Test Cases
+///
+/// 租户
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestTenantProvider extends TestProvider {
 
@@ -87,14 +85,12 @@ public class TestTenantProvider extends TestProvider {
         return applicationPersistence.findFirstBy(Columns.all(), Conditions.of(ApplicationEntity.class).eq(ApplicationEntity::getCode, "saas"), null);
     }
 
-    /**
-     * @see TenantProvider#insert
-     * @see TenantProvider#findById
-     * @see TenantProvider#update
-     * @see TenantProvider#findByIds
-     * @see TenantProvider#countBy
-     * @see TenantProvider#deleteByIds
-     */
+    /// @see TenantProvider#insert
+    /// @see TenantProvider#findById
+    /// @see TenantProvider#update
+    /// @see TenantProvider#findByIds
+    /// @see TenantProvider#countBy
+    /// @see TenantProvider#deleteByIds
     @Test
     public void case1() {
         var application = this.getApplication();
@@ -177,13 +173,11 @@ public class TestTenantProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see TenantProvider#insertBatch
-     * @see TenantProvider#findBy
-     * @see TenantProvider#updateBatch
-     * @see TenantProvider#pageBy
-     * @see TenantProvider#deleteBy
-     */
+    /// @see TenantProvider#insertBatch
+    /// @see TenantProvider#findBy
+    /// @see TenantProvider#updateBatch
+    /// @see TenantProvider#pageBy
+    /// @see TenantProvider#deleteBy
     @Test
     public void case2() {
         var application = this.getApplication();

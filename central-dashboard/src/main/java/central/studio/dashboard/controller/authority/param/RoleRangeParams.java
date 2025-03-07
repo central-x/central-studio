@@ -39,14 +39,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Role Range Relation Params
- * <p>
- * 角色与范围关联关系入参
- *
- * @author Alan Yeh
- * @since 2024/12/16
- */
+/// Role Range Relation Params
+///
+/// 角色与范围关联关系入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

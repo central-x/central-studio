@@ -24,38 +24,31 @@
 
 package central.studio.provider.graphql.saas;
 
-import central.studio.provider.graphql.saas.query.ApplicationQuery;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
+import central.studio.provider.graphql.saas.query.ApplicationQuery;
 import central.studio.provider.graphql.saas.query.TenantQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Tenant Query
- * <p>
- * 租户中心查询
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Tenant Query
+///
+/// 租户中心查询
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "saas", types = {TenantQuery.class, ApplicationQuery.class})
 public class SaasQuery {
 
-    /**
-     * Tenant Query
-     * 租户查询
-     */
+    /// Tenant Query
+    /// 租户查询
     @GraphQLGetter
     public TenantQuery getTenants(@Autowired TenantQuery query) {
         return query;
     }
 
-    /**
-     * Application Query
-     * 应用查询
-     */
+    /// Application Query
+    /// 应用查询
     @GraphQLGetter
     public ApplicationQuery getApplications(@Autowired ApplicationQuery query) {
         return query;

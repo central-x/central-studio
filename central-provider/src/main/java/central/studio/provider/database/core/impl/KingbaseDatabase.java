@@ -33,12 +33,9 @@ import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.Setter;
 
-/**
- * 人大金仓数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 人大金仓数据库
+///
+/// @author Alan Yeh
 public class KingbaseDatabase extends Database {
     @Setter
     @Label("主机")

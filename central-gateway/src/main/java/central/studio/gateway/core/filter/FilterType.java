@@ -29,12 +29,9 @@ import central.studio.gateway.core.filter.impl.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 过滤器类型
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 过滤器类型
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum FilterType implements OptionalEnum<String> {

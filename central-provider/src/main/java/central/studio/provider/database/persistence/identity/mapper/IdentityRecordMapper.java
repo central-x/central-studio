@@ -28,14 +28,11 @@ import central.sql.proxy.Mapper;
 import central.studio.provider.database.persistence.identity.entity.IdentityRecordEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * Identity Record
- * <p>
- * 认证记录
- *
- * @author Alan Yeh
- * @since 2025/03/02
- */
+/// Identity Record
+///
+/// 认证记录
+///
+/// @author Alan Yeh
 @Repository
 public interface IdentityRecordMapper extends Mapper<IdentityRecordEntity> {
 }

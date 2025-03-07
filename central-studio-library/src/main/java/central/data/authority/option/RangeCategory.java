@@ -32,28 +32,21 @@ import lombok.Getter;
 
 import java.util.Objects;
 
-/**
- * Range Category
- * <p>
- * 授权范围分类
- *
- * @author Alan Yeh
- * @since 2024/12/15
- */
+/// Range Category
+///
+/// 授权范围分类
+///
+/// @author Alan Yeh
 @Getter
 @AllArgsConstructor
 public enum RangeCategory implements OptionalEnum<String> {
-    /**
-     * 授权组织架构
-     * <p>
-     * 数据与组织架构相关时使用此授权类型
-     */
+    /// 授权组织架构
+    ///
+    /// 数据与组织架构相关时使用此授权类型
     ORGANIZATION("组织架构授权", "organization"),
-    /**
-     * 直接授权指定的数据
-     * <p>
-     * 此时 dataId 为待授权的数据的主键
-     */
+    /// 直接授权指定的数据
+    ///
+    /// 此时 dataId 为待授权的数据的主键
     DATA("数据授权", "data");
 
 

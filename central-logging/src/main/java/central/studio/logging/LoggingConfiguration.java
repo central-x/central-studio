@@ -40,12 +40,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * 日志中心配置
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志中心配置
+///
+/// @author Alan Yeh
 @EnableProbe // 启用探针
 @Configuration
 @EnablePluglet
@@ -54,27 +51,21 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(LoggingProperties.class)
 public class LoggingConfiguration {
 
-    /**
-     * 采集器解析
-     */
+    /// 采集器解析
     @Bean
     @ConditionalOnMissingBean(CollectorResolver.class)
     public CollectorResolver collectorResolver(PlugletFactory factory) {
         return new DefaultCollectorResolver(factory);
     }
 
-    /**
-     * 断言解析
-     */
+    /// 断言解析
     @Bean
     @ConditionalOnMissingBean(PredicateResolver.class)
     public PredicateResolver predicateResolver(PlugletFactory factory) {
         return new DefaultPredicateResolver(factory);
     }
 
-    /**
-     * 存储器解析
-     */
+    /// 存储器解析
     @Bean
     @ConditionalOnMissingBean(StorageResolver.class)
     public StorageResolver storageResolver(PlugletFactory factory) {

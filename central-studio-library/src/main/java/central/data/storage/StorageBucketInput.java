@@ -33,14 +33,11 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Storage Bucket
- * <p>
- * 存储桶
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage Bucket
+///
+/// 存储桶
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

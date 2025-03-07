@@ -37,12 +37,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 应用
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 应用
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,86 +48,60 @@ public class Application extends ModifiableEntity implements Codeable, Available
     @Serial
     private static final long serialVersionUID = 5665577156766430654L;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 图标
-     */
+    /// 图标
     @Nonnull
     private String logo;
 
-    /**
-     * 服务地址
-     */
+    /// 服务地址
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String url;
 
-    /**
-     * 上下文路径
-     */
+    /// 上下文路径
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String contextPath;
 
-    /**
-     * 业务视图首页
-     */
+    /// 业务视图首页
     @Nonnull
     private String businessView;
 
-    /**
-     * 管理视图首页
-     */
+    /// 管理视图首页
     @Nonnull
     private String consoleView;
 
-    /**
-     * 密钥
-     */
+    /// 密钥
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String secret;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 备注
-     */
+    /// 备注
     @Nullable
     private String remark;
 
-    /**
-     * 路由
-     */
+    /// 路由
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ApplicationRoute> routes;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

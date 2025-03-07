@@ -24,24 +24,23 @@
 
 package central.data.multicast;
 
-import central.data.multicast.option.PublishMode;
 import central.data.multicast.option.MessageStatus;
+import central.data.multicast.option.PublishMode;
 import central.validation.Enums;
 import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 广播消息
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 广播消息
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

@@ -30,8 +30,8 @@ import central.sql.query.Conditions;
 import central.starter.graphql.annotation.GraphQLFetcher;
 import central.starter.graphql.annotation.GraphQLGetter;
 import central.starter.graphql.annotation.GraphQLSchema;
-import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.studio.provider.database.persistence.organization.AccountPersistence;
+import central.studio.provider.graphql.organization.dto.AccountDTO;
 import central.validation.group.Insert;
 import central.validation.group.Update;
 import central.web.XForwardedHeaders;
@@ -46,13 +46,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Account Mutation
- * 帐户修改
- *
- * @author Alan Yeh
- * @since 2022/10/03
- */
+/// Account Mutation
+///
+/// 帐户修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "organization/mutation", types = {AccountDTO.class, AccountUnitMutation.class})
 public class AccountMutation {
@@ -60,13 +58,11 @@ public class AccountMutation {
     @Setter(onMethod_ = @Autowired)
     private AccountPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull AccountDTO insert(@RequestParam @Validated({Insert.class, Default.class}) AccountInput input,
                                       @RequestParam String operator,
@@ -75,13 +71,11 @@ public class AccountMutation {
         return DTO.wrap(data, AccountDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<AccountDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<AccountInput> inputs,
                                                  @RequestParam String operator,
@@ -90,13 +84,11 @@ public class AccountMutation {
         return DTO.wrap(data, AccountDTO.class);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull AccountDTO update(@RequestParam @Validated({Update.class, Default.class}) AccountInput input,
                                       @RequestParam String operator,
@@ -105,13 +97,11 @@ public class AccountMutation {
         return DTO.wrap(data, AccountDTO.class);
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<AccountDTO> updateBatch(@RequestParam @Validated({Update.class, Default.class}) List<AccountInput> inputs,
                                                  @RequestParam String operator,
@@ -120,24 +110,20 @@ public class AccountMutation {
         return DTO.wrap(data, AccountDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<AccountDTO> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
@@ -148,11 +134,9 @@ public class AccountMutation {
     // 关联关系
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Account Unit Mutation
-     * <p>
-     * 帐户与单位关联关系修改
-     */
+    /// Account Unit Mutation
+    ///
+    /// 帐户与单位关联关系修改
     @GraphQLGetter
     public AccountUnitMutation getUnits(@Autowired AccountUnitMutation mutation) {
         return mutation;

@@ -51,14 +51,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Department Persistence
- * <p>
- * 部门持久化
- *
- * @author Alan Yeh
- * @since 2024/12/21
- */
+/// Department Persistence
+///
+/// 部门持久化
+///
+/// @author Alan Yeh
 @Component
 public class DepartmentPersistence {
 
@@ -68,13 +65,11 @@ public class DepartmentPersistence {
     @Setter(onMethod_ = @Autowired)
     private AccountDepartmentPersistence accountDepartmentPersistence;
 
-    /**
-     * 根据主键查询数据
-     *
-     * @param id      主键
-     * @param columns 查询字段
-     * @param tenant  租户标识
-     */
+    /// 根据主键查询数据
+    ///
+    /// @param id      主键
+    /// @param columns 查询字段
+    /// @param tenant  租户标识
     public @Nullable DepartmentEntity findById(@Nullable String id,
                                                @Nonnull Columns<? extends DepartmentEntity> columns,
                                                @Nonnull String tenant) {
@@ -85,13 +80,11 @@ public class DepartmentPersistence {
         return this.mapper.findFirstBy(columns, Conditions.of(DepartmentEntity.class).eq(DepartmentEntity::getId, id).eq(DepartmentEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 查询数据
-     *
-     * @param ids     主键
-     * @param columns 查询字段
-     * @param tenant  租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param ids     主键
+    /// @param columns 查询字段
+    /// @param tenant  租户标识
     public @Nonnull List<DepartmentEntity> findByIds(@Nullable List<String> ids,
                                                      @Nonnull Columns<? extends DepartmentEntity> columns,
                                                      @Nonnull String tenant) {
@@ -102,16 +95,14 @@ public class DepartmentPersistence {
         return this.mapper.findBy(columns, Conditions.of(DepartmentEntity.class).in(DepartmentEntity::getId, ids).eq(DepartmentEntity::getTenantCode, tenant));
     }
 
-    /**
-     * 查询数据
-     *
-     * @param limit      获取前 N 条数据
-     * @param offset     偏移量
-     * @param columns    查询字段
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 查询数据
+    ///
+    /// @param limit      获取前 N 条数据
+    /// @param offset     偏移量
+    /// @param columns    查询字段
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull List<DepartmentEntity> findBy(@Nullable Long limit,
                                                   @Nullable Long offset,
                                                   @Nonnull Columns<? extends DepartmentEntity> columns,
@@ -122,14 +113,12 @@ public class DepartmentPersistence {
         return this.mapper.findBy(limit, offset, columns, conditions, orders);
     }
 
-    /**
-     * 根据条件查询第一条数据
-     *
-     * @param columns    字段列表
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件查询第一条数据
+    ///
+    /// @param columns    字段列表
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nullable DepartmentEntity findFirstBy(@Nullable Columns<? extends DepartmentEntity> columns,
                                                   @Nullable Conditions<? extends DepartmentEntity> conditions,
                                                   @Nullable Orders<? extends DepartmentEntity> orders,
@@ -138,16 +127,14 @@ public class DepartmentPersistence {
         return this.mapper.findFirstBy(columns, conditions, orders);
     }
 
-    /**
-     * 分页查询数据
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param columns    查询字段
-     * @param conditions 过滤条件
-     * @param orders     排序条件
-     * @param tenant     租户标识
-     */
+    /// 分页查询数据
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param columns    查询字段
+    /// @param conditions 过滤条件
+    /// @param orders     排序条件
+    /// @param tenant     租户标识
     public @Nonnull Page<DepartmentEntity> pageBy(long pageIndex,
                                                   long pageSize,
                                                   @Nonnull Columns<? extends DepartmentEntity> columns,
@@ -158,25 +145,21 @@ public class DepartmentPersistence {
         return this.mapper.findPageBy(pageIndex, pageSize, columns, conditions, orders);
     }
 
-    /**
-     * 查询符合条件的数据数量
-     *
-     * @param conditions 筛选条件
-     * @param tenant     租户标识
-     */
+    /// 查询符合条件的数据数量
+    ///
+    /// @param conditions 筛选条件
+    /// @param tenant     租户标识
     public Long countBy(@Nullable Conditions<? extends DepartmentEntity> conditions,
                         @Nonnull String tenant) {
         conditions = Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant);
         return this.mapper.countBy(conditions);
     }
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull DepartmentEntity insert(@Nonnull @Validated({Insert.class, Default.class}) DepartmentInput input,
                                             @Nonnull String operator,
                                             @Nonnull String tenant) {
@@ -194,26 +177,22 @@ public class DepartmentPersistence {
         return entity;
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<DepartmentEntity> insertBatch(@Nullable @Validated({Insert.class, Default.class}) List<DepartmentInput> inputs,
                                                        @Nonnull String operator,
                                                        @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.insert(it, operator, tenant)).toList();
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 更新数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull DepartmentEntity update(@Nonnull @Validated({Update.class, Default.class}) DepartmentInput input,
                                             @Nonnull String operator,
                                             @Nonnull String tenant) {
@@ -236,25 +215,21 @@ public class DepartmentPersistence {
         return entity;
     }
 
-    /**
-     * 批量更新数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量更新数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     public @Nonnull List<DepartmentEntity> updateBatch(@Nullable @Validated({Update.class, Default.class}) List<DepartmentInput> inputs,
                                                        @Nonnull String operator,
                                                        @Nonnull String tenant) {
         return Listx.asStream(inputs).map(it -> this.update(it, operator, tenant)).toList();
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     public long deleteByIds(@Nullable List<String> ids,
                             @Nonnull String tenant) {
         if (Listx.isNullOrEmpty(ids)) {
@@ -270,12 +245,10 @@ public class DepartmentPersistence {
         return effected;
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     public long deleteBy(@Nullable Conditions<? extends DepartmentEntity> conditions,
                          @Nonnull String tenant) {
         var ids = this.mapper.findBy(Columns.of(Entity::getId), Conditions.group(conditions).eq(DepartmentEntity::getTenantCode, tenant)).stream()

@@ -39,12 +39,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.util.List;
 
-/**
- * 菜单
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 菜单
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,107 +50,75 @@ public class Menu extends ModifiableEntity implements Codeable, Available, Remar
     @Serial
     private static final long serialVersionUID = -6200313970489750035L;
 
-    /**
-     * 应用主键
-     */
+    /// 应用主键
     @Nonnull
     private String applicationId;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 标识
-     */
+    /// 标识
     @Nonnull
     private String code;
 
-    /**
-     * 名称
-     */
+    /// 名称
     @Nonnull
     private String name;
 
-    /**
-     * 图标
-     */
+    /// 图标
     @Nullable
     private String icon;
 
-    /**
-     * 地址
-     */
+    /// 地址
     @Nullable
     private String url;
 
-    /**
-     * 菜单类型
-     *
-     * @see MenuType
-     */
+    /// 菜单类型
+    ///
+    /// @see MenuType
     @Nonnull
     private String type;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 排序号
-     */
+    /// 排序号
     @Nonnull
     private Integer order;
 
-    /**
-     * 描述
-     */
+    /// 描述
     @Nullable
     private String remark;
 
-    /**
-     * 父菜单主键
-     * 如果为空，则表示该菜单为根菜单
-     */
+    /// 父菜单主键
+    /// 如果为空，则表示该菜单为根菜单
     @Nullable
     private String parentId;
 
-    /**
-     * 父菜单
-     */
+    /// 父菜单
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Menu parent;
 
-    /**
-     * 子菜单
-     */
+    /// 子菜单
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Menu> children;
 
-    /**
-     * 权限
-     */
+    /// 权限
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Permission> permissions;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

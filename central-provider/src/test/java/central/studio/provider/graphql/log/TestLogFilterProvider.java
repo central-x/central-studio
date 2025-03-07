@@ -48,14 +48,11 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * LogFilterProvider Test Cases
- * <p>
- * 日志过滤器
- *
- * @author Alan Yeh
- * @since 2022/10/26
- */
+/// LogFilterProvider Test Cases
+///
+/// 日志过滤器
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestLogFilterProvider {
 
@@ -79,14 +76,12 @@ public class TestLogFilterProvider {
         this.storagePersistence.deleteBy(Conditions.of(LogStorageEntity.class).like(LogStorageEntity::getCode, "test%"));
     }
 
-    /**
-     * @see LogFilterProvider#insert
-     * @see LogFilterProvider#findById
-     * @see LogFilterProvider#update
-     * @see LogFilterProvider#findByIds
-     * @see LogFilterProvider#countBy
-     * @see LogFilterProvider#deleteByIds
-     */
+    /// @see LogFilterProvider#insert
+    /// @see LogFilterProvider#findById
+    /// @see LogFilterProvider#update
+    /// @see LogFilterProvider#findByIds
+    /// @see LogFilterProvider#countBy
+    /// @see LogFilterProvider#deleteByIds
     @Test
     public void case1() {
         // 采集器
@@ -200,13 +195,11 @@ public class TestLogFilterProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see LogFilterProvider#insertBatch
-     * @see LogFilterProvider#findBy
-     * @see LogFilterProvider#updateBatch
-     * @see LogFilterProvider#pageBy
-     * @see LogFilterProvider#deleteBy
-     */
+    /// @see LogFilterProvider#insertBatch
+    /// @see LogFilterProvider#findBy
+    /// @see LogFilterProvider#updateBatch
+    /// @see LogFilterProvider#pageBy
+    /// @see LogFilterProvider#deleteBy
     @Test
     public void case2() {
         // 采集器

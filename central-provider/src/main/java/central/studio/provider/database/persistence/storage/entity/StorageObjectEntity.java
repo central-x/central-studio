@@ -30,7 +30,9 @@ import central.sql.data.ModifiableEntity;
 import central.validation.Label;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,14 +40,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Storage Object
- * <p>
- * 存储对象
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage Object
+///
+/// 存储对象
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

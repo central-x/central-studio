@@ -26,12 +26,9 @@ package central.studio.multicast;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * 应用配置
- *
- * @author Alan Yeh
- * @since 2022/11/03
- */
+/// 应用配置
+///
+/// @author Alan Yeh
 @ConfigurationProperties("central.multicast")
 public class MulticastProperties {
 }

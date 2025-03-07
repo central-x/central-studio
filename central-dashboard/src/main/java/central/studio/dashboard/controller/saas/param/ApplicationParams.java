@@ -38,14 +38,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Application Params
- * <p>
- * 应用数据入参
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Application Params
+///
+/// 应用数据入参
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor

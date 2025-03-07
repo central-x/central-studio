@@ -33,12 +33,9 @@ import central.validation.Label;
 import jakarta.validation.constraints.*;
 import lombok.Setter;
 
-/**
- * 瀚高数据库
- *
- * @author Alan Yeh
- * @since 2022/11/12
- */
+/// 瀚高数据库
+///
+/// @author Alan Yeh
 public class HighGoDatabase extends Database {
 
     @Setter

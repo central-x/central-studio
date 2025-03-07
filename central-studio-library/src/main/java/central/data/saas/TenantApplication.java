@@ -24,7 +24,8 @@
 
 package central.data.saas;
 
-import central.bean.*;
+import central.bean.Available;
+import central.bean.Nonnull;
 import central.data.organization.Account;
 import central.sql.data.ModifiableEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -35,12 +36,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 租户与应用关联关系
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 租户与应用关联关系
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,55 +47,39 @@ public class TenantApplication extends ModifiableEntity implements Available {
     @Serial
     private static final long serialVersionUID = -5447798128289682120L;
 
-    /**
-     * 租户主键
-     */
+    /// 租户主键
     @Nonnull
     private String tenantId;
 
-    /**
-     * 租户信息
-     */
+    /// 租户信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Tenant tenant;
 
-    /**
-     * 应用主键
-     */
+    /// 应用主键
     @Nonnull
     private String applicationId;
 
-    /**
-     * 应用信息
-     */
+    /// 应用信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 是否启用
-     */
+    /// 是否启用
     @Nonnull
     private Boolean enabled;
 
-    /**
-     * 是否主要
-     * 如果为主要，则访问租户时，如果不带路径，则会跳转到主要应用
-     */
+    /// 是否主要
+    /// 如果为主要，则访问租户时，如果不带路径，则会跳转到主要应用
     @Nonnull
     private Boolean primary;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;
 
-    /**
-     * 修改人信息
-     */
+    /// 修改人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account modifier;

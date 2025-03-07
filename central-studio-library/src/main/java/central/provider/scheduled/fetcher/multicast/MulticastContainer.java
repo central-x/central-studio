@@ -24,8 +24,8 @@
 
 package central.provider.scheduled.fetcher.multicast;
 
-import central.provider.scheduled.DataContainer;
 import central.data.multicast.MulticastBroadcaster;
+import central.provider.scheduled.DataContainer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,23 +37,18 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * 广播中心数据容器
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 广播中心数据容器
+///
+/// @author Alan Yeh
 @NoArgsConstructor
 public class MulticastContainer extends DataContainer {
     @Serial
     private static final long serialVersionUID = 3072339257568188029L;
 
 
-    /**
-     * 广播器
-     * <p>
-     * tenant -> id -> broadcaster
-     */
+    /// 广播器
+    ///
+    /// tenant -> id -> broadcaster
     @Getter
     private final Map<String, Map<String, MulticastBroadcaster>> broadcasters = new HashMap<>();
 
@@ -65,21 +60,17 @@ public class MulticastContainer extends DataContainer {
         this.broadcasters.putAll(idMap);
     }
 
-    /**
-     * 获取广播器
-     *
-     * @param tenant 租户标识
-     */
+    /// 获取广播器
+    ///
+    /// @param tenant 租户标识
     public List<MulticastBroadcaster> getBroadcasters(String tenant) {
         return new ArrayList<>(this.broadcasters.computeIfAbsent(tenant, key -> new HashMap<>()).values());
     }
 
-    /**
-     * 获取广播器
-     *
-     * @param tenant 租户标识
-     * @param id     主键
-     */
+    /// 获取广播器
+    ///
+    /// @param tenant 租户标识
+    /// @param id     主键
     public MulticastBroadcaster getBroadcaster(String tenant, String id) {
         return this.broadcasters.computeIfAbsent(tenant, key -> new HashMap<>()).get(id);
     }

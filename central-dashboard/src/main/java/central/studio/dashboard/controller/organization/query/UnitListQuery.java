@@ -36,14 +36,11 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
-/**
- * Unit List Query
- * <p>
- * 组织机构列表查询
- *
- * @author Alan Yeh
- * @since 2024/09/21
- */
+/// Unit List Query
+///
+/// 组织机构列表查询
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UnitListQuery extends ListQuery<Unit> {

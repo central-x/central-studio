@@ -51,12 +51,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * GatewayFilterProvider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// GatewayFilterProvider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestGatewayFilterProvider {
 
@@ -85,14 +82,12 @@ public class TestGatewayFilterProvider {
         this.persistence.deleteBy(Conditions.of(GatewayFilterEntity.class), tenant.getCode());
     }
 
-    /**
-     * @see GatewayFilterProvider#insert
-     * @see GatewayFilterProvider#findById
-     * @see GatewayFilterProvider#update
-     * @see GatewayFilterProvider#findByIds
-     * @see GatewayFilterProvider#countBy
-     * @see GatewayFilterProvider#deleteByIds
-     */
+    /// @see GatewayFilterProvider#insert
+    /// @see GatewayFilterProvider#findById
+    /// @see GatewayFilterProvider#update
+    /// @see GatewayFilterProvider#findByIds
+    /// @see GatewayFilterProvider#countBy
+    /// @see GatewayFilterProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -175,13 +170,11 @@ public class TestGatewayFilterProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see GatewayFilterProvider#insertBatch
-     * @see GatewayFilterProvider#findBy
-     * @see GatewayFilterProvider#updateBatch
-     * @see GatewayFilterProvider#pageBy
-     * @see GatewayFilterProvider#deleteBy
-     */
+    /// @see GatewayFilterProvider#insertBatch
+    /// @see GatewayFilterProvider#findBy
+    /// @see GatewayFilterProvider#updateBatch
+    /// @see GatewayFilterProvider#pageBy
+    /// @see GatewayFilterProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

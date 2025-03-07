@@ -45,14 +45,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-/**
- * Role Principal Relation Mutation
- * <p>
- * 角色与主体关联关系修改
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Principal Relation Mutation
+///
+/// 角色与主体关联关系修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "authority/mutation", types = RolePrincipalDTO.class)
 public class RolePrincipalMutation {
@@ -60,13 +57,11 @@ public class RolePrincipalMutation {
     @Setter(onMethod_ = @Autowired)
     private RolePrincipalPersistence persistence;
 
-    /**
-     * 保存数据
-     *
-     * @param input    数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 保存数据
+    ///
+    /// @param input    数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull RolePrincipalDTO insert(@RequestParam @Validated({Insert.class, Default.class}) RolePrincipalInput input,
                                             @RequestParam String operator,
@@ -75,13 +70,11 @@ public class RolePrincipalMutation {
         return DTO.wrap(data, RolePrincipalDTO.class);
     }
 
-    /**
-     * 批量保存数据
-     *
-     * @param inputs   数据输入
-     * @param operator 操作人
-     * @param tenant   租户标识
-     */
+    /// 批量保存数据
+    ///
+    /// @param inputs   数据输入
+    /// @param operator 操作人
+    /// @param tenant   租户标识
     @GraphQLFetcher
     public @Nonnull List<RolePrincipalDTO> insertBatch(@RequestParam @Validated({Insert.class, Default.class}) List<RolePrincipalInput> inputs,
                                                        @RequestParam String operator,
@@ -90,24 +83,20 @@ public class RolePrincipalMutation {
         return DTO.wrap(data, RolePrincipalDTO.class);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids    主键
-     * @param tenant 租户标识
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids    主键
+    /// @param tenant 租户标识
     @GraphQLFetcher
     public long deleteByIds(@RequestParam List<String> ids,
                             @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return this.persistence.deleteByIds(ids, tenant);
     }
 
-    /**
-     * 根据条件删除数据
-     *
-     * @param conditions 条件
-     * @param tenant     租户标识
-     */
+    /// 根据条件删除数据
+    ///
+    /// @param conditions 条件
+    /// @param tenant     租户标识
     @GraphQLFetcher
     public long deleteBy(@RequestParam Conditions<RolePrincipalEntity> conditions,
                          @RequestHeader(XForwardedHeaders.TENANT) String tenant) {

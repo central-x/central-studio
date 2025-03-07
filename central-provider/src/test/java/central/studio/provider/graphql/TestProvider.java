@@ -24,13 +24,11 @@
 
 package central.studio.provider.graphql;
 
-/**
- * Provider Test
- * 基础测试类
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Provider Test
+///
+/// 基础测试类
+///
+/// @author Alan Yeh
 public class TestProvider {
 
 }

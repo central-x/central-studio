@@ -33,12 +33,9 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 日志采集器
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志采集器
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

@@ -44,12 +44,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * 主租户数据初始化
- *
- * @author Alan Yeh
- * @since 2024/06/22
- */
+/// 主租户数据初始化
+///
+/// @author Alan Yeh
 @RequiredArgsConstructor
 public class MasterTenantInitializer {
     private final SqlExecutor executor;
@@ -67,9 +64,7 @@ public class MasterTenantInitializer {
         new TenantInitializer(this.executor).initialize(masterTenant.getCode());
     }
 
-    /**
-     * 初始化应用程序
-     */
+    /// 初始化应用程序
     private Map<String, ApplicationEntity> initApplications() throws IOException {
         // 控制面板
         var dashboardApp = new ApplicationEntity();
@@ -193,9 +188,7 @@ public class MasterTenantInitializer {
         return applications.stream().collect(Collectors.toMap(ApplicationEntity::getCode, Function.identity()));
     }
 
-    /**
-     * 初始化主数据库信息
-     */
+    /// 初始化主数据库信息
     private DatabaseEntity initDatabase(Map<String, ApplicationEntity> applications) {
         // 初始化主数据库信息
         var masterDatabase = new DatabaseEntity();
@@ -221,9 +214,7 @@ public class MasterTenantInitializer {
         return masterDatabase;
     }
 
-    /**
-     * 初始化主租户数据
-     */
+    /// 初始化主租户数据
     private TenantEntity initTenant(DatabaseEntity database) {
 
         var masterTenant = new TenantEntity();
@@ -241,9 +232,7 @@ public class MasterTenantInitializer {
         return masterTenant;
     }
 
-    /**
-     * 初始化租户与应用的租用关系
-     */
+    /// 初始化租户与应用的租用关系
     private void initRelation(TenantEntity masterTenant, Map<String, ApplicationEntity> applications) {
         var dashboardAppRel = new TenantApplicationEntity();
         dashboardAppRel.setId("95AELSyhLQy5kDheAxQ");

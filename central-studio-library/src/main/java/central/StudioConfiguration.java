@@ -27,14 +27,11 @@ package central;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Studio Configuration
- * <p>
- * 套件配置
- *
- * @author Alan Yeh
- * @since 2023/09/10
- */
+/// Studio Configuration
+///
+/// 套件配置
+///
+/// @author Alan Yeh
 @Configuration
 @EnableConfigurationProperties(StudioProperties.class)
 public class StudioConfiguration {

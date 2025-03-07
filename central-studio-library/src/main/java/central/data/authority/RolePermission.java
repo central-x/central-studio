@@ -36,14 +36,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Role Permission Relation
- * <p>
- * 角色与权限关联关系修改
- *
- * @author Alan Yeh
- * @since 2024/12/14
- */
+/// Role Permission Relation
+///
+/// 角色与权限关联关系修改
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,48 +49,34 @@ public class RolePermission extends Entity {
     @Serial
     private static final long serialVersionUID = 1793160992455377967L;
 
-    /**
-     * 应用主键
-     */
+    /// 应用主键
     @Nonnull
     private String applicationId;
 
-    /**
-     * 应用
-     */
+    /// 应用
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Application application;
 
-    /**
-     * 角色主键
-     */
+    /// 角色主键
     @Nonnull
     private String roleId;
 
-    /**
-     * 角色
-     */
+    /// 角色
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Role role;
 
-    /**
-     * 权限主键
-     */
+    /// 权限主键
     @Nonnull
     private String permissionId;
 
-    /**
-     * 权限
-     */
+    /// 权限
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Permission permission;
 
-    /**
-     * 创建人信息
-     */
+    /// 创建人信息
     @Nonnull
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Account creator;

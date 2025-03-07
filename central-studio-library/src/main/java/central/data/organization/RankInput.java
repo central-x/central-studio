@@ -33,12 +33,9 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 职级输入
- *
- * @author Alan Yeh
- * @since 2022/09/12
- */
+/// 职级输入
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

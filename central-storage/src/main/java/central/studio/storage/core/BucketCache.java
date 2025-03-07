@@ -28,76 +28,57 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-/**
- * 缓存
- *
- * @author Alan Yeh
- * @since 2022/11/02
- */
+/// 缓存
+///
+/// @author Alan Yeh
 public interface BucketCache {
-    /**
-     * 保存数据
-     * <p>
-     * 如果键已存在，则抛异常
-     *
-     * @param key  缓存键
-     * @param data 待保存数据
-     */
+    /// 保存数据
+    ///
+    /// 如果键已存在，则抛异常
+    ///
+    /// @param key  缓存键
+    /// @param data 待保存数据
     void put(String key, InputStream data) throws IOException;
 
-    /**
-     * 保存数据
-     * <p>
-     * 如果键已存在，则覆盖
-     *
-     * @param key  缓存键
-     * @param data 待保存数据
-     */
+    /// 保存数据
+    ///
+    /// 如果键已存在，则覆盖
+    ///
+    /// @param key  缓存键
+    /// @param data 待保存数据
     void set(String key, InputStream data) throws IOException;
 
-    /**
-     * 缓存数据流，并返回已保存的数据流
-     *
-     * @param key  缓存键
-     * @param data 待缓存的数据
-     * @return 已缓存的数据
-     */
+    /// 缓存数据流，并返回已保存的数据流
+    ///
+    /// @param key  缓存键
+    /// @param data 待缓存的数据
+    /// @return 已缓存的数据
     InputStream cache(String key, InputStream data) throws IOException;
 
-    /**
-     * 判断缓存是否已存在
-     *
-     * @param key 缓存键
-     */
+    /// 判断缓存是否已存在
+    ///
+    /// @param key 缓存键
     boolean exists(String key);
 
-    /**
-     * 获取数据流
-     *
-     * @param key 缓存键
-     */
+    /// 获取数据流
+    ///
+    /// @param key 缓存键
     InputStream get(String key) throws IOException;
 
-    /**
-     * 获取数据流
-     * <p>
-     * 多个键的缓存会合并成一个数据流
-     *
-     * @param keys 缓存键集合
-     */
+    /// 获取数据流
+    ///
+    /// 多个键的缓存会合并成一个数据流
+    ///
+    /// @param keys 缓存键集合
     InputStream get(List<String> keys) throws IOException;
 
-    /**
-     * 删除缓存
-     *
-     * @param key 缓存键
-     */
+    /// 删除缓存
+    ///
+    /// @param key 缓存键
     void delete(String key) throws IOException;
 
-    /**
-     * 删除缓存
-     *
-     * @param keys 缓存键集合
-     */
+    /// 删除缓存
+    ///
+    /// @param keys 缓存键集合
     void delete(List<String> keys) throws IOException;
 }

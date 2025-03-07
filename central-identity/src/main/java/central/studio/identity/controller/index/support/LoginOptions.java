@@ -25,22 +25,19 @@
 package central.studio.identity.controller.index.support;
 
 import central.bean.OptionalEnum;
+import central.starter.webmvc.servlet.WebMvcRequest;
 import central.studio.identity.core.attribute.CaptchaAttributes;
 import central.studio.identity.core.attribute.EndpointAttributes;
 import central.studio.identity.core.attribute.PasswordAttributes;
-import central.starter.webmvc.servlet.WebMvcRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * 登录选项
- *
- * @author Alan Yeh
- * @since 2023/03/11
- */
+/// 登录选项
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum LoginOptions implements OptionalEnum<Function<?, ?>> {

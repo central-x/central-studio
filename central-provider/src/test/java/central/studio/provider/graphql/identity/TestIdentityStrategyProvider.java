@@ -51,12 +51,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Identity Strategy Test Cases
- *
- * @author Alan Yeh
- * @since 2022/11/05
- */
+/// Identity Strategy Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestIdentityStrategyProvider {
 
@@ -86,14 +83,12 @@ public class TestIdentityStrategyProvider {
     }
 
 
-    /**
-     * @see IdentityStrategyProvider#insert
-     * @see IdentityStrategyProvider#findById
-     * @see IdentityStrategyProvider#update
-     * @see IdentityStrategyProvider#findByIds
-     * @see IdentityStrategyProvider#countBy
-     * @see IdentityStrategyProvider#deleteByIds
-     */
+    /// @see IdentityStrategyProvider#insert
+    /// @see IdentityStrategyProvider#findById
+    /// @see IdentityStrategyProvider#update
+    /// @see IdentityStrategyProvider#findByIds
+    /// @see IdentityStrategyProvider#countBy
+    /// @see IdentityStrategyProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -167,13 +162,11 @@ public class TestIdentityStrategyProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see IdentityStrategyProvider#insertBatch
-     * @see IdentityStrategyProvider#findBy
-     * @see IdentityStrategyProvider#updateBatch
-     * @see IdentityStrategyProvider#pageBy
-     * @see IdentityStrategyProvider#deleteBy
-     */
+    /// @see IdentityStrategyProvider#insertBatch
+    /// @see IdentityStrategyProvider#findBy
+    /// @see IdentityStrategyProvider#updateBatch
+    /// @see IdentityStrategyProvider#pageBy
+    /// @see IdentityStrategyProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

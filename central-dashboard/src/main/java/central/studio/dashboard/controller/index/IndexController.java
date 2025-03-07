@@ -31,22 +31,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
 
-/**
- * Index Controller
- * <p>
- * 首页
- *
- * @author Alan Yeh
- * @since 2023/10/07
- */
+/// Index Controller
+///
+/// 首页
+///
+/// @author Alan Yeh
 @Controller
 @RequiresAuthentication
 @RequestMapping("/dashboard")
 public class IndexController {
 
-    /**
-     * 返回首页静态页面
-     */
+    /// 返回首页静态页面
     @GetMapping("/")
     public View index() {
         return new InternalResourceView("index.html");

@@ -32,12 +32,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * MultipartFile 对象流
- *
- * @author Alan Yeh
- * @since 2022/11/01
- */
+/// MultipartFile 对象流
+///
+/// @author Alan Yeh
 public class MultipartFileObjectStream extends ObjectStream {
     @Getter
     private final String filename;

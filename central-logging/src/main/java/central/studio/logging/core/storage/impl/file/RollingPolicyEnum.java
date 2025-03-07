@@ -28,12 +28,9 @@ import central.bean.OptionalEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 日志滚动策略
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志滚动策略
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum RollingPolicyEnum implements OptionalEnum<String> {

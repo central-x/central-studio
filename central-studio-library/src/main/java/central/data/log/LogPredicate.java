@@ -33,12 +33,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 日志过滤器断言
- *
- * @author Alan Yeh
- * @since 2022/10/25
- */
+/// 日志过滤器断言
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @AllArgsConstructor
@@ -46,14 +43,10 @@ import java.io.Serializable;
 public class LogPredicate implements Serializable {
     @Serial
     private static final long serialVersionUID = -2903190243489633329L;
-    /**
-     * 类型
-     */
+    /// 类型
     @Nonnull
     private String type;
-    /**
-     * 初始化参数
-     */
+    /// 初始化参数
     @Nonnull
     private String params;
 

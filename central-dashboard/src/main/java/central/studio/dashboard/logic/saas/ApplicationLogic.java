@@ -47,25 +47,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Application Logic
- * <p>
- * 应用业务逻辑
- *
- * @author Alan Yeh
- * @since 2024/11/19
- */
+/// Application Logic
+///
+/// 应用业务逻辑
+///
+/// @author Alan Yeh
 @Service
 public class ApplicationLogic {
 
     @Setter(onMethod_ = @Autowired)
     private ApplicationProvider provider;
 
-    /**
-     * 如用用户没有指定排序条件，则构建默认的排序条件
-     *
-     * @param orders 用户指定的排序条件
-     */
+    /// 如用用户没有指定排序条件，则构建默认的排序条件
+    ///
+    /// @param orders 用户指定的排序条件
     private Orders<Application> getDefaultOrders(@Nullable Orders<Application> orders) {
         if (Collectionx.isNullOrEmpty(orders)) {
             return orders;
@@ -73,71 +68,59 @@ public class ApplicationLogic {
         return Orders.of(Application.class).asc(Application::getCode);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param pageIndex  分页下标
-     * @param pageSize   分页大小
-     * @param conditions 筛选条件
-     * @param orders     排序条件
-     * @return 分页数据
-     */
+    /// 分页查询
+    ///
+    /// @param pageIndex  分页下标
+    /// @param pageSize   分页大小
+    /// @param conditions 筛选条件
+    /// @param orders     排序条件
+    /// @return 分页数据
     public Page<Application> pageBy(@Nonnull Long pageIndex, @Nonnull Long pageSize, @Nullable Conditions<Application> conditions, @Nullable Orders<Application> orders) {
         orders = this.getDefaultOrders(orders);
         return this.provider.pageBy(pageIndex, pageSize, conditions, orders, "master");
     }
 
-    /**
-     * 主键查询
-     *
-     * @param id 主键
-     * @return 详情
-     */
+    /// 主键查询
+    ///
+    /// @param id 主键
+    /// @return 详情
     public Application findById(@Nonnull String id) {
         return this.provider.findById(id, "master");
     }
 
-    /**
-     * 根据标识查询租户
-     *
-     * @param code 标识
-     * @return 租户信息
-     */
+    /// 根据标识查询租户
+    ///
+    /// @param code 标识
+    /// @return 租户信息
     public @Nullable Application findByCode(@Nonnull String code) {
         var data = provider.findBy(1L, 0L, Conditions.of(Application.class).eq(Application::getCode, code), null, "master");
         return Listx.getFirstOrNull(data);
     }
 
-    /**
-     * 插入数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @return 插入后的数据
-     */
+    /// 插入数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @return 插入后的数据
     public Application insert(@Nonnull @Validated({Insert.class, Default.class}) ApplicationInput input, @Nonnull String accountId) {
         return this.provider.insert(input, accountId, "master");
     }
 
-    /**
-     * 更新数据
-     *
-     * @param input     数据输入
-     * @param accountId 操作帐号主键
-     * @return 更新后的数据
-     */
+    /// 更新数据
+    ///
+    /// @param input     数据输入
+    /// @param accountId 操作帐号主键
+    /// @return 更新后的数据
     public Application update(@Nonnull @Validated({Update.class, Default.class}) ApplicationInput input, @Nonnull String accountId) {
         return this.provider.update(input, accountId, "master");
     }
 
-    /**
-     * 启用数据
-     *
-     * @param id        待启用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 启用后的数据
-     */
+    /// 启用数据
+    ///
+    /// @param id        待启用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 启用后的数据
     public @Nonnull Application enable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.provider.findById(id, tenant);
         if (data == null) {
@@ -146,14 +129,12 @@ public class ApplicationLogic {
         return this.provider.update(data.toInput().enabled(Boolean.TRUE).build(), accountId, tenant);
     }
 
-    /**
-     * 禁用数据
-     *
-     * @param id        待禁用主键
-     * @param accountId 当前登录帐号
-     * @param tenant    租户标识
-     * @return 禁用后的数据
-     */
+    /// 禁用数据
+    ///
+    /// @param id        待禁用主键
+    /// @param accountId 当前登录帐号
+    /// @param tenant    租户标识
+    /// @return 禁用后的数据
     public @Nonnull Application disable(@Nonnull String id, @Nonnull String accountId, @Nonnull String tenant) {
         var data = this.provider.findById(id, tenant);
         if (data == null) {
@@ -162,13 +143,11 @@ public class ApplicationLogic {
         return this.provider.update(data.toInput().enabled(Boolean.FALSE).build(), accountId, tenant);
     }
 
-    /**
-     * 根据主键删除数据
-     *
-     * @param ids       主键
-     * @param accountId 操作帐号主键
-     * @return 受影响数据行数
-     */
+    /// 根据主键删除数据
+    ///
+    /// @param ids       主键
+    /// @param accountId 操作帐号主键
+    /// @return 受影响数据行数
     public long deleteByIds(@Nullable List<String> ids, @Nonnull String accountId) {
         return this.provider.deleteByIds(ids, "master");
     }

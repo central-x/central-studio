@@ -58,12 +58,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Post Provider Test Cases
- *
- * @author Alan Yeh
- * @since 2022/10/06
- */
+/// Post Provider Test Cases
+///
+/// @author Alan Yeh
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = ProviderApplication.class)
 public class TestPostProvider extends TestProvider {
 
@@ -102,14 +99,12 @@ public class TestPostProvider extends TestProvider {
         this.areaPersistence.deleteBy(Conditions.of(AreaEntity.class).like(AreaEntity::getCode, "test%"), tenant.getCode());
     }
 
-    /**
-     * @see PostProvider#insert
-     * @see PostProvider#findById
-     * @see PostProvider#update
-     * @see PostProvider#findByIds
-     * @see PostProvider#countBy
-     * @see PostProvider#deleteByIds
-     */
+    /// @see PostProvider#insert
+    /// @see PostProvider#findById
+    /// @see PostProvider#update
+    /// @see PostProvider#findByIds
+    /// @see PostProvider#countBy
+    /// @see PostProvider#deleteByIds
     @Test
     public void case1() {
         var tenant = this.context.getTenant();
@@ -197,13 +192,11 @@ public class TestPostProvider extends TestProvider {
         assertEquals(0, count);
     }
 
-    /**
-     * @see PostProvider#insertBatch
-     * @see PostProvider#findBy
-     * @see PostProvider#updateBatch
-     * @see PostProvider#pageBy
-     * @see PostProvider#deleteBy
-     */
+    /// @see PostProvider#insertBatch
+    /// @see PostProvider#findBy
+    /// @see PostProvider#updateBatch
+    /// @see PostProvider#pageBy
+    /// @see PostProvider#deleteBy
     @Test
     public void case2() {
         var tenant = this.context.getTenant();

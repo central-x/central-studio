@@ -44,12 +44,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * 帐户信息
- *
- * @author Alan Yeh
- * @since 2022/09/24
- */
+/// 帐户信息
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -105,9 +102,7 @@ public class AccountEntity extends ModifiableEntity implements Available, Deleta
     @Size(max = 2 * 1024 * 1024)
     private String avatar;
 
-    /**
-     * 管理员是指三员（系统管理员，安全管理员、安全保密员）
-     */
+    /// 管理员是指三员（系统管理员，安全管理员、安全保密员）
     @NotNull
     @Label("是否管理员")
     private Boolean admin;

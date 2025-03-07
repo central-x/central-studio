@@ -31,12 +31,9 @@ import central.studio.logging.core.storage.impl.file.compress.ZipCompressor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 日志压缩策略
- *
- * @author Alan Yeh
- * @since 2022/10/24
- */
+/// 日志压缩策略
+///
+/// @author Alan Yeh
 @Getter
 @RequiredArgsConstructor
 public enum CompressPolicyEnum implements OptionalEnum<String> {

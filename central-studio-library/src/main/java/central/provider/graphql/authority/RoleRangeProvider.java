@@ -31,14 +31,11 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * Role Range Relation
- * <p>
- * 角色与范围关联关系
- *
- * @author Alan Yeh
- * @since 2024/12/15
- */
+/// Role Range Relation
+///
+/// 角色与范围关联关系
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("authority.roles.ranges")
 @GraphQLStub(path = "authority", client = "providerClient")

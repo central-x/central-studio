@@ -41,12 +41,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-/**
- * Gateway Container
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// Gateway Container
+///
+/// @author Alan Yeh
 @Slf4j
 @Component
 public class Container implements DisposableBean, GenericApplicationListener {
@@ -57,38 +54,30 @@ public class Container implements DisposableBean, GenericApplicationListener {
     @Setter(onMethod_ = @Autowired)
     private PredicateResolver predicateResolver;
 
-    /**
-     * 过滤器
-     * <p>
-     * tenant -> id -> filter
-     */
+    /// 过滤器
+    ///
+    /// tenant -> id -> filter
     private final Map<String, Map<String, DynamicFilter>> filters = new HashMap<>();
 
-    /**
-     * 获取过滤器
-     *
-     * @param tenant 租户标识
-     */
+    /// 获取过滤器
+    ///
+    /// @param tenant 租户标识
     public List<DynamicFilter> getFilters(String tenant) {
         return new ArrayList<>(this.filters.computeIfAbsent(tenant, key -> new HashMap<>()).values());
     }
 
-    /**
-     * 获取过滤器
-     *
-     * @param tenant 租户标识
-     * @param id     主键
-     */
+    /// 获取过滤器
+    ///
+    /// @param tenant 租户标识
+    /// @param id     主键
     public DynamicFilter getFilter(String tenant, String id) {
         return this.filters.computeIfAbsent(tenant, key -> new HashMap<>()).get(id);
     }
 
-    /**
-     * 保存过滤器
-     *
-     * @param tenant 租户标识
-     * @param filter 主键
-     */
+    /// 保存过滤器
+    ///
+    /// @param tenant 租户标识
+    /// @param filter 主键
     private @Nullable DynamicFilter putFilter(String tenant, DynamicFilter filter) {
         return this.filters.computeIfAbsent(tenant, key -> new HashMap<>()).put(filter.getData().getId(), filter);
     }

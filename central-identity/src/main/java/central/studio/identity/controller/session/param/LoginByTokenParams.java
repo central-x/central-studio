@@ -35,12 +35,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
-/**
- * 凭证登录参数
- *
- * @author Alan Yeh
- * @since 2023/04/01
- */
+/// 凭证登录参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -27,20 +27,20 @@ package central.data.storage;
 import central.validation.Label;
 import central.validation.group.Insert;
 import central.validation.group.Update;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Storage Object
- * <p>
- * 存储对象
- *
- * @author Alan Yeh
- * @since 2022/10/30
- */
+/// Storage Object
+///
+/// 存储对象
+///
+/// @author Alan Yeh
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor

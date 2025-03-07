@@ -24,18 +24,13 @@
 
 package central.provider.scheduled;
 
-/**
- * Provider 获取器
- *
- * @author Alan Yeh
- * @since 2022/10/14
- */
+/// Provider 获取器
+///
+/// @author Alan Yeh
 public interface BeanSupplier {
-    /**
-     * 根据 Provider 类型获取实例
-     *
-     * @param provider 类型
-     * @return 实例
-     */
+    /// 根据 Provider 类型获取实例
+    ///
+    /// @param provider 类型
+    /// @return 实例
     <T> T get(Class<T> provider);
 }

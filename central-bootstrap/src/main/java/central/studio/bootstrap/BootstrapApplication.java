@@ -27,12 +27,9 @@ package central.studio.bootstrap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Central Studio Bootstrap
- *
- * @author Alan Yeh
- * @since 2024/01/20
- */
+/// Central Studio Bootstrap
+///
+/// @author Alan Yeh
 @SpringBootApplication
 public class BootstrapApplication {
     public static void main(String[] args) {

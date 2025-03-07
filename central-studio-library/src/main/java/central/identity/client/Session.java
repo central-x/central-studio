@@ -51,19 +51,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 会话
- *
- * @author Alan Yeh
- * @since 2023/08/05
- */
+/// 会话
+///
+/// @author Alan Yeh
 public class Session implements Serializable {
     @Serial
     private static final long serialVersionUID = -3965567322672268966L;
 
-    /**
-     * 会话凭证
-     */
+    /// 会话凭证
     @Getter
     private final String token;
 
@@ -83,201 +78,153 @@ public class Session implements Serializable {
         return new Session(token);
     }
 
-    /**
-     * 会话主键
-     */
+    /// 会话主键
     public @Nonnull String getId() {
         return this.decodedToken.getId();
     }
 
-    /**
-     * 用户主键
-     */
+    /// 用户主键
     public @Nonnull String getAccountId() {
         return this.decodedToken.getSubject();
     }
 
-    /**
-     * 用户名
-     */
+    /// 用户名
     public @Nonnull String getUsername() {
         return this.decodedToken.getClaim(SessionClaims.USERNAME).asString();
     }
 
-    /**
-     * 是否管理员（系统管理员，安全管理员、安全保密员）
-     */
+    /// 是否管理员（系统管理员，安全管理员、安全保密员）
     public boolean isAdmin() {
         return this.decodedToken.getClaim(SessionClaims.ADMIN).asBoolean();
     }
 
-    /**
-     * 是否是超级管理员
-     */
+    /// 是否是超级管理员
     public boolean isSupervisor() {
         return this.decodedToken.getClaim(SessionClaims.SUPERVISOR).asBoolean();
     }
 
-    /**
-     * 颁发当前会话的会话主键
-     * 主会话失效时，从会话也会跟着失效
-     */
+    /// 颁发当前会话的会话主键
+    /// 主会话失效时，从会话也会跟着失效
     public @Nullable String getSource() {
         return this.decodedToken.getClaim(SessionClaims.SOURCE).asString();
     }
 
-    /**
-     * 申请会话时的客户端 IP
-     */
+    /// 申请会话时的客户端 IP
     public @Nonnull String getIp() {
         return this.decodedToken.getClaim(SessionClaims.IP).asString();
     }
 
-    /**
-     * 凭证颁发机构，通常使用域名
-     */
+    /// 凭证颁发机构，通常使用域名
     public @Nonnull String getIssuer() {
         return this.decodedToken.getIssuer();
     }
 
-    /**
-     * 凭证颁发时间
-     */
+    /// 凭证颁发时间
     public @Nonnull Date getIssueTime() {
         return this.decodedToken.getClaim(SessionClaims.ISSUE_TIME).asDate();
     }
 
-    /**
-     * 终端类型
-     */
+    /// 终端类型
     public @Nonnull String getEndpoint() {
         return this.decodedToken.getClaim(SessionClaims.ENDPOINT).asString();
     }
 
-    /**
-     * 会话自动超时时间
-     */
+    /// 会话自动超时时间
     public @Nonnull Duration getTimeout() {
         return Duration.ofMillis(this.decodedToken.getClaim(SessionClaims.TIMEOUT).asLong());
     }
 
-    /**
-     * 租户标识
-     */
+    /// 租户标识
     public @Nonnull String getTenantCode() {
         return this.decodedToken.getClaim(SessionClaims.TENANT_CODE).asString();
     }
 
-    /**
-     * 获取 String 类型的 Claim
-     *
-     * @param name 名称
-     */
+    /// 获取 String 类型的 Claim
+    ///
+    /// @param name 名称
     public @Nullable String getStringClaim(String name) {
         return this.decodedToken.getClaim(name).asString();
     }
 
-    /**
-     * 获取 String 类型的 Claim
-     *
-     * @param name     名称
-     * @param fallback 默认值
-     */
+    /// 获取 String 类型的 Claim
+    ///
+    /// @param name     名称
+    /// @param fallback 默认值
     public @Nonnull String getStringClaim(String name, @Nonnull String fallback) {
         return Objectx.getOrDefault(this.getStringClaim(name), fallback);
     }
 
-    /**
-     * 获取 Boolean 类型的 Claim
-     *
-     * @param name 名称
-     */
+    /// 获取 Boolean 类型的 Claim
+    ///
+    /// @param name 名称
     public @Nullable Boolean getBooleanClaim(String name) {
         return this.decodedToken.getClaim(name).asBoolean();
     }
 
-    /**
-     * 获取 Boolean 类型的 Claim
-     *
-     * @param name     名称
-     * @param fallback 默认值
-     */
+    /// 获取 Boolean 类型的 Claim
+    ///
+    /// @param name     名称
+    /// @param fallback 默认值
     public @Nullable Boolean getBooleanClaim(String name, @Nonnull Boolean fallback) {
         return Objectx.getOrDefault(this.getBooleanClaim(name), fallback);
     }
 
-    /**
-     * 获取 Integer 类型的 Claim
-     *
-     * @param name 名称
-     */
+    /// 获取 Integer 类型的 Claim
+    ///
+    /// @param name 名称
     public @Nullable Integer getIntegerClaim(String name) {
         return this.decodedToken.getClaim(name).asInt();
     }
 
-    /**
-     * 获取 Integer 类型的 Claim
-     *
-     * @param name     名称
-     * @param fallback 默认值
-     */
+    /// 获取 Integer 类型的 Claim
+    ///
+    /// @param name     名称
+    /// @param fallback 默认值
     public @Nullable Integer getIntegerClaim(String name, Integer fallback) {
         return Objectx.getOrDefault(this.getIntegerClaim(name), fallback);
     }
 
-    /**
-     * 获取 Long 类型的 Claim
-     *
-     * @param name 名称
-     */
+    /// 获取 Long 类型的 Claim
+    ///
+    /// @param name 名称
     public @Nullable Long getLongClaim(String name) {
         return this.decodedToken.getClaim(name).asLong();
     }
 
-    /**
-     * 获取 Long 类型的 Claim
-     *
-     * @param name     名称
-     * @param fallback 默认值
-     */
+    /// 获取 Long 类型的 Claim
+    ///
+    /// @param name     名称
+    /// @param fallback 默认值
     public @Nullable Long getLongClaim(String name, @Nonnull Long fallback) {
         return Objectx.getOrDefault(this.getLongClaim(name), fallback);
     }
 
-    /**
-     * 获取 Double 类型的 Claim
-     *
-     * @param name 名称
-     */
+    /// 获取 Double 类型的 Claim
+    ///
+    /// @param name 名称
     public @Nullable Double getDoubleClaim(String name) {
         return this.decodedToken.getClaim(name).asDouble();
     }
 
-    /**
-     * 获取 Double 类型的 Claim
-     *
-     * @param name     名称
-     * @param fallback 默认值
-     */
+    /// 获取 Double 类型的 Claim
+    ///
+    /// @param name     名称
+    /// @param fallback 默认值
     public @Nullable Double getDoubleClaim(String name, @Nonnull Double fallback) {
         return Objectx.getOrDefault(this.getDoubleClaim(name), fallback);
     }
 
-    /**
-     * 获取 Date 类型的 Claim
-     *
-     * @param name 名称
-     */
+    /// 获取 Date 类型的 Claim
+    ///
+    /// @param name 名称
     public @Nullable Date getDateClaim(String name) {
         return this.decodedToken.getClaim(name).asDate();
     }
 
-    /**
-     * 获取 Date 类型的 Claim
-     *
-     * @param name     名称
-     * @param fallback 默认值
-     */
+    /// 获取 Date 类型的 Claim
+    ///
+    /// @param name     名称
+    /// @param fallback 默认值
     public @Nullable Date getDateClaim(String name, @Nonnull Date fallback) {
         return Objectx.getOrDefault(this.getDateClaim(name), fallback);
     }
@@ -319,171 +266,133 @@ public class Session implements Serializable {
         private String tenantCode;
         private final Map<String, Object> claims = new HashMap<>();
 
-        /**
-         * 会话主键
-         */
+        /// 会话主键
         public SessionBuilder id(@Nullable String id) {
             this.id = id;
             return this;
         }
 
-        /**
-         * 用户主键
-         */
+        /// 用户主键
         public SessionBuilder accountId(@Nonnull String accountId) {
             this.accountId = accountId;
             return this;
         }
 
-        /**
-         * 用户名
-         */
+        /// 用户名
         public SessionBuilder username(@Nonnull String username) {
             this.username = username;
             return this;
         }
 
-        /**
-         * 是否管理员（系统管理员，安全管理员、安全保密员）
-         */
+        /// 是否管理员（系统管理员，安全管理员、安全保密员）
         public SessionBuilder admin(boolean admin) {
             this.admin = admin;
             return this;
         }
 
-        /**
-         * 是否是超级管理员
-         */
+        /// 是否是超级管理员
         public SessionBuilder supervisor(boolean supervisor) {
             this.supervisor = supervisor;
             return this;
         }
 
-        /**
-         * 颁发当前会话的会话主键
-         */
+        /// 颁发当前会话的会话主键
         public SessionBuilder source(@Nullable String source) {
             this.source = source;
             return this;
         }
 
-        /**
-         * 申请会话时的客户端 IP
-         */
+        /// 申请会话时的客户端 IP
         public SessionBuilder ip(@Nonnull String ip) {
             this.ip = ip;
             return this;
         }
 
-        /**
-         * 凭证颁发机构，通常使用域名
-         */
+        /// 凭证颁发机构，通常使用域名
         public SessionBuilder issuer(@Nonnull String issuer) {
             this.issuer = issuer;
             return this;
         }
 
-        /**
-         * 凭证颁发时间
-         */
+        /// 凭证颁发时间
         public SessionBuilder issueTime(@Nullable Date issueTime) {
             this.issueTime = issueTime;
             return this;
         }
 
-        /**
-         * 终端类型
-         */
+        /// 终端类型
         public SessionBuilder endpoint(@Nonnull String endpoint) {
             this.endpoint = endpoint;
             return this;
         }
 
-        /**
-         * 会话自动超时时间
-         */
+        /// 会话自动超时时间
         public SessionBuilder timeout(@Nonnull Duration timeout) {
             this.timeout = timeout;
             return this;
         }
 
-        /**
-         * 租户标识
-         */
+        /// 租户标识
         public SessionBuilder tenantCode(@Nonnull String tenantCode) {
             this.tenantCode = tenantCode;
             return this;
         }
 
-        /**
-         * 附加声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 附加声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionBuilder claim(@Nonnull String name, @Nonnull String value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 附加声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 附加声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionBuilder claim(@Nonnull String name, @Nonnull Boolean value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 附加声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 附加声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionBuilder claim(@Nonnull String name, @Nonnull Integer value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 附加声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 附加声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionBuilder claim(@Nonnull String name, @Nonnull Long value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 附加声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 附加声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionBuilder claim(@Nonnull String name, @Nonnull Double value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 附加声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 附加声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionBuilder claim(@Nonnull String name, @Nonnull Date value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 附加声明
-         */
+        /// 附加声明
         public SessionBuilder claims(@Nullable Map<String, Object> claims) {
             if (Mapx.isNotEmpty(claims)) {
                 this.claims.putAll(claims);
@@ -565,16 +474,12 @@ public class Session implements Serializable {
         }
     }
 
-    /**
-     * 校验会话
-     */
+    /// 校验会话
     public SessionVerifier verifier() {
         return new SessionVerifier(this.token);
     }
 
-    /**
-     * 会话校验器
-     */
+    /// 会话校验器
     public static class SessionVerifier {
         private final String token;
 
@@ -592,141 +497,111 @@ public class Session implements Serializable {
         private String tenantCode;
         private Map<String, Object> claims = new HashMap<>();
 
-        /**
-         * 校验用户主键
-         */
+        /// 校验用户主键
         public SessionVerifier accountId(String accountId) {
             this.accountId = accountId;
             return this;
         }
 
-        /**
-         * 校验用户名
-         */
+        /// 校验用户名
         public SessionVerifier username(String username) {
             this.username = username;
             return this;
         }
 
-        /**
-         * 校验是否管理员（系统管理员，安全管理员、安全保密员）
-         */
+        /// 校验是否管理员（系统管理员，安全管理员、安全保密员）
         public SessionVerifier admin(boolean admin) {
             this.admin = admin;
             return this;
         }
 
-        /**
-         * 校验是否是超级管理员
-         */
+        /// 校验是否是超级管理员
         public SessionVerifier supervisor(boolean supervisor) {
             this.supervisor = supervisor;
             return this;
         }
 
-        /**
-         * 校验申请会话时的客户端 IP
-         */
+        /// 校验申请会话时的客户端 IP
         public SessionVerifier ip(String ip) {
             this.ip = ip;
             return this;
         }
 
-        /**
-         * 校验凭证颁发机构
-         */
+        /// 校验凭证颁发机构
         public SessionVerifier issuer(String issuer) {
             this.issuer = issuer;
             return this;
         }
 
-        /**
-         * 校验凭证颁发时间
-         */
+        /// 校验凭证颁发时间
         public SessionVerifier endpoint(String endpoint) {
             this.endpoint = endpoint;
             return this;
         }
 
-        /**
-         * 校验租户标识
-         */
+        /// 校验租户标识
         public SessionVerifier tenantCode(@Nonnull String tenantCode) {
             this.tenantCode = tenantCode;
             return this;
         }
 
-        /**
-         * 校验声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 校验声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionVerifier claim(@Nonnull String name, @Nonnull String value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 校验声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 校验声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionVerifier claim(@Nonnull String name, @Nonnull Boolean value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 校验声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 校验声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionVerifier claim(@Nonnull String name, @Nonnull Integer value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 校验声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 校验声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionVerifier claim(@Nonnull String name, @Nonnull Long value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 校验声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 校验声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionVerifier claim(@Nonnull String name, @Nonnull Double value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 校验声明
-         *
-         * @param name  名称
-         * @param value 必须包含的声明值
-         */
+        /// 校验声明
+        ///
+        /// @param name  名称
+        /// @param value 必须包含的声明值
         public SessionVerifier claim(@Nonnull String name, @Nonnull Date value) {
             this.claims.put(name, value);
             return this;
         }
 
-        /**
-         * 校验声明
-         *
-         * @param claims 声明
-         */
+        /// 校验声明
+        ///
+        /// @param claims 声明
         public SessionVerifier claims(@Nullable Map<String, Object> claims) {
             if (Mapx.isNotEmpty(claims)) {
                 this.claims.putAll(claims);
@@ -734,29 +609,23 @@ public class Session implements Serializable {
             return this;
         }
 
-        /**
-         * 执行校验
-         *
-         * @param verifyKey 校验密钥
-         */
+        /// 执行校验
+        ///
+        /// @param verifyKey 校验密钥
         public void verify(String verifyKey) throws InvalidKeyException, InvalidSessionException {
             this.verify((RSAPublicKey) Signerx.RSA_256.getVerifyKey(verifyKey));
         }
 
-        /**
-         * 执行校验
-         *
-         * @param verifyKey 校验密钥
-         */
+        /// 执行校验
+        ///
+        /// @param verifyKey 校验密钥
         public void verify(Key verifyKey) throws InvalidKeyException, InvalidSessionException {
             this.verify((RSAPublicKey) verifyKey);
         }
 
-        /**
-         * 执行校验
-         *
-         * @param verifyKey 校验密钥
-         */
+        /// 执行校验
+        ///
+        /// @param verifyKey 校验密钥
         private void verify(RSAPublicKey verifyKey) {
             var verifier = JWT.require(Algorithm.RSA256(verifyKey, null));
 
@@ -831,66 +700,45 @@ public class Session implements Serializable {
         }
     }
 
-    /**
-     * Session JWT Claims
-     * 会话常用附加信息
-     *
-     * @author Alan Yeh
-     * @since 2022/10/20
-     */
+    /// Session JWT Claims
+    /// 会话常用附加信息
+    ///
+    /// @author Alan Yeh
     private interface SessionClaims {
-        /**
-         * 会话自动超时时间
-         *
-         * @see Long
-         */
+        /// 会话自动超时时间
+        ///
+        /// @see Long
         String TIMEOUT = "t";
-        /**
-         * 租户标识
-         *
-         * @see String
-         */
+        /// 租户标识
+        ///
+        /// @see String
         String TENANT_CODE = "tc";
-        /**
-         * 用户名
-         *
-         * @see String
-         */
+        /// 用户名
+        ///
+        /// @see String
         String USERNAME = "u";
-        /**
-         * 是否管理员（系统管理员，安全管理员、安全保密员）
-         *
-         * @see Boolean
-         */
+        /// 是否管理员（系统管理员，安全管理员、安全保密员）
+        ///
+        /// @see Boolean
         String ADMIN = "a";
-        /**
-         * 是否超级管理员
-         *
-         * @see Boolean
-         */
+        /// 是否超级管理员
+        ///
+        /// @see Boolean
         String SUPERVISOR = "sv";
-        /**
-         * 颁发当前会话的会话主键
-         */
+        /// 颁发当前会话的会话主键
         String SOURCE = "s";
-        /**
-         * 申请会话的客户端 IP
-         *
-         * @see String
-         */
+        /// 申请会话的客户端 IP
+        ///
+        /// @see String
         String IP = "ip";
 
-        /**
-         * 颁发时间
-         *
-         * @see java.util.Date
-         */
+        /// 颁发时间
+        ///
+        /// @see java.util.Date
         String ISSUE_TIME = "it";
-        /**
-         * 终端类型
-         *
-         * @see String
-         */
+        /// 终端类型
+        ///
+        /// @see String
         String ENDPOINT = "ep";
     }
 }

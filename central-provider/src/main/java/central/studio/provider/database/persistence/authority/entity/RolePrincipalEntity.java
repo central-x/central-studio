@@ -41,14 +41,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 
-/**
- * Role Principal Relation
- * <p>
- * 角色与主体关联关系
- *
- * @author Alan Yeh
- * @since 2022/09/28
- */
+/// Role Principal Relation
+///
+/// 角色与主体关联关系
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

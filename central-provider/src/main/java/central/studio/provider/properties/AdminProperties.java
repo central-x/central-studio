@@ -29,31 +29,22 @@ import lombok.Data;
 
 import java.util.Map;
 
-/**
- * Admin Properties
- * <p>
- * 普通管理员配置
- *
- * @author Alan Yeh
- * @since 2024/12/20
- */
+/// Admin Properties
+///
+/// 普通管理员配置
+///
+/// @author Alan Yeh
 @Data
 public class AdminProperties {
-    /**
-     * 用户名
-     */
+    /// 用户名
     private String username;
 
-    /**
-     * 权限
-     */
+    /// 权限
     private Range permissions;
 
-    /**
-     * 指定权限的数据范围
-     * <p>
-     * key: permission code
-     * value: data range
-     */
+    /// 指定权限的数据范围
+    ///
+    /// key: permission code
+    /// value: data range
     private Map<String, Range> ranges;
 }

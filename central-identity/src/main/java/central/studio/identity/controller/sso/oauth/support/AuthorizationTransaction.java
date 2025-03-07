@@ -36,12 +36,9 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 授权事务
- *
- * @author Alan Yeh
- * @since 2022/11/08
- */
+/// 授权事务
+///
+/// @author Alan Yeh
 @Data
 @Builder
 @NoArgsConstructor
@@ -50,14 +47,10 @@ public class AuthorizationTransaction implements Expired, Serializable {
     @Serial
     private static final long serialVersionUID = 1302762641139032299L;
 
-    /**
-     * 事务创建时间
-     */
+    /// 事务创建时间
     private final long timestamp = System.currentTimeMillis();
 
-    /**
-     * 过期时间
-     */
+    /// 过期时间
     private Duration expires;
 
     @Override
@@ -65,32 +58,20 @@ public class AuthorizationTransaction implements Expired, Serializable {
         return unit.convert((this.timestamp + this.expires.toMillis()) - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 
-    /**
-     * 事务标识
-     */
+    /// 事务标识
     private String id;
-    /**
-     * 应用标识
-     */
+    /// 应用标识
     private String clientId;
-    /**
-     * 开发者申请的权限
-     */
+    /// 开发者申请的权限
     private Set<GrantScope> scope;
 
     // 创建事务时用户 URL 的摘要（SHA256）
     private String digest;
 
-    /**
-     * 用户是否已授权
-     */
+    /// 用户是否已授权
     private boolean granted;
-    /**
-     * 用户已授梳的范围
-     */
+    /// 用户已授梳的范围
     private Set<String> grantedScope;
-    /**
-     * 用户会话
-     */
+    /// 用户会话
     private String session;
 }

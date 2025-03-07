@@ -50,14 +50,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Session Controller
- * <p>
- * 会话控制器
- *
- * @author Alan Yeh
- * @since 2025/01/10
- */
+/// Session Controller
+///
+/// 会话控制器
+///
+/// @author Alan Yeh
 @RequiresAuthentication
 @RequestMapping("/dashboard/api/session")
 @RestController("dashboardSessionController")
@@ -73,9 +70,7 @@ public class SessionController {
     private DataContext context;
 
 
-    /**
-     * 获取当前用户信息
-     */
+    /// 获取当前用户信息
     @GetMapping("/account")
     public @Nullable Account getAccount(@RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var account = accountLogic.findById(accountId, tenant);
@@ -84,9 +79,7 @@ public class SessionController {
         return account;
     }
 
-    /**
-     * 获取当前用户可以访问的应用列表
-     */
+    /// 获取当前用户可以访问的应用列表
     @GetMapping("/applications")
     public @Nonnull List<Application> getApplications(@RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
@@ -103,9 +96,7 @@ public class SessionController {
                 }).toList();
     }
 
-    /**
-     * 获取当前用户在指定应用下可以访问的菜单列表
-     */
+    /// 获取当前用户在指定应用下可以访问的菜单列表
     @GetMapping("/applications/menus")
     public @Nonnull List<Menu> getMenus(@Validated ApplicationQuery query, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         var menus = provider.findMenus(accountId, MenuType.CONSOLE.getValue(), query.getApplicationId(), tenant).stream()
@@ -119,9 +110,7 @@ public class SessionController {
         return Treeable.build(menus, Comparator.comparing(Menu::getOrder));
     }
 
-    /**
-     * 获取当前用户在指定应用下可以访问的权限列表
-     */
+    /// 获取当前用户在指定应用下可以访问的权限列表
     @GetMapping("/applications/permissions")
     public @Nonnull List<String> getPermissions(@Validated ApplicationQuery query, @RequestAttribute String accountId, @RequestHeader(XForwardedHeaders.TENANT) String tenant) {
         return provider.findPermissions(accountId, query.getApplicationId(), tenant).stream()

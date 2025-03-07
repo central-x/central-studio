@@ -55,15 +55,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-/**
- * Rank Controller Test Cases
- *
- * @author Alan Yeh
- * @see RankController
- * @since 2024/12/06
- */
+/// Rank Controller Test Cases、
+///
+/// @author Alan Yeh
+/// @see RankController
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestRankController extends TestController {
@@ -103,12 +99,10 @@ public class TestRankController extends TestController {
         return unitLogic.findByCode("central-x", "master");
     }
 
-    /**
-     * @see RankController#add
-     * @see RankController#details
-     * @see RankController#list
-     * @see RankController#delete
-     */
+    /// @see RankController#add
+    /// @see RankController#details
+    /// @see RankController#list
+    /// @see RankController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var unit = this.getUnit();
@@ -188,12 +182,10 @@ public class TestRankController extends TestController {
 
     }
 
-    /**
-     * @see RankController#add
-     * @see RankController#update
-     * @see RankController#details
-     * @see RankController#delete
-     */
+    /// @see RankController#add
+    /// @see RankController#update
+    /// @see RankController#details
+    /// @see RankController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore) throws Exception {
         var unit = this.getUnit();

@@ -39,12 +39,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 推送参数
- *
- * @author Alan Yeh
- * @since 2022/11/04
- */
+/// 推送参数
+///
+/// @author Alan Yeh
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

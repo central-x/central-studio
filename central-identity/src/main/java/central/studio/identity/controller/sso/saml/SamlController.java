@@ -27,12 +27,9 @@ package central.studio.identity.controller.sso.saml;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/**
- * SAML 2.0
- *
- * @author Alan Yeh
- * @since 2022/10/19
- */
+/// SAML 2.0
+///
+/// @author Alan Yeh
 @Controller
 @RequestMapping("/identity/sso/saml")
 public class SamlController {

@@ -29,11 +29,8 @@ import central.studio.gateway.core.filter.GlobalFilter;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-/**
- *
- * @author Alan Yeh
- * @since 2022/10/13
- */
+
+/// @author Alan Yeh
 public class DispatcherFilter implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, FilterChain chain) {

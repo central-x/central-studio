@@ -27,12 +27,12 @@ package central.studio.identity.core.strategy.dynamic;
 import central.lang.BooleanEnum;
 import central.pluglet.annotation.Control;
 import central.pluglet.control.ControlType;
+import central.starter.webmvc.servlet.WebMvcRequest;
+import central.starter.webmvc.servlet.WebMvcResponse;
 import central.studio.identity.controller.sso.oauth.support.GrantScope;
 import central.studio.identity.core.attribute.OAuthAttributes;
 import central.studio.identity.core.strategy.StrategyFilter;
 import central.studio.identity.core.strategy.StrategyFilterChain;
-import central.starter.webmvc.servlet.WebMvcRequest;
-import central.starter.webmvc.servlet.WebMvcResponse;
 import central.validation.Label;
 import jakarta.servlet.ServletException;
 import jakarta.validation.constraints.Max;
@@ -46,12 +46,9 @@ import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * OAuth 策略
- *
- * @author Alan Yeh
- * @since 2022/11/06
- */
+/// OAuth 策略
+///
+/// @author Alan Yeh
 public class OAuthStrategyFilter implements StrategyFilter {
 
     @Control(label = "说明", type = ControlType.LABEL,

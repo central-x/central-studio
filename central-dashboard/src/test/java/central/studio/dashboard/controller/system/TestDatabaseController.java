@@ -54,12 +54,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Database Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/10/20
- */
+/// Database Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestDatabaseController extends TestController {
@@ -75,20 +72,16 @@ public class TestDatabaseController extends TestController {
         }
     }
 
-    /**
-     * 获取测试用的应用
-     */
+    /// 获取测试用的应用
     private Application getApplication(DataContext context) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
         return container.getApplicationByCode("dashboard");
     }
 
-    /**
-     * @see DatabaseController#add
-     * @see DatabaseController#details
-     * @see DatabaseController#page
-     * @see DatabaseController#delete
-     */
+    /// @see DatabaseController#add
+    /// @see DatabaseController#details
+    /// @see DatabaseController#page
+    /// @see DatabaseController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var application = this.getApplication(context);
@@ -212,12 +205,10 @@ public class TestDatabaseController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see DatabaseController#add
-     * @see DatabaseController#update
-     * @see DatabaseController#details
-     * @see DatabaseController#delete
-     */
+    /// @see DatabaseController#add
+    /// @see DatabaseController#update
+    /// @see DatabaseController#details
+    /// @see DatabaseController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var application = this.getApplication(context);

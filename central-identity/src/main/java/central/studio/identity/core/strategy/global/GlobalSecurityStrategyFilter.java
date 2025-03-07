@@ -37,12 +37,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-/**
- * 用于处理用户定义的动态策略
- *
- * @author Alan Yeh
- * @since 2022/11/06
- */
+/// 用于处理用户定义的动态策略
+///
+/// @author Alan Yeh
 @Component
 public class GlobalSecurityStrategyFilter implements GlobalStrategyFilter {
 

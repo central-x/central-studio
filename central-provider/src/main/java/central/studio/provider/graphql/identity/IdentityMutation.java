@@ -24,51 +24,42 @@
 
 package central.studio.provider.graphql.identity;
 
+import central.starter.graphql.annotation.GraphQLGetter;
+import central.starter.graphql.annotation.GraphQLSchema;
 import central.studio.provider.graphql.identity.mutation.IdentityPasswordMutation;
 import central.studio.provider.graphql.identity.mutation.IdentityRecordMutation;
 import central.studio.provider.graphql.identity.mutation.IdentityStrategyMutation;
-import central.starter.graphql.annotation.GraphQLGetter;
-import central.starter.graphql.annotation.GraphQLSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Identity Mutation
- * <p>
- * 认证中心修改
- *
- * @author Alan Yeh
- * @since 2022/10/02
- */
+/// Identity Mutation
+///
+/// 认证中心修改
+///
+/// @author Alan Yeh
 @Component
 @GraphQLSchema(path = "identity", types = {IdentityPasswordMutation.class, IdentityStrategyMutation.class, IdentityRecordMutation.class})
 public class IdentityMutation {
 
-    /**
-     * Password Mutation
-     * <p>
-     * 密码修改
-     */
+    /// Password Mutation
+    ///
+    /// 密码修改
     @GraphQLGetter
     public IdentityPasswordMutation getPasswords(@Autowired IdentityPasswordMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Strategy Mutation
-     * <p>
-     * 安全策略修改
-     */
+    /// Strategy Mutation
+    ///
+    /// 安全策略修改
     @GraphQLGetter
     public IdentityStrategyMutation getStrategies(@Autowired IdentityStrategyMutation mutation) {
         return mutation;
     }
 
-    /**
-     * Record Mutation
-     * <p>
-     * 认证记录修改
-     */
+    /// Record Mutation
+    ///
+    /// 认证记录修改
     @GraphQLGetter
     public IdentityRecordMutation getRecords(@Autowired IdentityRecordMutation mutation) {
         return mutation;

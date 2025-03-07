@@ -31,14 +31,11 @@ import central.starter.graphql.stub.annotation.BodyPath;
 import central.starter.graphql.stub.annotation.GraphQLStub;
 import org.springframework.stereotype.Repository;
 
-/**
- * Identity Record
- * <p>
- * 认证记录
- *
- * @author Alan Yeh
- * @since 2025/03/02
- */
+/// Identity Record
+///
+/// 认证记录
+///
+/// @author Alan Yeh
 @Repository
 @BodyPath("identity.records")
 @GraphQLStub(path = "identity", client = "providerClient")

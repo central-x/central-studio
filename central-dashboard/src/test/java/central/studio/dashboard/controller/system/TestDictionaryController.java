@@ -53,12 +53,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Dictionary Controller Test Cases
- *
- * @author Alan Yeh
- * @since 2024/09/30
- */
+/// Dictionary Controller Test Cases
+///
+/// @author Alan Yeh
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = DashboardApplication.class)
 public class TestDictionaryController extends TestController {
@@ -74,20 +71,16 @@ public class TestDictionaryController extends TestController {
         }
     }
 
-    /**
-     * 获取测试用的应用
-     */
+    /// 获取测试用的应用
     private Application getApplication(DataContext context) {
         SaasContainer container = context.getData(DataFetcherType.SAAS);
         return container.getApplicationByCode("dashboard");
     }
 
-    /**
-     * @see DictionaryController#add
-     * @see DictionaryController#page
-     * @see DictionaryController#details
-     * @see DictionaryController#delete
-     */
+    /// @see DictionaryController#add
+    /// @see DictionaryController#page
+    /// @see DictionaryController#details
+    /// @see DictionaryController#delete
     @Test
     public void case0(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var application = this.getApplication(context);
@@ -216,12 +209,10 @@ public class TestDictionaryController extends TestController {
                 .andExpect(content().string("1"));
     }
 
-    /**
-     * @see DictionaryController#add
-     * @see DictionaryController#update
-     * @see DictionaryController#details
-     * @see DictionaryController#delete
-     */
+    /// @see DictionaryController#add
+    /// @see DictionaryController#update
+    /// @see DictionaryController#details
+    /// @see DictionaryController#delete
     @Test
     public void case1(@Autowired MockMvc mvc, @Autowired CookieStore cookieStore, @Autowired DataContext context) throws Exception {
         var application = this.getApplication(context);

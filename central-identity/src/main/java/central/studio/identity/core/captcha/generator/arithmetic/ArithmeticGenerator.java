@@ -24,15 +24,12 @@
 
 package central.studio.identity.core.captcha.generator.arithmetic;
 
-import central.studio.identity.core.captcha.CaptchaGenerator;
 import central.studio.identity.core.captcha.Captcha;
+import central.studio.identity.core.captcha.CaptchaGenerator;
 
-/**
- * 算术验证码生成器
- *
- * @author Alan Yeh
- * @since 2023/05/29
- */
+/// 算术验证码生成器
+///
+/// @author Alan Yeh
 public class ArithmeticGenerator implements CaptchaGenerator {
     @Override
     public Captcha generator(String code) {

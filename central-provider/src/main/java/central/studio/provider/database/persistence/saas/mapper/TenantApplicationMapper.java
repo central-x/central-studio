@@ -24,16 +24,13 @@
 
 package central.studio.provider.database.persistence.saas.mapper;
 
-import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
 import central.sql.proxy.Mapper;
+import central.studio.provider.database.persistence.saas.entity.TenantApplicationEntity;
 import org.springframework.stereotype.Repository;
 
-/**
- * 租户与应用关联关系
- *
- * @author Alan Yeh
- * @since 2022/09/25
- */
+/// 租户与应用关联关系
+///
+/// @author Alan Yeh
 @Repository
 public interface TenantApplicationMapper extends Mapper<TenantApplicationEntity> {
 }
