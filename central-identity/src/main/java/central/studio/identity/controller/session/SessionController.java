@@ -54,7 +54,7 @@ public class SessionController {
     @Setter(onMethod_ = @Autowired)
     private SessionManager manager;
 
-    @Setter
+    @Setter(onMethod_ = @Autowired)
     private SessionLogic logic;
 
     /// 用于客户端自行验证会话有效性
