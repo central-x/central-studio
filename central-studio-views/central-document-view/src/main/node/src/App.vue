@@ -1,30 +1,26 @@
-<script setup lang="ts">
-import AppHeader from '@/components/Header.vue'
-import AppSidebar from '@/components/Sidebar.vue'
-import AppContentArea from '@/components/ContentArea.vue'
-</script>
-
 <template>
-  <div class="app">
-    <!-- 顶部导航栏 -->
-    <AppHeader />
-
-    <!-- 左侧菜单栏 -->
-    <AppSidebar />
-
-    <!-- 内容区 -->
-    <AppContentArea />
-  </div>
+  <a-config-provider :locale="locale">
+    <router-view />
+    <global-setting />
+  </a-config-provider>
 </template>
 
-<style scoped>
-.app {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
+<script lang="ts" setup>
+  import { computed } from 'vue';
+  import enUS from '@arco-design/web-vue/es/locale/lang/en-us';
+  import zhCN from '@arco-design/web-vue/es/locale/lang/zh-cn';
+  import GlobalSetting from '@/components/global-setting/index.vue';
+  import useLocale from '@/hooks/locale';
 
-#app {
-  height: 100%;
-}
-</style>
+  const { currentLocale } = useLocale();
+  const locale = computed(() => {
+    switch (currentLocale.value) {
+      case 'zh-CN':
+        return zhCN;
+      case 'en-US':
+        return enUS;
+      default:
+        return enUS;
+    }
+  });
+</script>
